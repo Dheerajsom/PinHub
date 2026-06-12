@@ -1,18 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   ArrowUpRight,
   BookOpen,
+  CircuitBoard,
   Cpu,
   Database,
-  Filter,
   Layers3,
   Search,
   ShieldAlert,
   SlidersHorizontal,
   Sparkles,
+  X,
   Zap,
 } from "lucide-react";
 import { clsx } from "clsx";
@@ -36,6 +43,8 @@ export function PinHubApp() {
   const [activeInterface, setActiveInterface] =
     useState<BoardInterface | typeof allInterface>(allInterface);
   const [selectedId, setSelectedId] = useState(boards[0]?.id ?? "");
+  const searchRef = useRef<HTMLInputElement>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
 
   const filteredBoards = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -52,6 +61,7 @@ export function PinHubApp() {
           board.description,
           ...board.tags,
           ...board.interfaces,
+          ...board.warnings,
         ]
           .join(" ")
           .toLowerCase()
@@ -67,6 +77,15 @@ export function PinHubApp() {
     });
   }, [activeCategory, activeInterface, query]);
 
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    counts.set(allCategory, boards.length);
+    for (const board of boards) {
+      counts.set(board.category, (counts.get(board.category) ?? 0) + 1);
+    }
+    return counts;
+  }, []);
+
   const selectedBoard =
     filteredBoards.find((board) => board.id === selectedId) ??
     filteredBoards[0] ??
@@ -78,97 +97,190 @@ export function PinHubApp() {
     0,
   );
 
+  const hasActiveFilters =
+    query.trim().length > 0 ||
+    activeCategory !== allCategory ||
+    activeInterface !== allInterface;
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "/" || event.defaultPrevented) return;
+      const target = event.target as HTMLElement | null;
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+      event.preventDefault();
+      searchRef.current?.focus();
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  function resetFilters() {
+    setQuery("");
+    setActiveCategory(allCategory);
+    setActiveInterface(allInterface);
+  }
+
+  function selectBoard(id: string) {
+    setSelectedId(id);
+    // On single-column layouts the detail panel sits below the result list,
+    // so bring it into view when a board is picked.
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
   return (
     <main className="min-h-screen">
-      <header className="relative overflow-hidden border-b border-cyan-200/10 bg-[#070a0d]">
+      <header className="relative border-b border-white/10 bg-[#070a0d]">
         <div
-          className="pointer-events-none absolute inset-0 opacity-90"
+          className="pointer-events-none absolute inset-0"
           aria-hidden="true"
         >
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
-          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(34,211,238,0.12),rgba(7,10,13,0)_34%),linear-gradient(180deg,rgba(250,204,21,0.055),rgba(7,10,13,0)_42%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(180deg,rgba(7,10,13,0),rgba(7,10,13,0.92))]" />
+          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(34,211,238,0.08),rgba(7,10,13,0)_38%)]" />
         </div>
-        <div className="relative mx-auto flex max-w-[1560px] flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <div className="flex items-center gap-5 sm:gap-7">
-                <div className="relative h-24 w-28 shrink-0 sm:h-28 sm:w-36">
-                  <Image
-                    src="/pinhub-logo.png"
-                    alt=""
-                    fill
-                    sizes="(min-width: 640px) 144px, 112px"
-                    className="object-contain"
-                    priority
-                    aria-hidden="true"
-                  />
-                </div>
-                <div>
-                  <h1 className="brand-title bg-gradient-to-r from-white via-cyan-200 to-amber-200 bg-clip-text text-5xl leading-none tracking-normal text-transparent drop-shadow-[0_0_28px_rgba(34,211,238,0.18)] sm:text-7xl">
-                    PinHub
-                  </h1>
-                  <div
-                    className="mt-3 h-px w-full max-w-72 bg-gradient-to-r from-cyan-300/80 via-blue-400/60 to-amber-300/70"
-                    aria-hidden="true"
-                  />
-                </div>
-              </div>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">
-                Search SBCs, microcontrollers, and development boards by vendor,
-                interface, warning, and documentation source.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-3 border border-white/10 bg-white/[0.03] text-sm">
-              <Metric label="Boards" value={boards.length.toString()} />
-              <Metric label="Interfaces" value={interfaceCount.toString()} />
-              <Metric label="Source links" value={sourceCount.toString()} />
-            </div>
-          </div>
-
-          <div className="grid gap-3 lg:grid-cols-[minmax(16rem,1fr)_auto] lg:items-center">
-            <label className="relative block">
-              <Search
-                className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-zinc-500"
+        <div className="relative mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="relative size-11 shrink-0 sm:size-12">
+              <Image
+                src="/pinhub-logo.png"
+                alt=""
+                fill
+                sizes="48px"
+                className="object-contain"
+                priority
                 aria-hidden="true"
               />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search Raspberry Pi, ESP32, ADC, Jetson, 5V, ST-LINK..."
-                className="h-12 w-full border border-white/10 bg-zinc-950/80 pl-11 pr-4 text-sm text-white outline-none transition focus:border-cyan-300/70"
-              />
-            </label>
-            <div className="flex items-center gap-2 text-sm text-zinc-400">
-              <Filter className="size-4" aria-hidden="true" />
-              <span>{filteredBoards.length} matching boards</span>
+            </div>
+            <div className="min-w-0">
+              <h1 className="brand-title bg-gradient-to-r from-white via-cyan-200 to-amber-200 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
+                PinHub
+              </h1>
+              <p className="mt-1 truncate text-xs text-zinc-400 sm:text-sm">
+                Source-backed pinouts for dev boards, SBCs, and
+                microcontrollers
+              </p>
             </div>
           </div>
+
+          <dl className="flex items-center gap-5 text-sm">
+            <Metric label="Boards" value={boards.length.toString()} />
+            <Metric label="Interfaces" value={interfaceCount.toString()} />
+            <Metric label="Sources" value={sourceCount.toString()} />
+          </dl>
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[17rem_minmax(0,1fr)_minmax(24rem,34rem)] lg:px-8">
-        <aside className="space-y-5">
+      <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0b0c0f]/90 backdrop-blur">
+        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+          <label className="relative block min-w-56 flex-1">
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
+              aria-hidden="true"
+            />
+            <input
+              ref={searchRef}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setQuery("");
+                  event.currentTarget.blur();
+                }
+                if (event.key === "Enter" && filteredBoards[0]) {
+                  selectBoard(filteredBoards[0].id);
+                }
+              }}
+              placeholder="Search boards, vendors, interfaces, warnings..."
+              aria-label="Search boards"
+              className="h-10 w-full rounded-md border border-white/10 bg-zinc-950/80 pl-10 pr-16 text-sm text-white outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/40"
+            />
+            {query ? (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-2.5 top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded text-zinc-500 transition hover:text-white"
+              >
+                <X className="size-4" aria-hidden="true" />
+              </button>
+            ) : (
+              <kbd
+                className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[11px] text-zinc-500 sm:block"
+                aria-hidden="true"
+              >
+                /
+              </kbd>
+            )}
+          </label>
+
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span
+              className="font-mono text-xs text-zinc-400"
+              role="status"
+              aria-live="polite"
+            >
+              {filteredBoards.length} of {boards.length} boards
+            </span>
+            {activeCategory !== allCategory ? (
+              <ActiveFilterChip
+                label={activeCategory}
+                onClear={() => setActiveCategory(allCategory)}
+              />
+            ) : null}
+            {activeInterface !== allInterface ? (
+              <ActiveFilterChip
+                label={activeInterface}
+                onClear={() => setActiveInterface(allInterface)}
+              />
+            ) : null}
+            {hasActiveFilters ? (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
+              >
+                Reset
+              </button>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_minmax(24rem,32rem)] lg:px-8">
+        <aside className="space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2">
           <FilterPanel
             title="Category"
-            icon={<Layers3 className="size-4" aria-hidden="true" />}
+            icon={<Layers3 className="size-4 text-cyan-200" aria-hidden="true" />}
             items={categories}
             active={activeCategory}
+            counts={categoryCounts}
             onChange={(value) =>
               setActiveCategory(value as BoardCategory | typeof allCategory)
             }
           />
           <FilterPanel
             title="Interface"
-            icon={<SlidersHorizontal className="size-4" aria-hidden="true" />}
+            icon={
+              <SlidersHorizontal
+                className="size-4 text-cyan-200"
+                aria-hidden="true"
+              />
+            }
             items={interfaceFilters}
             active={activeInterface}
             onChange={(value) =>
               setActiveInterface(value as BoardInterface | typeof allInterface)
             }
           />
-          <section className="border border-white/10 bg-white/[0.03] p-4">
+          <section className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <Sparkles className="size-4 text-amber-200" aria-hidden="true" />
               Curation notes
@@ -181,33 +293,57 @@ export function PinHubApp() {
           </section>
         </aside>
 
-        <section className="min-w-0">
-          <div className="grid gap-3">
+        <section className="min-w-0" aria-label="Board results">
+          <div className="grid gap-2.5">
             {filteredBoards.map((board) => (
               <BoardResult
                 key={board.id}
                 board={board}
                 selected={board.id === selectedBoard.id}
-                onSelect={() => setSelectedId(board.id)}
+                onSelect={() => selectBoard(board.id)}
               />
             ))}
           </div>
 
           {filteredBoards.length === 0 ? (
-            <div className="border border-dashed border-white/15 bg-white/[0.03] p-8 text-center">
-              <Database className="mx-auto size-8 text-zinc-500" aria-hidden="true" />
+            <div className="rounded-lg border border-dashed border-white/15 bg-white/[0.03] p-8 text-center">
+              <Database
+                className="mx-auto size-8 text-zinc-500"
+                aria-hidden="true"
+              />
               <h2 className="mt-4 text-lg font-semibold text-white">
                 No boards match that filter
               </h2>
               <p className="mt-2 text-sm text-zinc-400">
                 Try a broader search term or clear one of the filters.
               </p>
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="mt-4 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50 transition hover:bg-cyan-300/20"
+              >
+                Reset filters
+              </button>
             </div>
           ) : null}
         </section>
 
-        <BoardDetail board={selectedBoard} />
+        <div ref={detailRef} className="min-w-0 scroll-mt-16">
+          <BoardDetail board={selectedBoard} />
+        </div>
       </div>
+
+      <footer className="border-t border-white/10">
+        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-zinc-500 sm:px-6 lg:px-8">
+          <span>
+            Always verify against the linked official documentation before
+            wiring.
+          </span>
+          <span className="font-mono">
+            {boards.length} boards · {sourceCount} source links
+          </span>
+        </div>
+      </footer>
     </main>
   );
 }
@@ -219,12 +355,36 @@ type MetricProps = {
 
 function Metric({ label, value }: MetricProps) {
   return (
-    <div className="min-w-24 border-r border-white/10 px-4 py-3 last:border-r-0">
-      <div className="font-mono text-2xl font-semibold text-white">{value}</div>
-      <div className="mt-1 text-xs uppercase tracking-[0.16em] text-zinc-500">
+    <div className="text-right">
+      <dd className="font-mono text-lg font-semibold leading-none text-white">
+        {value}
+      </dd>
+      <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-zinc-500">
         {label}
-      </div>
+      </dt>
     </div>
+  );
+}
+
+type ActiveFilterChipProps = {
+  label: string;
+  onClear: () => void;
+};
+
+function ActiveFilterChip({ label, onClear }: ActiveFilterChipProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClear}
+      aria-label={`Remove ${label} filter`}
+      className="group flex items-center gap-1.5 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-2 py-1 text-xs text-cyan-50 transition hover:border-cyan-300/80"
+    >
+      {label}
+      <X
+        className="size-3 text-cyan-200/70 transition group-hover:text-white"
+        aria-hidden="true"
+      />
+    </button>
   );
 }
 
@@ -233,31 +393,44 @@ type FilterPanelProps = {
   icon: ReactNode;
   items: readonly string[];
   active: string;
+  counts?: Map<string, number>;
   onChange: (value: string) => void;
 };
 
-function FilterPanel({ title, icon, items, active, onChange }: FilterPanelProps) {
+function FilterPanel({
+  title,
+  icon,
+  items,
+  active,
+  counts,
+  onChange,
+}: FilterPanelProps) {
   return (
-    <section className="border border-white/10 bg-white/[0.03] p-4">
-      <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
+    <section className="rounded-lg border border-white/10 bg-white/[0.03] p-3">
+      <div className="mb-2.5 flex items-center gap-2 px-1 text-sm font-semibold text-white">
         {icon}
         {title}
       </div>
-      <div className="flex flex-wrap gap-2 lg:flex-col">
+      <div className="flex flex-wrap gap-1.5 lg:flex-col lg:gap-1">
         {items.map((item) => (
           <button
             key={item}
             type="button"
             onClick={() => onChange(item)}
             className={clsx(
-              "min-h-9 border px-3 py-2 text-left text-sm transition",
+              "flex items-center justify-between gap-2 rounded-md border px-2.5 py-1.5 text-left text-sm transition",
               active === item
                 ? "border-cyan-300/70 bg-cyan-300/10 text-cyan-50"
-                : "border-white/10 bg-black/20 text-zinc-400 hover:border-white/25 hover:text-white",
+                : "border-transparent text-zinc-400 hover:bg-white/[0.06] hover:text-white",
             )}
             aria-pressed={active === item}
           >
-            {item}
+            <span>{item}</span>
+            {counts?.has(item) ? (
+              <span className="font-mono text-xs text-zinc-500">
+                {counts.get(item)}
+              </span>
+            ) : null}
           </button>
         ))}
       </div>
@@ -277,42 +450,49 @@ function BoardResult({ board, selected, onSelect }: BoardResultProps) {
       type="button"
       onClick={onSelect}
       className={clsx(
-        "w-full border p-4 text-left transition",
+        "w-full rounded-lg border-y border-r border-l-2 p-4 text-left transition",
         selected
-          ? "border-cyan-300/70 bg-cyan-300/[0.08]"
-          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.05]",
+          ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-cyan-300/[0.07]"
+          : "border-y-white/10 border-r-white/10 border-l-white/10 bg-white/[0.03] hover:border-y-white/25 hover:border-r-white/25 hover:border-l-white/25 hover:bg-white/[0.05]",
       )}
       aria-pressed={selected}
     >
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-lg font-semibold text-white">{board.name}</h2>
-            <span className="border border-white/10 bg-black/30 px-2 py-1 text-xs text-zinc-300">
-              {board.category}
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <h2 className="text-base font-semibold text-white">{board.name}</h2>
+          <span className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5 text-[11px] text-zinc-300">
+            {board.category}
+          </span>
+          {board.pinout ? (
+            <span className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[11px] text-emerald-100">
+              <CircuitBoard className="size-3" aria-hidden="true" />
+              Pin map
             </span>
-          </div>
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-400">
-            {board.description}
-          </p>
+          ) : null}
         </div>
-        <div className="shrink-0 text-left md:text-right">
-          <div className="text-sm font-medium text-zinc-200">{board.vendor}</div>
-          <div className="mt-1 font-mono text-xs text-zinc-500">
-            {board.logicLevel}
-          </div>
-        </div>
+        <span className="shrink-0 font-mono text-xs text-zinc-500">
+          {board.vendor} · {board.logicLevel}
+        </span>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {board.interfaces.slice(0, 8).map((item) => (
+      <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-zinc-400">
+        {board.description}
+      </p>
+
+      <div className="mt-2.5 flex flex-wrap gap-1.5">
+        {board.interfaces.slice(0, 7).map((item) => (
           <span
             key={item}
-            className="border border-white/10 bg-zinc-950 px-2 py-1 text-xs text-zinc-300"
+            className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-300"
           >
             {item}
           </span>
         ))}
+        {board.interfaces.length > 7 ? (
+          <span className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-500">
+            +{board.interfaces.length - 7}
+          </span>
+        ) : null}
       </div>
     </button>
   );
@@ -324,8 +504,8 @@ type BoardDetailProps = {
 
 function BoardDetail({ board }: BoardDetailProps) {
   return (
-    <aside className="min-w-0 space-y-4 lg:sticky lg:top-5 lg:self-start">
-      <section className="border border-white/10 bg-white/[0.04] p-5">
+    <aside className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
+      <section className="rounded-lg border border-white/10 bg-white/[0.04] p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
@@ -338,7 +518,7 @@ function BoardDetail({ board }: BoardDetailProps) {
               {board.vendor} / {board.family}
             </p>
           </div>
-          <div className="grid size-11 place-items-center border border-amber-300/40 bg-amber-300/10 text-amber-100">
+          <div className="grid size-11 shrink-0 place-items-center rounded-lg border border-amber-300/40 bg-amber-300/10 text-amber-100">
             <Cpu className="size-5" aria-hidden="true" />
           </div>
         </div>
@@ -365,10 +545,11 @@ function BoardDetail({ board }: BoardDetailProps) {
             <ShieldAlert className="size-4 text-orange-200" aria-hidden="true" />
           }
           items={board.warnings}
+          tone="warning"
         />
       </section>
 
-      <section className="border border-white/10 bg-white/[0.03] p-4">
+      <section className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
         <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
           <BookOpen className="size-4 text-cyan-200" aria-hidden="true" />
           Source references
@@ -380,15 +561,18 @@ function BoardDetail({ board }: BoardDetailProps) {
               href={source.url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between gap-3 border border-white/10 bg-black/20 px-3 py-3 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white"
+              className="group flex items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white"
             >
-              <span className="min-w-0">
-                <span className="mr-2 text-xs uppercase tracking-[0.14em] text-zinc-500">
+              <span className="flex min-w-0 items-baseline gap-2">
+                <span className="shrink-0 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-zinc-500 transition group-hover:text-zinc-300">
                   {source.type}
                 </span>
-                {source.label}
+                <span className="min-w-0 truncate">{source.label}</span>
               </span>
-              <ArrowUpRight className="size-4 shrink-0" aria-hidden="true" />
+              <ArrowUpRight
+                className="size-4 shrink-0 text-zinc-500 transition group-hover:text-cyan-200"
+                aria-hidden="true"
+              />
             </a>
           ))}
         </div>
@@ -417,18 +601,35 @@ type InfoBlockProps = {
   title: string;
   icon: ReactNode;
   items: string[];
+  tone?: "default" | "warning";
 };
 
-function InfoBlock({ title, icon, items }: InfoBlockProps) {
+function InfoBlock({ title, icon, items, tone = "default" }: InfoBlockProps) {
   return (
-    <section className="border border-white/10 bg-white/[0.03] p-4">
+    <section
+      className={clsx(
+        "rounded-lg border p-4",
+        tone === "warning"
+          ? "border-orange-300/25 bg-orange-300/[0.04]"
+          : "border-white/10 bg-white/[0.03]",
+      )}
+    >
       <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
         {icon}
         {title}
       </div>
       <ul className="space-y-2 text-sm leading-6 text-zinc-400">
         {items.map((item) => (
-          <li key={item}>{item}</li>
+          <li key={item} className="flex gap-2">
+            <span
+              className={clsx(
+                "mt-2.5 size-1 shrink-0 rounded-full",
+                tone === "warning" ? "bg-orange-300/70" : "bg-zinc-500",
+              )}
+              aria-hidden="true"
+            />
+            {item}
+          </li>
         ))}
       </ul>
     </section>

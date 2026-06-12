@@ -40,6 +40,41 @@ input {
   font: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(103, 232, 249, 0.7);
+  outline-offset: 2px;
+}
+
 ::selection {
-  background: rgba(84, 214, 192, 0.32);
+  background: rgba(34, 211, 238, 0.3);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }

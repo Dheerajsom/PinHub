@@ -40,7 +40,7 @@ type PinoutDiagramProps = {
 export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
   if (!pinout) {
     return (
-      <section className="border border-dashed border-white/15 bg-white/[0.03] p-4">
+      <section className="rounded-lg border border-dashed border-white/15 bg-white/[0.03] p-4">
         <div className="text-sm font-medium text-white">Pin map queued</div>
         <p className="mt-2 text-sm leading-6 text-zinc-400">
           This board has official references linked, but its in-app connector map
@@ -50,8 +50,13 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
     );
   }
 
+  const presentRoles = new Set<PinRole>([
+    ...(pinout.pins ? [...pinout.pins.left, ...pinout.pins.right] : []),
+    ...(pinout.groups ?? []).flatMap((group) => group.pins),
+  ].map((pin) => pin.role));
+
   return (
-    <section className="border border-white/10 bg-black/20 p-4">
+    <section className="rounded-lg border border-white/10 bg-black/20 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
@@ -61,18 +66,20 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
             {pinout.connector}
           </h3>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(roleLabels).map(([role, label]) => (
-            <span
-              key={role}
-              className={clsx(
-                "border px-2 py-1 text-[11px] font-medium",
-                roleStyles[role as PinRole],
-              )}
-            >
-              {label}
-            </span>
-          ))}
+        <div className="flex flex-wrap gap-1.5" aria-label="Pin role legend">
+          {Object.entries(roleLabels)
+            .filter(([role]) => presentRoles.has(role as PinRole))
+            .map(([role, label]) => (
+              <span
+                key={role}
+                className={clsx(
+                  "rounded border px-1.5 py-0.5 text-[11px] font-medium",
+                  roleStyles[role as PinRole],
+                )}
+              >
+                {label}
+              </span>
+            ))}
         </div>
       </div>
 
