@@ -80,29 +80,41 @@ export function PinHubApp() {
 
   return (
     <main className="min-h-screen">
-      <header className="border-b border-white/10 bg-black/20">
-        <div className="mx-auto flex max-w-[1560px] flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
+      <header className="relative overflow-hidden border-b border-cyan-200/10 bg-[#070a0d]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-90"
+          aria-hidden="true"
+        >
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(34,211,238,0.12),rgba(7,10,13,0)_34%),linear-gradient(180deg,rgba(250,204,21,0.055),rgba(7,10,13,0)_42%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(180deg,rgba(7,10,13,0),rgba(7,10,13,0.92))]" />
+        </div>
+        <div className="relative mx-auto flex max-w-[1560px] flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <div className="flex items-center gap-4 sm:gap-5">
-                <div className="relative h-20 w-24 shrink-0 sm:h-24 sm:w-32">
+              <div className="flex items-center gap-5 sm:gap-7">
+                <div className="relative h-24 w-28 shrink-0 sm:h-28 sm:w-36">
                   <Image
                     src="/pinhub-logo.png"
                     alt=""
                     fill
-                    sizes="(min-width: 640px) 128px, 96px"
-                    className="object-contain drop-shadow-[0_0_18px_rgba(34,211,238,0.16)]"
+                    sizes="(min-width: 640px) 144px, 112px"
+                    className="object-contain"
                     priority
                     aria-hidden="true"
                   />
                 </div>
                 <div>
-                  <h1 className="text-5xl font-semibold leading-none tracking-normal text-white sm:text-6xl">
+                  <h1 className="brand-title bg-gradient-to-r from-white via-cyan-200 to-amber-200 bg-clip-text text-5xl leading-none tracking-normal text-transparent drop-shadow-[0_0_28px_rgba(34,211,238,0.18)] sm:text-7xl">
                     PinHub
                   </h1>
+                  <div
+                    className="mt-3 h-px w-full max-w-72 bg-gradient-to-r from-cyan-300/80 via-blue-400/60 to-amber-300/70"
+                    aria-hidden="true"
+                  />
                 </div>
               </div>
-              <p className="mt-4 max-w-3xl text-sm leading-6 text-zinc-400 sm:text-base">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">
                 Search SBCs, microcontrollers, and development boards by vendor,
                 interface, warning, and documentation source.
               </p>

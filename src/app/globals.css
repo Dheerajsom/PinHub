@@ -4,6 +4,7 @@
   --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono",
     "Cascadia Code", "Roboto Mono", monospace;
+  --font-display: "Audiowide", "Audiowide Fallback", var(--font-sans);
 }
 
 :root {
@@ -28,6 +29,10 @@ body {
     var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+.brand-title {
+  font-family: var(--font-display);
 }
 
 button,
