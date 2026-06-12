@@ -84,24 +84,21 @@ export function PinHubApp() {
         <div className="mx-auto flex max-w-[1560px] flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <div className="flex items-center gap-3">
-                <div className="grid size-11 place-items-center overflow-hidden rounded-full border border-cyan-300/40 bg-cyan-300/10 shadow-[0_0_24px_rgba(34,211,238,0.2)]">
+              <div className="flex items-center gap-4 sm:gap-5">
+                <div className="relative h-20 w-24 shrink-0 sm:h-24 sm:w-32">
                   <Image
                     src="/pinhub-logo.png"
                     alt=""
-                    width={40}
-                    height={40}
-                    className="size-10 rounded-full object-cover"
+                    fill
+                    sizes="(min-width: 640px) 128px, 96px"
+                    className="object-contain drop-shadow-[0_0_18px_rgba(34,211,238,0.16)]"
                     priority
                     aria-hidden="true"
                   />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-200">
+                  <h1 className="text-5xl font-semibold leading-none tracking-normal text-white sm:text-6xl">
                     PinHub
-                  </p>
-                  <h1 className="mt-1 text-3xl font-semibold tracking-normal text-white sm:text-4xl">
-                    Pinout wiki for boards people actually use
                   </h1>
                 </div>
               </div>
