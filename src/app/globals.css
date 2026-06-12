@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono",
+    "Cascadia Code", "Roboto Mono", monospace;
+}
+
+:root {
+  color-scheme: dark;
+  --background: #0b0c0f;
+  --foreground: #eef2f3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 220px),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(84, 214, 192, 0.32);
+}
