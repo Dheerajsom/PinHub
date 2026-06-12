@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import {
@@ -19,6 +20,7 @@ import {
   ShieldAlert,
   SlidersHorizontal,
   Sparkles,
+  Star,
   X,
   Zap,
 } from "lucide-react";
@@ -36,6 +38,92 @@ import { VendorLogo } from "@/components/VendorLogo";
 
 const allCategory = "All";
 const allInterface = "All";
+const favoritesStorageKey = "pinhub.favorites";
+
+// Favorites live in localStorage and are exposed to React through a tiny
+// external store so the component can read them via useSyncExternalStore.
+const emptyFavorites: ReadonlySet<string> = new Set();
+const favoritesListeners = new Set<() => void>();
+let favoritesSnapshot: ReadonlySet<string> | null = null;
+
+function getFavoritesSnapshot(): ReadonlySet<string> {
+  if (favoritesSnapshot === null) {
+    try {
+      const stored = window.localStorage.getItem(favoritesStorageKey);
+      const ids = stored ? (JSON.parse(stored) as string[]) : [];
+      favoritesSnapshot = new Set(
+        ids.filter((id) => boards.some((board) => board.id === id)),
+      );
+    } catch {
+      favoritesSnapshot = new Set();
+    }
+  }
+  return favoritesSnapshot;
+}
+
+function getServerFavoritesSnapshot(): ReadonlySet<string> {
+  return emptyFavorites;
+}
+
+function subscribeToFavorites(listener: () => void): () => void {
+  favoritesListeners.add(listener);
+  return () => favoritesListeners.delete(listener);
+}
+
+function toggleFavoriteId(id: string) {
+  const next = new Set(getFavoritesSnapshot());
+  if (next.has(id)) {
+    next.delete(id);
+  } else {
+    next.add(id);
+  }
+  favoritesSnapshot = next;
+  try {
+    window.localStorage.setItem(favoritesStorageKey, JSON.stringify([...next]));
+  } catch {
+    // Persisting is best-effort.
+  }
+  for (const listener of favoritesListeners) listener();
+}
+
+// Scores how well a board matches a single search token. Word-boundary hits
+// on the name rank above substring hits, which rank above matches in
+// secondary fields, so "pi" surfaces Raspberry Pi boards before boards that
+// only mention SPI in their interface list.
+function scoreBoardForToken(board: Board, token: string): number {
+  const name = board.name.toLowerCase();
+  if (name.split(/[^a-z0-9+]+/).some((word) => word.startsWith(token))) {
+    return 100;
+  }
+  if (name.includes(token)) return 60;
+
+  const primary = [board.vendor, board.family, board.processor]
+    .join(" ")
+    .toLowerCase();
+  if (primary.includes(token)) return 40;
+
+  const secondary = [board.category, ...board.tags, ...board.interfaces]
+    .join(" ")
+    .toLowerCase();
+  if (secondary.includes(token)) return 20;
+
+  const text = [board.description, ...board.warnings].join(" ").toLowerCase();
+  if (text.includes(token)) return 10;
+
+  return 0;
+}
+
+// Every whitespace-separated token must match somewhere; the board's score
+// is the sum of its per-token scores, used to rank results by relevance.
+function scoreBoard(board: Board, tokens: string[]): number {
+  let total = 0;
+  for (const token of tokens) {
+    const score = scoreBoardForToken(board, token);
+    if (score === 0) return 0;
+    total += score;
+  }
+  return total;
+}
 
 export function PinHubApp() {
   const [query, setQuery] = useState("");
@@ -44,39 +132,43 @@ export function PinHubApp() {
   const [activeInterface, setActiveInterface] =
     useState<BoardInterface | typeof allInterface>(allInterface);
   const [selectedId, setSelectedId] = useState(boards[0]?.id ?? "");
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const favorites = useSyncExternalStore(
+    subscribeToFavorites,
+    getFavoritesSnapshot,
+    getServerFavoritesSnapshot,
+  );
   const searchRef = useRef<HTMLInputElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
 
   const filteredBoards = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+    const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
-    return boards.filter((board) => {
-      const matchesQuery =
-        normalizedQuery.length === 0 ||
-        [
-          board.name,
-          board.vendor,
-          board.family,
-          board.processor,
-          board.category,
-          board.description,
-          ...board.tags,
-          ...board.interfaces,
-          ...board.warnings,
-        ]
-          .join(" ")
-          .toLowerCase()
-          .includes(normalizedQuery);
+    const scored = boards
+      .map((board) => ({
+        board,
+        score: tokens.length === 0 ? 1 : scoreBoard(board, tokens),
+      }))
+      .filter(({ board, score }) => {
+        if (score === 0) return false;
+        if (showFavoritesOnly && !favorites.has(board.id)) return false;
+        if (activeCategory !== allCategory && board.category !== activeCategory) {
+          return false;
+        }
+        if (
+          activeInterface !== allInterface &&
+          !board.interfaces.includes(activeInterface)
+        ) {
+          return false;
+        }
+        return true;
+      });
 
-      const matchesCategory =
-        activeCategory === allCategory || board.category === activeCategory;
-      const matchesInterface =
-        activeInterface === allInterface ||
-        board.interfaces.includes(activeInterface);
-
-      return matchesQuery && matchesCategory && matchesInterface;
-    });
-  }, [activeCategory, activeInterface, query]);
+    if (tokens.length > 0) {
+      scored.sort((a, b) => b.score - a.score);
+    }
+    return scored.map(({ board }) => board);
+  }, [activeCategory, activeInterface, query, favorites, showFavoritesOnly]);
 
   const categoryCounts = useMemo(() => {
     const counts = new Map<string, number>();
@@ -101,7 +193,8 @@ export function PinHubApp() {
   const hasActiveFilters =
     query.trim().length > 0 ||
     activeCategory !== allCategory ||
-    activeInterface !== allInterface;
+    activeInterface !== allInterface ||
+    showFavoritesOnly;
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -126,6 +219,7 @@ export function PinHubApp() {
     setQuery("");
     setActiveCategory(allCategory);
     setActiveInterface(allInterface);
+    setShowFavoritesOnly(false);
   }
 
   function selectBoard(id: string) {
@@ -230,6 +324,31 @@ export function PinHubApp() {
             >
               {filteredBoards.length} of {boards.length} boards
             </span>
+            <button
+              type="button"
+              onClick={() => setShowFavoritesOnly((value) => !value)}
+              aria-pressed={showFavoritesOnly}
+              className={clsx(
+                "flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs transition",
+                showFavoritesOnly
+                  ? "border-amber-300/70 bg-amber-300/10 text-amber-100"
+                  : "border-white/10 text-zinc-400 hover:border-white/25 hover:text-white",
+              )}
+            >
+              <Star
+                className={clsx(
+                  "size-3.5",
+                  showFavoritesOnly && "fill-amber-300 text-amber-300",
+                )}
+                aria-hidden="true"
+              />
+              Favorites
+              {favorites.size > 0 ? (
+                <span className="font-mono text-[11px] text-zinc-500">
+                  {favorites.size}
+                </span>
+              ) : null}
+            </button>
             {activeCategory !== allCategory ? (
               <ActiveFilterChip
                 label={activeCategory}
@@ -301,7 +420,9 @@ export function PinHubApp() {
                 key={board.id}
                 board={board}
                 selected={board.id === selectedBoard.id}
+                favorite={favorites.has(board.id)}
                 onSelect={() => selectBoard(board.id)}
+                onToggleFavorite={() => toggleFavoriteId(board.id)}
               />
             ))}
           </div>
@@ -442,61 +563,91 @@ function FilterPanel({
 type BoardResultProps = {
   board: Board;
   selected: boolean;
+  favorite: boolean;
   onSelect: () => void;
+  onToggleFavorite: () => void;
 };
 
-function BoardResult({ board, selected, onSelect }: BoardResultProps) {
+function BoardResult({
+  board,
+  selected,
+  favorite,
+  onSelect,
+  onToggleFavorite,
+}: BoardResultProps) {
   return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={clsx(
-        "w-full rounded-lg border-y border-r border-l-2 p-4 text-left transition",
-        selected
-          ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-cyan-300/[0.07]"
-          : "border-y-white/10 border-r-white/10 border-l-white/10 bg-white/[0.03] hover:border-y-white/25 hover:border-r-white/25 hover:border-l-white/25 hover:bg-white/[0.05]",
-      )}
-      aria-pressed={selected}
-    >
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <VendorLogo vendor={board.vendor} />
-          <h2 className="text-base font-semibold text-white">{board.name}</h2>
-          <span className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5 text-[11px] text-zinc-300">
-            {board.category}
+    <div className="relative">
+      <button
+        type="button"
+        onClick={onSelect}
+        className={clsx(
+          "w-full rounded-lg border-y border-r border-l-2 p-4 text-left transition",
+          selected
+            ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-cyan-300/[0.07]"
+            : "border-y-white/10 border-r-white/10 border-l-white/10 bg-white/[0.03] hover:border-y-white/25 hover:border-r-white/25 hover:border-l-white/25 hover:bg-white/[0.05]",
+        )}
+        aria-pressed={selected}
+      >
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <VendorLogo vendor={board.vendor} />
+            <h2 className="text-base font-semibold text-white">{board.name}</h2>
+            <span className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5 text-[11px] text-zinc-300">
+              {board.category}
+            </span>
+            {board.pinout ? (
+              <span className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[11px] text-emerald-100">
+                <CircuitBoard className="size-3" aria-hidden="true" />
+                Pin map
+              </span>
+            ) : null}
+          </div>
+          <span className="shrink-0 pr-7 font-mono text-xs text-zinc-500">
+            {board.vendor} · {board.logicLevel}
           </span>
-          {board.pinout ? (
-            <span className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[11px] text-emerald-100">
-              <CircuitBoard className="size-3" aria-hidden="true" />
-              Pin map
+        </div>
+
+        <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-zinc-400">
+          {board.description}
+        </p>
+
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {board.interfaces.slice(0, 7).map((item) => (
+            <span
+              key={item}
+              className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-300"
+            >
+              {item}
+            </span>
+          ))}
+          {board.interfaces.length > 7 ? (
+            <span className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-500">
+              +{board.interfaces.length - 7}
             </span>
           ) : null}
         </div>
-        <span className="shrink-0 font-mono text-xs text-zinc-500">
-          {board.vendor} · {board.logicLevel}
-        </span>
-      </div>
-
-      <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-zinc-400">
-        {board.description}
-      </p>
-
-      <div className="mt-2.5 flex flex-wrap gap-1.5">
-        {board.interfaces.slice(0, 7).map((item) => (
-          <span
-            key={item}
-            className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-300"
-          >
-            {item}
-          </span>
-        ))}
-        {board.interfaces.length > 7 ? (
-          <span className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-500">
-            +{board.interfaces.length - 7}
-          </span>
-        ) : null}
-      </div>
-    </button>
+      </button>
+      <button
+        type="button"
+        onClick={onToggleFavorite}
+        aria-label={
+          favorite
+            ? `Remove ${board.name} from favorites`
+            : `Add ${board.name} to favorites`
+        }
+        aria-pressed={favorite}
+        title={favorite ? "Remove from favorites" : "Add to favorites"}
+        className="absolute right-2.5 top-2.5 grid size-7 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
+      >
+        <Star
+          className={clsx(
+            "size-4",
+            favorite && "fill-amber-300 text-amber-300",
+          )}
+          aria-hidden="true"
+        />
+      </button>
+    </div>
   );
 }
 
