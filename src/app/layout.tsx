@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "PinHub",
   description:
     "A searchable pinout catalog for SBCs, microcontrollers, and embedded development boards.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({

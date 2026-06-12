@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState, type ReactNode } from "react";
 import {
   ArrowUpRight,
@@ -7,7 +8,6 @@ import {
   Cpu,
   Database,
   Filter,
-  GitBranch,
   Layers3,
   Search,
   ShieldAlert,
@@ -85,8 +85,16 @@ export function PinHubApp() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="flex items-center gap-3">
-                <div className="grid size-10 place-items-center border border-cyan-300/40 bg-cyan-300/10 text-cyan-100">
-                  <GitBranch className="size-5" aria-hidden="true" />
+                <div className="grid size-11 place-items-center overflow-hidden rounded-full border border-cyan-300/40 bg-cyan-300/10 shadow-[0_0_24px_rgba(34,211,238,0.2)]">
+                  <Image
+                    src="/pinhub-logo.png"
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="size-10 rounded-full object-cover"
+                    priority
+                    aria-hidden="true"
+                  />
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-200">
