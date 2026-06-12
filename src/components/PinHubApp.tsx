@@ -32,6 +32,7 @@ import {
   type BoardInterface,
 } from "@/lib/boards";
 import { PinoutDiagram } from "@/components/PinoutDiagram";
+import { VendorLogo } from "@/components/VendorLogo";
 
 const allCategory = "All";
 const allInterface = "All";
@@ -459,6 +460,7 @@ function BoardResult({ board, selected, onSelect }: BoardResultProps) {
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <VendorLogo vendor={board.vendor} />
           <h2 className="text-base font-semibold text-white">{board.name}</h2>
           <span className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5 text-[11px] text-zinc-300">
             {board.category}
@@ -511,7 +513,8 @@ function BoardDetail({ board }: BoardDetailProps) {
             <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
               Selected board
             </div>
-            <h2 className="mt-2 text-2xl font-semibold text-white">
+            <h2 className="mt-2 flex items-center gap-2.5 text-2xl font-semibold text-white">
+              <VendorLogo vendor={board.vendor} size={24} />
               {board.name}
             </h2>
             <p className="mt-2 text-sm text-zinc-400">
