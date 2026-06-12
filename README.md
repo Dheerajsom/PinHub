@@ -13,8 +13,9 @@ one clean interface.
 - Search by board name, vendor, processor, tag, interface, or warning text
 - Filters for category and common interfaces
 - Detail view with specs, wiring warnings, source references, and in-app pin maps
-- Source-backed starting catalog for Raspberry Pi, Arduino, ESP32, STM32 Nucleo,
-  BeagleBone, Jetson, Radxa, Orange Pi, Teensy, and Adafruit boards
+- Source-backed catalog for Raspberry Pi, Arduino, ESP32, STM32 Nucleo,
+  BeagleBone, Jetson, Radxa, Orange Pi, Teensy, Adafruit, Seeed, SparkFun,
+  and micro:bit boards
 
 ## Getting Started
 
@@ -22,8 +23,6 @@ one clean interface.
 npm install
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 ## Validation
 

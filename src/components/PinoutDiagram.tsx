@@ -84,16 +84,16 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
             return (
               <div
                 key={`${leftPin.position}-${rightPin?.position ?? "empty"}`}
-                className="grid grid-cols-[minmax(0,1fr)_3rem_minmax(0,1fr)] items-stretch gap-2"
+                className="grid grid-cols-[minmax(0,1fr)_3rem_3rem_minmax(0,1fr)] items-center gap-2"
               >
-                <PinCell pin={leftPin} align="left" />
-                <div className="grid grid-cols-2 overflow-hidden border border-white/10 bg-zinc-950 text-center font-mono text-xs text-zinc-400">
-                  <span className="border-r border-white/10 py-3">
-                    {leftPin.position}
-                  </span>
-                  <span className="py-3">{rightPin?.position}</span>
-                </div>
-                {rightPin ? <PinCell pin={rightPin} align="right" /> : <div />}
+                <PinCell pin={leftPin} align="left" showPad={false} />
+                <PinPad pin={leftPin} />
+                {rightPin ? <PinPad pin={rightPin} /> : <div />}
+                {rightPin ? (
+                  <PinCell pin={rightPin} align="right" showPad={false} />
+                ) : (
+                  <div />
+                )}
               </div>
             );
           })}
@@ -107,7 +107,7 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
               <h4 className="mb-2 text-sm font-semibold text-zinc-200">
                 {group.label}
               </h4>
-              <div className="grid gap-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {group.pins.map((pin) => (
                   <PinCell key={`${group.label}-${pin.label}`} pin={pin} />
                 ))}
@@ -129,22 +129,29 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
 type PinCellProps = {
   pin: Pin;
   align?: "left" | "right";
+  showPad?: boolean;
 };
 
-function PinCell({ pin, align = "left" }: PinCellProps) {
+function PinCell({ pin, align = "left", showPad = true }: PinCellProps) {
   return (
     <div
       className={clsx(
-        "min-h-12 border px-3 py-2",
-        roleStyles[pin.role],
+        "min-h-12 min-w-0",
         align === "right" && "text-right",
       )}
     >
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <div
+        className={clsx(
+          "flex min-w-0 items-center gap-2",
+          align === "right" && "justify-end",
+        )}
+      >
+        {align === "left" && showPad ? <PinPad pin={pin} compact /> : null}
         <span className="font-mono text-sm font-semibold">{pin.label}</span>
         <span className="text-[11px] uppercase tracking-[0.12em] opacity-75">
           {roleLabels[pin.role]}
         </span>
+        {align === "right" && showPad ? <PinPad pin={pin} compact /> : null}
       </div>
       {pin.aliases?.length ? (
         <div className="mt-1 truncate text-xs opacity-80">
@@ -152,5 +159,26 @@ function PinCell({ pin, align = "left" }: PinCellProps) {
         </div>
       ) : null}
     </div>
+  );
+}
+
+type PinPadProps = {
+  pin: Pin;
+  compact?: boolean;
+};
+
+function PinPad({ pin, compact = false }: PinPadProps) {
+  return (
+    <span
+      className={clsx(
+        "inline-grid shrink-0 place-items-center rounded-full border font-mono font-semibold shadow-[0_0_18px_rgba(255,255,255,0.04)] ring-1 ring-white/10",
+        compact ? "size-8 text-[10px]" : "mx-auto size-11 text-xs",
+        roleStyles[pin.role],
+      )}
+      title={`${pin.position}: ${pin.label}`}
+      aria-label={`Pin ${pin.position}, ${pin.label}, ${roleLabels[pin.role]}`}
+    >
+      {pin.position}
+    </span>
   );
 }

@@ -16,6 +16,8 @@ export type BoardInterface =
   | "USB"
   | "Wi-Fi"
   | "Bluetooth"
+  | "Zigbee"
+  | "Thread"
   | "CSI"
   | "PCIe"
   | "SWD"
@@ -291,7 +293,7 @@ const esp32DevKitHeaders: Pinout = {
   },
 };
 
-export const boards: Board[] = [
+const baseBoards: Board[] = [
   {
     id: "raspberry-pi-5",
     name: "Raspberry Pi 5",
@@ -806,6 +808,712 @@ export const boards: Board[] = [
   },
 ];
 
+const additionalBoards: Board[] = [
+  {
+    id: "raspberry-pi-pico-w",
+    name: "Raspberry Pi Pico W",
+    vendor: "Raspberry Pi",
+    category: "Microcontroller",
+    family: "RP2040",
+    processor: "RP2040 dual-core Arm Cortex-M0+ + wireless radio",
+    logicLevel: "3.3 V GPIO",
+    power: "Micro-USB, VSYS, VBUS",
+    formFactor: "40-pin DIP module",
+    description:
+      "The wireless version of the Pico keeps the familiar castellated pin layout while adding Wi-Fi for classroom IoT and small connected prototypes.",
+    tags: ["RP2040", "Pico W", "MicroPython", "Wi-Fi", "DIP"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "Same breadboard-friendly edge layout as Pico with an official pinout PDF.",
+      "Useful bridge between microcontroller labs and networked sensors.",
+      "Strong official C SDK and MicroPython documentation.",
+    ],
+    warnings: [
+      "Wireless control signals use some RP2040 GPIO internally.",
+      "GPIO is 3.3 V logic and is not 5 V tolerant.",
+    ],
+    sourceLinks: [
+      {
+        label: "Raspberry Pi Pico W pinout PDF",
+        url: "https://pip-assets.raspberrypi.com/categories/686-raspberry-pi-pico-w/documents/RP-008315-DS-1-PicoW-A4-Pinout.pdf",
+        type: "Pinout",
+      },
+      {
+        label: "Raspberry Pi Pico documentation",
+        url: "https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "raspberry-pi-pico-2",
+    name: "Raspberry Pi Pico 2",
+    vendor: "Raspberry Pi",
+    category: "Microcontroller",
+    family: "RP2350",
+    processor: "RP2350 dual-core Arm Cortex-M33 / RISC-V Hazard3",
+    logicLevel: "3.3 V GPIO",
+    power: "Micro-USB, VSYS, VBUS",
+    formFactor: "40-pin DIP module",
+    description:
+      "Raspberry Pi's RP2350 board keeps the Pico form factor while adding a newer MCU architecture for embedded systems teaching and firmware experiments.",
+    tags: ["RP2350", "Pico 2", "MicroPython", "C SDK", "DIP"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
+    highlights: [
+      "Official Pico docs cover the Pico 2 pinout and layout.",
+      "Good modern replacement for RP2040 labs that want Arm and RISC-V options.",
+      "Keeps the accessible 40-pin DIP-style ecosystem.",
+    ],
+    warnings: [
+      "Check RP2350-specific electrical limits before porting old Pico fixtures.",
+      "GPIO remains 3.3 V only.",
+    ],
+    sourceLinks: [
+      {
+        label: "Raspberry Pi Pico 2 documentation",
+        url: "https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html",
+        type: "Docs",
+      },
+      {
+        label: "RP2350 datasheet pinout",
+        url: "https://pip.raspberrypi.com/documents/RP-008373-DS-rp2350-datasheet.pdf",
+        type: "Datasheet",
+      },
+    ],
+  },
+  {
+    id: "arduino-mega-2560-rev3",
+    name: "Arduino Mega 2560 Rev3",
+    vendor: "Arduino",
+    category: "Microcontroller",
+    family: "Mega",
+    processor: "ATmega2560",
+    logicLevel: "5 V GPIO",
+    power: "USB-B, barrel jack, VIN",
+    formFactor: "Mega shield layout",
+    description:
+      "A classic high-pin-count Arduino board for teaching, robotics, lab instruments, and shield projects that need many GPIOs or serial ports.",
+    tags: ["Arduino", "Mega", "AVR", "Robotics", "Shield"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
+    highlights: [
+      "54 digital IO pins, 16 analog inputs, and four hardware UARTs.",
+      "Official full pinout PDF is easy to cite in classrooms.",
+      "Excellent compatibility with legacy Arduino examples.",
+    ],
+    warnings: [
+      "5 V IO can damage 3.3 V-only sensors without level shifting.",
+      "Large shield compatibility varies around SPI and power assumptions.",
+    ],
+    sourceLinks: [
+      {
+        label: "Arduino Mega 2560 Rev3 documentation",
+        url: "https://docs.arduino.cc/hardware/mega-2560/",
+        type: "Docs",
+      },
+      {
+        label: "Arduino Mega 2560 full pinout PDF",
+        url: "https://docs.arduino.cc/resources/pinouts/A000067-full-pinout.pdf",
+        type: "Pinout",
+      },
+    ],
+  },
+  {
+    id: "arduino-nano",
+    name: "Arduino Nano",
+    vendor: "Arduino",
+    category: "Microcontroller",
+    family: "Nano",
+    processor: "ATmega328P",
+    logicLevel: "5 V GPIO",
+    power: "Mini-B USB, VIN, 5 V rail",
+    formFactor: "Breadboard Nano module",
+    description:
+      "The classic breadboard-friendly Arduino used in labs and small prototypes where UNO compatibility is needed in a compact package.",
+    tags: ["Arduino", "Nano", "AVR", "Breadboard", "Classic"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
+    highlights: [
+      "Small footprint with the familiar Arduino programming model.",
+      "Official documentation provides an interactive viewer and pinout.",
+      "Still common in teaching kits and legacy fixtures.",
+    ],
+    warnings: [
+      "Mini-B USB and older bootloader behavior depend on board revision.",
+      "Use level shifting for 3.3 V peripherals.",
+    ],
+    sourceLinks: [
+      {
+        label: "Arduino Nano documentation and pinout",
+        url: "https://docs.arduino.cc/hardware/nano",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "arduino-nano-33-ble-sense",
+    name: "Arduino Nano 33 BLE Sense",
+    vendor: "Arduino",
+    category: "Microcontroller",
+    family: "Nano",
+    processor: "Nordic nRF52840",
+    logicLevel: "3.3 V GPIO",
+    power: "Micro-USB, VIN, 3.3 V rail",
+    formFactor: "Nano module with sensors",
+    description:
+      "A compact BLE and TinyML-friendly Arduino with onboard sensors that made it a common choice in teaching demos and embedded ML labs.",
+    tags: ["Arduino", "Nano", "nRF52840", "BLE", "TinyML"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth"],
+    highlights: [
+      "Onboard sensors reduce wiring for machine-learning demos.",
+      "Official docs include an interactive pinout and cheat sheet.",
+      "Good reference for 3.3 V Nano-family projects.",
+    ],
+    warnings: [
+      "End-of-life status matters for new procurement.",
+      "Not 5 V tolerant despite the Arduino name.",
+    ],
+    sourceLinks: [
+      {
+        label: "Arduino Nano 33 BLE Sense documentation",
+        url: "https://docs.arduino.cc/hardware/nano-33-ble-sense",
+        type: "Docs",
+      },
+      {
+        label: "Nano 33 BLE Sense cheat sheet",
+        url: "https://docs.arduino.cc/tutorials/nano-33-ble-sense/cheat-sheet",
+        type: "Manual",
+      },
+    ],
+  },
+  {
+    id: "arduino-mkr-wifi-1010",
+    name: "Arduino MKR WiFi 1010",
+    vendor: "Arduino",
+    category: "Microcontroller",
+    family: "MKR",
+    processor: "SAMD21 + u-blox NINA-W102",
+    logicLevel: "3.3 V GPIO",
+    power: "Micro-USB, VIN, LiPo connector",
+    formFactor: "MKR module",
+    description:
+      "A SAMD21-based IoT board with Wi-Fi, Bluetooth, crypto hardware, and the MKR shield ecosystem.",
+    tags: ["Arduino", "MKR", "SAMD21", "IoT", "Wi-Fi"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "Useful for secure IoT exercises and cloud-connected projects.",
+      "Official downloadable pinout and datasheet are available from Arduino.",
+      "MKR form factor supports a focused shield ecosystem.",
+    ],
+    warnings: [
+      "3.3 V logic only.",
+      "Some MCU pins are reserved for the NINA module and crypto peripherals.",
+    ],
+    sourceLinks: [
+      {
+        label: "Arduino MKR WiFi 1010 documentation",
+        url: "https://docs.arduino.cc/hardware/mkr-wifi-1010",
+        type: "Docs",
+      },
+      {
+        label: "MKR WiFi 1010 datasheet",
+        url: "https://docs.arduino.cc/resources/datasheets/ABX00023-datasheet.pdf",
+        type: "Datasheet",
+      },
+    ],
+  },
+  {
+    id: "arduino-portenta-h7",
+    name: "Arduino Portenta H7",
+    vendor: "Arduino",
+    category: "Development Board",
+    family: "Portenta",
+    processor: "STM32H747XI dual-core Cortex-M7/M4",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, VIN, carrier headers",
+    formFactor: "MKR-like module with high-density connectors",
+    description:
+      "A professional Arduino module used for edge AI, industrial prototypes, and high-performance embedded development.",
+    tags: ["Arduino", "Portenta", "STM32H7", "AI", "Industrial"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "Dual-core STM32H7 with high-density expansion connectors.",
+      "Official Portenta docs include pinout and connector resources.",
+      "Good fit for advanced labs that outgrow UNO-class boards.",
+    ],
+    warnings: [
+      "High-density connector routing requires careful carrier-board review.",
+      "3.3 V IO assumptions differ from classic 5 V Arduino boards.",
+    ],
+    sourceLinks: [
+      {
+        label: "Arduino Portenta H7 documentation",
+        url: "https://docs.arduino.cc/hardware/portenta-h7",
+        type: "Docs",
+      },
+      {
+        label: "Portenta H7 collective datasheet",
+        url: "https://docs.arduino.cc/resources/datasheets/ABX00042-ABX00045-ABX00046-datasheet.pdf",
+        type: "Datasheet",
+      },
+    ],
+  },
+  {
+    id: "esp32-s3-devkitc-1",
+    name: "ESP32-S3-DevKitC-1",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-S3",
+    processor: "ESP32-S3-WROOM / WROVER variants",
+    logicLevel: "3.3 V GPIO",
+    power: "USB, 5 V input, 3.3 V regulator",
+    formFactor: "Breadboard dev kit",
+    description:
+      "Espressif's mainstream ESP32-S3 reference board for USB, AI acceleration experiments, BLE, Wi-Fi, and embedded product prototypes.",
+    tags: ["ESP32-S3", "Espressif", "Wi-Fi", "BLE", "USB"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
+    highlights: [
+      "Official header tables list J1/J3 pin names and functions.",
+      "Popular target for ESP-IDF, Arduino ESP32, and CircuitPython work.",
+      "Native USB improves firmware and HID experiments.",
+    ],
+    warnings: [
+      "Module variant affects flash, PSRAM, and available pins.",
+      "Bootstrapping pins need sane pull states at reset.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-S3-DevKitC-1 user guide",
+        url: "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.0.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "esp32-c3-devkitm-1",
+    name: "ESP32-C3-DevKitM-1",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-C3",
+    processor: "ESP32-C3-MINI-1 RISC-V",
+    logicLevel: "3.3 V GPIO",
+    power: "USB, 5 V input, 3.3 V regulator",
+    formFactor: "Compact breadboard dev kit",
+    description:
+      "An entry-level Espressif RISC-V dev board with Wi-Fi and BLE for low-cost connected devices and firmware courses.",
+    tags: ["ESP32-C3", "Espressif", "RISC-V", "Wi-Fi", "BLE"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "Zigbee", "Thread", "JTAG"],
+    highlights: [
+      "Official documentation includes pin-header tables.",
+      "Good inexpensive board for RISC-V microcontroller labs.",
+      "Small module keeps layouts close to real products.",
+    ],
+    warnings: [
+      "Fewer pins than classic ESP32 development kits.",
+      "Check USB/JTAG and boot behavior before assigning pins.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-C3-DevKitM-1 user guide",
+        url: "https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/hw-reference/esp32c3/user-guide-devkitm-1.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "esp32-c6-devkitc-1",
+    name: "ESP32-C6-DevKitC-1",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-C6",
+    processor: "ESP32-C6 RISC-V",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, 5 V input, 3.3 V regulator",
+    formFactor: "Breadboard dev kit",
+    description:
+      "A modern Espressif board for Wi-Fi 6, BLE, Zigbee, and Thread experiments in connected-device coursework and product prototyping.",
+    tags: ["ESP32-C6", "Espressif", "Wi-Fi 6", "Zigbee", "Thread"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
+    highlights: [
+      "Official header-block tables document both board sides.",
+      "Good reference board for newer low-power wireless protocols.",
+      "RISC-V core and USB-C make it current for new designs.",
+    ],
+    warnings: [
+      "Wireless protocol support depends on SDK and certification choices.",
+      "Pin availability can differ by hardware revision.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-C6-DevKitC-1 user guide",
+        url: "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/user_guide.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "esp32-s2-saola-1",
+    name: "ESP32-S2-Saola-1",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-S2",
+    processor: "ESP32-S2",
+    logicLevel: "3.3 V GPIO",
+    power: "USB, 5 V input, 3.3 V regulator",
+    formFactor: "Small breadboard dev kit",
+    description:
+      "Espressif's ESP32-S2 development board used for native USB, Wi-Fi, and single-core ESP-IDF projects.",
+    tags: ["ESP32-S2", "Espressif", "Wi-Fi", "USB", "Saola"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "JTAG"],
+    highlights: [
+      "Official docs describe the board and exposed pin headers.",
+      "Native USB makes it useful for device-mode experiments.",
+      "A practical comparison point against ESP32-S3 and ESP32-C-series boards.",
+    ],
+    warnings: [
+      "ESP32-S2 does not include Bluetooth.",
+      "Not every chip pin is exposed to headers.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-S2-Saola-1 user guide",
+        url: "https://docs.espressif.com/projects/esp-idf/en/v5.1/esp32s2/hw-reference/esp32s2/user-guide-saola-1-v1.2.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "bbc-microbit-v2",
+    name: "BBC micro:bit V2",
+    vendor: "Micro:bit Educational Foundation",
+    category: "Microcontroller",
+    family: "micro:bit",
+    processor: "Nordic nRF52833",
+    logicLevel: "3.3 V edge connector",
+    power: "Micro-USB, battery pack, 3 V edge",
+    formFactor: "25-pin classroom edge connector",
+    description:
+      "A classroom-first board with sensors, buttons, display, radio, and an edge connector that makes hardware concepts approachable.",
+    tags: ["micro:bit", "Education", "nRF52", "BLE", "Classroom"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "Bluetooth"],
+    highlights: [
+      "Official developer docs document the V2 edge connector pinout.",
+      "Widely used by students and teachers before moving to breadboard systems.",
+      "Large pads support clips as well as edge connector accessories.",
+    ],
+    warnings: [
+      "Some pins are shared with onboard display, buttons, speaker, or NFC features.",
+      "Edge connector accessories can obscure which signals are actually available.",
+    ],
+    sourceLinks: [
+      {
+        label: "micro:bit edge connector pinout",
+        url: "https://tech.microbit.org/hardware/edgeconnector/",
+        type: "Pinout",
+      },
+    ],
+  },
+  {
+    id: "seeed-xiao-rp2040",
+    name: "Seeed Studio XIAO RP2040",
+    vendor: "Seeed Studio",
+    category: "Microcontroller",
+    family: "XIAO",
+    processor: "RP2040 dual-core Arm Cortex-M0+",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, 5 V, 3.3 V rail",
+    formFactor: "Tiny XIAO module",
+    description:
+      "A thumb-sized RP2040 board with the XIAO 14-pin footprint for wearable, small robot, and compact sensor builds.",
+    tags: ["Seeed", "XIAO", "RP2040", "Tiny", "USB-C"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
+    highlights: [
+      "Official wiki documents GPIO, analog, PWM, I2C, UART, SPI, and SWD pins.",
+      "XIAO footprint works with expansion bases and tiny enclosures.",
+      "A useful contrast to full-size Pico boards.",
+    ],
+    warnings: [
+      "Very small pads demand more careful soldering and strain relief.",
+      "Arduino-style labels and raw GPIO numbers can differ.",
+    ],
+    sourceLinks: [
+      {
+        label: "Seeed XIAO RP2040 getting started and pinout",
+        url: "https://wiki.seeedstudio.com/XIAO-RP2040/",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "seeed-xiao-esp32s3",
+    name: "Seeed Studio XIAO ESP32S3",
+    vendor: "Seeed Studio",
+    category: "Microcontroller",
+    family: "XIAO",
+    processor: "ESP32-S3",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, 5 V, 3.3 V rail",
+    formFactor: "Tiny XIAO module",
+    description:
+      "A tiny ESP32-S3 board for wireless embedded projects where space matters but Wi-Fi, BLE, and native USB are still needed.",
+    tags: ["Seeed", "XIAO", "ESP32-S3", "Wi-Fi", "BLE"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "Official Seeed docs show the XIAO ESP32S3 pinout and setup flow.",
+      "Good for compact IoT, cameras, and wearable prototypes.",
+      "Works with the broader XIAO expansion ecosystem.",
+    ],
+    warnings: [
+      "Ships without pin headers by default.",
+      "Small module power and antenna placement matter in enclosures.",
+    ],
+    sourceLinks: [
+      {
+        label: "Seeed XIAO ESP32S3 getting started and pinout",
+        url: "https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/",
+        type: "Docs",
+      },
+      {
+        label: "Seeed XIAO ESP32S3 pin multiplexing",
+        url: "https://wiki.seeedstudio.com/xiao_esp32s3_pin_multiplexing/",
+        type: "Manual",
+      },
+    ],
+  },
+  {
+    id: "adafruit-qt-py-esp32-s3",
+    name: "Adafruit QT Py ESP32-S3",
+    vendor: "Adafruit",
+    category: "Microcontroller",
+    family: "QT Py",
+    processor: "ESP32-S3",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, 5 V, 3.3 V rail",
+    formFactor: "QT Py tiny module",
+    description:
+      "A tiny ESP32-S3 board with STEMMA QT that is popular for CircuitPython, Arduino, and compact Wi-Fi prototypes.",
+    tags: ["Adafruit", "QT Py", "ESP32-S3", "CircuitPython", "STEMMA QT"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "Adafruit Learn has a dedicated pinouts page.",
+      "STEMMA QT reduces wiring for I2C sensors.",
+      "Tiny board fits quick demos and product-like prototypes.",
+    ],
+    warnings: [
+      "Choose the PSRAM/no-PSRAM variant deliberately.",
+      "Small pads and USB current budget can limit add-ons.",
+    ],
+    sourceLinks: [
+      {
+        label: "Adafruit QT Py ESP32-S3 pinouts",
+        url: "https://learn.adafruit.com/adafruit-qt-py-esp32-s3/pinouts",
+        type: "Pinout",
+      },
+    ],
+  },
+  {
+    id: "adafruit-qt-py-esp32-c3",
+    name: "Adafruit QT Py ESP32-C3",
+    vendor: "Adafruit",
+    category: "Microcontroller",
+    family: "QT Py",
+    processor: "ESP32-C3 RISC-V",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, 5 V, 3.3 V rail",
+    formFactor: "QT Py tiny module",
+    description:
+      "A small Wi-Fi and BLE RISC-V board in Adafruit's QT Py footprint for compact connected projects.",
+    tags: ["Adafruit", "QT Py", "ESP32-C3", "RISC-V", "STEMMA QT"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "Official pinout page lists the logic pins and analog capabilities.",
+      "Good low-cost Wi-Fi board for CircuitPython and Arduino examples.",
+      "STEMMA QT makes sensor demos fast.",
+    ],
+    warnings: [
+      "UART pins are also hardware debug pins.",
+      "Fewer analog and GPIO options than larger ESP32 boards.",
+    ],
+    sourceLinks: [
+      {
+        label: "Adafruit QT Py ESP32-C3 pinouts",
+        url: "https://learn.adafruit.com/adafruit-qt-py-esp32-c3-wifi-dev-board/pinouts",
+        type: "Pinout",
+      },
+    ],
+  },
+  {
+    id: "adafruit-metro-esp32-s3",
+    name: "Adafruit Metro ESP32-S3",
+    vendor: "Adafruit",
+    category: "Microcontroller",
+    family: "Metro",
+    processor: "ESP32-S3",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, barrel jack, LiPo connector",
+    formFactor: "Arduino shield-compatible Metro",
+    description:
+      "An ESP32-S3 board in an Arduino-like Metro footprint with STEMMA QT and enough memory for rich CircuitPython projects.",
+    tags: ["Adafruit", "Metro", "ESP32-S3", "Wi-Fi", "Shield"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "Adafruit's pinout docs call out shield-facing logic pins.",
+      "Bridges Arduino shield layout with modern ESP32-S3 features.",
+      "Useful for classrooms that want Wi-Fi without leaving shield hardware behind.",
+    ],
+    warnings: [
+      "ESP32-S3 IO is 3.3 V even though the board shape resembles classic Arduino.",
+      "Analog pins map to ESP32 ADC resources with their usual limitations.",
+    ],
+    sourceLinks: [
+      {
+        label: "Adafruit Metro ESP32-S3 pinouts",
+        url: "https://learn.adafruit.com/adafruit-metro-esp32-s3/pinouts",
+        type: "Pinout",
+      },
+    ],
+  },
+  {
+    id: "sparkfun-thing-plus-rp2040",
+    name: "SparkFun Thing Plus RP2040",
+    vendor: "SparkFun",
+    category: "Microcontroller",
+    family: "Thing Plus",
+    processor: "RP2040 dual-core Arm Cortex-M0+",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, LiPo connector, 3.3 V rail",
+    formFactor: "Feather-compatible Thing Plus",
+    description:
+      "SparkFun's RP2040 Thing Plus combines the Feather-compatible footprint, Qwiic, battery support, microSD, and plenty of flash.",
+    tags: ["SparkFun", "Thing Plus", "RP2040", "Qwiic", "Feather"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG"],
+    highlights: [
+      "SparkFun hookup guide and product page document board wiring resources.",
+      "Qwiic plus battery support makes it good for sensor prototypes.",
+      "Feather-compatible footprint broadens add-on options.",
+    ],
+    warnings: [
+      "Not all RP2040 GPIOs are exposed in the Thing Plus footprint.",
+      "Check microSD/shared pin usage before assigning SPI.",
+    ],
+    sourceLinks: [
+      {
+        label: "SparkFun RP2040 Thing Plus hookup guide",
+        url: "https://learn.sparkfun.com/tutorials/rp2040-thing-plus-hookup-guide/all",
+        type: "Manual",
+      },
+      {
+        label: "SparkFun Thing Plus RP2040 product page",
+        url: "https://www.sparkfun.com/sparkfun-thing-plus-rp2040.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "sparkfun-thing-plus-esp32-wroom-usbc",
+    name: "SparkFun Thing Plus ESP32 WROOM USB-C",
+    vendor: "SparkFun",
+    category: "Microcontroller",
+    family: "Thing Plus",
+    processor: "ESP32-WROOM",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, LiPo connector, 3.3 V rail",
+    formFactor: "Feather-compatible Thing Plus",
+    description:
+      "A Feather-compatible ESP32 board with Qwiic, microSD, USB-C, Wi-Fi, Bluetooth, and battery support.",
+    tags: ["SparkFun", "Thing Plus", "ESP32", "Qwiic", "Feather"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
+    highlights: [
+      "SparkFun's guide covers the USB-C variant and hardware overview.",
+      "Practical for IoT prototypes that need battery and microSD.",
+      "Feather compatibility makes it easy to compare with Adafruit boards.",
+    ],
+    warnings: [
+      "ESP32 ADC2 limitations still apply when Wi-Fi is active.",
+      "Check microSD and Qwiic shared buses before assigning pins.",
+    ],
+    sourceLinks: [
+      {
+        label: "SparkFun ESP32 Thing Plus USB-C hookup guide",
+        url: "https://learn.sparkfun.com/tutorials/esp32-thing-plus-usb-c-hookup-guide/all",
+        type: "Manual",
+      },
+      {
+        label: "SparkFun Thing Plus ESP32 WROOM USB-C product page",
+        url: "https://www.sparkfun.com/sparkfun-thing-plus-esp32-wroom-usb-c.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "sparkfun-redboard-artemis-atp",
+    name: "SparkFun RedBoard Artemis ATP",
+    vendor: "SparkFun",
+    category: "Development Board",
+    family: "Artemis",
+    processor: "Ambiq Apollo3 Blue",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, VIN, Qwiic",
+    formFactor: "Mega-compatible ATP board",
+    description:
+      "An ultra-low-power Artemis board that breaks out nearly every module signal in a Mega-compatible footprint for advanced prototyping.",
+    tags: ["SparkFun", "Artemis", "Apollo3", "BLE", "Low power"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth"],
+    highlights: [
+      "ATP means All The Pins: useful for exploring the Artemis module deeply.",
+      "SparkFun hookup guide documents the pinout and advanced features.",
+      "Good for low-power TinyML and sensor courses.",
+    ],
+    warnings: [
+      "The Artemis module has no classic Arduino AREF equivalent.",
+      "3.3 V IO only despite the Mega-like layout.",
+    ],
+    sourceLinks: [
+      {
+        label: "SparkFun RedBoard Artemis ATP hookup guide",
+        url: "https://learn.sparkfun.com/tutorials/hookup-guide-for-the-sparkfun-redboard-artemis-atp/all",
+        type: "Manual",
+      },
+      {
+        label: "SparkFun RedBoard Artemis ATP product page",
+        url: "https://www.sparkfun.com/sparkfun-redboard-artemis-atp.html",
+        type: "Docs",
+      },
+    ],
+  },
+  {
+    id: "sparkfun-micromod-artemis-processor",
+    name: "SparkFun MicroMod Artemis Processor",
+    vendor: "SparkFun",
+    category: "Development Board",
+    family: "MicroMod",
+    processor: "Ambiq Apollo3 Blue",
+    logicLevel: "3.3 V GPIO",
+    power: "Carrier-board supplied",
+    formFactor: "MicroMod M.2 processor board",
+    description:
+      "A MicroMod processor board for modular SparkFun carriers, useful when students need to separate processor pinouts from carrier pinouts.",
+    tags: ["SparkFun", "MicroMod", "Artemis", "M.2", "BLE"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth"],
+    highlights: [
+      "Official hookup guide includes a MicroMod connector pinout table.",
+      "Shows how a processor-board pinout maps through carrier boards.",
+      "Low-power Artemis module suits embedded ML sensor work.",
+    ],
+    warnings: [
+      "Always check the selected carrier board in addition to the processor board.",
+      "All pins are 3.3 V and the ADC range is lower than many expect.",
+    ],
+    sourceLinks: [
+      {
+        label: "SparkFun MicroMod Artemis Processor hookup guide",
+        url: "https://learn.sparkfun.com/tutorials/micromod-artemis-processor-board-hookup-guide/all",
+        type: "Manual",
+      },
+    ],
+  },
+];
+
+export const boards: Board[] = [...baseBoards, ...additionalBoards];
+
 export const categories = ["All", ...new Set(boards.map((board) => board.category))];
 
 export const interfaceFilters = [
@@ -820,6 +1528,8 @@ export const interfaceFilters = [
   "CAN",
   "Wi-Fi",
   "Bluetooth",
+  "Zigbee",
+  "Thread",
   "CSI",
   "PCIe",
 ] as const;
