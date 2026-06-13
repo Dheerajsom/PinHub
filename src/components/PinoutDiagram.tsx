@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import type { Pin, PinRole, Pinout } from "@/lib/boards";
+import type { Pin, PinRole, Pinout, PinoutGroup } from "@/lib/boards";
 
 const roleStyles: Record<PinRole, string> = {
   power: "border-red-400/50 bg-red-500/15 text-red-100",
@@ -50,15 +50,17 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
     );
   }
 
-  const presentRoles = new Set<PinRole>([
-    ...(pinout.pins ? [...pinout.pins.left, ...pinout.pins.right] : []),
-    ...(pinout.groups ?? []).flatMap((group) => group.pins),
-  ].map((pin) => pin.role));
+  const presentRoles = new Set<PinRole>(
+    [
+      ...(pinout.pins ? [...pinout.pins.left, ...pinout.pins.right] : []),
+      ...(pinout.groups ?? []).flatMap((group) => group.pins),
+    ].map((pin) => pin.role),
+  );
 
   return (
     <section className="rounded-lg border border-white/10 bg-black/20 p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+        <div className="min-w-0">
           <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
             Connector
           </div>
@@ -83,88 +85,157 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
         </div>
       </div>
 
-      {pinout.pins ? (
-        <div className="mt-5 grid gap-2">
-          {pinout.pins.left.map((leftPin, index) => {
-            const rightPin = pinout.pins?.right[index];
+      {pinout.pins ? <DualRowPins pins={pinout.pins} /> : null}
+      {pinout.groups ? <GroupedPins groups={pinout.groups} /> : null}
 
-            return (
-              <div
-                key={`${leftPin.position}-${rightPin?.position ?? "empty"}`}
-                className="grid grid-cols-[minmax(0,1fr)_3rem_3rem_minmax(0,1fr)] items-center gap-2"
-              >
-                <PinCell pin={leftPin} align="left" showPad={false} />
-                <PinPad pin={leftPin} />
-                {rightPin ? <PinPad pin={rightPin} /> : <div />}
-                {rightPin ? (
-                  <PinCell pin={rightPin} align="right" showPad={false} />
-                ) : (
-                  <div />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      ) : null}
-
-      {pinout.groups ? (
-        <div className="mt-5 grid gap-4 lg:grid-cols-2">
-          {pinout.groups.map((group) => (
-            <div key={group.label}>
-              <h4 className="mb-2 text-sm font-semibold text-zinc-200">
-                {group.label}
-              </h4>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {group.pins.map((pin) => (
-                  <PinCell key={`${group.label}-${pin.label}`} pin={pin} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      <ul className="mt-5 space-y-2 border-t border-white/10 pt-4 text-sm leading-6 text-zinc-400">
+      <ul className="mt-5 space-y-1.5 border-t border-white/10 pt-4 text-sm leading-6 text-zinc-400">
         {pinout.notes.map((note) => (
-          <li key={note}>{note}</li>
+          <li key={note} className="flex gap-2">
+            <span
+              className="mt-2.5 size-1 shrink-0 rounded-full bg-zinc-600"
+              aria-hidden="true"
+            />
+            <span className="min-w-0">{note}</span>
+          </li>
         ))}
       </ul>
     </section>
   );
 }
 
-type PinCellProps = {
-  pin: Pin;
-  align?: "left" | "right";
-  showPad?: boolean;
+type DualRowPinsProps = {
+  pins: NonNullable<Pinout["pins"]>;
 };
 
-function PinCell({ pin, align = "left", showPad = true }: PinCellProps) {
+// Two physical columns of pads with their signal labels flanking them, so the
+// layout reads like a real dual-row header. Labels hug the central pads and any
+// overflow is pushed to the outer edges, keeping each label tied to its pad.
+function DualRowPins({ pins }: DualRowPinsProps) {
   return (
-    <div
-      className={clsx(
-        "min-h-12 min-w-0",
-        align === "right" && "text-right",
-      )}
-    >
+    <div className="mt-5 grid gap-y-2">
+      {pins.left.map((leftPin, index) => {
+        const rightPin = pins.right[index];
+
+        return (
+          <div
+            key={`${leftPin.position}-${rightPin?.position ?? "empty"}`}
+            className="grid grid-cols-[minmax(0,1fr)_3rem_3rem_minmax(0,1fr)] items-center gap-x-2"
+          >
+            <DualRowLabel pin={leftPin} side="left" />
+            <PinPad pin={leftPin} />
+            {rightPin ? <PinPad pin={rightPin} /> : <div />}
+            {rightPin ? (
+              <DualRowLabel pin={rightPin} side="right" />
+            ) : (
+              <div />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+type DualRowLabelProps = {
+  pin: Pin;
+  side: "left" | "right";
+};
+
+function DualRowLabel({ pin, side }: DualRowLabelProps) {
+  // The left column sits to the left of the central pads, so its text is
+  // right-aligned to meet the pad; the right column mirrors it.
+  const towardCenter = side === "left";
+  const label = (
+    <span className="min-w-0 truncate font-mono text-sm font-semibold text-white">
+      {pin.label}
+    </span>
+  );
+  const role = (
+    <span className="shrink-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+      {roleLabels[pin.role]}
+    </span>
+  );
+
+  return (
+    <div className={clsx("min-w-0", towardCenter ? "text-right" : "text-left")}>
       <div
         className={clsx(
-          "flex min-w-0 items-center gap-2",
-          align === "right" && "justify-end",
+          "flex min-w-0 items-baseline gap-1.5",
+          towardCenter ? "justify-end" : "justify-start",
         )}
       >
-        {align === "left" && showPad ? <PinPad pin={pin} compact /> : null}
-        <span className="font-mono text-sm font-semibold">{pin.label}</span>
-        <span className="text-[11px] uppercase tracking-[0.12em] opacity-75">
-          {roleLabels[pin.role]}
-        </span>
-        {align === "right" && showPad ? <PinPad pin={pin} compact /> : null}
+        {towardCenter ? (
+          <>
+            {role}
+            {label}
+          </>
+        ) : (
+          <>
+            {label}
+            {role}
+          </>
+        )}
       </div>
       {pin.aliases?.length ? (
-        <div className="mt-1 truncate text-xs opacity-80">
+        <div className="truncate text-[11px] text-zinc-400">
           {pin.aliases.join(" / ")}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+type GroupedPinsProps = {
+  groups: PinoutGroup[];
+};
+
+// Connectors without a clean two-column geometry are shown as labelled groups.
+// The grid uses auto-fill with a fixed minimum so the column count follows the
+// detail panel's real width rather than the viewport — preventing the cramped
+// cells (and overlapping text) that viewport breakpoints caused here.
+function GroupedPins({ groups }: GroupedPinsProps) {
+  return (
+    <div className="mt-5 space-y-5">
+      {groups.map((group) => (
+        <div key={group.label}>
+          <h4 className="mb-2 text-sm font-semibold text-zinc-200">
+            {group.label}
+          </h4>
+          <div className="grid gap-1.5 [grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))]">
+            {group.pins.map((pin) => (
+              <GroupedPin
+                key={`${group.label}-${pin.position}-${pin.label}`}
+                pin={pin}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+type GroupedPinProps = {
+  pin: Pin;
+};
+
+function GroupedPin({ pin }: GroupedPinProps) {
+  return (
+    <div className="flex min-w-0 items-center gap-2 rounded-md border border-white/10 bg-white/[0.02] px-2 py-1.5">
+      <PinPad pin={pin} compact />
+      <div className="min-w-0 flex-1">
+        <div className="truncate font-mono text-sm font-semibold leading-tight text-white">
+          {pin.label}
+        </div>
+        <div className="truncate text-[11px] leading-tight text-zinc-400">
+          <span className="uppercase tracking-[0.1em]">
+            {roleLabels[pin.role]}
+          </span>
+          {pin.aliases?.length ? (
+            <span className="text-zinc-500"> · {pin.aliases.join(" / ")}</span>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }
