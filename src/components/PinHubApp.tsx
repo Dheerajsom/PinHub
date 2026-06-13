@@ -65,9 +65,24 @@ function getServerFavoritesSnapshot(): ReadonlySet<string> {
   return emptyFavorites;
 }
 
+// Keep favorites in sync when another tab writes to the same storage key.
+function onStorageEvent(event: StorageEvent) {
+  if (event.key !== null && event.key !== favoritesStorageKey) return;
+  favoritesSnapshot = null; // force a re-read on the next getSnapshot call
+  for (const listener of favoritesListeners) listener();
+}
+
 function subscribeToFavorites(listener: () => void): () => void {
+  if (favoritesListeners.size === 0) {
+    window.addEventListener("storage", onStorageEvent);
+  }
   favoritesListeners.add(listener);
-  return () => favoritesListeners.delete(listener);
+  return () => {
+    favoritesListeners.delete(listener);
+    if (favoritesListeners.size === 0) {
+      window.removeEventListener("storage", onStorageEvent);
+    }
+  };
 }
 
 function toggleFavoriteId(id: string) {
@@ -477,13 +492,15 @@ type MetricProps = {
 
 function Metric({ label, value }: MetricProps) {
   return (
-    <div className="text-right">
-      <dd className="font-mono text-lg font-semibold leading-none text-white">
-        {value}
-      </dd>
+    // flex-col-reverse keeps the value visually on top while preserving the
+    // semantically correct <dt> before <dd> order in the DOM.
+    <div className="flex flex-col-reverse text-right">
       <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-zinc-500">
         {label}
       </dt>
+      <dd className="font-mono text-lg font-semibold leading-none text-white">
+        {value}
+      </dd>
     </div>
   );
 }
