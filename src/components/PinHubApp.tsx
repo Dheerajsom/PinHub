@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import {
+  ArrowUp,
   ArrowUpRight,
   BookOpen,
   CircuitBoard,
@@ -148,6 +149,9 @@ export function PinHubApp() {
     useState<BoardInterface | typeof allInterface>(allInterface);
   const [selectedId, setSelectedId] = useState(boards[0]?.id ?? "");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  // On phones the filter sidebar is collapsed into a toggle so the catalog
+  // stays first; on lg+ it is always shown as a sticky column.
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const favorites = useSyncExternalStore(
     subscribeToFavorites,
     getFavoritesSnapshot,
@@ -155,6 +159,7 @@ export function PinHubApp() {
   );
   const searchRef = useRef<HTMLInputElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLElement>(null);
 
   const filteredBoards = useMemo(() => {
     const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -211,6 +216,12 @@ export function PinHubApp() {
     activeInterface !== allInterface ||
     showFavoritesOnly;
 
+  // Count of sidebar filters in effect, surfaced as a badge on the mobile
+  // Filters toggle so users know constraints are applied while it is collapsed.
+  const activeFilterCount =
+    (activeCategory !== allCategory ? 1 : 0) +
+    (activeInterface !== allInterface ? 1 : 0);
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== "/" || event.defaultPrevented) return;
@@ -248,7 +259,7 @@ export function PinHubApp() {
 
   return (
     <main className="min-h-screen">
-      <header className="relative border-b border-white/10 bg-[#070a0d]">
+      <header className="relative border-b border-white/10 bg-[#070a0d] pt-[env(safe-area-inset-top)]">
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden="true"
@@ -256,7 +267,7 @@ export function PinHubApp() {
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
           <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(34,211,238,0.08),rgba(7,10,13,0)_38%)]" />
         </div>
-        <div className="relative mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
+        <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <div className="relative size-11 shrink-0 sm:size-12">
               <Image
@@ -280,17 +291,20 @@ export function PinHubApp() {
             </div>
           </div>
 
-          <dl className="flex items-center gap-5 text-sm">
-            <Metric label="Boards" value={boards.length.toString()} />
-            <Metric label="Interfaces" value={interfaceCount.toString()} />
-            <Metric label="Sources" value={sourceCount.toString()} />
-          </dl>
+          <div className="flex shrink-0 items-center gap-3 sm:gap-5">
+            <dl className="hidden items-center gap-5 text-sm sm:flex">
+              <Metric label="Boards" value={boards.length.toString()} />
+              <Metric label="Interfaces" value={interfaceCount.toString()} />
+              <Metric label="Sources" value={sourceCount.toString()} />
+            </dl>
+            <GitHubButton />
+          </div>
         </div>
       </header>
 
       <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0b0c0f]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-          <label className="relative block min-w-56 flex-1">
+        <div className="mx-auto flex max-w-[1560px] flex-col gap-2.5 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:px-6 lg:px-8">
+          <label className="relative block w-full sm:min-w-56 sm:flex-1">
             <Search
               className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
               aria-hidden="true"
@@ -317,7 +331,7 @@ export function PinHubApp() {
                 type="button"
                 onClick={() => setQuery("")}
                 aria-label="Clear search"
-                className="absolute right-2.5 top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded text-zinc-500 transition hover:text-white"
+                className="absolute right-1.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded text-zinc-500 transition hover:text-white"
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
@@ -331,9 +345,32 @@ export function PinHubApp() {
             )}
           </label>
 
-          <div className="flex flex-wrap items-center gap-2 text-sm">
+          {/* On mobile the controls scroll horizontally in one compact row
+              instead of wrapping into a tall stack on every scroll. The
+              negative margin lets the row bleed to the screen edges. */}
+          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 text-sm [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileFiltersOpen((value) => !value)}
+              aria-expanded={mobileFiltersOpen}
+              aria-controls="mobile-filters"
+              className={clsx(
+                "flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs transition lg:hidden",
+                mobileFiltersOpen || activeFilterCount > 0
+                  ? "border-cyan-300/70 bg-cyan-300/10 text-cyan-50"
+                  : "border-white/10 text-zinc-300 hover:border-white/25 hover:text-white",
+              )}
+            >
+              <SlidersHorizontal className="size-3.5" aria-hidden="true" />
+              Filters
+              {activeFilterCount > 0 ? (
+                <span className="grid size-4 place-items-center rounded-full bg-cyan-300/20 font-mono text-[10px] text-cyan-100">
+                  {activeFilterCount}
+                </span>
+              ) : null}
+            </button>
             <span
-              className="font-mono text-xs text-zinc-400"
+              className="shrink-0 font-mono text-xs text-zinc-400"
               role="status"
               aria-live="polite"
             >
@@ -344,7 +381,7 @@ export function PinHubApp() {
               onClick={() => setShowFavoritesOnly((value) => !value)}
               aria-pressed={showFavoritesOnly}
               className={clsx(
-                "flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs transition",
+                "flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs transition",
                 showFavoritesOnly
                   ? "border-amber-300/70 bg-amber-300/10 text-amber-100"
                   : "border-white/10 text-zinc-400 hover:border-white/25 hover:text-white",
@@ -380,7 +417,7 @@ export function PinHubApp() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
+                className="shrink-0 rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
               >
                 Reset
               </button>
@@ -390,16 +427,25 @@ export function PinHubApp() {
       </div>
 
       <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_minmax(24rem,32rem)] lg:px-8">
-        <aside className="space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2">
+        <aside
+          id="mobile-filters"
+          className={clsx(
+            "space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2",
+            // Collapsed on phones until the Filters toggle is tapped; the
+            // sidebar is always visible from lg up.
+            mobileFiltersOpen ? "block" : "hidden lg:block",
+          )}
+        >
           <FilterPanel
             title="Category"
             icon={<Layers3 className="size-4 text-cyan-200" aria-hidden="true" />}
             items={categories}
             active={activeCategory}
             counts={categoryCounts}
-            onChange={(value) =>
-              setActiveCategory(value as BoardCategory | typeof allCategory)
-            }
+            onChange={(value) => {
+              setActiveCategory(value as BoardCategory | typeof allCategory);
+              setMobileFiltersOpen(false);
+            }}
           />
           <FilterPanel
             title="Interface"
@@ -411,11 +457,12 @@ export function PinHubApp() {
             }
             items={interfaceFilters}
             active={activeInterface}
-            onChange={(value) =>
-              setActiveInterface(value as BoardInterface | typeof allInterface)
-            }
+            onChange={(value) => {
+              setActiveInterface(value as BoardInterface | typeof allInterface);
+              setMobileFiltersOpen(false);
+            }}
           />
-          <section className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+          <section className="hidden rounded-lg border border-white/10 bg-white/[0.03] p-4 lg:block">
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <Sparkles className="size-4 text-amber-200" aria-hidden="true" />
               Curation notes
@@ -428,7 +475,7 @@ export function PinHubApp() {
           </section>
         </aside>
 
-        <section className="min-w-0" aria-label="Board results">
+        <section ref={resultsRef} className="min-w-0 scroll-mt-32" aria-label="Board results">
           <div className="grid gap-2.5">
             {filteredBoards.map((board) => (
               <BoardResult
@@ -465,12 +512,20 @@ export function PinHubApp() {
           ) : null}
         </section>
 
-        <div ref={detailRef} className="min-w-0 scroll-mt-16">
-          <BoardDetail board={selectedBoard} />
+        <div ref={detailRef} className="min-w-0 scroll-mt-32">
+          <BoardDetail
+            board={selectedBoard}
+            onBackToResults={() =>
+              resultsRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
+            }
+          />
         </div>
       </div>
 
-      <footer className="border-t border-white/10">
+      <footer className="border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-zinc-500 sm:px-6 lg:px-8">
           <span>
             Always verify against the linked official documentation before
@@ -482,6 +537,37 @@ export function PinHubApp() {
         </div>
       </footer>
     </main>
+  );
+}
+
+const repoUrl = "https://github.com/Dheerajsom/PinHub";
+
+// Official GitHub "Octocat" mark, inlined as an SVG path so it renders crisply
+// at any size and inherits the current text color on hover.
+function GitHubButton() {
+  return (
+    <a
+      href={repoUrl}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="View PinHub source on GitHub (opens in a new tab)"
+      title="View source on GitHub"
+      className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-lg border border-white/15 bg-white/[0.04] px-2.5 text-sm font-medium text-zinc-200 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset] transition hover:border-cyan-300/60 hover:bg-white/[0.08] hover:text-white active:scale-[0.97] sm:px-3"
+    >
+      <span
+        className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(110deg,transparent,rgba(34,211,238,0.18),transparent)] transition-transform duration-500 group-hover:translate-x-full"
+        aria-hidden="true"
+      />
+      <svg
+        viewBox="0 0 24 24"
+        className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-110"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+      </svg>
+      <span className="relative hidden sm:inline">GitHub</span>
+    </a>
   );
 }
 
@@ -557,7 +643,7 @@ function FilterPanel({
             type="button"
             onClick={() => onChange(item)}
             className={clsx(
-              "flex items-center justify-between gap-2 rounded-md border px-2.5 py-1.5 text-left text-sm transition",
+              "flex min-h-10 items-center justify-between gap-2 rounded-md border px-2.5 py-1.5 text-left text-sm transition lg:min-h-0",
               active === item
                 ? "border-cyan-300/70 bg-cyan-300/10 text-cyan-50"
                 : "border-transparent text-zinc-400 hover:bg-white/[0.06] hover:text-white",
@@ -619,7 +705,7 @@ function BoardResult({
               </span>
             ) : null}
           </div>
-          <span className="shrink-0 pr-7 font-mono text-xs text-zinc-500">
+          <span className="shrink-0 pr-9 font-mono text-xs text-zinc-500">
             {board.vendor} · {board.logicLevel}
           </span>
         </div>
@@ -654,7 +740,7 @@ function BoardResult({
         }
         aria-pressed={favorite}
         title={favorite ? "Remove from favorites" : "Add to favorites"}
-        className="absolute right-2.5 top-2.5 grid size-7 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
+        className="absolute right-2 top-2 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
       >
         <Star
           className={clsx(
@@ -670,11 +756,22 @@ function BoardResult({
 
 type BoardDetailProps = {
   board: Board;
+  onBackToResults: () => void;
 };
 
-function BoardDetail({ board }: BoardDetailProps) {
+function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   return (
     <aside className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
+      {/* Stacked-layout escape hatch: the detail panel sits below the result
+          list on phones, so offer a quick way back up. Hidden on lg+. */}
+      <button
+        type="button"
+        onClick={onBackToResults}
+        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white active:scale-[0.99] lg:hidden"
+      >
+        <ArrowUp className="size-4" aria-hidden="true" />
+        Back to results
+      </button>
       <section className="rounded-lg border border-white/10 bg-white/[0.04] p-5">
         <div className="flex items-start justify-between gap-4">
           <div>

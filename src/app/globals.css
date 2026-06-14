@@ -24,11 +24,17 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
+  /* Guard against accidental horizontal scrolling on narrow phones. */
+  overflow-x: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 220px),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  /* Remove the grey tap flash on iOS/Android for a more app-like feel; we
+     provide our own :active / hover states instead. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
 }
 
 .brand-title {

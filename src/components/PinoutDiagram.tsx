@@ -58,7 +58,9 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
   );
 
   return (
-    <section className="rounded-lg border border-white/10 bg-black/20 p-4">
+    // @container lets the pin grid respond to the detail panel's real width
+    // rather than the viewport, so the pads shrink on narrow phone panels.
+    <section className="@container rounded-lg border border-white/10 bg-black/20 p-4">
       <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
         <div className="min-w-0">
           <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
@@ -119,7 +121,7 @@ function DualRowPins({ pins }: DualRowPinsProps) {
         return (
           <div
             key={`${leftPin.position}-${rightPin?.position ?? "empty"}`}
-            className="grid grid-cols-[minmax(0,1fr)_3rem_3rem_minmax(0,1fr)] items-center gap-x-2"
+            className="grid grid-cols-[minmax(0,1fr)_2.25rem_2.25rem_minmax(0,1fr)] items-center gap-x-1.5 @sm:grid-cols-[minmax(0,1fr)_3rem_3rem_minmax(0,1fr)] @sm:gap-x-2"
           >
             <DualRowLabel pin={leftPin} side="left" />
             <PinPad pin={leftPin} />
@@ -250,7 +252,9 @@ function PinPad({ pin, compact = false }: PinPadProps) {
     <span
       className={clsx(
         "inline-grid shrink-0 place-items-center rounded-full border font-mono font-semibold shadow-[0_0_18px_rgba(255,255,255,0.04)] ring-1 ring-white/10",
-        compact ? "size-8 text-[10px]" : "mx-auto size-11 text-xs",
+        compact
+          ? "size-8 text-[10px]"
+          : "mx-auto size-9 text-[11px] @sm:size-11 @sm:text-xs",
         roleStyles[pin.role],
       )}
       title={`${pin.position}: ${pin.label}`}

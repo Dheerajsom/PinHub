@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Audiowide, Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -27,6 +27,19 @@ export const metadata: Metadata = {
     icon: "/icon.png",
     apple: "/apple-icon.png",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "PinHub",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0b0c0f",
+  colorScheme: "dark",
+  // Cover the full screen (under notches/home indicators) so the dark theme
+  // extends edge-to-edge; safe-area insets are then applied in the layout.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
