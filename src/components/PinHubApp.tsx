@@ -707,7 +707,7 @@ function BoardResult({
               </span>
             ) : null}
           </div>
-          <span className="shrink-0 pr-9 font-mono text-xs text-zinc-500">
+          <span className="min-w-0 break-words pr-9 font-mono text-xs text-zinc-500 sm:text-right">
             {board.vendor} · {board.logicLevel}
           </span>
         </div>

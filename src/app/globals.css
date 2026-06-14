@@ -177,15 +177,19 @@ button {
   animation-name: pinhub-float-c;
 }
 
-/* Travelling pulse along a trace: the dashed segment slides along the path. */
+/* Travelling packet along a trace. With pathLength=100 on the path and a
+   dasharray of "14 150" (period 164), animating the offset by one full period
+   sends a single 14%-long comet from the origin pad to the destination pad
+   (~the first 60% of the cycle), then leaves a short gap before it repeats —
+   so the signal clearly goes somewhere instead of sliding forever. */
 @keyframes pinhub-trace {
   to {
-    stroke-dashoffset: -1000;
+    stroke-dashoffset: -164;
   }
 }
 
 .pinhub-trace {
-  animation: pinhub-trace 7s linear infinite;
+  animation: pinhub-trace 3.6s linear infinite;
 }
 
 /* Slow fade-in so the scene assembles rather than popping in on load. */

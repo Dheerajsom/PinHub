@@ -474,15 +474,27 @@ function BeagleBone({ width }: GlyphProps) {
   );
 }
 
-// A short orthogonal PCB trace cluster with a travelling pulse + vias.
+// A self-contained PCB bus: signals leave an origin connector pad, route
+// orthogonally through vias, and a bright "packet" comet travels the full
+// length and lands on the destination pad — so every trace clearly goes
+// somewhere. pathLength={100} normalises the dash so all comets move at the
+// same apparent speed regardless of how long the trace is.
+type Trace = {
+  d: string;
+  from: [number, number];
+  to: [number, number];
+  vias?: [number, number][];
+  delay?: number;
+};
+
 function TraceCluster({
-  paths,
-  vias,
+  traces,
+  bus,
   className,
   style,
 }: {
-  paths: string[];
-  vias: [number, number][];
+  traces: Trace[];
+  bus?: { x: number; y: number; w: number; h: number };
   className?: string;
   style?: CSSProperties;
 }) {
@@ -494,39 +506,77 @@ function TraceCluster({
       style={style}
       aria-hidden
     >
-      {paths.map((d, i) => (
-        <g key={i}>
-          <path
-            d={d}
-            stroke="currentColor"
-            strokeOpacity={0.16}
-            strokeWidth={1.1}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d={d}
-            stroke="currentColor"
-            strokeOpacity={0.7}
-            strokeWidth={1.4}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeDasharray="5 120"
-            className="pinhub-trace"
-            style={{ animationDelay: `${i * 1.3}s` }}
-          />
-        </g>
-      ))}
-      {vias.map(([cx, cy], i) => (
-        <circle
-          key={i}
-          cx={cx}
-          cy={cy}
-          r={2.4}
+      {/* Origin connector / bus bar that the traces fan out from. */}
+      {bus ? (
+        <rect
+          x={bus.x}
+          y={bus.y}
+          width={bus.w}
+          height={bus.h}
+          rx={2}
+          fill="currentColor"
+          fillOpacity={0.07}
           stroke="currentColor"
-          strokeOpacity={0.3}
+          strokeOpacity={0.4}
           strokeWidth={1}
         />
+      ) : null}
+
+      {traces.map(({ d, from, to, vias, delay = 0 }, i) => (
+        <g key={i}>
+          {/* Static copper trace. */}
+          <path
+            d={d}
+            stroke="currentColor"
+            strokeOpacity={0.28}
+            strokeWidth={1.2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* Soft halo behind the travelling packet. */}
+          <path
+            d={d}
+            pathLength={100}
+            stroke="currentColor"
+            strokeOpacity={0.22}
+            strokeWidth={4.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray="14 150"
+            className="pinhub-trace"
+            style={{ animationDelay: `${delay}s` }}
+          />
+          {/* Bright packet that runs origin -> destination, then pauses. */}
+          <path
+            d={d}
+            pathLength={100}
+            stroke="currentColor"
+            strokeOpacity={0.9}
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray="14 150"
+            className="pinhub-trace"
+            style={{ animationDelay: `${delay}s` }}
+          />
+          {/* Vias where the trace changes layer/direction. */}
+          {vias?.map(([cx, cy], v) => (
+            <circle
+              key={v}
+              cx={cx}
+              cy={cy}
+              r={2}
+              stroke="currentColor"
+              strokeOpacity={0.32}
+              strokeWidth={1}
+            />
+          ))}
+          {/* Origin solder pad. */}
+          <circle cx={from[0]} cy={from[1]} r={2.4} fill="currentColor" fillOpacity={0.6} />
+          {/* Destination pad: ring + drilled centre, the packet's landing point. */}
+          <circle cx={to[0]} cy={to[1]} r={3} stroke="currentColor" strokeOpacity={0.55} strokeWidth={1.1} />
+          <circle cx={to[0]} cy={to[1]} r={1.2} fill="currentColor" fillOpacity={0.6} />
+        </g>
       ))}
     </svg>
   );
@@ -552,9 +602,9 @@ const placements: Placement[] = [
     key: "pi4",
     Glyph: RaspberryPi4,
     color: "#34d399",
-    width: "clamp(190px, 21vw, 330px)",
-    pos: { top: "8%", right: "-3%" },
-    rest: 0.26,
+    width: "clamp(210px, 22vw, 340px)",
+    pos: { top: "6%", right: "-4%" },
+    rest: 0.42,
     tilt: -6,
     duration: 30,
     delay: 0,
@@ -563,9 +613,9 @@ const placements: Placement[] = [
     key: "stm32",
     Glyph: STM32Nucleo,
     color: "#38bdf8",
-    width: "clamp(180px, 19vw, 300px)",
-    pos: { top: "26%", left: "-4%" },
-    rest: 0.24,
+    width: "clamp(190px, 20vw, 310px)",
+    pos: { top: "29%", left: "-5%" },
+    rest: 0.42,
     tilt: 7,
     variant: "pinhub-float-b",
     duration: 34,
@@ -575,9 +625,9 @@ const placements: Placement[] = [
     key: "microbit",
     Glyph: MicroBit,
     color: "#fbbf24",
-    width: "clamp(130px, 13vw, 210px)",
-    pos: { top: "5%", left: "6%" },
-    rest: 0.22,
+    width: "clamp(140px, 14vw, 220px)",
+    pos: { top: "6%", left: "3%" },
+    rest: 0.36,
     tilt: 5,
     variant: "pinhub-float-c",
     duration: 28,
@@ -587,9 +637,9 @@ const placements: Placement[] = [
     key: "arduino",
     Glyph: ArduinoUno,
     color: "#2dd4bf",
-    width: "clamp(150px, 16vw, 260px)",
-    pos: { bottom: "5%", left: "2%" },
-    rest: 0.24,
+    width: "clamp(160px, 17vw, 270px)",
+    pos: { bottom: "5%", left: "1%" },
+    rest: 0.42,
     tilt: -5,
     variant: "pinhub-float-c",
     duration: 32,
@@ -599,9 +649,9 @@ const placements: Placement[] = [
     key: "esp32",
     Glyph: ESP32Devkit,
     color: "#a5b4fc",
-    width: "clamp(72px, 7vw, 122px)",
-    pos: { bottom: "7%", right: "6%" },
-    rest: 0.26,
+    width: "clamp(82px, 8vw, 132px)",
+    pos: { top: "40%", right: "2.5%" },
+    rest: 0.42,
     tilt: 9,
     variant: "pinhub-float-b",
     duration: 26,
@@ -611,9 +661,12 @@ const placements: Placement[] = [
     key: "beaglebone",
     Glyph: BeagleBone,
     color: "#94a3b8",
-    width: "clamp(160px, 17vw, 280px)",
-    pos: { top: "54%", right: "15%" },
-    rest: 0.12,
+    width: "clamp(180px, 18vw, 300px)",
+    // Pulled out of the opaque right detail panel into the lower-centre dead
+    // zone so it actually reads (and survives narrow widths where the right
+    // gutter collapses).
+    pos: { bottom: "6%", left: "26%" },
+    rest: 0.4,
     tilt: -4,
     duration: 38,
     delay: 0.3,
@@ -622,9 +675,9 @@ const placements: Placement[] = [
     key: "pico",
     Glyph: Pico,
     color: "#5eead4",
-    width: "clamp(50px, 5vw, 88px)",
-    pos: { top: "44%", left: "43%" },
-    rest: 0.14,
+    width: "clamp(64px, 6.5vw, 108px)",
+    pos: { top: "60%", left: "0.5%" },
+    rest: 0.4,
     tilt: -12,
     variant: "pinhub-float-b",
     duration: 24,
@@ -634,9 +687,9 @@ const placements: Placement[] = [
     key: "stm32-2",
     Glyph: STM32Nucleo,
     color: "#7dd3fc",
-    width: "clamp(72px, 8vw, 132px)",
-    pos: { top: "2%", left: "57%" },
-    rest: 0.12,
+    width: "clamp(78px, 8vw, 136px)",
+    pos: { top: "1%", left: "45%" },
+    rest: 0.24,
     tilt: 14,
     variant: "pinhub-float-c",
     duration: 36,
@@ -644,15 +697,15 @@ const placements: Placement[] = [
   },
 ];
 
-// Keep the lively edges but ease the silhouettes back across the central
-// results column so dense text never fights a board outline.
+// Keep the gutters fully lively but ease the silhouettes back across the
+// central results column so dense text never fights a board outline.
 const centerDimMask =
-  "linear-gradient(to right, #000 0%, #000 16%, rgba(0,0,0,0.42) 40%, rgba(0,0,0,0.42) 60%, #000 84%, #000 100%)";
+  "linear-gradient(to right, #000 0%, #000 12%, rgba(0,0,0,0.3) 32%, rgba(0,0,0,0.3) 68%, #000 88%, #000 100%)";
 
 export function CircuitBackground() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden opacity-[0.55] sm:opacity-80 lg:opacity-100"
       aria-hidden
     >
       {/* Faint PCB grid */}
@@ -692,36 +745,24 @@ export function CircuitBackground() {
           maskImage: centerDimMask,
         }}
       >
-        {/* Travelling PCB traces in the gutters */}
+        {/* Travelling PCB buses in the gutters: each packet leaves the bus bar
+            on the left and lands on a destination pad on the right. */}
         <TraceCluster
-          className="left-[-2%] top-[18%] w-[clamp(160px,22vw,360px)] text-cyan-300"
-          paths={[
-            "M0 40 H70 L95 65 V150 H200",
-            "M0 90 H40 L60 110 H160 L185 135 V200",
-            "M30 0 V55 L55 80 H200",
-          ]}
-          vias={[
-            [70, 40],
-            [95, 65],
-            [60, 110],
-            [185, 135],
-            [55, 80],
+          className="left-[2%] top-[19%] w-[clamp(200px,24vw,420px)] text-cyan-300"
+          bus={{ x: 4, y: 28, w: 8, h: 92 }}
+          traces={[
+            { d: "M12 38 H58 V64 H116 V52 H184", from: [12, 38], to: [184, 52], vias: [[58, 64], [116, 52]], delay: 0 },
+            { d: "M12 74 H38 V108 H96 V100 H184", from: [12, 74], to: [184, 100], vias: [[38, 108], [96, 100]], delay: 1.1 },
+            { d: "M12 110 H30 V150 H84 V140 H184", from: [12, 110], to: [184, 140], vias: [[30, 150], [84, 140]], delay: 2.2 },
           ]}
         />
         <TraceCluster
-          className="bottom-[6%] right-[-2%] w-[clamp(160px,22vw,360px)] text-emerald-300"
-          style={{ transform: "scaleX(-1)" }}
-          paths={[
-            "M0 60 H80 L110 30 H200",
-            "M0 120 H50 L80 150 H140 L170 120 V0",
-            "M20 200 V150 L45 125 H200",
-          ]}
-          vias={[
-            [80, 60],
-            [110, 30],
-            [80, 150],
-            [170, 120],
-            [45, 125],
+          className="bottom-[11%] right-[1%] w-[clamp(200px,24vw,420px)] text-emerald-300"
+          bus={{ x: 188, y: 30, w: 8, h: 122 }}
+          traces={[
+            { d: "M188 42 H128 V72 H66 V60 H16", from: [188, 42], to: [16, 60], vias: [[128, 72], [66, 60]], delay: 0.6 },
+            { d: "M188 92 H150 V128 H86 V116 H16", from: [188, 92], to: [16, 116], vias: [[150, 128], [86, 116]], delay: 1.7 },
+            { d: "M188 142 H118 V168 H58", from: [188, 142], to: [58, 168], vias: [[118, 168]], delay: 2.8 },
           ]}
         />
 
@@ -741,6 +782,9 @@ export function CircuitBackground() {
                   "--tilt": `${tilt}deg`,
                   animationDuration: `${duration}s`,
                   animationDelay: `${delay}s`,
+                  // Faint same-colour halo lifts the hairline silhouette off
+                  // the PCB grid so it reads as a board, not stray lines.
+                  filter: "drop-shadow(0 0 7px currentColor)",
                 } as CSSProperties
               }
             >
