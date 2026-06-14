@@ -36,6 +36,7 @@ import {
 } from "@/lib/boards";
 import { PinoutDiagram } from "@/components/PinoutDiagram";
 import { VendorLogo } from "@/components/VendorLogo";
+import { CircuitBackground } from "@/components/CircuitBackground";
 
 const allCategory = "All";
 const allInterface = "All";
@@ -258,8 +259,9 @@ export function PinHubApp() {
   }
 
   return (
-    <main className="min-h-screen">
-      <header className="relative border-b border-white/10 bg-[#070a0d] pt-[env(safe-area-inset-top)]">
+    <main className="relative min-h-screen">
+      <CircuitBackground />
+      <header className="relative border-b border-white/10 bg-[#070a0d]/65 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden="true"

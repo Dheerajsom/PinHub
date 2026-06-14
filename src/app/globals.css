@@ -84,3 +84,137 @@ button {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ---------------------------------------------------------------------------
+   Animated circuit background (see components/CircuitBackground.tsx)
+   A fixed, behind-content layer of drifting board silhouettes, soft glows,
+   a faint PCB grid, and travelling trace pulses. Everything is decorative,
+   low-opacity, and pointer-events:none so the catalog stays first.
+   --------------------------------------------------------------------------- */
+
+/* Faint PCB grid, masked so it fades away from the edges and never competes
+   with the dense centre content. */
+.pinhub-grid {
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+  -webkit-mask-image: radial-gradient(
+    120% 120% at 50% 0%,
+    rgba(0, 0, 0, 0.9),
+    transparent 70%
+  );
+  mask-image: radial-gradient(
+    120% 120% at 50% 0%,
+    rgba(0, 0, 0, 0.9),
+    transparent 70%
+  );
+}
+
+/* Soft colour wash that slowly breathes for a sense of depth. */
+@keyframes pinhub-glow-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(2%, -2%, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+
+.pinhub-glow {
+  animation: pinhub-glow-drift 24s ease-in-out infinite;
+}
+
+/* Gentle parallax float for the board silhouettes. Three variants with
+   different drift paths keep the motion from looking mechanical. */
+@keyframes pinhub-float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translate3d(0, -22px, 0) rotate(calc(var(--tilt, 0deg) + 1.5deg));
+  }
+}
+
+@keyframes pinhub-float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translate3d(14px, 18px, 0) rotate(calc(var(--tilt, 0deg) - 1.5deg));
+  }
+}
+
+@keyframes pinhub-float-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+  33% {
+    transform: translate3d(-12px, -10px, 0) rotate(calc(var(--tilt, 0deg) - 1deg));
+  }
+  66% {
+    transform: translate3d(10px, -18px, 0) rotate(calc(var(--tilt, 0deg) + 1deg));
+  }
+}
+
+.pinhub-float {
+  animation-name: pinhub-float-a;
+  animation-duration: 26s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.pinhub-float-b {
+  animation-name: pinhub-float-b;
+}
+.pinhub-float-c {
+  animation-name: pinhub-float-c;
+}
+
+/* Travelling pulse along a trace: the dashed segment slides along the path. */
+@keyframes pinhub-trace {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.pinhub-trace {
+  animation: pinhub-trace 7s linear infinite;
+}
+
+/* Slow fade-in so the scene assembles rather than popping in on load. */
+@keyframes pinhub-rise {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: var(--rest-opacity, 1);
+  }
+}
+
+.pinhub-rise {
+  opacity: 0;
+  animation: pinhub-rise 1.4s ease-out forwards;
+}
+
+/* Respect users who prefer reduced motion: keep the static composition,
+   drop every animation. */
+@media (prefers-reduced-motion: reduce) {
+  .pinhub-glow,
+  .pinhub-float,
+  .pinhub-float-b,
+  .pinhub-float-c,
+  .pinhub-trace,
+  .pinhub-rise {
+    animation: none;
+  }
+  .pinhub-rise {
+    opacity: var(--rest-opacity, 1);
+  }
+}
