@@ -271,12 +271,12 @@ export function PinHubApp() {
         </div>
         <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="relative size-11 shrink-0 sm:size-12">
+            <div className="relative size-12 shrink-0 sm:size-14">
               <Image
                 src="/pinhub-logo.png"
                 alt=""
                 fill
-                sizes="48px"
+                sizes="(min-width: 640px) 56px, 48px"
                 className="object-contain"
                 priority
                 aria-hidden="true"
@@ -402,8 +402,10 @@ export function PinHubApp() {
               {favorites.size > 0 ? (
                 <span
                   className={clsx(
-                    "font-mono text-[11px]",
-                    showFavoritesOnly ? "text-zinc-800" : "text-amber-400/80",
+                    "grid h-4 min-w-4 place-items-center rounded-full px-1 font-mono text-[10px] font-semibold leading-none tabular-nums",
+                    showFavoritesOnly
+                      ? "bg-zinc-950/15 text-zinc-900"
+                      : "bg-amber-400/20 text-amber-100",
                   )}
                 >
                   {favorites.size}

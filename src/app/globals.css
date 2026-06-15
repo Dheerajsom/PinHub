@@ -273,6 +273,7 @@ button {
 }
 
 .fav-button:hover {
+  transform: translateY(-1px);
   box-shadow:
     inset 0 0 0 1px rgba(252, 211, 77, 0.95),
     0 6px 22px -6px rgba(250, 204, 21, 0.7);
