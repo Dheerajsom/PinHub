@@ -269,7 +269,7 @@ button {
 }
 
 .fav-button:hover {
-  transform: translateY(-1px) scale(1.04);
+  transform: translateY(-1px);
   animation-play-state: paused;
   box-shadow:
     0 0 0 1px rgba(250, 204, 21, 0.85),
@@ -277,7 +277,7 @@ button {
 }
 
 .fav-button:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0);
 }
 
 .fav-button:hover::after {
