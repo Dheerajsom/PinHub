@@ -197,6 +197,98 @@ button {
   animation: pinhub-rise 1.4s ease-out forwards;
 }
 
+/* ---------------------------------------------------------------------------
+   Favorites filter button — a deliberately loud, golden control that breaks
+   out of the otherwise cool/monochrome catalog chrome. A soft amber glow that
+   slowly breathes at rest; on hover it brightens, lifts, and the star does a
+   quick celebratory spin-pop.
+   --------------------------------------------------------------------------- */
+@keyframes fav-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.45),
+      0 0 12px -2px rgba(250, 204, 21, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.65),
+      0 0 20px 0 rgba(250, 204, 21, 0.55);
+  }
+}
+
+@keyframes fav-star-pop {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  55% {
+    transform: rotate(216deg) scale(1.35);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes fav-sheen {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  60%,
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+
+.fav-button {
+  position: relative;
+  overflow: hidden;
+  animation: fav-breathe 3.6s ease-in-out infinite;
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+/* A diagonal light sweep that streaks across the button on hover. */
+.fav-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 35%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: translateX(-150%) skewX(-20deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.fav-button:hover {
+  transform: translateY(-1px) scale(1.04);
+  animation-play-state: paused;
+  box-shadow:
+    0 0 0 1px rgba(250, 204, 21, 0.85),
+    0 6px 22px -4px rgba(250, 204, 21, 0.7);
+}
+
+.fav-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.fav-button:hover::after {
+  opacity: 1;
+  animation: fav-sheen 0.9s ease-out;
+}
+
+.fav-button:hover .fav-star {
+  animation: fav-star-pop 0.6s ease-in-out;
+}
+
 /* Respect users who prefer reduced motion: keep the static composition,
    drop every animation. */
 @media (prefers-reduced-motion: reduce) {
@@ -204,8 +296,14 @@ button {
   .pinhub-float,
   .pinhub-float-b,
   .pinhub-float-c,
-  .pinhub-rise {
+  .pinhub-rise,
+  .fav-button,
+  .fav-button:hover .fav-star {
     animation: none;
+  }
+  .fav-button:hover::after {
+    animation: none;
+    opacity: 0;
   }
   .pinhub-rise {
     opacity: var(--rest-opacity, 1);

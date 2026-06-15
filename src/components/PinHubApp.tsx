@@ -383,22 +383,29 @@ export function PinHubApp() {
               onClick={() => setShowFavoritesOnly((value) => !value)}
               aria-pressed={showFavoritesOnly}
               className={clsx(
-                "flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs transition",
+                "fav-button flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border-0 px-3 py-1.5 text-xs font-semibold",
                 showFavoritesOnly
-                  ? "border-amber-300/70 bg-amber-300/10 text-amber-100"
-                  : "border-white/10 text-zinc-400 hover:border-white/25 hover:text-white",
+                  ? "bg-gradient-to-b from-amber-300 to-amber-400 text-zinc-950"
+                  : "bg-amber-400/10 text-amber-200 hover:bg-amber-400/20 hover:text-amber-50",
               )}
             >
               <Star
                 className={clsx(
-                  "size-3.5",
-                  showFavoritesOnly && "fill-amber-300 text-amber-300",
+                  "fav-star size-3.5",
+                  showFavoritesOnly
+                    ? "fill-zinc-950 text-zinc-950"
+                    : "fill-amber-300 text-amber-300",
                 )}
                 aria-hidden="true"
               />
               Favorites
               {favorites.size > 0 ? (
-                <span className="font-mono text-[11px] text-zinc-500">
+                <span
+                  className={clsx(
+                    "font-mono text-[11px]",
+                    showFavoritesOnly ? "text-zinc-800" : "text-amber-400/80",
+                  )}
+                >
                   {favorites.size}
                 </span>
               ) : null}
