@@ -84,3 +84,129 @@ button {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ---------------------------------------------------------------------------
+   Decorative blueprint background (see components/CircuitBackground.tsx)
+   A fixed, behind-content layer: a fine + coarse drafting grid, a cool
+   cyanotype wash, a vignette, and a few hairline board "plates" arranged with
+   depth. Everything is decorative, low-opacity, and pointer-events:none so the
+   catalog stays first.
+   --------------------------------------------------------------------------- */
+
+/* Engineering drafting grid: a fine pitch plus a coarse every-fifth-line
+   pitch, in cool blueprint blue, masked so it's densest under the lower-left
+   hero and dissolves toward the dense centre/right content. */
+.pinhub-grid {
+  background-image:
+    linear-gradient(to right, rgba(125, 147, 176, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(125, 147, 176, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(125, 147, 176, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(125, 147, 176, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px, 140px 140px, 140px 140px;
+  -webkit-mask-image: radial-gradient(
+    125% 125% at 28% 78%,
+    rgba(0, 0, 0, 0.9),
+    transparent 72%
+  );
+  mask-image: radial-gradient(
+    125% 125% at 28% 78%,
+    rgba(0, 0, 0, 0.9),
+    transparent 72%
+  );
+}
+
+/* Soft colour wash that slowly breathes for a sense of depth. */
+@keyframes pinhub-glow-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(2%, -2%, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+
+.pinhub-glow {
+  animation: pinhub-glow-drift 24s ease-in-out infinite;
+}
+
+/* Gentle parallax float for the board silhouettes. Three variants with
+   different drift paths keep the motion from looking mechanical. */
+@keyframes pinhub-float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translate3d(0, -10px, 0) rotate(calc(var(--tilt, 0deg) + 0.8deg));
+  }
+}
+
+@keyframes pinhub-float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translate3d(8px, 10px, 0) rotate(calc(var(--tilt, 0deg) - 0.8deg));
+  }
+}
+
+@keyframes pinhub-float-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+  33% {
+    transform: translate3d(-7px, -6px, 0) rotate(calc(var(--tilt, 0deg) - 0.6deg));
+  }
+  66% {
+    transform: translate3d(6px, -10px, 0) rotate(calc(var(--tilt, 0deg) + 0.6deg));
+  }
+}
+
+.pinhub-float {
+  animation-name: pinhub-float-a;
+  animation-duration: 26s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.pinhub-float-b {
+  animation-name: pinhub-float-b;
+}
+.pinhub-float-c {
+  animation-name: pinhub-float-c;
+}
+
+/* Slow fade-in so the scene assembles rather than popping in on load. */
+@keyframes pinhub-rise {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: var(--rest-opacity, 1);
+  }
+}
+
+.pinhub-rise {
+  opacity: 0;
+  animation: pinhub-rise 1.4s ease-out forwards;
+}
+
+/* Respect users who prefer reduced motion: keep the static composition,
+   drop every animation. */
+@media (prefers-reduced-motion: reduce) {
+  .pinhub-glow,
+  .pinhub-float,
+  .pinhub-float-b,
+  .pinhub-float-c,
+  .pinhub-rise {
+    animation: none;
+  }
+  .pinhub-rise {
+    opacity: var(--rest-opacity, 1);
+  }
+}
