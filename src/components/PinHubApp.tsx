@@ -383,10 +383,10 @@ export function PinHubApp() {
               onClick={() => setShowFavoritesOnly((value) => !value)}
               aria-pressed={showFavoritesOnly}
               className={clsx(
-                "fav-button flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border-0 px-3 py-1.5 text-xs font-semibold",
+                "fav-button ml-1.5 flex min-h-9 shrink-0 items-center gap-1.5 rounded-xl border border-transparent px-3.5 py-1.5 text-xs font-semibold",
                 showFavoritesOnly
                   ? "bg-gradient-to-b from-amber-300 to-amber-400 text-zinc-950"
-                  : "bg-amber-400/10 text-amber-200 hover:bg-amber-400/20 hover:text-amber-50",
+                  : "bg-amber-400/10 text-amber-200 hover:border-amber-300 hover:bg-amber-400/20 hover:text-amber-50",
               )}
             >
               <Star
