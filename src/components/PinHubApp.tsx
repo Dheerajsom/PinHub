@@ -261,7 +261,7 @@ export function PinHubApp() {
   return (
     <main className="relative min-h-screen">
       <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#070a0d]/65 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
+      <header className="relative border-b border-white/10 bg-[#0a0d12] shadow-[0_1px_0_rgba(255,255,255,0.05)_inset,0_12px_30px_-24px_rgba(0,0,0,0.9)] pt-[env(safe-area-inset-top)]">
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden="true"
@@ -304,7 +304,7 @@ export function PinHubApp() {
         </div>
       </header>
 
-      <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0b0c0f]/90 backdrop-blur">
+      <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.95)]">
         <div className="mx-auto flex max-w-[1560px] flex-col gap-2.5 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:px-6 lg:px-8">
           <label className="relative block w-full sm:min-w-56 sm:flex-1">
             <Search
@@ -326,7 +326,7 @@ export function PinHubApp() {
               }}
               placeholder="Search boards, vendors, interfaces, warnings..."
               aria-label="Search boards"
-              className="h-10 w-full rounded-md border border-white/10 bg-zinc-950/80 pl-10 pr-16 text-sm text-white outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/40"
+              className="h-10 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-16 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/40"
             />
             {query ? (
               <button
@@ -437,7 +437,7 @@ export function PinHubApp() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_minmax(24rem,32rem)] lg:px-8">
+      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
         <aside
           id="mobile-filters"
           className={clsx(
@@ -473,7 +473,7 @@ export function PinHubApp() {
               setMobileFiltersOpen(false);
             }}
           />
-          <section className="hidden rounded-lg border border-white/10 bg-white/[0.03] p-4 lg:block">
+          <section className="surface-panel hidden rounded-lg p-4 lg:block">
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <Sparkles className="size-4 text-amber-200" aria-hidden="true" />
               Curation notes
@@ -501,7 +501,7 @@ export function PinHubApp() {
           </div>
 
           {filteredBoards.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-white/15 bg-white/[0.03] p-8 text-center">
+            <div className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-8 text-center">
               <Database
                 className="mx-auto size-8 text-zinc-500"
                 aria-hidden="true"
@@ -563,7 +563,7 @@ function GitHubButton() {
       rel="noreferrer"
       aria-label="View PinHub source on GitHub (opens in a new tab)"
       title="View source on GitHub"
-      className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-lg border border-white/15 bg-white/[0.04] px-2.5 text-sm font-medium text-zinc-200 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset] transition hover:border-cyan-300/60 hover:bg-white/[0.08] hover:text-white active:scale-[0.97] sm:px-3"
+      className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-lg border border-white/15 bg-[#15181f] px-2.5 text-sm font-medium text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/60 hover:bg-[#1c2029] hover:text-white active:scale-[0.97] sm:px-3"
     >
       <span
         className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(110deg,transparent,rgba(34,211,238,0.18),transparent)] transition-transform duration-500 group-hover:translate-x-full"
@@ -642,7 +642,7 @@ function FilterPanel({
   onChange,
 }: FilterPanelProps) {
   return (
-    <section className="rounded-lg border border-white/10 bg-white/[0.03] p-3">
+    <section className="surface-panel rounded-lg p-3">
       <div className="mb-2.5 flex items-center gap-2 px-1 text-sm font-semibold text-white">
         {icon}
         {title}
@@ -695,10 +695,10 @@ function BoardResult({
         type="button"
         onClick={onSelect}
         className={clsx(
-          "w-full rounded-lg border-y border-r border-l-2 p-4 text-left transition",
+          "w-full rounded-lg border-y border-r border-l-2 p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
           selected
-            ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-cyan-300/[0.07]"
-            : "border-y-white/10 border-r-white/10 border-l-white/10 bg-white/[0.03] hover:border-y-white/25 hover:border-r-white/25 hover:border-l-white/25 hover:bg-white/[0.05]",
+            ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-[#0e1c23] shadow-[0_0_0_1px_rgba(34,211,238,0.14),0_12px_34px_-14px_rgba(34,211,238,0.32)]"
+            : "border-y-white/10 border-r-white/10 border-l-white/15 bg-[#14161d] hover:border-y-white/20 hover:border-r-white/20 hover:border-l-white/30 hover:bg-[#191c24]",
         )}
         aria-pressed={selected}
       >
@@ -706,7 +706,7 @@ function BoardResult({
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <VendorLogo vendor={board.vendor} />
             <h2 className="text-base font-semibold text-white">{board.name}</h2>
-            <span className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5 text-[11px] text-zinc-300">
+            <span className="rounded border border-white/10 bg-[#0a0c11] px-1.5 py-0.5 text-[11px] text-zinc-300">
               {board.category}
             </span>
             {board.pinout ? (
@@ -778,12 +778,12 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
       <button
         type="button"
         onClick={onBackToResults}
-        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white active:scale-[0.99] lg:hidden"
+        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] lg:hidden"
       >
         <ArrowUp className="size-4" aria-hidden="true" />
         Back to results
       </button>
-      <section className="rounded-lg border border-white/10 bg-white/[0.04] p-5">
+      <section className="surface-panel rounded-lg p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
@@ -828,7 +828,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         />
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+      <section className="surface-panel rounded-lg p-4">
         <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
           <BookOpen className="size-4 text-cyan-200" aria-hidden="true" />
           Source references
@@ -840,7 +840,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
               href={source.url}
               target="_blank"
               rel="noreferrer"
-              className="group flex items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white"
+              className="surface-well group flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#13161c] hover:text-white"
             >
               <span className="flex min-w-0 items-baseline gap-2">
                 <span className="shrink-0 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-zinc-500 transition group-hover:text-zinc-300">
@@ -887,10 +887,10 @@ function InfoBlock({ title, icon, items, tone = "default" }: InfoBlockProps) {
   return (
     <section
       className={clsx(
-        "rounded-lg border p-4",
+        "rounded-lg p-4",
         tone === "warning"
-          ? "border-orange-300/25 bg-orange-300/[0.04]"
-          : "border-white/10 bg-white/[0.03]",
+          ? "border border-orange-300/30 bg-[#1b1410] shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+          : "surface-panel",
       )}
     >
       <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">

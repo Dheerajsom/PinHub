@@ -40,7 +40,7 @@ type PinoutDiagramProps = {
 export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
   if (!pinout) {
     return (
-      <section className="rounded-lg border border-dashed border-white/15 bg-white/[0.03] p-4">
+      <section className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-4">
         <div className="text-sm font-medium text-white">Pin map queued</div>
         <p className="mt-2 text-sm leading-6 text-zinc-400">
           This board has official references linked, but its in-app connector map
@@ -60,7 +60,7 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
   return (
     // @container lets the pin grid respond to the detail panel's real width
     // rather than the viewport, so the pads shrink on narrow phone panels.
-    <section className="@container rounded-lg border border-white/10 bg-black/20 p-4">
+    <section className="@container surface-panel rounded-lg p-4">
       <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
         <div className="min-w-0">
           <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
@@ -223,7 +223,7 @@ type GroupedPinProps = {
 
 function GroupedPin({ pin }: GroupedPinProps) {
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded-md border border-white/10 bg-white/[0.02] px-2 py-1.5">
+    <div className="surface-well flex min-w-0 items-center gap-2 rounded-md px-2 py-1.5">
       <PinPad pin={pin} compact />
       <div className="min-w-0 flex-1">
         <div className="truncate font-mono text-sm font-semibold leading-tight text-white">
