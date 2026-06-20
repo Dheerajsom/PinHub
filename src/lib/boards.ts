@@ -3572,6 +3572,726 @@ const adafruitQtPyRp2040Pinout: Pinout = {
   },
 };
 
+const orangePi5Header: Pinout = {
+  connector: "26-pin expansion header",
+  layout: "dual-row",
+  notes: [
+    "All GPIO signals use 3.3 V logic; the 5 V pins are power rails, not logic inputs.",
+    "Alternate UART, I2C, SPI, CAN, and PWM functions require the matching device-tree configuration.",
+    "Several header GPIOs have external pull-ups; verify reset-state loading before attaching driven peripherals.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 3, label: "GPIO1_B7", role: "i2c", aliases: ["I2C5 SDA", "UART1 RX", "PWM13"] },
+      { position: 5, label: "GPIO1_B6", role: "i2c", aliases: ["I2C5 SCL", "UART1 TX"] },
+      { position: 7, label: "GPIO1_C6", role: "pwm", aliases: ["PWM15 IR"] },
+      { position: 9, label: "GND", role: "ground" },
+      { position: 11, label: "GPIO4_B2", role: "special", aliases: ["CAN1 RX", "PWM14"] },
+      { position: 13, label: "GPIO4_B3", role: "special", aliases: ["CAN1 TX"] },
+      { position: 15, label: "GPIO0_D4", role: "special", aliases: ["CAN2 RX", "I2C1 SCL", "PWM3"] },
+      { position: 17, label: "3V3", role: "power" },
+      { position: 19, label: "GPIO1_C1", role: "spi", aliases: ["SPI4 MOSI", "UART3 TX", "I2C3 SCL"] },
+      { position: 21, label: "GPIO1_C0", role: "spi", aliases: ["SPI4 MISO", "UART3 RX", "I2C3 SDA"] },
+      { position: 23, label: "GPIO1_C2", role: "spi", aliases: ["SPI4 CLK", "PWM3"] },
+      { position: 25, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "5V", role: "power" },
+      { position: 4, label: "5V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      { position: 8, label: "GPIO4_A3", role: "uart", aliases: ["UART0 TX"] },
+      { position: 10, label: "GPIO4_A4", role: "uart", aliases: ["UART0 RX"] },
+      { position: 12, label: "GPIO0_D5", role: "special", aliases: ["CAN2 TX", "I2C1 SDA"] },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 16, label: "GPIO1_D4", role: "uart", aliases: ["UART4 RX", "I2C1 SDA", "PWM11"] },
+      { position: 18, label: "GPIO1_D2", role: "uart", aliases: ["UART4 TX", "I2C1 SCL", "PWM0"] },
+      { position: 20, label: "GND", role: "ground" },
+      { position: 22, label: "GPIO2_D4", role: "gpio" },
+      { position: 24, label: "GPIO1_A3", role: "spi", aliases: ["SPI4 CS1", "PWM1"] },
+      { position: 26, label: "GPIO1_A2", role: "pwm", aliases: ["PWM1"] },
+    ],
+  },
+};
+
+const bananaPiM5Header: Pinout = {
+  connector: "CON1 40-pin GPIO header",
+  layout: "dual-row",
+  notes: [
+    "GPIO signals use 3.3 V logic and are not 5 V tolerant.",
+    "The listed peripheral names are alternate pin-mux functions, not simultaneously active defaults.",
+    "SDIO- and audio-labeled functions can conflict with software overlays or attached hardware.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 3, label: "GPIOX_17", role: "i2c", aliases: ["I2C_M2 SDA"] },
+      { position: 5, label: "GPIOX_18", role: "i2c", aliases: ["I2C_M2 SCL"] },
+      { position: 7, label: "GPIOX_5", role: "special", aliases: ["SDIO CMD"] },
+      { position: 9, label: "GND", role: "ground" },
+      { position: 11, label: "GPIOX_3", role: "special", aliases: ["SDIO D3"] },
+      { position: 13, label: "GPIOX_4", role: "special", aliases: ["SDIO CLK"] },
+      { position: 15, label: "GPIOX_7", role: "pwm", aliases: ["PWM F"] },
+      { position: 17, label: "3V3", role: "power" },
+      { position: 19, label: "GPIOX_8", role: "special", aliases: ["PCM DIN"] },
+      { position: 21, label: "GPIOX_9", role: "special", aliases: ["PCM DOUT"] },
+      { position: 23, label: "GPIOX_11", role: "special", aliases: ["PCM CLK"] },
+      { position: 25, label: "GND", role: "ground" },
+      { position: 27, label: "GPIOA_14", role: "i2c", aliases: ["I2C_M3 SDA"] },
+      { position: 29, label: "GPIOX_14", role: "uart", aliases: ["UART_A CTS"] },
+      { position: 31, label: "GPIOX_15", role: "uart", aliases: ["UART_A RTS"] },
+      { position: 33, label: "GPIOX_6", role: "pwm", aliases: ["PWM A"] },
+      { position: 35, label: "GPIOAO_7", role: "special", aliases: ["TDMB FS"] },
+      { position: 37, label: "GPIOAO_9", role: "special", aliases: ["I2S MCLK"] },
+      { position: 39, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "5V", role: "power" },
+      { position: 4, label: "5V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      { position: 8, label: "GPIOX_12", role: "uart", aliases: ["UART_A TX"] },
+      { position: 10, label: "GPIOX_13", role: "uart", aliases: ["UART_A RX"] },
+      { position: 12, label: "GPIOAO_8", role: "special", aliases: ["TDMB SCLK"] },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 16, label: "GPIOX_0", role: "special", aliases: ["SDIO D0"] },
+      { position: 18, label: "GPIOX_1", role: "special", aliases: ["SDIO D1"] },
+      { position: 20, label: "GND", role: "ground" },
+      { position: 22, label: "GPIOX_2", role: "special", aliases: ["SDIO D2"] },
+      { position: 24, label: "GPIOX_10", role: "special", aliases: ["PCM SYNC"] },
+      { position: 26, label: "GPIOX_16", role: "pwm", aliases: ["PWM E"] },
+      { position: 28, label: "GPIOA_15", role: "i2c", aliases: ["I2C_M3 SCL"] },
+      { position: 30, label: "GND", role: "ground" },
+      { position: 32, label: "GPIOX_19", role: "pwm", aliases: ["PWM B"] },
+      { position: 34, label: "GND", role: "ground" },
+      { position: 36, label: "GPIOH_5", role: "special", aliases: ["SPDIF IN"] },
+      { position: 38, label: "GPIOAO_10", role: "special", aliases: ["TDMB DIN"] },
+      { position: 40, label: "GPIOAO_4", role: "special", aliases: ["TDMB DOUT"] },
+    ],
+  },
+};
+
+const rockPro64Header: Pinout = {
+  connector: "Pi-2 40-pin GPIO header",
+  layout: "dual-row",
+  notes: [
+    "GPIO uses 3.3 V logic; the 5 V header pins are power rails only.",
+    "The I2S0 signals on pins 12 and 32-40 may be claimed by audio configurations.",
+    "Pin 7 is the CPU general-purpose clock output, not a conventional GPIO signal.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 3, label: "GPIO1_C4", role: "i2c", aliases: ["I2C8 SDA"] },
+      { position: 5, label: "GPIO1_C5", role: "i2c", aliases: ["I2C8 SCL"] },
+      { position: 7, label: "GPIO4_D0", role: "special", aliases: ["CPU GPCLK"] },
+      { position: 9, label: "GND", role: "ground" },
+      { position: 11, label: "GPIO1_C6", role: "gpio" },
+      { position: 13, label: "GPIO1_C2", role: "gpio" },
+      { position: 15, label: "GPIO1_A1", role: "gpio" },
+      { position: 17, label: "3V3", role: "power" },
+      { position: 19, label: "GPIO1_B0", role: "spi", aliases: ["SPI1 TX", "UART4 TX"] },
+      { position: 21, label: "GPIO1_A7", role: "spi", aliases: ["SPI1 RX", "UART4 RX"] },
+      { position: 23, label: "GPIO1_B1", role: "spi", aliases: ["SPI1 CLK"] },
+      { position: 25, label: "GND", role: "ground" },
+      { position: 27, label: "GPIO1_B3", role: "i2c", aliases: ["I2C4 SDA"] },
+      { position: 29, label: "GPIO4_D3", role: "gpio" },
+      { position: 31, label: "GPIO4_D4", role: "gpio" },
+      { position: 33, label: "GPIO3_D5", role: "special", aliases: ["I2S0 SDI2/SDO2"] },
+      { position: 35, label: "GPIO3_D2", role: "special", aliases: ["I2S0 LRCKTX"] },
+      { position: 37, label: "GPIO3_D1", role: "special", aliases: ["I2S0 LRCKRX"] },
+      { position: 39, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "5V", role: "power" },
+      { position: 4, label: "5V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      { position: 8, label: "GPIO4_C4", role: "uart", aliases: ["UART2 TX"] },
+      { position: 10, label: "GPIO4_C3", role: "uart", aliases: ["UART2 RX"] },
+      { position: 12, label: "GPIO3_D0", role: "special", aliases: ["I2S0 CLK"] },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 16, label: "GPIO1_A4", role: "gpio" },
+      { position: 18, label: "GPIO4_C5", role: "gpio", aliases: ["SPDIF"] },
+      { position: 20, label: "GND", role: "ground" },
+      { position: 22, label: "GPIO4_D1", role: "gpio" },
+      { position: 24, label: "GPIO1_B2", role: "spi", aliases: ["SPI1 CS0"] },
+      { position: 26, label: "GPIO1_B5", role: "gpio" },
+      { position: 28, label: "GPIO1_B4", role: "i2c", aliases: ["I2C4 SCL"] },
+      { position: 30, label: "GND", role: "ground" },
+      { position: 32, label: "GPIO3_D4", role: "special", aliases: ["I2S0 SDI1/SDO3"] },
+      { position: 34, label: "GND", role: "ground" },
+      { position: 36, label: "GPIO3_D6", role: "special", aliases: ["I2S0 SDI3/SDO1"] },
+      { position: 38, label: "GPIO3_D3", role: "special", aliases: ["I2S0 SDI0"] },
+      { position: 40, label: "GPIO3_D7", role: "special", aliases: ["I2S0 SDO0"] },
+    ],
+  },
+};
+
+const lePotatoHeader: Pinout = {
+  connector: "7J1 40-pin GPIO header",
+  layout: "dual-row",
+  notes: [
+    "GPIO is 3.3 V by default; an unsupported resistor modification can change the GPIOX bank to 1.8 V.",
+    "Pin 11 is routed to GPIOAO_8 only when jumper 2J1 is moved away from its default HDMI CEC position.",
+    "Pin 15 is output-only and doubles as a low-active system reset signal.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 3, label: "GPIOAO_5", role: "i2c", aliases: ["I2C SDA AO", "UART RX AO B"] },
+      { position: 5, label: "GPIOAO_4", role: "i2c", aliases: ["I2C SCL AO", "UART TX AO B"] },
+      { position: 7, label: "GPIOCLK_0", role: "special", aliases: ["CLK24", "CLK12"] },
+      { position: 9, label: "GND", role: "ground" },
+      { position: 11, label: "GPIOAO_8", role: "special", aliases: ["HDMI CEC", "PWM AO A"] },
+      { position: 13, label: "GPIOAO_9", role: "special", aliases: ["SPDIF OUT", "PWM AO B"] },
+      { position: 15, label: "TEST_N", role: "system", note: "Output-only; low can reset the system." },
+      { position: 17, label: "3V3", role: "power" },
+      { position: 19, label: "GPIOX_8", role: "spi", aliases: ["SPI MOSI", "UART TX C", "PCM OUT"] },
+      { position: 21, label: "GPIOX_9", role: "spi", aliases: ["SPI MISO", "UART RX C", "PCM IN"] },
+      { position: 23, label: "GPIOX_11", role: "spi", aliases: ["SPI SCLK", "I2C SCL D", "PCM CLK"] },
+      { position: 25, label: "GND", role: "ground" },
+      { position: 27, label: "GPIODV_26", role: "i2c", aliases: ["I2C SDA A/B", "UART CTS B"] },
+      { position: 29, label: "GPIOX_17", role: "gpio", aliases: ["BT EN"] },
+      { position: 31, label: "GPIOX_18", role: "gpio", aliases: ["BT WAKE HOST"] },
+      { position: 33, label: "GPIOX_6", role: "pwm", aliases: ["Wi-Fi PWREN", "PWM A"] },
+      { position: 35, label: "GPIOX_7", role: "pwm", aliases: ["Wi-Fi WAKE HOST", "PWM F"] },
+      { position: 37, label: "GPIOX_5", role: "special", aliases: ["Wi-Fi SD CMD"] },
+      { position: 39, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "5V", role: "power" },
+      { position: 4, label: "5V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      { position: 8, label: "GPIOX_12", role: "uart", aliases: ["UART A TX"] },
+      { position: 10, label: "GPIOX_13", role: "uart", aliases: ["UART A RX"] },
+      { position: 12, label: "GPIOAO_6", role: "special", aliases: ["SPDIF OUT", "PWM AO B"] },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 16, label: "GPIOX_14", role: "uart", aliases: ["UART A CTS"] },
+      { position: 18, label: "GPIOX_15", role: "uart", aliases: ["UART A RTS"] },
+      { position: 20, label: "GND", role: "ground" },
+      { position: 22, label: "GPIOX_0", role: "gpio", aliases: ["Wi-Fi SD D0"] },
+      { position: 24, label: "GPIOX_10", role: "spi", aliases: ["SPI SS0", "I2C SDA D", "PCM FS"] },
+      { position: 26, label: "GPIOX_1", role: "gpio", aliases: ["Wi-Fi SD D1"] },
+      { position: 28, label: "GPIODV_27", role: "i2c", aliases: ["I2C SCL A/B", "UART RTS B"] },
+      { position: 30, label: "GND", role: "ground" },
+      { position: 32, label: "GPIOX_16", role: "pwm", aliases: ["Wi-Fi 32K", "PWM E"] },
+      { position: 34, label: "GND", role: "ground" },
+      { position: 36, label: "GPIOX_2", role: "gpio", aliases: ["Wi-Fi SD D2"] },
+      { position: 38, label: "GPIOX_3", role: "gpio", aliases: ["Wi-Fi SD D3"] },
+      { position: 40, label: "GPIOX_4", role: "special", aliases: ["Wi-Fi SD CLK"] },
+    ],
+  },
+};
+
+const milkVDuoPinout: Pinout = {
+  connector: "40 castellated edge pins",
+  layout: "grouped",
+  notes: [
+    "GPIO uses 3.3 V logic; VBUS and VSYS are power rails.",
+    "Pins 34 and 35 are not connected on the original 64 MB Duo.",
+    "Peripheral functions depend on the active Linux pin-mux and can conflict with the camera, Ethernet, or SD-card setup.",
+  ],
+  groups: [
+    {
+      label: "Left edge (pins 1-20)",
+      pins: [
+        { position: 1, label: "GP0", role: "gpio" }, { position: 2, label: "GP1", role: "gpio" },
+        { position: 3, label: "GND", role: "ground" }, { position: 4, label: "GP2", role: "gpio" },
+        { position: 5, label: "GP3", role: "gpio" }, { position: 6, label: "GP4", role: "gpio" },
+        { position: 7, label: "GP5", role: "gpio" }, { position: 8, label: "GND", role: "ground" },
+        { position: 9, label: "GP6", role: "gpio" }, { position: 10, label: "GP7", role: "gpio" },
+        { position: 11, label: "GP8", role: "gpio" }, { position: 12, label: "GP9", role: "gpio" },
+        { position: 13, label: "GND", role: "ground" }, { position: 14, label: "GP10", role: "gpio" },
+        { position: 15, label: "GP11", role: "gpio" }, { position: 16, label: "GP12", role: "gpio" },
+        { position: 17, label: "GP13", role: "gpio" }, { position: 18, label: "GND", role: "ground" },
+        { position: 19, label: "GP14", role: "gpio" }, { position: 20, label: "GP15", role: "gpio" },
+      ],
+    },
+    {
+      label: "Right edge (pins 21-40)",
+      pins: [
+        { position: 21, label: "GP16", role: "gpio" }, { position: 22, label: "GP17", role: "gpio" },
+        { position: 23, label: "GND", role: "ground" }, { position: 24, label: "GP18", role: "gpio" },
+        { position: 25, label: "GP19", role: "gpio" }, { position: 26, label: "GP20", role: "gpio" },
+        { position: 27, label: "GP21", role: "gpio" }, { position: 28, label: "GND", role: "ground" },
+        { position: 29, label: "GP22", role: "gpio" }, { position: 30, label: "RUN", role: "system" },
+        { position: 31, label: "GP26", role: "gpio" }, { position: 32, label: "GP27", role: "gpio" },
+        { position: 33, label: "GND", role: "ground" }, { position: 34, label: "NC", role: "reserved" },
+        { position: 35, label: "NC", role: "reserved" }, { position: 36, label: "3V3", role: "power" },
+        { position: 37, label: "3V3_EN", role: "system" }, { position: 38, label: "GND", role: "ground" },
+        { position: 39, label: "VSYS", role: "power" }, { position: 40, label: "VBUS", role: "power" },
+      ],
+    },
+  ],
+};
+
+const lilygoTDisplayS3Pinout: Pinout = {
+  connector: "Two 11-pin side headers",
+  layout: "grouped",
+  notes: [
+    "All ESP32-S3 GPIO is 3.3 V only.",
+    "GPIO3 is a boot-strapping pin; do not force it to the wrong level during reset.",
+    "GPIO5-9, 14, 15, and 38-48 are consumed by the display, backlight, buttons, or battery monitor and are not part of the side-header map.",
+  ],
+  groups: [
+    { label: "P2 left header (top to bottom)", pins: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 2, label: "GPIO1", role: "adc", aliases: ["ADC1 CH0", "Touch 1"] },
+      { position: 3, label: "GPIO2", role: "adc", aliases: ["ADC1 CH1", "Touch 2"] },
+      { position: 4, label: "GPIO3", role: "special", aliases: ["ADC1 CH2", "Touch 3", "Strapping"] },
+      { position: 5, label: "GPIO10", role: "spi", aliases: ["SPI CS", "ADC1 CH9"] },
+      { position: 6, label: "GPIO11", role: "spi", aliases: ["SPI D", "ADC2 CH0"] },
+      { position: 7, label: "GPIO12", role: "spi", aliases: ["SPI CLK", "ADC2 CH1"] },
+      { position: 8, label: "GPIO13", role: "spi", aliases: ["SPI Q", "ADC2 CH2"] },
+      { position: 9, label: "NC", role: "reserved" },
+      { position: 10, label: "NC", role: "reserved" },
+      { position: 11, label: "GND", role: "ground" },
+      { position: 12, label: "5V", role: "power" },
+    ] },
+    { label: "P1 right header (top to bottom)", pins: [
+      { position: 1, label: "GND", role: "ground" },
+      { position: 2, label: "GND", role: "ground" },
+      { position: 3, label: "GPIO43", role: "gpio", aliases: ["CLK OUT1"] },
+      { position: 4, label: "GPIO44", role: "gpio", aliases: ["CLK OUT2"] },
+      { position: 5, label: "GPIO18", role: "uart", aliases: ["UART1 RX", "ADC2 CH7"] },
+      { position: 6, label: "GPIO17", role: "uart", aliases: ["UART1 TX", "ADC2 CH6"] },
+      { position: 7, label: "GPIO21", role: "gpio" },
+      { position: 8, label: "GPIO16", role: "adc", aliases: ["ADC2 CH5"] },
+      { position: 9, label: "NC", role: "reserved" },
+      { position: 10, label: "GND", role: "ground" },
+      { position: 11, label: "GND", role: "ground" },
+      { position: 12, label: "3V3", role: "power" },
+    ] },
+  ],
+};
+
+const wioTerminalHeader: Pinout = {
+  connector: "40-pin Raspberry Pi-compatible header",
+  layout: "dual-row",
+  notes: [
+    "The Wio Terminal maps SAMD51 signals to Raspberry Pi-style BCM labels shown in Seeed's official pinout.",
+    "SAMD51 GPIO is 3.3 V and is not 5 V tolerant; pins 2 and 4 are 5 V power rails only.",
+    "Several signals have alternate analog, DAC, PWM, and I2S functions; check the runtime's board definition before combining functions.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 3, label: "BCM2", role: "i2c", aliases: ["I2C1 SDA"] },
+      { position: 5, label: "BCM3", role: "i2c", aliases: ["I2C1 SCL"] },
+      { position: 7, label: "BCM4", role: "gpio", aliases: ["GPCLK0"] },
+      { position: 9, label: "GND", role: "ground" },
+      { position: 11, label: "BCM17", role: "dac", aliases: ["DAC0"] },
+      { position: 13, label: "BCM27", role: "adc", aliases: ["D0", "A0", "PWM0"] },
+      { position: 15, label: "BCM22", role: "adc", aliases: ["D1", "A1"] },
+      { position: 17, label: "3V3", role: "power" },
+      { position: 19, label: "BCM10", role: "spi", aliases: ["SPI MOSI"] },
+      { position: 21, label: "BCM9", role: "spi", aliases: ["SPI MISO"] },
+      { position: 23, label: "BCM11", role: "spi", aliases: ["SPI SCLK", "PWM2"] },
+      { position: 25, label: "GND", role: "ground" },
+      { position: 27, label: "BCM0", role: "i2c", aliases: ["I2C0 SDA"] },
+      { position: 29, label: "BCM5", role: "gpio", aliases: ["GPCLK1"] },
+      { position: 31, label: "BCM6", role: "gpio", aliases: ["GPCLK2"] },
+      { position: 33, label: "BCM13", role: "adc", aliases: ["D6", "A6", "PWM3"] },
+      { position: 35, label: "BCM19", role: "special", aliases: ["I2S LRCLK"] },
+      { position: 37, label: "BCM26", role: "adc", aliases: ["D8", "A8", "PWM4"] },
+      { position: 39, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "5V", role: "power" },
+      { position: 4, label: "5V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      { position: 8, label: "BCM14", role: "uart", aliases: ["TXD"] },
+      { position: 10, label: "BCM15", role: "uart", aliases: ["RXD"] },
+      { position: 12, label: "BCM18", role: "special", aliases: ["I2S BCLK"] },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 16, label: "BCM23", role: "adc", aliases: ["D2", "A2", "PWM1"] },
+      { position: 18, label: "BCM24", role: "adc", aliases: ["D3", "A3"] },
+      { position: 20, label: "GND", role: "ground" },
+      { position: 22, label: "BCM25", role: "adc", aliases: ["D4", "A4"] },
+      { position: 24, label: "BCM8", role: "spi", aliases: ["SPI CS", "CE0"] },
+      { position: 26, label: "BCM7", role: "dac", aliases: ["CE1", "DAC1"] },
+      { position: 28, label: "BCM1", role: "i2c", aliases: ["I2C0 SCL"] },
+      { position: 30, label: "GND", role: "ground" },
+      { position: 32, label: "BCM12", role: "adc", aliases: ["D5", "A5"] },
+      { position: 34, label: "GND", role: "ground" },
+      { position: 36, label: "BCM16", role: "adc", aliases: ["D7", "A7"] },
+      { position: 38, label: "BCM20", role: "special", aliases: ["I2S SDIN"] },
+      { position: 40, label: "BCM21", role: "special", aliases: ["I2S SDOUT"] },
+    ],
+  },
+};
+
+const arduinoGigaR1Pinout: Pinout = {
+  connector: "GIGA R1 WiFi shield and high-density headers",
+  layout: "grouped",
+  notes: [
+    "All GPIO uses 3.3 V logic and is not 5 V tolerant.",
+    "A8-A11 are analog-input-only and do not provide GPIO peripheral functions.",
+    "BOOT0 is connected to the user button; keep boot and reset control signals free of external drive during startup.",
+  ],
+  groups: [
+    { label: "Digital D0-D21", pins: [
+      { position: 0, label: "D0 / RX0", role: "uart", aliases: ["PB7"] }, { position: 1, label: "D1 / TX0", role: "uart", aliases: ["PA9"] },
+      { position: 2, label: "D2", role: "pwm", aliases: ["PA3"] }, { position: 3, label: "D3", role: "pwm", aliases: ["PA2"] },
+      { position: 4, label: "D4", role: "pwm", aliases: ["PJ8"] }, { position: 5, label: "D5", role: "pwm", aliases: ["PA7"] },
+      { position: 6, label: "D6", role: "pwm", aliases: ["PD13"] }, { position: 7, label: "D7", role: "pwm", aliases: ["PB4"] },
+      { position: 8, label: "D8 / I2C1 SCL", role: "i2c", aliases: ["PB8"] }, { position: 9, label: "D9 / I2C1 SDA", role: "i2c", aliases: ["PB9"] },
+      { position: 10, label: "D10 / SPI CS", role: "spi", aliases: ["PK1"] }, { position: 11, label: "D11 / SPI COPI", role: "spi", aliases: ["PJ10"] },
+      { position: 12, label: "D12 / SPI CIPO", role: "spi", aliases: ["PJ11"] }, { position: 13, label: "D13 / SPI SCK", role: "spi", aliases: ["PH6"] },
+      { position: 14, label: "D14 / TX3", role: "uart", aliases: ["PG14"] }, { position: 15, label: "D15 / RX3", role: "uart", aliases: ["PC7"] },
+      { position: 16, label: "D16 / TX2", role: "uart", aliases: ["PH13"] }, { position: 17, label: "D17 / RX2", role: "uart", aliases: ["PI9"] },
+      { position: 18, label: "D18 / TX1", role: "uart", aliases: ["PD5"] }, { position: 19, label: "D19 / RX1", role: "uart", aliases: ["PD6"] },
+      { position: 20, label: "D20 / I2C2 SDA", role: "i2c", aliases: ["PB11"] }, { position: 21, label: "D21 / I2C2 SCL", role: "i2c", aliases: ["PH4"] },
+    ] },
+    { label: "High-density digital D22-D53", pins: Array.from({ length: 32 }, (_, index) => ({
+      position: index + 22,
+      label: `D${index + 22}`,
+      role: "gpio" as const,
+    })) },
+    { label: "Analog and CAN", pins: [
+      { position: 0, label: "A0 / D76", role: "adc", aliases: ["PC4"] }, { position: 1, label: "A1 / D77", role: "adc", aliases: ["PC5"] },
+      { position: 2, label: "A2 / D78", role: "adc", aliases: ["PB0"] }, { position: 3, label: "A3 / D79", role: "adc", aliases: ["PB1"] },
+      { position: 4, label: "A4 / D80", role: "adc", aliases: ["PC3"] }, { position: 5, label: "A5 / D81", role: "adc", aliases: ["PC2"] },
+      { position: 6, label: "A6 / D82", role: "adc", aliases: ["PC0"] }, { position: 7, label: "A7 / D83", role: "adc", aliases: ["PA0"] },
+      { position: 8, label: "A8", role: "adc", aliases: ["PC2_C"] }, { position: 9, label: "A9", role: "adc", aliases: ["PC3_C"] },
+      { position: 10, label: "A10", role: "adc", aliases: ["PA1_C"] }, { position: 11, label: "A11", role: "adc", aliases: ["PA0_C"] },
+      { position: 84, label: "DAC0 / D84", role: "dac", aliases: ["PA4"] }, { position: 85, label: "DAC1 / D85", role: "dac", aliases: ["PA5"] },
+      { position: 93, label: "CAN RX / D93", role: "special", aliases: ["PB5"] }, { position: 94, label: "CAN TX / D94", role: "special", aliases: ["PB13"] },
+    ] },
+    { label: "Power and control", pins: [
+      { position: 1, label: "IOREF", role: "power" }, { position: 2, label: "RESET", role: "system" },
+      { position: 3, label: "3V3", role: "power" }, { position: 4, label: "5V", role: "power" },
+      { position: 5, label: "GND", role: "ground" }, { position: 6, label: "GND", role: "ground" },
+      { position: 7, label: "VIN", role: "power" },
+    ] },
+  ],
+};
+
+const grandCentralM4Pinout: Pinout = {
+  connector: "Mega-compatible shield headers",
+  layout: "grouped",
+  notes: [
+    "All GPIO uses 3.3 V logic and is not 5 V tolerant.",
+    "QSPI flash, microSD, NeoPixel, and status LED signals are board resources and should not be reassigned casually.",
+    "D50-D53 form the dedicated SPI header-compatible signal group; alternate SERCOM assignments are pin-mux dependent.",
+  ],
+  groups: [
+    { label: "Digital D0-D53", pins: Array.from({ length: 54 }, (_, position) => ({
+      position,
+      label: `D${position}`,
+      role: ([0, 1, 14, 15, 16, 17, 18, 19].includes(position) ? "uart" : [20, 21].includes(position) ? "i2c" : [50, 51, 52, 53].includes(position) ? "spi" : "gpio") as PinRole,
+    })) },
+    { label: "Analog A0-A15", pins: Array.from({ length: 16 }, (_, position) => ({ position, label: `A${position}`, role: "adc" as const })) },
+    { label: "Power and control", pins: [
+      { position: 1, label: "3V3", role: "power" }, { position: 2, label: "5V", role: "power" },
+      { position: 3, label: "GND", role: "ground" }, { position: 4, label: "VIN", role: "power" },
+      { position: 5, label: "RESET", role: "system" }, { position: 6, label: "AREF", role: "adc" },
+      { position: 7, label: "SDA", role: "i2c" }, { position: 8, label: "SCL", role: "i2c" },
+    ] },
+  ],
+};
+
+const sparkfunThingPlusRp2040Pinout: Pinout = {
+  connector: "Feather-compatible side headers",
+  layout: "grouped",
+  notes: [
+    "All RP2040 GPIO uses 3.3 V logic and is not 5 V tolerant.",
+    "GPIO7 and GPIO23 are physically tied together for the shared I2C clock routing.",
+    "GPIO9-12, GPIO14, and GPIO15 are assigned to microSD; GPIO8 drives the NeoPixel and GPIO25 drives the status LED.",
+  ],
+  groups: [
+    { label: "Exposed digital header signals", pins: [
+      { position: 0, label: "D0 / GP0 / TX", role: "uart" }, { position: 1, label: "D1 / GP1 / RX", role: "uart" },
+      { position: 2, label: "D2 / GP2 / SCK", role: "spi" }, { position: 3, label: "D3 / GP3 / MOSI", role: "spi" },
+      { position: 4, label: "D4 / GP4 / MISO", role: "spi" }, { position: 6, label: "D6 / GP6 / SDA", role: "i2c" },
+      { position: 7, label: "D7 / GP7 / SCL", role: "i2c", aliases: ["GP23 tied"] },
+      { position: 16, label: "D16 / GP16", role: "gpio" }, { position: 17, label: "D17 / GP17", role: "gpio" },
+      { position: 18, label: "D18 / GP18", role: "gpio" }, { position: 19, label: "D19 / GP19", role: "gpio" },
+      { position: 20, label: "D20 / GP20", role: "gpio" }, { position: 21, label: "D21 / GP21", role: "gpio" },
+      { position: 22, label: "D22 / GP22", role: "gpio" },
+    ] },
+    { label: "Analog header signals", pins: [
+      { position: 0, label: "A0 / GP26", role: "adc" }, { position: 1, label: "A1 / GP27", role: "adc" },
+      { position: 2, label: "A2 / GP28", role: "adc" }, { position: 3, label: "A3 / GP29", role: "adc" },
+    ] },
+    { label: "Power and control", pins: [
+      { position: 1, label: "USB", role: "power" }, { position: 2, label: "EN", role: "system" },
+      { position: 3, label: "3V3", role: "power" }, { position: 4, label: "GND", role: "ground" },
+      { position: 5, label: "VBAT", role: "power" },
+    ] },
+  ],
+};
+
+const sparkfunThingPlusEsp32Pinout: Pinout = {
+  connector: "Feather-compatible side headers",
+  layout: "grouped",
+  notes: [
+    "All ESP32 GPIO uses 3.3 V logic and is not 5 V tolerant.",
+    "GPIO0 is the boot button signal; GPIO2, GPIO5, GPIO12, and GPIO15 are boot-strapping-sensitive pins.",
+    "ADC2 pins cannot be used for analog conversion while Wi-Fi is active; microSD chip select is GPIO5.",
+  ],
+  groups: [
+    { label: "Left header", pins: [
+      { position: 1, label: "SDA / GPIO21", role: "i2c" }, { position: 2, label: "SCL / GPIO22", role: "i2c" },
+      { position: 3, label: "D4 / GPIO14", role: "adc" }, { position: 4, label: "D6 / GPIO32", role: "adc" },
+      { position: 5, label: "D8 / GPIO15", role: "special", aliases: ["Strapping", "Touch 3"] },
+      { position: 6, label: "D10 / GPIO33", role: "adc" }, { position: 7, label: "D11 / GPIO27", role: "adc" },
+      { position: 8, label: "D12 / GPIO12", role: "special", aliases: ["Strapping", "ADC2 CH5"] },
+      { position: 9, label: "LED / GPIO13", role: "gpio" }, { position: 10, label: "VUSB", role: "power" },
+      { position: 11, label: "EN", role: "system" }, { position: 12, label: "VBAT", role: "power" },
+    ] },
+    { label: "Right header", pins: [
+      { position: 1, label: "FREE / GPIO4", role: "adc" }, { position: 2, label: "TX / GPIO17", role: "uart" },
+      { position: 3, label: "RX / GPIO16", role: "uart" }, { position: 4, label: "POCI / GPIO19", role: "spi" },
+      { position: 5, label: "PICO / GPIO23", role: "spi" }, { position: 6, label: "SCK / GPIO18", role: "spi" },
+      { position: 7, label: "A5 / GPIO35", role: "adc" }, { position: 8, label: "A4 / GPIO36", role: "adc" },
+      { position: 9, label: "A3 / GPIO39", role: "adc" }, { position: 10, label: "A2 / GPIO34", role: "adc" },
+      { position: 11, label: "A1 / GPIO25", role: "dac", aliases: ["ADC2 CH8"] },
+      { position: 12, label: "A0 / GPIO26", role: "dac", aliases: ["ADC2 CH9"] },
+      { position: 13, label: "GND", role: "ground" }, { position: 14, label: "NC", role: "reserved" },
+      { position: 15, label: "3V3", role: "power" }, { position: 16, label: "RESET", role: "system" },
+    ] },
+  ],
+};
+
+const redBoardArtemisAtpPinout: Pinout = {
+  connector: "Mega-compatible ATP headers",
+  layout: "grouped",
+  notes: [
+    "All Artemis I/O uses 3.3 V logic.",
+    "Signals marked A are ADC-capable and signals marked ~ are PWM-capable on SparkFun's silkscreen.",
+    "The Qwiic, microphone, LEDs, JTAG, and USB-to-serial circuitry share module signals; check jumpers before repurposing them.",
+  ],
+  groups: [
+    { label: "Top headers", pins: [
+      { position: 1, label: "SCL", role: "i2c" }, { position: 2, label: "SDA", role: "i2c" },
+      { position: 3, label: "GND", role: "ground" }, { position: 4, label: "GND", role: "ground" },
+      { position: 5, label: "SCK", role: "spi" }, { position: 6, label: "MISO", role: "spi" },
+      { position: 7, label: "MOSI", role: "spi" }, { position: 8, label: "A13", role: "adc" },
+      { position: 9, label: "A12", role: "adc" }, { position: 10, label: "A32", role: "adc" },
+      { position: 11, label: "28", role: "gpio" }, { position: 12, label: "27", role: "gpio" },
+      { position: 13, label: "23", role: "gpio" }, { position: 14, label: "22", role: "gpio" },
+      { position: 15, label: "4", role: "gpio" }, { position: 16, label: "A36", role: "adc" },
+      { position: 17, label: "TX1", role: "uart" }, { position: 18, label: "RX1", role: "uart" },
+      { position: 19, label: "44", role: "gpio" }, { position: 20, label: "8", role: "gpio" },
+      { position: 21, label: "10", role: "gpio" }, { position: 22, label: "9", role: "gpio" },
+      { position: 23, label: "26", role: "gpio" }, { position: 24, label: "16", role: "gpio" },
+      { position: 25, label: "19", role: "gpio" }, { position: 26, label: "18", role: "gpio" },
+    ] },
+    { label: "Bottom headers", pins: [
+      { position: 1, label: "IOREF", role: "power" }, { position: 2, label: "RESET", role: "system" },
+      { position: 3, label: "3V3", role: "power" }, { position: 4, label: "5V", role: "power" },
+      { position: 5, label: "GND", role: "ground" }, { position: 6, label: "GND", role: "ground" },
+      { position: 7, label: "VIN", role: "power" }, { position: 8, label: "A29", role: "adc" },
+      { position: 9, label: "A41", role: "adc" }, { position: 10, label: "A34", role: "adc" },
+      { position: 11, label: "A33", role: "adc" }, { position: 12, label: "A16", role: "adc" },
+      { position: 13, label: "A31", role: "adc" }, { position: 14, label: "GND", role: "ground" },
+      { position: 15, label: "17", role: "gpio" }, { position: 16, label: "41", role: "gpio" },
+      { position: 17, label: "45", role: "gpio" }, { position: 18, label: "2", role: "gpio" },
+      { position: 19, label: "1", role: "gpio" }, { position: 20, label: "0", role: "gpio" },
+      { position: 21, label: "43", role: "gpio" }, { position: 22, label: "42", role: "gpio" },
+    ] },
+    { label: "Side breakout", pins: [
+      { position: 1, label: "3", role: "gpio" }, { position: 2, label: "36", role: "gpio" },
+      { position: 3, label: "38", role: "gpio" }, { position: 4, label: "37", role: "gpio" },
+      { position: 5, label: "44", role: "gpio" }, { position: 6, label: "GND", role: "ground" },
+    ] },
+  ],
+};
+
+const redBoardTurboPinout: Pinout = {
+  connector: "Arduino R3 shield headers",
+  layout: "grouped",
+  notes: [
+    "SAMD21 I/O uses 3.3 V logic and is not 5 V tolerant.",
+    "D13 is shared with the blue status LED; D44 drives the onboard WS2812 RGB LED.",
+    "The separate programming header carries SWD and reset signals and should not be treated as general GPIO.",
+  ],
+  groups: [
+    { label: "Digital", pins: Array.from({ length: 14 }, (_, position) => ({
+      position,
+      label: position === 0 ? "D0 / RX" : position === 1 ? "D1 / TX" : `D${position}`,
+      role: (position < 2 ? "uart" : position >= 10 && position <= 13 ? "spi" : "gpio") as PinRole,
+    })) },
+    { label: "Analog", pins: Array.from({ length: 6 }, (_, position) => ({ position, label: `A${position}`, role: "adc" as const })) },
+    { label: "Power, I2C, and SPI", pins: [
+      { position: 1, label: "IOREF / 3V3", role: "power" }, { position: 2, label: "RESET", role: "system" },
+      { position: 3, label: "5V", role: "power" }, { position: 4, label: "GND", role: "ground" },
+      { position: 5, label: "VIN", role: "power" }, { position: 6, label: "SDA / D20", role: "i2c" },
+      { position: 7, label: "SCL / D21", role: "i2c" }, { position: 8, label: "MOSI", role: "spi" },
+      { position: 9, label: "MISO", role: "spi" }, { position: 10, label: "SCK", role: "spi" },
+    ] },
+  ],
+};
+
+const particleMeshGen3Pinout: Pinout = {
+  connector: "Particle Gen 3 side headers",
+  layout: "grouped",
+  notes: [
+    "All GPIO is limited to 3.3 V.",
+    "MODE and RESET are active-low control signals; avoid loading them during startup.",
+    "Particle Device OS may reserve or reconfigure pins for cellular, Wi-Fi, SPI, and system functions.",
+  ],
+  groups: [
+    { label: "Analog", pins: [
+      { position: 0, label: "A0", role: "adc" }, { position: 1, label: "A1", role: "adc" },
+      { position: 2, label: "A2", role: "adc" }, { position: 3, label: "A3", role: "adc" },
+      { position: 4, label: "A4", role: "adc" }, { position: 5, label: "A5", role: "adc" },
+    ] },
+    { label: "Digital GPIO", pins: [
+      { position: 2, label: "D2", role: "pwm" }, { position: 3, label: "D3", role: "pwm" },
+      { position: 4, label: "D4", role: "pwm" }, { position: 5, label: "D5", role: "pwm" },
+      { position: 6, label: "D6", role: "pwm" }, { position: 7, label: "D7", role: "pwm" },
+      { position: 8, label: "D8", role: "pwm" },
+    ] },
+    { label: "Buses", pins: [
+      { position: 1, label: "SDA", role: "i2c" }, { position: 2, label: "SCL", role: "i2c" },
+      { position: 3, label: "MOSI", role: "spi" }, { position: 4, label: "MISO", role: "spi" },
+      { position: 5, label: "SCK", role: "spi" }, { position: 6, label: "RX", role: "uart" },
+      { position: 7, label: "TX", role: "uart" },
+    ] },
+    { label: "Power and control", pins: [
+      { position: 1, label: "Li+", role: "power" }, { position: 2, label: "VUSB", role: "power" },
+      { position: 3, label: "3V3", role: "power" }, { position: 4, label: "GND", role: "ground" },
+      { position: 5, label: "EN", role: "system" }, { position: 6, label: "RST", role: "system" },
+      { position: 7, label: "MODE", role: "system" },
+    ] },
+  ],
+};
+
+const tiMspm0g3507Pinout: Pinout = {
+  connector: "40-pin BoosterPack headers J1-J4",
+  layout: "grouped",
+  notes: [
+    "MSPM0G3507 I/O operates from the 3.3 V target rail and is not 5 V tolerant.",
+    "J14 and J15 select which MCU signals reach BoosterPack positions 3 and 29.",
+    "Buttons, LEDs, thermistor, op-amp, and debugger UART/SWD signals remain connected unless their isolation jumpers are removed.",
+  ],
+  groups: [
+    { label: "BoosterPack positions 1-20", pins: [
+      { position: 1, label: "3V3", role: "power" }, { position: 2, label: "PA25", role: "adc", aliases: ["ADC0.2"] },
+      { position: 3, label: "PB23 / PA9", role: "uart", aliases: ["UART RX", "J14 select"] }, { position: 4, label: "PA8", role: "uart", aliases: ["UART TX"] },
+      { position: 5, label: "PA26", role: "gpio" }, { position: 6, label: "PB24", role: "adc", aliases: ["ADC0.5"] },
+      { position: 7, label: "PB9", role: "spi", aliases: ["SPI CLK"] }, { position: 8, label: "PA27", role: "gpio" },
+      { position: 9, label: "PB2", role: "i2c", aliases: ["I2C SCL"] }, { position: 10, label: "PB3", role: "i2c", aliases: ["I2C SDA"] },
+      { position: 11, label: "PB16", role: "gpio" }, { position: 12, label: "PB0", role: "spi", aliases: ["SPI CS"] },
+      { position: 13, label: "PB6", role: "spi", aliases: ["SPI CS"] }, { position: 14, label: "PB7", role: "spi", aliases: ["SPI POCI"] },
+      { position: 15, label: "PB8", role: "spi", aliases: ["SPI PICO"] }, { position: 16, label: "NRST", role: "system" },
+      { position: 17, label: "PB15", role: "gpio" }, { position: 18, label: "PB17", role: "spi", aliases: ["SPI CS"] },
+      { position: 19, label: "PB12", role: "pwm" }, { position: 20, label: "GND", role: "ground" },
+    ] },
+    { label: "BoosterPack positions 21-40", pins: [
+      { position: 21, label: "5V", role: "power" }, { position: 22, label: "GND", role: "ground" },
+      { position: 23, label: "PB19", role: "adc", aliases: ["ADC1.6"] }, { position: 24, label: "PA22", role: "adc", aliases: ["ADC0.7"] },
+      { position: 25, label: "PB18", role: "adc", aliases: ["ADC1.5"] }, { position: 26, label: "PA18", role: "adc", aliases: ["ADC1.3", "BOOT button"] },
+      { position: 27, label: "PA24", role: "adc", aliases: ["ADC0.3"] }, { position: 28, label: "PA17", role: "adc", aliases: ["ADC1.2"] },
+      { position: 29, label: "PA16 / PA18", role: "adc", aliases: ["J15 select"] }, { position: 30, label: "PA15", role: "dac", aliases: ["DAC OUT"] },
+      { position: 31, label: "PA13", role: "special", aliases: ["CAN RX"] }, { position: 32, label: "PA12", role: "special", aliases: ["CAN TX"] },
+      { position: 33, label: "PA11", role: "uart", aliases: ["LIN RX"] }, { position: 34, label: "PA10", role: "uart", aliases: ["LIN TX"] },
+      { position: 35, label: "PB13", role: "pwm" }, { position: 36, label: "PB20", role: "pwm" },
+      { position: 37, label: "PA31", role: "pwm" }, { position: 38, label: "PA28", role: "pwm" },
+      { position: 39, label: "PB1", role: "pwm" }, { position: 40, label: "PB4", role: "pwm" },
+    ] },
+  ],
+};
+
+const silabsXg24ExplorerPinout: Pinout = {
+  connector: "20 breakout pads plus mikroBUS and Qwiic",
+  layout: "grouped",
+  notes: [
+    "EFR32MG24 GPIO uses the VMCU 3.3 V domain; the 5 V pad is USB power, not a logic level.",
+    "VREFP is an ADC reference input and must not be treated as a general power output.",
+    "mikroBUS signals are duplicated on the breakout pads; the Qwiic connector uses its separately documented PC05/PC04 I2C pair.",
+  ],
+  groups: [
+    { label: "Left breakout pads", pins: [
+      { position: 1, label: "PD02", role: "gpio" }, { position: 2, label: "PD03", role: "gpio" },
+      { position: 3, label: "GND", role: "ground" }, { position: 4, label: "5V", role: "power" },
+      { position: 5, label: "PB05", role: "i2c", aliases: ["mikroBUS SDA"] },
+      { position: 6, label: "PB04", role: "i2c", aliases: ["mikroBUS SCL"] },
+      { position: 7, label: "PD04", role: "uart", aliases: ["mikroBUS TX"] },
+      { position: 8, label: "PD05", role: "uart", aliases: ["mikroBUS RX"] },
+      { position: 9, label: "PB01", role: "gpio", aliases: ["mikroBUS INT"] },
+      { position: 10, label: "PA00", role: "pwm", aliases: ["mikroBUS PWM"] },
+    ] },
+    { label: "Right breakout pads", pins: [
+      { position: 1, label: "PC09", role: "gpio" }, { position: 2, label: "VREFP", role: "adc" },
+      { position: 3, label: "GND", role: "ground" }, { position: 4, label: "VMCU", role: "power" },
+      { position: 5, label: "PC03", role: "spi", aliases: ["mikroBUS MOSI"] },
+      { position: 6, label: "PC02", role: "spi", aliases: ["mikroBUS MISO"] },
+      { position: 7, label: "PC01", role: "spi", aliases: ["mikroBUS SCK"] },
+      { position: 8, label: "PC00", role: "spi", aliases: ["mikroBUS CS"] },
+      { position: 9, label: "PC08", role: "system", aliases: ["mikroBUS RST"] },
+      { position: 10, label: "PB00", role: "adc", aliases: ["mikroBUS AN"] },
+    ] },
+    { label: "Qwiic", pins: [
+      { position: 1, label: "GND", role: "ground" }, { position: 2, label: "VMCU", role: "power" },
+      { position: 3, label: "SDA / PC05", role: "i2c" }, { position: 4, label: "SCL / PC04", role: "i2c" },
+    ] },
+  ],
+};
+
+const beagleboneAi64Headers: Pinout = {
+  connector: "P8 and P9 BeagleBone cape headers",
+  layout: "grouped",
+  notes: [
+    "Cape-header I/O is 3.3 V only; do not drive any I/O before SYS_RESET is high.",
+    "Many header pins have multiple SoC mux modes, and several use resistor-selected alternate SoC pads; the GPIO alias shown is the primary documented route.",
+    "Boot-strap and reserved functions on cape pins must remain at valid reset levels; confirm the official mode table before adding pulls.",
+  ],
+  groups: [
+    { label: "P8 header", pins: [
+      { position: 1, label: "P8.01 / GND", role: "ground" }, { position: 2, label: "P8.02 / GND", role: "ground" },
+      { position: 3, label: "P8.03 / GPIO0_20", role: "gpio" }, { position: 4, label: "P8.04 / GPIO0_48", role: "gpio" },
+      { position: 5, label: "P8.05 / GPIO0_33", role: "gpio" }, { position: 6, label: "P8.06 / GPIO0_34", role: "gpio" },
+      { position: 7, label: "P8.07 / GPIO0_15", role: "gpio" }, { position: 8, label: "P8.08 / GPIO0_14", role: "gpio" },
+      { position: 9, label: "P8.09 / GPIO0_17", role: "gpio" }, { position: 10, label: "P8.10 / GPIO0_16", role: "gpio" },
+      { position: 11, label: "P8.11 / GPIO0_60", role: "gpio" }, { position: 12, label: "P8.12 / GPIO0_59", role: "gpio" },
+      { position: 13, label: "P8.13 / GPIO0_89", role: "gpio" }, { position: 14, label: "P8.14 / GPIO0_75", role: "gpio" },
+      { position: 15, label: "P8.15 / GPIO0_61", role: "gpio" }, { position: 16, label: "P8.16 / GPIO0_62", role: "gpio" },
+      { position: 17, label: "P8.17 / GPIO0_3", role: "gpio" }, { position: 18, label: "P8.18 / GPIO0_4", role: "gpio" },
+      { position: 19, label: "P8.19 / GPIO0_88", role: "gpio" }, { position: 20, label: "P8.20 / GPIO0_76", role: "gpio" },
+      { position: 21, label: "P8.21 / GPIO0_30", role: "gpio" }, { position: 22, label: "P8.22 / GPIO0_5", role: "gpio" },
+      { position: 23, label: "P8.23 / GPIO0_31", role: "gpio" }, { position: 24, label: "P8.24 / GPIO0_6", role: "gpio" },
+      { position: 25, label: "P8.25 / GPIO0_35", role: "gpio" }, { position: 26, label: "P8.26 / GPIO0_51", role: "gpio" },
+      { position: 27, label: "P8.27 / GPIO0_71", role: "gpio" }, { position: 28, label: "P8.28 / GPIO0_72", role: "gpio" },
+      { position: 29, label: "P8.29 / GPIO0_73", role: "gpio" }, { position: 30, label: "P8.30 / GPIO0_74", role: "gpio" },
+      { position: 31, label: "P8.31 / GPIO0_32", role: "gpio" }, { position: 32, label: "P8.32 / GPIO0_26", role: "gpio" },
+      { position: 33, label: "P8.33 / GPIO0_25", role: "gpio" }, { position: 34, label: "P8.34 / GPIO0_7", role: "gpio" },
+      { position: 35, label: "P8.35 / GPIO0_24", role: "gpio" }, { position: 36, label: "P8.36 / GPIO0_8", role: "gpio" },
+      { position: 37, label: "P8.37 / GPIO0_106", role: "gpio" }, { position: 38, label: "P8.38 / GPIO0_105", role: "gpio" },
+      { position: 39, label: "P8.39 / GPIO0_69", role: "gpio" }, { position: 40, label: "P8.40 / GPIO0_70", role: "gpio" },
+      { position: 41, label: "P8.41 / GPIO0_67", role: "gpio" }, { position: 42, label: "P8.42 / GPIO0_68", role: "gpio" },
+      { position: 43, label: "P8.43 / GPIO0_65", role: "gpio" }, { position: 44, label: "P8.44 / GPIO0_66", role: "gpio" },
+      { position: 45, label: "P8.45 / GPIO0_79", role: "gpio" }, { position: 46, label: "P8.46 / GPIO0_80", role: "gpio" },
+    ] },
+    { label: "P9 header", pins: [
+      { position: 1, label: "P9.01 / GND", role: "ground" }, { position: 2, label: "P9.02 / GND", role: "ground" },
+      { position: 3, label: "P9.03 / 3V3", role: "power" }, { position: 4, label: "P9.04 / 3V3", role: "power" },
+      { position: 5, label: "P9.05 / VIN", role: "power" }, { position: 6, label: "P9.06 / VIN", role: "power" },
+      { position: 7, label: "P9.07 / VOUT_SYS", role: "power" }, { position: 8, label: "P9.08 / VOUT_SYS", role: "power" },
+      { position: 9, label: "P9.09 / RESET#", role: "system" }, { position: 10, label: "P9.10 / RESET#", role: "system" },
+      { position: 11, label: "P9.11 / GPIO0_1", role: "gpio" }, { position: 12, label: "P9.12 / GPIO0_45", role: "gpio" },
+      { position: 13, label: "P9.13 / GPIO0_2", role: "gpio" }, { position: 14, label: "P9.14 / GPIO0_93", role: "gpio" },
+      { position: 15, label: "P9.15 / GPIO0_47", role: "gpio" }, { position: 16, label: "P9.16 / GPIO0_94", role: "gpio" },
+      { position: 17, label: "P9.17 / GPIO0_28", role: "gpio" }, { position: 18, label: "P9.18 / GPIO0_40", role: "gpio" },
+      { position: 19, label: "P9.19 / GPIO1_1", role: "gpio" }, { position: 20, label: "P9.20 / GPIO1_2", role: "gpio" },
+      { position: 21, label: "P9.21 / GPIO0_39", role: "gpio" }, { position: 22, label: "P9.22 / GPIO0_38", role: "gpio" },
+      { position: 23, label: "P9.23 / GPIO0_10", role: "gpio" }, { position: 24, label: "P9.24 / GPIO0_119", role: "gpio" },
+      { position: 25, label: "P9.25 / GPIO0_127", role: "gpio" }, { position: 26, label: "P9.26 / GPIO0_118", role: "gpio" },
+      { position: 27, label: "P9.27 / GPIO0_46", role: "gpio" }, { position: 28, label: "P9.28 / GPIO1_11", role: "gpio" },
+      { position: 29, label: "P9.29 / GPIO1_14", role: "gpio" }, { position: 30, label: "P9.30 / GPIO1_13", role: "gpio" },
+      { position: 31, label: "P9.31 / GPIO1_12", role: "gpio" }, { position: 32, label: "P9.32 / VDD_ADC", role: "adc" },
+      { position: 33, label: "P9.33 / AIN4", role: "adc" }, { position: 34, label: "P9.34 / GND_ADC", role: "ground" },
+      { position: 35, label: "P9.35 / AIN6", role: "adc" }, { position: 36, label: "P9.36 / AIN5", role: "adc" },
+      { position: 37, label: "P9.37 / AIN2", role: "adc" }, { position: 38, label: "P9.38 / AIN3", role: "adc" },
+      { position: 39, label: "P9.39 / AIN0", role: "adc" }, { position: 40, label: "P9.40 / AIN1", role: "adc" },
+      { position: 41, label: "P9.41 / GPIO1_0", role: "gpio" }, { position: 42, label: "P9.42 / GPIO0_123", role: "gpio" },
+      { position: 43, label: "P9.43 / GND", role: "ground" }, { position: 44, label: "P9.44 / GND", role: "ground" },
+      { position: 45, label: "P9.45 / GND", role: "ground" }, { position: 46, label: "P9.46 / GND", role: "ground" },
+    ] },
+  ],
+};
+
 const baseBoards: Board[] = [
   {
     id: "raspberry-pi-5",
@@ -4050,6 +4770,7 @@ const baseBoards: Board[] = [
     ],
     warnings: [
       "Header is 26-pin, not the full Raspberry Pi 40-pin layout.",
+      "GPIO is 3.3 V only; 5 V header pins are power rails, not logic signals.",
       "Documentation quality and OS images vary by board revision and distribution.",
     ],
     sourceLinks: [
@@ -4064,6 +4785,7 @@ const baseBoards: Board[] = [
         type: "Manual",
       },
     ],
+    pinout: orangePi5Header,
   },
   {
     id: "adafruit-feather-rp2040",
@@ -4682,6 +5404,7 @@ const additionalBoards: Board[] = [
       "Feather-compatible footprint broadens add-on options.",
     ],
     warnings: [
+      "GPIO is 3.3 V only and is not 5 V tolerant.",
       "Not all RP2040 GPIOs are exposed in the Thing Plus footprint.",
       "Check microSD/shared pin usage before assigning SPI.",
     ],
@@ -4696,7 +5419,13 @@ const additionalBoards: Board[] = [
         url: "https://www.sparkfun.com/sparkfun-thing-plus-rp2040.html",
         type: "Docs",
       },
+      {
+        label: "CircuitPython Thing Plus RP2040 pins.c",
+        url: "https://github.com/adafruit/circuitpython/blob/main/ports/raspberrypi/boards/sparkfun_thing_plus_rp2040/pins.c",
+        type: "Pinout",
+      },
     ],
+    pinout: sparkfunThingPlusRp2040Pinout,
   },
   {
     id: "sparkfun-thing-plus-esp32-wroom-usbc",
@@ -4718,6 +5447,7 @@ const additionalBoards: Board[] = [
       "Feather compatibility makes it easy to compare with Adafruit boards.",
     ],
     warnings: [
+      "GPIO0 is the boot button signal; GPIO2, GPIO5, GPIO12, and GPIO15 need valid reset-time strap levels.",
       "ESP32 ADC2 limitations still apply when Wi-Fi is active.",
       "Check microSD and Qwiic shared buses before assigning pins.",
     ],
@@ -4732,7 +5462,13 @@ const additionalBoards: Board[] = [
         url: "https://www.sparkfun.com/sparkfun-thing-plus-esp32-wroom-usb-c.html",
         type: "Docs",
       },
+      {
+        label: "SparkFun ESP32 Thing Plus graphical datasheet",
+        url: "https://cdn.sparkfun.com/assets/3/9/5/f/e/SparkFun_Thing_Plus_ESP32_WROOM_C_graphical_datasheet2.pdf",
+        type: "Pinout",
+      },
     ],
+    pinout: sparkfunThingPlusEsp32Pinout,
   },
   {
     id: "sparkfun-redboard-artemis-atp",
@@ -4768,38 +5504,13 @@ const additionalBoards: Board[] = [
         url: "https://www.sparkfun.com/sparkfun-redboard-artemis-atp.html",
         type: "Docs",
       },
-    ],
-  },
-  {
-    id: "sparkfun-micromod-artemis-processor",
-    name: "SparkFun MicroMod Artemis Processor",
-    vendor: "SparkFun",
-    category: "Development Board",
-    family: "MicroMod",
-    processor: "Ambiq Apollo3 Blue",
-    logicLevel: "3.3 V GPIO",
-    power: "Carrier-board supplied",
-    formFactor: "MicroMod M.2 processor board",
-    description:
-      "A MicroMod processor board for modular SparkFun carriers, useful when students need to separate processor pinouts from carrier pinouts.",
-    tags: ["SparkFun", "MicroMod", "Artemis", "M.2", "BLE"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth"],
-    highlights: [
-      "Official hookup guide includes a MicroMod connector pinout table.",
-      "Shows how a processor-board pinout maps through carrier boards.",
-      "Low-power Artemis module suits embedded ML sensor work.",
-    ],
-    warnings: [
-      "Always check the selected carrier board in addition to the processor board.",
-      "All pins are 3.3 V and the ADC range is lower than many expect.",
-    ],
-    sourceLinks: [
       {
-        label: "SparkFun MicroMod Artemis Processor hookup guide",
-        url: "https://learn.sparkfun.com/tutorials/micromod-artemis-processor-board-hookup-guide/all",
-        type: "Manual",
+        label: "SparkFun Artemis ATP GPIO header map",
+        url: "https://cdn.sparkfun.com/assets/learn_tutorials/9/2/7/15442-SparkFun-Artemis-ATP-GPIOPins.jpg",
+        type: "Pinout",
       },
     ],
+    pinout: redBoardArtemisAtpPinout,
   },
   {
     id: "raspberry-pi-3-model-b-plus",
@@ -4959,43 +5670,6 @@ const additionalBoards: Board[] = [
     pinout: stm32BlackPillF411Headers,
   },
   {
-    id: "stm32f4discovery",
-    name: "STM32F4DISCOVERY",
-    vendor: "STMicroelectronics",
-    category: "Microcontroller",
-    family: "STM32 Discovery",
-    processor: "STM32F407VGT6 Arm Cortex-M4F @ 168 MHz",
-    logicLevel: "3.3 V GPIO (many pins 5 V tolerant)",
-    power: "USB (ST-LINK) or 5 V external",
-    formFactor: "Discovery board with dual 50-pin expansion headers",
-    description:
-      "ST's classic Cortex-M4 discovery kit with onboard ST-LINK, accelerometer, MEMS mic, and audio DAC, a long-running standard in university embedded courses.",
-    tags: ["STM32", "Discovery", "Cortex-M4", "ST-LINK", "Audio"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "SWD", "JTAG"],
-    highlights: [
-      "Embedded ST-LINK/V2-A means no external programmer is needed.",
-      "UM1472 user manual documents every header pin and jumper.",
-      "Onboard MEMS sensors and class-D audio driver for DSP labs.",
-    ],
-    warnings: [
-      "Several GPIOs are tied to onboard peripherals (LIS3DSH, CS43L22, USB OTG); check UM1472 before reusing them.",
-      "VDD is 3 V; only FT-marked pins tolerate 5 V.",
-      "Remove ST-LINK jumpers when debugging an external target.",
-    ],
-    sourceLinks: [
-      {
-        label: "UM1472 STM32F4DISCOVERY user manual",
-        url: "https://www.st.com/resource/en/user_manual/um1472-discovery-kit-with-stm32f407vg-mcu-stmicroelectronics.pdf",
-        type: "Manual",
-      },
-      {
-        label: "STM32F4DISCOVERY product page",
-        url: "https://www.st.com/en/evaluation-tools/stm32f4discovery.html",
-        type: "Docs",
-      },
-    ],
-  },
-  {
     id: "nordic-nrf52840-dk",
     name: "nRF52840 DK",
     vendor: "Nordic Semiconductor",
@@ -5097,6 +5771,7 @@ const additionalBoards: Board[] = [
     ],
     warnings: [
       "40-pin header is Pi-like but GPIO numbering and alternate functions differ; verify against Banana Pi docs, not Pi guides.",
+      "GPIO is 3.3 V only; alternate functions require the matching pin-mux configuration.",
       "No onboard Wi-Fi or Bluetooth.",
       "Software images vary in quality across distros; check the wiki for maintained builds.",
     ],
@@ -5107,6 +5782,7 @@ const additionalBoards: Board[] = [
         type: "Docs",
       },
     ],
+    pinout: bananaPiM5Header,
   },
   {
     id: "odroid-c4",
@@ -5168,6 +5844,7 @@ const additionalBoards: Board[] = [
     warnings: [
       "Requires a 12 V supply; do not feed 5 V Pi supplies into the barrel jack.",
       "PI-2 GPIO bus header is not Raspberry Pi pin-compatible despite the 40-pin form.",
+      "Header GPIO is 3.3 V only; I2S pins may be reserved by the active audio configuration.",
       "Boot order (SPI/eMMC/SD) trips up first-time installs; consult the wiki.",
     ],
     sourceLinks: [
@@ -5176,7 +5853,13 @@ const additionalBoards: Board[] = [
         url: "https://wiki.pine64.org/wiki/ROCKPro64",
         type: "Docs",
       },
+      {
+        label: "ROCKPro64 Pi-2 connector pinout",
+        url: "https://files.pine64.org/doc/rockpro64/Rockpro64%20Pi-2%20Connector%20ver0.2.png",
+        type: "Pinout",
+      },
     ],
+    pinout: rockPro64Header,
   },
   {
     id: "libre-computer-le-potato",
@@ -5208,7 +5891,13 @@ const additionalBoards: Board[] = [
         url: "https://libre.computer/products/aml-s905x-cc/",
         type: "Docs",
       },
+      {
+        label: "Libre Computer GPIO header maps",
+        url: "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28",
+        type: "Pinout",
+      },
     ],
+    pinout: lePotatoHeader,
   },
   {
     id: "milkv-duo",
@@ -5241,38 +5930,7 @@ const additionalBoards: Board[] = [
         type: "Docs",
       },
     ],
-  },
-  {
-    id: "m5stack-core2",
-    name: "M5Stack Core2",
-    vendor: "M5Stack",
-    category: "Development Board",
-    family: "M5Stack Core",
-    processor: "ESP32-D0WDQ6-V3 dual-core Xtensa LX6",
-    logicLevel: "3.3 V GPIO",
-    power: "USB-C, internal 390 mAh battery",
-    formFactor: "54 x 54 mm stackable enclosure with touch LCD",
-    description:
-      "A self-contained ESP32 development kit with a 2-inch capacitive touch screen, battery, speaker, and IMU in a stackable case, common in IoT prototyping and education.",
-    tags: ["M5Stack", "ESP32", "Touch LCD", "Battery", "Stackable"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
-    highlights: [
-      "Official docs list every exposed pin on the M-Bus and Grove port.",
-      "AXP192 PMIC manages battery, backlight, and peripheral power rails.",
-      "UIFlow, Arduino, and ESP-IDF support.",
-    ],
-    warnings: [
-      "Many ESP32 pins are consumed internally by the LCD, touch, SD, and PMIC; only the M-Bus/Grove pins are free.",
-      "Peripheral power is software-switched via the AXP192; ports are dead until the PMIC rail is enabled.",
-      "Grove port A is 5 V supply with 3.3 V logic; do not feed 5 V signals back in.",
-    ],
-    sourceLinks: [
-      {
-        label: "M5Stack Core2 official docs",
-        url: "https://docs.m5stack.com/en/core/core2",
-        type: "Docs",
-      },
-    ],
+    pinout: milkVDuoPinout,
   },
   {
     id: "lilygo-t-display-s3",
@@ -5295,7 +5953,7 @@ const additionalBoards: Board[] = [
     ],
     warnings: [
       "Most GPIOs are committed to the parallel LCD; few free pins remain on the side headers.",
-      "GPIO0 is the boot-strap button; holding it at reset enters download mode.",
+      "GPIO0 is the boot button and exposed GPIO3 is also a strapping pin; keep both at valid levels during reset.",
       "Battery voltage sense divider is always connected and draws standby current.",
     ],
     sourceLinks: [
@@ -5305,6 +5963,7 @@ const additionalBoards: Board[] = [
         type: "Schematic",
       },
     ],
+    pinout: lilygoTDisplayS3Pinout,
   },
   {
     id: "lolin-d1-mini",
@@ -5474,6 +6133,7 @@ const additionalBoards: Board[] = [
         type: "Docs",
       },
     ],
+    pinout: wioTerminalHeader,
   },
   {
     id: "adafruit-itsybitsy-m4",
@@ -5529,6 +6189,7 @@ const additionalBoards: Board[] = [
     ],
     warnings: [
       "Unlike the 5 V Mega it resembles, all IO is 3.3 V and not 5 V tolerant; legacy Mega shields can destroy it.",
+      "BOOT0 is connected to the user button; do not externally force that control signal during reset.",
       "CAN transceiver is not onboard; the CAN pins are controller-level only.",
       "Dual-core sketches require the M4/M7 RPC workflow described in the docs.",
     ],
@@ -5544,6 +6205,7 @@ const additionalBoards: Board[] = [
         type: "Pinout",
       },
     ],
+    pinout: arduinoGigaR1Pinout,
   },
 ];
 
@@ -6089,6 +6751,7 @@ const expansionBoards: Board[] = [
         type: "Pinout",
       },
     ],
+    pinout: grandCentralM4Pinout,
   },
   {
     id: "seeed-xiao-samd21",
@@ -6308,7 +6971,7 @@ const expansionBoards: Board[] = [
       "UNO-style headers support many shields when voltage-compatible.",
     ],
     warnings: [
-      "UNO footprint does not imply 5 V tolerant IO.",
+      "SAMD21 GPIO is 3.3 V only; the UNO footprint does not imply 5 V tolerance.",
       "Legacy shields may need level shifting.",
       "DAC and analog references should be checked before precision measurements.",
     ],
@@ -6318,7 +6981,13 @@ const expansionBoards: Board[] = [
         url: "https://learn.sparkfun.com/tutorials/redboard-turbo-hookup-guide",
         type: "Docs",
       },
+      {
+        label: "SparkFun RedBoard Turbo graphical datasheet",
+        url: "https://github.com/sparkfun/RedBoard_Turbo/blob/master/Documentation/GraphicalDatasheet-SAMD21TurboDev_1.pdf",
+        type: "Pinout",
+      },
     ],
+    pinout: redBoardTurboPinout,
   },
   {
     id: "sparkfun-esp32-thing",
@@ -6352,38 +7021,6 @@ const expansionBoards: Board[] = [
       },
     ],
     pinout: sparkfunEsp32ThingPinout,
-  },
-  {
-    id: "sparkfun-micromod-rp2040-processor",
-    name: "SparkFun MicroMod RP2040 Processor",
-    vendor: "SparkFun",
-    category: "Microcontroller",
-    family: "MicroMod",
-    processor: "RP2040 dual-core Arm Cortex-M0+",
-    logicLevel: "3.3 V GPIO",
-    power: "MicroMod carrier supplied",
-    formFactor: "MicroMod M.2 processor card",
-    description:
-      "An RP2040 processor card for SparkFun's MicroMod carrier ecosystem, separating the MCU from application-specific carrier boards.",
-    tags: ["SparkFun", "MicroMod", "RP2040", "M.2", "Carrier"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
-    highlights: [
-      "Official hookup guide maps RP2040 functions onto the MicroMod connector.",
-      "Carrier-board approach makes it easy to swap processors.",
-      "Good for reusable sensor and data-logging carriers.",
-    ],
-    warnings: [
-      "Available pins depend on the chosen MicroMod carrier.",
-      "GPIO is 3.3 V only.",
-      "Do not confuse M.2 mechanical form with PCIe/NVMe electrical compatibility.",
-    ],
-    sourceLinks: [
-      {
-        label: "SparkFun MicroMod RP2040 hookup guide",
-        url: "https://learn.sparkfun.com/tutorials/micromod-rp2040-processor-board-hookup-guide",
-        type: "Docs",
-      },
-    ],
   },
   {
     id: "teensy-40",
@@ -6477,6 +7114,7 @@ const expansionBoards: Board[] = [
     ],
     warnings: [
       "Cellular current bursts require a strong power source and battery planning.",
+      "GPIO is 3.3 V only; MODE and RESET are active-low control pins.",
       "Some pins are reserved or have Device OS functions.",
       "Check antenna and carrier-region compatibility before deployment.",
     ],
@@ -6487,6 +7125,7 @@ const expansionBoards: Board[] = [
         type: "Datasheet",
       },
     ],
+    pinout: particleMeshGen3Pinout,
   },
   {
     id: "particle-argon",
@@ -6519,6 +7158,7 @@ const expansionBoards: Board[] = [
         type: "Datasheet",
       },
     ],
+    pinout: particleMeshGen3Pinout,
   },
   {
     id: "nvidia-jetson-nano-dev-kit",
@@ -6625,38 +7265,6 @@ const expansionBoards: Board[] = [
     pinout: beagleyAiPinout,
   },
   {
-    id: "beagleplay",
-    name: "BeaglePlay",
-    vendor: "BeagleBoard.org",
-    category: "SBC",
-    family: "BeaglePlay",
-    processor: "Texas Instruments AM625",
-    logicLevel: "3.3 V GPIO",
-    power: "5 V USB-C",
-    formFactor: "Credit-card SBC with mikroBUS and Grove",
-    description:
-      "A connectivity-focused BeagleBoard with mikroBUS, Grove, CSI, Ethernet, Wi-Fi, and sub-GHz/BLE radios for rapid Linux prototyping.",
-    tags: ["BeagleBoard", "AM625", "mikroBUS", "Grove", "Linux"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet", "Wi-Fi", "Bluetooth"],
-    highlights: [
-      "Official docs document mikroBUS, Grove, and expansion connectors.",
-      "Good board for mixed wired and wireless Linux IoT prototypes.",
-      "Many interfaces are exposed without custom carrier design.",
-    ],
-    warnings: [
-      "Connector pin functions depend on Linux overlays and pinmux setup.",
-      "3.3 V IO; check mikroBUS click-board voltage expectations.",
-      "Radio features require the correct firmware and antennas.",
-    ],
-    sourceLinks: [
-      {
-        label: "BeaglePlay official documentation",
-        url: "https://docs.beagleboard.org/latest/boards/beagleplay/index.html",
-        type: "Docs",
-      },
-    ],
-  },
-  {
     id: "beaglebone-ai-64",
     name: "BeagleBone AI-64",
     vendor: "BeagleBoard.org",
@@ -6678,6 +7286,7 @@ const expansionBoards: Board[] = [
     warnings: [
       "Not every legacy BeagleBone cape is electrically or mechanically compatible.",
       "Pinmux setup is required before assuming a header pin is GPIO.",
+      "Several cape pins are boot straps or resistor-selected alternate pads; do not add pulls without checking the official mode table.",
       "3.3 V IO only.",
     ],
     sourceLinks: [
@@ -6686,39 +7295,13 @@ const expansionBoards: Board[] = [
         url: "https://docs.beagleboard.org/latest/boards/beaglebone/ai-64/index.html",
         type: "Docs",
       },
-    ],
-  },
-  {
-    id: "beaglev-fire",
-    name: "BeagleV-Fire",
-    vendor: "BeagleBoard.org",
-    category: "SBC",
-    family: "BeagleV",
-    processor: "Microchip PolarFire SoC FPGA",
-    logicLevel: "3.3 V GPIO",
-    power: "USB-C",
-    formFactor: "RISC-V FPGA SBC",
-    description:
-      "A RISC-V Linux board with PolarFire SoC FPGA fabric and BeagleBone-style expansion for hardware/software co-design.",
-    tags: ["BeagleBoard", "RISC-V", "FPGA", "PolarFire", "Linux"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CAN", "USB", "Ethernet", "JTAG"],
-    highlights: [
-      "Official docs document board connectors and FPGA resources.",
-      "Interesting mix of Linux-capable RISC-V cores and FPGA fabric.",
-      "Useful for teaching hardware acceleration and open ISA workflows.",
-    ],
-    warnings: [
-      "FPGA image and Linux pinmux configuration determine exposed behavior.",
-      "Cape compatibility must be checked against BeagleV-Fire docs.",
-      "3.3 V IO only unless a carrier explicitly level shifts.",
-    ],
-    sourceLinks: [
       {
-        label: "BeagleV-Fire official documentation",
-        url: "https://docs.beagleboard.org/latest/boards/beaglev/fire/index.html",
-        type: "Docs",
+        label: "BeagleBone AI-64 expansion header tables",
+        url: "https://docs.beagleboard.org/boards/beaglebone/ai-64/04-expansion.html",
+        type: "Pinout",
       },
     ],
+    pinout: beagleboneAi64Headers,
   },
   {
     id: "radxa-rock-5b",
@@ -7066,38 +7649,6 @@ const expansionBoards: Board[] = [
     pinout: nordicNrf52DkPinout,
   },
   {
-    id: "ti-launchxl-cc1352p",
-    name: "TI LAUNCHXL-CC1352P",
-    vendor: "Texas Instruments",
-    category: "Development Board",
-    family: "LaunchPad",
-    processor: "TI CC1352P SimpleLink wireless MCU",
-    logicLevel: "3.3 V GPIO",
-    power: "USB, boosterpack headers",
-    formFactor: "LaunchPad with BoosterPack headers",
-    description:
-      "A SimpleLink wireless LaunchPad for Sub-1 GHz, 2.4 GHz, Thread, Zigbee, and Bluetooth LE development.",
-    tags: ["TI", "LaunchPad", "CC1352P", "Sub-1 GHz", "Zigbee"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Zigbee", "Thread", "JTAG"],
-    highlights: [
-      "Official TI tool page links user's guide, schematics, and design files.",
-      "BoosterPack headers support TI's add-on ecosystem.",
-      "Useful for multi-protocol wireless firmware work.",
-    ],
-    warnings: [
-      "3.3 V IO only.",
-      "RF output path and regulatory settings must match the selected band.",
-      "BoosterPack pins may be shared with onboard sensors or jumpers.",
-    ],
-    sourceLinks: [
-      {
-        label: "TI LAUNCHXL-CC1352P tool page",
-        url: "https://www.ti.com/tool/LAUNCHXL-CC1352P",
-        type: "Docs",
-      },
-    ],
-  },
-  {
     id: "ti-lp-mspm0g3507",
     name: "TI LP-MSPM0G3507",
     vendor: "Texas Instruments",
@@ -7118,6 +7669,7 @@ const expansionBoards: Board[] = [
     ],
     warnings: [
       "3.3 V IO; check BoosterPack voltage assumptions.",
+      "PA18 is shared with the bootloader button, and J14/J15 select which signals reach two BoosterPack positions.",
       "Some pins are routed through jumpers or onboard peripherals.",
       "Use the TI user's guide for exact header-to-MCU mapping.",
     ],
@@ -7127,7 +7679,13 @@ const expansionBoards: Board[] = [
         url: "https://www.ti.com/tool/LP-MSPM0G3507",
         type: "Docs",
       },
+      {
+        label: "MSPM0G3507 LaunchPad user's guide",
+        url: "https://www.ti.com/lit/pdf/SLAU873",
+        type: "Manual",
+      },
     ],
+    pinout: tiMspm0g3507Pinout,
   },
   {
     id: "silabs-xg24-explorer-kit",
@@ -7159,7 +7717,13 @@ const expansionBoards: Board[] = [
         url: "https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit",
         type: "Docs",
       },
+      {
+        label: "xG24 Explorer Kit user's guide",
+        url: "https://www.silabs.com/documents/public/user-guides/ug533-xg24-ek2703a.pdf",
+        type: "Manual",
+      },
     ],
+    pinout: silabsXg24ExplorerPinout,
   },
   {
     id: "raspberry-pi-pico-2-w",
