@@ -56,7 +56,6 @@ export function PinoutTabs({ board }: { board: Board }) {
     getTabSnapshot,
     getServerTabSnapshot,
   );
-  const choose = setTabPreference;
 
   return (
     <section>
@@ -74,14 +73,14 @@ export function PinoutTabs({ board }: { board: Board }) {
             label="Static"
             icon={<Rows3 className="size-3.5" aria-hidden="true" />}
             active={tab === "static"}
-            onClick={() => choose("static")}
+            onClick={() => setTabPreference("static")}
           />
           <TabButton
             id="dynamic"
             label="Dynamic"
             icon={<CircuitBoard className="size-3.5" aria-hidden="true" />}
             active={tab === "dynamic"}
-            onClick={() => choose("dynamic")}
+            onClick={() => setTabPreference("dynamic")}
           />
         </div>
       </div>

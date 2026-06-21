@@ -239,6 +239,9 @@ function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
 function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = pins(board);
   const groups = p?.groups ?? [];
+  // shield-split is only assigned to 2-group boards. If a board with 3+ groups
+  // were ever pointed here, the extra groups' pins would be unanchored and the
+  // validation gate's anchor-count check would fail the build (by design).
   const topRow = groups[0]?.pins ?? [];
   const bottomRow = groups[1]?.pins ?? [];
   const topLabel = groups[0]?.label ?? "Header A";

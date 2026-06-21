@@ -13,10 +13,14 @@ export type VisualValidationResult = {
   warnings: string[];
 };
 
+// Counts pins from *every* source present (pins and/or groups). Today no board
+// defines both, but summing both means the anchor-count check below would catch
+// a board that accidentally defined both yet only had one source rendered.
 function electricalPins(pinout: NonNullable<(typeof boards)[number]["pinout"]>): Pin[] {
-  if (pinout.pins) return [...pinout.pins.left, ...pinout.pins.right];
-  if (pinout.groups) return pinout.groups.flatMap((g) => g.pins);
-  return [];
+  const out: Pin[] = [];
+  if (pinout.pins) out.push(...pinout.pins.left, ...pinout.pins.right);
+  if (pinout.groups) out.push(...pinout.groups.flatMap((g) => g.pins));
+  return out;
 }
 
 export function validateBoardVisuals(): VisualValidationResult {
@@ -81,15 +85,6 @@ export function validateBoardVisuals(): VisualValidationResult {
   }
 
   return { errors, warnings };
-}
-
-/** template id -> board ids using it (records shared-family coverage). */
-export function templateCoverage(): Record<string, string[]> {
-  const map: Record<string, string[]> = {};
-  for (const [id, visual] of Object.entries(boardVisuals)) {
-    (map[visual.template] ??= []).push(id);
-  }
-  return map;
 }
 
 /** Throws with a combined message if any errors are present. */

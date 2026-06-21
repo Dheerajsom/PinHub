@@ -92,7 +92,7 @@ export const roleOrder: PinRole[] = [
 ];
 
 // Builds the spoken/AT label for a pin, e.g.
-// "Pin 3, GPIO2, I2C, aliases SDA1".
+// "Pin 3, GPIO2, I2C, aliases SDA1" (the pin's note, when present, is appended).
 export function pinAccessibleLabel(pin: {
   position: number;
   label: string;

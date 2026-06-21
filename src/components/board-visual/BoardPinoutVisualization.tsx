@@ -308,10 +308,7 @@ function ExpandedInspector({
               </div>
             </div>
             <div className="mt-3">
-              <PinDetails
-                anchor={liveAnchor ?? null}
-                pinned={selectedKey !== null}
-              />
+              <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} />
             </div>
           </div>
 

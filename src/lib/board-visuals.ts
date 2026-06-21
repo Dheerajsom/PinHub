@@ -10,8 +10,6 @@
 // Boards with genuinely identical form factors share a template (see the
 // PRESETS below). Sharing is by physical form, never by pin count alone.
 
-import { boards } from "@/lib/boards";
-
 export type BoardForm = "horizontal" | "vertical";
 
 // How the electrical pins are placed onto the artwork:
@@ -439,14 +437,4 @@ export function accentForBoard(boardId: string, vendor: string): string {
   return (
     boardVisuals[boardId]?.accent ?? vendorAccents[vendor] ?? "#3f4654"
   );
-}
-
-/** All board ids that resolve to a schematic / not-to-scale visual. */
-export const schematicBoardIds: string[] = Object.entries(boardVisuals)
-  .filter(([, visual]) => visual.notToScale)
-  .map(([id]) => id);
-
-/** Board ids in the catalog that are missing a visual configuration. */
-export function missingVisualBoardIds(): string[] {
-  return boards.filter((board) => !boardVisuals[board.id]).map((b) => b.id);
 }
