@@ -48,15 +48,27 @@ export function BoardStage({
       className={clsx("bv-stage h-full w-full", className)}
       preserveAspectRatio="xMidYMid meet"
     >
-      <defs>
-        <linearGradient id="pcb-sheen" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.1" />
-          <stop offset="0.5" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="1" stopColor="#000000" stopOpacity="0.22" />
-        </linearGradient>
-      </defs>
-
       <BoardArtwork geometry={geometry} />
+
+      {/* Group titles for the schematic group-strips layout, so each function
+          block (Power, Serial, I2C/SPI, ...) is labelled on the diagram. */}
+      {geometry.kind === "group-strips"
+        ? groupTitles(anchors, padR).map((title) => (
+            <text
+              key={`grp-${title.label}`}
+              x={title.x}
+              y={title.y}
+              fontSize={17}
+              fontWeight={700}
+              fontFamily="var(--font-sans, sans-serif)"
+              fill="#cbd5e1"
+              letterSpacing="0.06em"
+              aria-hidden="true"
+            >
+              {title.label.toUpperCase()}
+            </text>
+          ))
+        : null}
 
       {/* Leader lines + labels: all in expanded mode, only the active pin
           otherwise. Drawn before pads so pads sit on top. */}
@@ -166,6 +178,14 @@ export function BoardStage({
                 stroke={colors.stroke}
                 strokeWidth={2.5}
               />
+              {/* Top-left specular highlight to give the pad a domed feel. */}
+              <circle
+                cx={anchor.cx - padR * 0.3}
+                cy={anchor.cy - padR * 0.34}
+                r={padR * 0.42}
+                fill="#ffffff"
+                fillOpacity={0.22}
+              />
               <text
                 x={anchor.cx}
                 y={anchor.cy}
@@ -184,6 +204,29 @@ export function BoardStage({
       </g>
     </svg>
   );
+}
+
+// Finds, per group, the top-left of its strip so a title can sit above it.
+function groupTitles(
+  anchors: PinAnchor[],
+  padR: number,
+): Array<{ label: string; x: number; y: number }> {
+  const byGroup = new Map<string, { minX: number; minY: number }>();
+  for (const a of anchors) {
+    if (!a.group) continue;
+    const entry = byGroup.get(a.group);
+    if (!entry) {
+      byGroup.set(a.group, { minX: a.cx, minY: a.cy });
+    } else {
+      entry.minX = Math.min(entry.minX, a.cx);
+      entry.minY = Math.min(entry.minY, a.cy);
+    }
+  }
+  return [...byGroup.entries()].map(([label, { minX, minY }]) => ({
+    label,
+    x: minX - padR,
+    y: minY - padR - 12,
+  }));
 }
 
 function LeaderLabel({

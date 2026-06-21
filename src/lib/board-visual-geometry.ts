@@ -35,6 +35,7 @@ export type PortMark = Rect & { kind: PortKind };
 export type Hole = { x: number; y: number; r: number };
 
 export type BoardGeometry = {
+  kind: BoardVisual["headerKind"];
   vbw: number;
   vbh: number;
   body: Rect;
@@ -79,7 +80,7 @@ function edgeRows(board: Board, visual: BoardVisual): { left: Pin[]; right: Pin[
   return { left: p?.pins?.left ?? [], right: p?.pins?.right ?? [] };
 }
 
-function buildEdgeDual(board: Board, visual: BoardVisual): BoardGeometry {
+function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const { left, right } = edgeRows(board, visual);
   const n = Math.max(left.length, right.length, 1);
   const pitch = EDGE_PITCH;
@@ -154,7 +155,7 @@ function buildEdgeDual(board: Board, visual: BoardVisual): BoardGeometry {
   };
 }
 
-function buildHeader2x(board: Board, visual: BoardVisual): BoardGeometry {
+function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = pins(board);
   const top = p?.pins?.left ?? []; // odd positions
   const bottom = p?.pins?.right ?? []; // even positions
@@ -235,7 +236,7 @@ function buildHeader2x(board: Board, visual: BoardVisual): BoardGeometry {
   };
 }
 
-function buildShieldSplit(board: Board, visual: BoardVisual): BoardGeometry {
+function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = pins(board);
   const groups = p?.groups ?? [];
   const topRow = groups[0]?.pins ?? [];
@@ -316,7 +317,7 @@ function buildShieldSplit(board: Board, visual: BoardVisual): BoardGeometry {
   };
 }
 
-function buildEdgeConnector(board: Board, visual: BoardVisual): BoardGeometry {
+function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = pins(board);
   const flat: { pin: Pin; group: string }[] = [];
   for (const group of p?.groups ?? []) {
@@ -380,7 +381,7 @@ function buildEdgeConnector(board: Board, visual: BoardVisual): BoardGeometry {
   };
 }
 
-function buildGroupStrips(board: Board, visual: BoardVisual): BoardGeometry {
+function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = pins(board);
   const groups = p?.groups ?? [];
   const perRow = 11;
@@ -476,7 +477,9 @@ function sbcPorts(visual: BoardVisual, body: Rect): PortMark[] {
   list.forEach((kind, i) => {
     const w = kind === "ethernet" ? body.w * 0.16 : body.w * 0.12;
     const x = body.x + body.w * (0.14 + i * 0.22);
-    ports.push({ kind, x, y: body.y + body.h - 6, w, h: 34, rx: 4 });
+    // Sit the metal shell on the bottom edge, protruding only slightly so it
+    // stays inside the viewBox.
+    ports.push({ kind, x, y: body.y + body.h - 30, w, h: 36, rx: 4 });
   });
   return ports;
 }
@@ -494,7 +497,7 @@ function edgePorts(visual: BoardVisual, body: Rect): PortMark[] {
 
 const builders: Record<
   BoardVisual["headerKind"],
-  (board: Board, visual: BoardVisual) => BoardGeometry
+  (board: Board, visual: BoardVisual) => Omit<BoardGeometry, "kind">
 > = {
   header2x: buildHeader2x,
   "edge-dual": buildEdgeDual,
@@ -508,5 +511,5 @@ export function buildBoardGeometry(board: Board): BoardGeometry | null {
   if (!board.pinout) return null;
   const visual = boardVisuals[board.id];
   if (!visual) return null;
-  return builders[visual.headerKind](board, visual);
+  return { kind: visual.headerKind, ...builders[visual.headerKind](board, visual) };
 }

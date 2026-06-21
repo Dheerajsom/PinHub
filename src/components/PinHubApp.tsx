@@ -34,7 +34,7 @@ import {
   type BoardCategory,
   type BoardInterface,
 } from "@/lib/boards";
-import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutVisualization";
+import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
 
@@ -810,7 +810,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         </dl>
       </section>
 
-      <BoardPinoutVisualization key={board.id} board={board} />
+      <PinoutTabs board={board} />
 
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
         <InfoBlock
