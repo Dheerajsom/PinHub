@@ -7843,553 +7843,163 @@ const expansionBoards: Board[] = [
 
 // ---------------------------------------------------------------------------
 // Lattice Semiconductor evaluation / breakout boards
-// All specifications sourced from official Lattice user guides and datasheets
-// listed in sourceLinks. Pin numbers are FPGA ball/pad designations from the
-// official PCF/LPF constraint files published by Lattice and cross-referenced
-// against the hdl/constraints open-source constraint repository.
+// Connector maps are transcribed from the exact board/package tables in the
+// Lattice-authored manuals listed in each board's sourceLinks.
 // ---------------------------------------------------------------------------
 
-// iCEstick PMOD J2 pinout (verified from EB82 iCEstick User Manual & hdl/constraints IceStick)
-const icestickPmodPinout: Pinout = {
-  connector: "J2 Digilent PMOD connector (2×6, 0.1\" pitch)",
+function latticeExpansionPins(labels: readonly string[]): Pin[] {
+  return labels.map((label, index) => ({
+    position: index + 1,
+    label,
+    role: label.startsWith("GND")
+      ? "ground"
+      : label.startsWith("VCC") || label.startsWith("3.3 V") || label.startsWith("1.2 V")
+        ? "power"
+        : label === "NC"
+          ? "reserved"
+          : /INITn|DONE|JTAGENB|PROGn|JTAGen|TMS|TCK|TDI|TDO|SISPI|SPISO|\/ SN|CSSPIN|CCLK/.test(label)
+            ? "special"
+            : "gpio",
+  }));
+}
+
+const machxo2BreakoutPinout: Pinout = {
+  connector: "J2, J3, J4, and J5 2x20 expansion header landings",
   layout: "grouped",
   notes: [
-    "Pin numbers are iCE40HX1K-TQ144 package pin numbers per EB82 user manual Table 3.",
-    "PMOD pins 5, 6, 11, 12 are GND and 3.3 V respectively — not connected to FPGA fabric.",
-    "All header I/O is 3.3 V LVCMOS. Pin function is fully user-configurable in FPGA fabric.",
-    "Source: Lattice EB82 iCEstick Evaluation Kit User's Guide (Aug 2013) and hdl/constraints IceStick PCF.",
+    "Physical header positions and TQ144 package pins are from EB68 Tables 3-6 for the LCMXO2-7000HE board population.",
+    "J2 pins 3/4/13/14/25/26/29/30 are shared with DONE, INITn, PROGn, JTAGEN, TMS, TCK, TDI, and TDO respectively.",
+    "J5 pins 3/5/31/33/39 are shared with SISPI, SN, SPISO, CCLK, and CSSPIN configuration functions.",
+    "The headers are unpopulated 100 mil landings; connector numbering must be read from the EB68 callout drawings before soldering.",
   ],
   groups: [
     {
-      label: "PMOD J2 Left Column (pins 1–6)",
-      pins: [
-        { position: 1, label: "PMOD_1 / PIO1_02", role: "gpio", aliases: ["TQ144 pin 78"], note: "User-configurable FPGA I/O" },
-        { position: 2, label: "PMOD_2 / PIO1_03", role: "gpio", aliases: ["TQ144 pin 79"] },
-        { position: 3, label: "PMOD_3 / PIO1_04", role: "gpio", aliases: ["TQ144 pin 80"] },
-        { position: 4, label: "PMOD_4 / PIO1_05", role: "gpio", aliases: ["TQ144 pin 81"] },
-        { position: 5, label: "GND", role: "ground" },
-        { position: 6, label: "3.3 V", role: "power" },
-      ],
+      label: "J2 - Bank 0",
+      pins: latticeExpansionPins([
+        "NC", "VCCIO0 (TQ144 pins 118, 123, 135)", "TQ144 pin 109 / DONE", "TQ144 pin 110 / INITn",
+        "TQ144 pin 111", "TQ144 pin 112", "GND", "GND", "TQ144 pin 113", "TQ144 pin 114",
+        "TQ144 pin 115", "TQ144 pin 117", "TQ144 pin 119 / PROGn", "TQ144 pin 120 / JTAGen", "GND", "GND",
+        "TQ144 pin 121", "TQ144 pin 122", "TQ144 pin 125 / SDA / PCLKC0_0", "TQ144 pin 126 / SCL / PCLKT0_0",
+        "TQ144 pin 127 / PCLKC0_1", "TQ144 pin 128 / PCLKT0_1", "GND", "GND", "TQ144 pin 130 / TMS",
+        "TQ144 pin 131 / TCK", "TQ144 pin 132", "TQ144 pin 133", "TQ144 pin 136 / TDI", "TQ144 pin 137 / TDO",
+        "GND", "GND", "TQ144 pin 138", "TQ144 pin 139", "TQ144 pin 140", "TQ144 pin 141", "TQ144 pin 142",
+        "TQ144 pin 143", "GND", "GND",
+      ]),
     },
     {
-      label: "PMOD J2 Right Column (pins 7–12)",
-      pins: [
-        { position: 7, label: "PMOD_7 / PIO1_06", role: "gpio", aliases: ["TQ144 pin 87"], note: "User-configurable FPGA I/O" },
-        { position: 8, label: "PMOD_8 / PIO1_07", role: "gpio", aliases: ["TQ144 pin 88"] },
-        { position: 9, label: "PMOD_9 / PIO1_08", role: "gpio", aliases: ["TQ144 pin 90"] },
-        { position: 10, label: "PMOD_10 / PIO1_09", role: "gpio", aliases: ["TQ144 pin 91"] },
-        { position: 11, label: "GND", role: "ground" },
-        { position: 12, label: "3.3 V", role: "power" },
-      ],
+      label: "J3 - Bank 1",
+      pins: latticeExpansionPins([
+        "1.2 V core (TQ144 pins 36, 72, 108, 144)", "VCCIO1 (TQ144 pins 79, 88, 102)",
+        "1.2 V core (TQ144 pins 36, 72, 108, 144)", "NC", "TQ144 pin 74", "TQ144 pin 73", "TQ144 pin 76",
+        "TQ144 pin 75", "GND", "GND", "TQ144 pin 78", "TQ144 pin 77", "TQ144 pin 82", "TQ144 pin 81",
+        "GND", "GND", "TQ144 pin 84", "TQ144 pin 83", "TQ144 pin 86", "TQ144 pin 85", "GND", "GND",
+        "TQ144 pin 92 / PCLKT1_0", "TQ144 pin 91 / PCLKC1_0", "TQ144 pin 94", "TQ144 pin 93", "GND", "GND",
+        "TQ144 pin 96", "TQ144 pin 95", "TQ144 pin 98", "TQ144 pin 97", "GND", "GND", "TQ144 pin 100",
+        "TQ144 pin 99", "TQ144 pin 105", "TQ144 pin 104", "TQ144 pin 107", "TQ144 pin 106",
+      ]),
     },
     {
-      label: "J1 Top Expansion Header (Bank 0, 10-pin 0.1\")",
-      pins: [
-        { position: 13, label: "3.3 V", role: "power" },
-        { position: 14, label: "GND", role: "ground" },
-        { position: 15, label: "PIO0_02", role: "gpio", aliases: ["TQ144 pin 112"] },
-        { position: 16, label: "PIO0_03", role: "gpio", aliases: ["TQ144 pin 113"] },
-        { position: 17, label: "PIO0_04", role: "gpio", aliases: ["TQ144 pin 114"] },
-        { position: 18, label: "PIO0_05", role: "gpio", aliases: ["TQ144 pin 115"] },
-        { position: 19, label: "PIO0_06", role: "gpio", aliases: ["TQ144 pin 116"] },
-        { position: 20, label: "PIO0_07", role: "gpio", aliases: ["TQ144 pin 117"] },
-        { position: 21, label: "PIO0_08", role: "gpio", aliases: ["TQ144 pin 118"] },
-        { position: 22, label: "PIO0_09", role: "gpio", aliases: ["TQ144 pin 119"] },
-      ],
+      label: "J4 - Banks 3/4/5",
+      pins: latticeExpansionPins([
+        "3.3 V", "VCCIO3/4/5 (TQ144 pins 30, 16, 7)", "3.3 V", "NC", "TQ144 pin 1", "TQ144 pin 2",
+        "TQ144 pin 3", "TQ144 pin 4", "TQ144 pin 5 / PCLKT5_0", "TQ144 pin 6 / PCLKC5_0", "TQ144 pin 9",
+        "TQ144 pin 10", "GND", "GND", "TQ144 pin 11", "TQ144 pin 12", "TQ144 pin 13", "TQ144 pin 14",
+        "GND", "GND", "TQ144 pin 19 / PCLKT4_0", "TQ144 pin 20 / PCLKC4_0", "TQ144 pin 21", "TQ144 pin 22",
+        "GND", "GND", "TQ144 pin 23", "TQ144 pin 24", "TQ144 pin 25", "TQ144 pin 26", "GND", "GND",
+        "TQ144 pin 27 / PCLKT3_0", "TQ144 pin 28 / PCLKC3_0", "GND", "GND", "TQ144 pin 32", "TQ144 pin 33",
+        "TQ144 pin 34", "TQ144 pin 35",
+      ]),
     },
     {
-      label: "J3 Bottom Expansion Header (Bank 2, 10-pin 0.1\")",
-      pins: [
-        { position: 23, label: "3.3 V", role: "power" },
-        { position: 24, label: "GND", role: "ground" },
-        { position: 25, label: "PIO2_17", role: "gpio", aliases: ["TQ144 pin 62"] },
-        { position: 26, label: "PIO2_16", role: "gpio", aliases: ["TQ144 pin 61"] },
-        { position: 27, label: "PIO2_15", role: "gpio", aliases: ["TQ144 pin 60"] },
-        { position: 28, label: "PIO2_14", role: "gpio", aliases: ["TQ144 pin 56"] },
-        { position: 29, label: "PIO2_13", role: "gpio", aliases: ["TQ144 pin 48"] },
-        { position: 30, label: "PIO2_12", role: "gpio", aliases: ["TQ144 pin 47"] },
-        { position: 31, label: "PIO2_11", role: "gpio", aliases: ["TQ144 pin 45"] },
-        { position: 32, label: "PIO2_10", role: "gpio", aliases: ["TQ144 pin 44"] },
-      ],
+      label: "J5 - Bank 2",
+      pins: latticeExpansionPins([
+        "NC", "VCCIO2 (TQ144 pins 37, 51, 66)", "TQ144 pin 71 / SI / SISPI", "TQ144 pin 69",
+        "TQ144 pin 70 / SN", "TQ144 pin 68", "TQ144 pin 67", "TQ144 pin 62", "TQ144 pin 65", "TQ144 pin 61",
+        "GND", "GND", "TQ144 pin 60", "TQ144 pin 58", "TQ144 pin 59", "TQ144 pin 57", "GND", "GND",
+        "TQ144 pin 56 / PCLKC2_1", "TQ144 pin 54", "TQ144 pin 55 / PCLKT2_1", "TQ144 pin 52", "GND", "GND",
+        "TQ144 pin 50 / PCLKC2_0", "TQ144 pin 48", "TQ144 pin 49 / PCLKT2_0", "TQ144 pin 47", "GND", "GND",
+        "TQ144 pin 45 / S0 / SPISO", "TQ144 pin 43", "TQ144 pin 44 / MCLK / CCLK", "TQ144 pin 42", "GND", "GND",
+        "TQ144 pin 41", "TQ144 pin 39", "TQ144 pin 40 / CSSPIN", "TQ144 pin 38",
+      ]),
     },
   ],
 };
 
-// iCE40-HX8K Breakout Board J1 (Bank 0 PMOD) pinout
-// Verified from hdl/constraints iCE40-HX8K/constraints.pcf (ICE40-HX8K PCF)
-const hx8kPmod0Pinout: Pinout = {
-  connector: "J1 / J2 / J3 / J4 PMOD-style 2×20 breakout headers (0.1\" pitch)",
+const machxo3dBreakoutPinout: Pinout = {
+  connector: "J3, J4, J6, and J8 2x20 expansion header landings",
   layout: "grouped",
   notes: [
-    "Ball designations (A1, B5, R15 …) are iCE40HX-8K CT256 256-ball caBGA package balls.",
-    "Source: hdl/constraints iCE40-HX8K/constraints.pcf; cross-referenced with EB85 user guide schematic.",
-    "J1 = Bank 0 I/O, J2 = Bank 1 I/O, J3 = Bank 2 I/O, J4 = Bank 3 I/O. Each 2×20 column; GND rows interspersed.",
-    "Pin function is fully user-configurable in FPGA fabric (not fixed-function).",
-    "LED pins: B5(LED0), B4(LED1), A2(LED2), A1(LED3), C5(LED4), C4(LED5), B3(LED6), C3(LED7). CLK on J3.",
+    "Physical positions, signal names, and 256-caBGA balls are transcribed from FPGA-UG-02084-0.90 Tables 7.3-7.6.",
+    "J3 positions 3, 4, and 14 are shared with INITn, DONE, and JTAGENB; treat them as configuration straps during boot.",
+    "J8 spans Banks 3, 4, and 5 and exposes different VCCIO rails at positions 1, 2, and 40; do not assume one voltage for the whole connector.",
+    "The headers are unpopulated 100 mil landings; use the guide's Figures 7.2 and 7.3 to confirm connector orientation.",
   ],
   groups: [
     {
-      label: "J1 Bank 0 PMOD (selected user I/O)",
-      pins: [
-        { position: 1, label: "VCCIO0", role: "power", note: "3.3 V bank supply" },
-        { position: 2, label: "A16", role: "gpio" },
-        { position: 3, label: "A15 / CTS", role: "gpio", aliases: ["FTDI CTS"] },
-        { position: 4, label: "B15 / DCD", role: "gpio", aliases: ["FTDI DCD"] },
-        { position: 5, label: "B13 / RTS", role: "gpio", aliases: ["FTDI RTS"] },
-        { position: 6, label: "B14 / DSR", role: "gpio", aliases: ["FTDI DSR"] },
-        { position: 7, label: "GND", role: "ground" },
-        { position: 8, label: "B12 / TX", role: "uart", aliases: ["FTDI UART TX"] },
-        { position: 9, label: "B11", role: "gpio" },
-        { position: 10, label: "A11", role: "gpio" },
-        { position: 11, label: "B10 / RX", role: "uart", aliases: ["FTDI UART RX"] },
-        { position: 12, label: "A10", role: "gpio" },
-        { position: 13, label: "C9", role: "gpio" },
-        { position: 14, label: "GND", role: "ground" },
-        { position: 15, label: "A9", role: "gpio" },
-        { position: 16, label: "B9", role: "gpio" },
-        { position: 17, label: "B8", role: "gpio" },
-        { position: 18, label: "A7", role: "gpio" },
-        { position: 19, label: "B7", role: "gpio" },
-        { position: 20, label: "C7", role: "gpio" },
-      ],
+      label: "J3 - Bank 0",
+      pins: latticeExpansionPins([
+        "VCCIO0 (balls D5,D12,G8,G9)", "VCCIO0 (balls D5,D12,G8,G9)", "PT44C/INITn (ball A13)",
+        "PT44D/DONE (ball C13)", "PT27A (ball F8)", "PT43B (ball B12)", "PT43A (ball C12)", "PT29B (ball E11)",
+        "PT31B (ball E10)", "PT31A (ball D10)", "GND", "GND", "PT29A (ball F9)", "PT31C/JTAGENB (ball C10)",
+        "PT22B (ball E8)", "PT24B (ball E9)", "PT15B (ball E7)", "PT24A (ball D8)", "PT21B (ball D7)",
+        "PT20B (ball C7)", "GND", "GND", "PT10B (ball C5)", "PT15A (ball D6)", "PT21A (ball E6)",
+        "PT9A (ball C4)", "PT28B (ball A10)", "PT22A (ball F7)", "PT27B (ball D9)", "PT28A (ball B9)",
+        "GND", "GND", "PT11B (ball B6)", "PT20A (ball B7)", "PT9B (ball B5)", "PT11A (ball A5)",
+        "PT12B (ball B4)", "PT10A (ball A4)", "GND", "PT12A (ball A3)",
+      ]),
     },
     {
-      label: "J2 Bank 1 PMOD (selected user I/O)",
-      pins: [
-        { position: 21, label: "VCCIO1", role: "power", note: "3.3 V bank supply" },
-        { position: 22, label: "R15", role: "gpio" },
-        { position: 23, label: "P16", role: "gpio" },
-        { position: 24, label: "P15", role: "gpio" },
-        { position: 25, label: "N16", role: "gpio" },
-        { position: 26, label: "M15", role: "gpio" },
-        { position: 27, label: "GND", role: "ground" },
-        { position: 28, label: "M16", role: "gpio" },
-        { position: 29, label: "L16", role: "gpio" },
-        { position: 30, label: "K15", role: "gpio" },
-        { position: 31, label: "K16", role: "gpio" },
-        { position: 32, label: "K14", role: "gpio" },
-        { position: 33, label: "J14", role: "gpio" },
-        { position: 34, label: "GND", role: "ground" },
-        { position: 35, label: "G14", role: "gpio" },
-        { position: 36, label: "F14", role: "gpio" },
-        { position: 37, label: "J15", role: "gpio" },
-        { position: 38, label: "H14", role: "gpio" },
-        { position: 39, label: "H16", role: "gpio" },
-        { position: 40, label: "G15", role: "gpio" },
-      ],
+      label: "J4 - Bank 1",
+      pins: latticeExpansionPins([
+        "VCCIO1 (balls E13,H10,J10,M13)", "VCCIO1 (balls E13,H10,J10,M13)", "PR24D (ball K12)",
+        "PR24C (ball K13)", "PR28A (ball M14)", "PR29B (ball N14)", "PR21B (ball L14)", "PR29A (ball N16)",
+        "PR28B (ball M15)", "PR25B (ball M16)", "GND", "GND", "PR25A (ball L15)", "PR21A (ball L16)",
+        "PR20A (ball K14)", "PR19B (ball K16)", "PR20B (ball K15)", "PR18B (ball J14)",
+        "PR17A/PCLKT1_0 (ball H14)", "PR19A (ball J15)", "GND", "GND", "PR18A (ball J16)", "PR16B (ball H15)",
+        "PR17B/PCLKC1_0 (ball H16)", "PR12A (ball G15)", "PR16A (ball G16)", "PR5B (ball F15)",
+        "PR7B (ball F16)", "PR2B/R_GPLLC_FB (ball E15)", "GND", "GND", "PR5A (ball E16)",
+        "PR3B/R_GPLLC_IN (ball E14)", "PR3A/R_GPLLT_IN (ball D16)", "PR2C (ball C15)",
+        "PR2A/R_GPLLT_FB (ball D14)", "PR7A (ball F14)", "PR12B (ball G14)", "PR2D (ball B16)",
+      ]),
+    },
+    {
+      label: "J6 - Bank 2",
+      pins: latticeExpansionPins([
+        "VCCIO2 (balls K8,K9,N5,N12)", "VCCIO2 (balls K8,K9,N5,N12)", "PB43B (ball T12)",
+        "PB41B (ball T14)", "PB43A (ball R11)", "PB41A (ball R13)", "PB35A (ball T11)", "PB32B (ball M11)",
+        "PB35B (ball P11)", "PB32A (ball N10)", "GND", "GND", "PB30B (ball T10)", "PB33A (ball P10)",
+        "PB30A (ball R9)", "PB33B (ball R10)", "PB29A/PCLKT2_1 (ball T9)", "PB27B (ball N9)",
+        "PB29B/PCLKC2_1 (ball P9)", "PB27A (ball M8)", "GND", "GND", "PB24B (ball T8)", "PB21B (ball L8)",
+        "PB24A (ball P8)", "PB21A (ball M6)", "PB18A (ball R7)", "PB22B/PCLKC2_0 (ball R8)",
+        "PB18B (ball P7)", "PB22A/PCLKT2_0 (ball T7)", "GND", "GND", "PB13B (ball L7)", "PB10B (ball R6)",
+        "PB13A (ball N6)", "PB10A (ball T5)", "PB8B (ball R4)", "PB5A (ball P4)", "PB8A (ball T3)",
+        "PB5B (ball T4)",
+      ]),
+    },
+    {
+      label: "J8 - Banks 3/4/5",
+      pins: latticeExpansionPins([
+        "VCCIO5 (ball E4)", "VCCIO3 (ball M4)", "PL30B (ball N3, Bank 3)", "PL12D (ball H6, Bank 5)",
+        "PL30A (ball M2, Bank 3)", "PL29B (ball N1, Bank 3)", "PL29A (ball M3, Bank 3)",
+        "PL27B/PCLKC3_0 (ball M1, Bank 3)", "PL27A/PCLKT3_0 (ball L2, Bank 3)", "PL25A (ball L1, Bank 3)",
+        "GND", "GND", "PL25B (ball L3, Bank 3)", "PL16A/PCLKT4_0 (ball J1, Bank 4)",
+        "PL17B (ball K1, Bank 4)", "PL17A (ball J2, Bank 4)", "PL16B/PCLKC4_0 (ball J3, Bank 4)",
+        "PL14A (ball H3, Bank 4)", "PL13B (ball H2, Bank 4)", "PL14B (ball H1, Bank 4)", "GND", "GND",
+        "PL12A (ball G2, Bank 5)", "PL13A (ball G1, Bank 4)", "PL7B/PCLKC5_0 (ball F2, Bank 5)",
+        "PL11B (ball F1, Bank 5)", "PL4A/L_GPLLT_IN (ball E2, Bank 5)", "PL7A/PCLKT5_0 (ball E1, Bank 5)",
+        "PL4D (ball D2, Bank 5)", "PL3B/L_GPLLC_FB (ball D1, Bank 5)", "GND", "PL2D (ball C2, Bank 5)",
+        "PL4C (ball C1, Bank 5)", "PL12B (ball G3, Bank 5)", "PL2C (ball B1, Bank 5)",
+        "PL3A/L_GPLLT_FB (ball D3, Bank 5)", "PL4B/L_GPLLC_IN (ball E3, Bank 5)", "PL11A (ball F3, Bank 5)",
+        "PL12C (ball F5, Bank 5)", "VCCIO4 (balls H7,J7)",
+      ]),
     },
   ],
 };
 
 const latticeBoards: Board[] = [
   // -----------------------------------------------------------------------
-  // iCEstick Evaluation Kit
-  // Source: Lattice EB82 iCEstick Evaluation Kit User's Guide (Aug 2013)
-  //         hdl/constraints IceStick PCF files
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-icestick",
-    name: "Lattice iCEstick Evaluation Kit",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "iCE40",
-    processor: "Lattice iCE40HX1K-TQ144",
-    logicLevel: "3.3 V LVCMOS (all I/O banks)",
-    power: "USB (5 V), on-board LDO (LT3030EFE) generates 3.3 V and 1.2 V",
-    formFactor: "USB thumb-drive stick (~70 × 20 mm), USB-A plug integrated",
-    description:
-      "A ultra-low-cost USB-stick-form-factor FPGA evaluation board featuring the iCE40HX1K in a 144-pin TQFP package. Includes a Digilent PMOD connector, two unpopulated 0.1\" GPIO headers, onboard IrDA transceiver, 5 user LEDs, FTDI FT2232H for programming and UART, and 32 Mbit SPI flash. Widely used in open-source FPGA tool flows (IceStorm, Yosys, nextpnr).",
-    tags: ["Lattice", "iCE40", "FPGA", "iCEstick", "USB stick", "IceStorm", "open source"],
-    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB"],
-    highlights: [
-      "Complete USB-A stick — plugs directly into a PC, no external power or cable needed.",
-      "FTDI FT2232H provides simultaneous JTAG/SPI programming and UART debug channels.",
-      "2×6 Digilent PMOD connector (J2) exposes 8 FPGA I/Os for peripheral modules.",
-      "Two 10-pin 0.1\" expansion headers (J1 top, J3 bottom) expose 16 additional FPGA I/Os.",
-      "12 MHz Discera MEMS oscillator and Vishay TFDU4101 IrDA transceiver onboard.",
-      "Supported by 100% open-source toolchain (Yosys + nextpnr-ice40 + icestorm).",
-    ],
-    warnings: [
-      "Pinout verified from EB82 user guide and hdl/constraints IceStick PCF; always cross-check against the official Lattice document.",
-      "J1 and J3 headers are unpopulated (through-holes only) — user must solder their own headers.",
-      "FPGA I/O pin function is user-defined; labels reflect ball/pad designations, not fixed functions.",
-      "IrDA transceiver (TFDU4101) on pins 105/106/107 limits max baud to 115 kbps (SIR mode).",
-      "32 Mbit SPI flash is connected to the FPGA for bitstream storage; pins 65–71 are dedicated.",
-    ],
-    sourceLinks: [
-      {
-        label: "iCEstick Evaluation Kit User Guide EB82 (Lattice, Aug 2013)",
-        url: "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/EI2/EB82-iCEstick_User_Manual.ashx?document_id=50701",
-        type: "Manual",
-      },
-      {
-        label: "iCEstick product page (Lattice)",
-        url: "https://www.latticesemi.com/icestick",
-        type: "Docs",
-      },
-      {
-        label: "hdl/constraints IceStick PCF (open-source constraint file, pin-verified)",
-        url: "https://github.com/hdl/constraints/blob/main/board/IceStick/constraints.pcf",
-        type: "Pinout",
-      },
-    ],
-    pinout: icestickPmodPinout,
-  },
-
-  // -----------------------------------------------------------------------
-  // iCE40-HX8K Breakout Board
-  // Source: Lattice EB85 iCE40HX-8K Breakout Board User's Guide (Nov 2013 / Jan 2016)
-  //         hdl/constraints iCE40-HX8K/constraints.pcf
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-ice40hx8k-breakout",
-    name: "Lattice iCE40-HX8K Breakout Board",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "iCE40",
-    processor: "Lattice iCE40HX-8K CT256 (256-ball caBGA)",
-    logicLevel: "3.3 V (all board I/O at 3.3 V per EB85 §3)",
-    power: "USB mini-B (5 V), on-board regulators produce 1.2 V core and 3.3 V I/O",
-    formFactor: "Compact breakout PCB with four 2×20 0.1\" PMOD-style hole arrays (J1–J4)",
-    description:
-      "A low-cost breakout board for the iCE40HX-8K (7,680 logic cells) FPGA in the 256-ball caBGA package. Four banks of I/O are exposed through four 2×20 hole arrays (J1–J4), one per I/O bank. Includes 8 user LEDs, a 12 MHz oscillator, FTDI FT2232H USB-to-SPI/UART bridge, and jumper-selectable SRAM or SPI-Flash programming modes.",
-    tags: ["Lattice", "iCE40", "HX8K", "FPGA", "breakout", "IceStorm", "open source"],
-    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB"],
-    highlights: [
-      "7,680 logic cells (iCE40HX-8K CT256) in a compact breakout form factor.",
-      "Four 2×20 0.1\" hole arrays (J1–J4) expose the four I/O banks — all FPGA I/Os available.",
-      "FTDI FT2232H: Channel A = SPI programming; Channel B = UART debug (TX=B12, RX=B10).",
-      "12 MHz on-board oscillator (ball J3); 8 user LEDs (balls B5–C3, EB85 §3).",
-      "Jumper J5/J6 selects SRAM (volatile) or SPI-Flash (persistent) configuration mode.",
-      "Supported by open-source IceStorm / Yosys / nextpnr toolchain.",
-    ],
-    warnings: [
-      "Pinout verified from hdl/constraints iCE40-HX8K PCF and EB85 user guide block diagram; schematic is in EB85 Appendix A.",
-      "J1–J4 are un-keyed 2×20 through-hole pads, not standard PMOD — user solders their own headers.",
-      "FPGA ball designations (A1, B5, R15 …) are CT256 caBGA ball references, NOT physical connector pin numbers.",
-      "Power indicator D11 and CDONE indicator D10 are on fixed FPGA pins; check EB85 before routing those balls.",
-      "Hardware revision EB85_01.0 (Nov 2013) vs EB85_01.1 (Jan 2016) — verify revision-specific note differences before relying on schematic pages.",
-    ],
-    sourceLinks: [
-      {
-        label: "iCE40HX-8K Breakout Board User Guide EB85 (Lattice, Jan 2016)",
-        url: "https://www.fpgakey.com/uploads/files/productFamilyDoc/LATTICE/iCE40HX8K.pdf",
-        type: "Manual",
-      },
-      {
-        label: "iCE40-HX8K Breakout Board product page (Lattice)",
-        url: "https://www.latticesemi.com/Products/DevelopmentBoardsAndKits/iCE40HX8KBreakoutBoard.aspx",
-        type: "Docs",
-      },
-      {
-        label: "hdl/constraints iCE40-HX8K PCF (open-source, pin-verified)",
-        url: "https://github.com/hdl/constraints/blob/main/board/iCE40-HX8K/constraints.pcf",
-        type: "Pinout",
-      },
-    ],
-    pinout: hx8kPmod0Pinout,
-  },
-
-  // -----------------------------------------------------------------------
-  // iCE40 UltraPlus Breakout Board
-  // Source: Lattice FPGA-UG-02001-1.2 iCE40 UltraPlus Breakout Board User Guide (Apr 2022)
-  //         FPGAkey product page (ICE40UP5K-B-EVN)
-  // Pinout: NOT included — detailed per-connector pin tables require the locked
-  //   Lattice PDF (403) and no open constraint file is available for this exact board.
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-ice40up-breakout",
-    name: "Lattice iCE40 UltraPlus Breakout Board",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "iCE40",
-    processor: "Lattice iCE40UP5K-SG48 (48-pin QFN, 5,280 LUTs)",
-    logicLevel: "3.3 V (I/O banks; 1.2 V core)",
-    power: "USB mini-B (5 V); on-board LDO generates 3.3 V and 1.2 V",
-    formFactor: "Small breakout PCB with PMOD connector, two breakout header strips",
-    description:
-      "A small breakout board for the iCE40UP5K FPGA (5K LUTs, 1 Mbit SPRAM, hardened I2C/SPI, DSP blocks, dual oscillators, RGB LED driver). All 32 user I/Os are brought out via a Digilent PMOD connector (U6) and two breakout header strips. Preloaded with an RGB LED demo accessed via a software GUI.",
-    tags: ["Lattice", "iCE40", "UltraPlus", "UP5K", "FPGA", "breakout", "QFN", "low power"],
-    interfaces: ["GPIO", "SPI", "I2C", "USB", "JTAG"],
-    highlights: [
-      "iCE40UP5K: 5,280 LUTs, 1,024 kB single-port SRAM (SPRAM), 30 kB embedded BRAM.",
-      "Hardened SPI and I2C blocks plus SB_MAC16 DSP multiply-accumulate block.",
-      "Dual on-chip oscillators: 10 kHz low-power and 48 MHz HF for USB use.",
-      "On-board RGB LED (SB_RGBA_DRV) + FTDI FT2232H for USB programming and UART.",
-      "12 MHz external oscillator; 16 Mbit N25Q032 SPI flash for bitstream storage.",
-      "Jumper J6 selects SRAM (volatile) vs Flash (persistent) programming mode.",
-    ],
-    warnings: [
-      "Pinout is NOT included here — the official FPGA-UG-02001 PDF was inaccessible (403); exact per-pin FPGA ball assignments require verification from the official Lattice user guide.",
-      "iCE40UP5K is in a 48-pin QFN package (SG48); ball designations differ from the TQ144 and CT256 packages used on other iCE40 boards.",
-      "I/O bank voltage is 3.3 V by default; the UP5K supports 1.8 V and 3.3 V banks.",
-      "48 MHz internal oscillator enables iCE40UP5K USB soft-core designs but requires careful PLL configuration.",
-    ],
-    sourceLinks: [
-      {
-        label: "iCE40 UltraPlus Breakout Board User Guide FPGA-UG-02001-1.2 (Lattice, Apr 2022)",
-        url: "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/EI/FPGA-UG-02001-1-2-iCE40-UltraPlus-Breakout-Board.ashx?document_id=51987",
-        type: "Manual",
-      },
-      {
-        label: "ICE40UP5K-B-EVN product page (FPGAkey)",
-        url: "https://www.fpgakey.com/lattice-parts/ice40up5k-b-evn",
-        type: "Docs",
-      },
-    ],
-  },
-
-  // -----------------------------------------------------------------------
-  // iCE40 UltraPlus Mobile Development Platform
-  // Source: Lattice FPGA-EB-02007 iCE40 UltraPlus MDP User Guide (2017-2018)
-  //         DigiKey htmldatasheet (ice40up5k-mdp-evn)
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-ice40up-mdp",
-    name: "Lattice iCE40 UltraPlus Mobile Development Platform",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "iCE40",
-    processor: "4× Lattice iCE40UP5K-30WLCSP (5,280 LUTs each, WLCSP-30 package)",
-    logicLevel: "3.3 V (I/O banks)",
-    power: "USB mini-B (5 V), onboard PMIC; optional LiPo battery",
-    formFactor: "Handheld mobile-size PCB with integrated peripherals and display connector",
-    description:
-      "A multi-FPGA IoT/mobile evaluation platform featuring four iCE40UP5K FPGAs in WLCSP-30 packages, each pre-wired to different sensor subsystems: display (MIPI LCD), audio (PDM/I2S microphones, headphone amp), sensor/RGB LED, and camera interface. Aimed at ultra-low-power smart IoT device prototyping.",
-    tags: ["Lattice", "iCE40", "UltraPlus", "UP5K", "FPGA", "IoT", "mobile", "WLCSP", "MIPI", "audio"],
-    interfaces: ["GPIO", "SPI", "I2C", "CSI", "USB"],
-    highlights: [
-      "Four iCE40UP5K FPGAs (U1–U4) in WLCSP-30 targeting display, audio, sensor, and camera subsystems.",
-      "27 MHz on-board oscillator; each FPGA also has its own dual on-chip oscillators (10 kHz / 48 MHz).",
-      "J2 MIPI display connector drives included 1.4\" LH154Q01 LCD display.",
-      "Two PDM microphones + two I2S microphones + MAX9850 headphone audio amplifier.",
-      "Platform includes board case/cover, USB cable, display add-on, and quickstart guide.",
-    ],
-    warnings: [
-      "Pinout is NOT included — the iCE40UP5K-30WLCSP ball assignments differ across the four FPGAs; refer to official FPGA-EB-02007 user guide and schematics for exact connections.",
-      "Not a general-purpose GPIO breakout board; each FPGA is hardwired to a specific peripheral subsystem.",
-      "WLCSP-30 package means I/O is not accessible via through-hole headers; platform targets system-level evaluation, not breadboard prototyping.",
-    ],
-    sourceLinks: [
-      {
-        label: "iCE40 UltraPlus MDP Evaluation Board User Guide FPGA-EB-02007 (Lattice)",
-        url: "https://www.latticesemi.com/products/developmentboardsandkits/ice40ultraplusmobiledevplatform",
-        type: "Manual",
-      },
-      {
-        label: "iCE40 UltraPlus MDP EVB Guide datasheet (DigiKey htmldatasheet)",
-        url: "https://www.digikey.com/en/htmldatasheets/production/2387226/0/0/1/ice40up5k-mdp-evn",
-        type: "Docs",
-      },
-    ],
-  },
-
-  // -----------------------------------------------------------------------
-  // ECP5-5G Evaluation Board
-  // Source: Lattice FPGA-EB-02017-1.2 ECP5 Evaluation Board User Guide (Aug 2021)
-  //         DigiKey LFE5UM5G-85F-EVN product page
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-ecp5-5g-eval",
-    name: "Lattice ECP5-5G Evaluation Board",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "ECP5",
-    processor: "Lattice LFE5UM5G-85F-8BG381C (381-ball caBGA, 84K LUTs, 5G SerDes)",
-    logicLevel: "3.3 V / 2.5 V / 1.8 V configurable I/O banks",
-    power: "12 V external supply for main regulators; USB-B for programming and auxiliary",
-    formFactor: "Large evaluation PCB with Arduino, Raspberry Pi, PMOD, and Versa expansion headers",
-    description:
-      "A full-featured evaluation board for the ECP5-5G FPGA (85K LUTs, 3744 kbits block RAM, four 5G SerDes channels). Exposes over 170 I/Os and 20 differential pairs, plus SerDes access. Onboard 128 Mbit SPI flash, 200 MHz differential oscillator, and FTDI FT2232H for USB JTAG/UART programming. Compatible with Arduino shields, Raspberry Pi HATs, and Digilent PMOD modules.",
-    tags: ["Lattice", "ECP5", "ECP5-5G", "FPGA", "SerDes", "Arduino", "Raspberry Pi", "PMOD", "high speed"],
-    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB", "Ethernet", "PCIe"],
-    highlights: [
-      "LFE5UM5G-85F: 84K LUTs, 3744 kbits BRAM, four 5G SerDes, MIPI support.",
-      "178 general-purpose I/Os and 20 differential pairs available for user applications.",
-      "Clock sources: 12 MHz FTDI reference, 200 MHz differential X2 oscillator, LVDS source-sync X5.",
-      "J31 PMOD header, J38 SPI Raspberry Pi header, J1 JTAG / RPi GPIO header.",
-      "128 Mbit SPI flash (quad-read) for bitstream; FTDI FT2232H for JTAG + UART.",
-      "Arduino R3 shield header and MDC/Versa expansion headers for peripheral ecosystem.",
-    ],
-    warnings: [
-      "Pinout is NOT included here — the 381-ball BGA package pin tables are extensive and require the FPGA-EB-02017 user guide schematics for exact connector-to-ball assignments.",
-      "Requires 12 V external power supply — USB alone is insufficient for main FPGA/DDR power.",
-      "ECP5 I/O bank voltage is configurable; verify bank voltage with VCCIO jumpers before connecting peripherals.",
-      "SerDes channels require careful impedance-controlled PCB routing; for evaluation only.",
-    ],
-    sourceLinks: [
-      {
-        label: "ECP5 Evaluation Board User Guide FPGA-EB-02017-1.2 (Lattice, Aug 2021)",
-        url: "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/EI2/FPGA-EB-02017-1-2-ECP5-Evaluation-Board-UG.ashx?document_id=52479",
-        type: "Manual",
-      },
-      {
-        label: "LFE5UM5G-85F-EVN product page (DigiKey)",
-        url: "https://www.digikey.com/en/products/detail/lattice-semiconductor-corporation/LFE5UM5G-85F-EVN/9553907",
-        type: "Docs",
-      },
-      {
-        label: "ECP5 Evaluation Board User Guide FPGA-EB-02017-1.0 (Mouser mirror PDF)",
-        url: "https://www.mouser.com/pdfdocs/FPGA-EB-02017-1-0-ECP5-Evaluation-Board.pdf",
-        type: "Manual",
-      },
-    ],
-  },
-
-  // -----------------------------------------------------------------------
-  // CrossLink-NX Evaluation Board
-  // Source: Lattice FPGA-EB-02028-1.3 CrossLink-NX Evaluation Board User Guide (Nov 2020)
-  //         DigiKey LIFCL-40-EVN product page; Arrow mirror PDF
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-crosslink-nx-eval",
-    name: "Lattice CrossLink-NX Evaluation Board",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "CrossLink-NX",
-    processor: "Lattice LIFCL-40-9BG400C (400-ball caBGA, 40K logic cells, Nexus 28 nm FD-SOI)",
-    logicLevel: "Wide-range I/O (1.0 V – 3.3 V configurable per bank)",
-    power: "USB-B for programming; external 12 V for main power regulators",
-    formFactor: "Mid-size evaluation PCB with FMC LPC, Raspberry Pi HAT, and PMOD headers",
-    description:
-      "An evaluation board for the CrossLink-NX FPGA (40K logic cells, 28 nm FD-SOI, one PCIe 5G SerDes, MIPI D-PHY). Exposes 118 wide-range I/Os and 37 high-speed differential pairs. Features FMC LPC mezzanine connector, 40-pin Raspberry Pi HAT-compatible GPIO, PMOD, MIPI CSI-2 camera header, and PCIe x1 slot. FTDI FT2232H provides USB JTAG and UART. 128 Mbit SPI flash.",
-    tags: ["Lattice", "CrossLink-NX", "FPGA", "LIFCL", "Nexus", "MIPI", "CSI", "PCIe", "Raspberry Pi", "FMC"],
-    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB", "CSI", "PCIe"],
-    highlights: [
-      "LIFCL-40 (CrossLink-NX): 40K logic cells, 28 nm FD-SOI, ultra-low power, instant-on NV config.",
-      "118 wide-range I/Os (1.0–3.3 V) plus 37 LVDS differential pairs for high-speed interfaces.",
-      "FMC LPC mezzanine connector for industry-standard FPGA expansion cards.",
-      "40-pin Raspberry Pi 2/3 GPIO-compatible header (J1) for HAT module compatibility.",
-      "MIPI CSI-2 camera header and D-PHY soft-IP interface for computer vision applications.",
-      "PCIe Gen2 x1 SerDes channel accessible via edge connector.",
-    ],
-    warnings: [
-      "Pinout is NOT included here — the 400-ball BGA package requires the FPGA-EB-02028 user guide schematics for exact connector-to-ball assignments.",
-      "Wide-range I/O voltage must be set per bank via board jumpers; mixed-voltage peripherals require careful configuration.",
-      "PCIe SerDes requires high-speed signal integrity design practices on the host platform.",
-      "Some board header assignments differ between revision 1.0 (Dec 2019) and 1.3 (Nov 2020); verify revision before using pinout references.",
-    ],
-    sourceLinks: [
-      {
-        label: "CrossLink-NX Evaluation Board User Guide FPGA-EB-02028-1.3 (Arrow mirror PDF)",
-        url: "https://static6.arrow.com/aropdfconversion/37bf4be720992b1102049892c65ef29c80fa3678/fpga-eb-02028-1-3-crosslink-nx-evaluation-board.pdf",
-        type: "Manual",
-      },
-      {
-        label: "CrossLink-NX Evaluation Board product page (Lattice)",
-        url: "https://www.latticesemi.com/en/Products/DevelopmentBoardsAndKits/CrossLink-NXEvaluationBoard",
-        type: "Docs",
-      },
-      {
-        label: "LIFCL-40-EVN product page (DigiKey)",
-        url: "https://www.digikey.com/en/products/detail/lattice-semiconductor-corporation/LIFCL-40-EVN/12146740",
-        type: "Docs",
-      },
-    ],
-  },
-
-  // -----------------------------------------------------------------------
-  // Certus-NX Versa Evaluation Board
-  // Source: Lattice FPGA-EB-02032-1.0 Certus-NX Versa Evaluation Board User Guide (Apr 2021)
-  //         Farnell PDF mirror; element14 roadtest review
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-certus-nx-versa-eval",
-    name: "Lattice Certus-NX Versa Evaluation Board",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "Certus-NX",
-    processor: "Lattice LFD2NX-40-8BG256C (256-ball caBGA, 40K logic cells, Nexus 28 nm FD-SOI)",
-    logicLevel: "Wide-range I/O (1.0 V – 3.3 V configurable per bank)",
-    power: "12 V external supply for main regulators; USB for FTDI programming",
-    formFactor: "Mid-size evaluation PCB with DDR3, Ethernet, PCIe, Raspberry Pi, and PMOD headers",
-    description:
-      "A versatile evaluation board for the Certus-NX general-purpose FPGA (40K logic cells, 28 nm FD-SOI, 2× SerDes channels). Features onboard 128 MB DDR3 SDRAM, SGMII/RGMII Gigabit Ethernet PHY, PCIe Gen2 x1, soft D-PHY, three Digilent PMOD headers, Raspberry Pi HAT connector (40-pin), 4 DIP switches, 5 push buttons, 8 status LEDs, and 7-segment display.",
-    tags: ["Lattice", "Certus-NX", "FPGA", "LFD2NX", "Nexus", "DDR3", "Ethernet", "PCIe", "Raspberry Pi"],
-    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB", "Ethernet", "PCIe", "I2C"],
-    highlights: [
-      "LFD2NX-40: 40K logic cells, 28 nm FD-SOI, 2× 5G SerDes, instant-on NV config.",
-      "Onboard 128 MB DDR3 SDRAM (MT41K64M16TW-107) for memory-intensive designs.",
-      "SGMII and RGMII dual Ethernet PHY for 1 Gbps Ethernet soft-core evaluation.",
-      "PCIe Gen2 ×1 channel via SerDes for host-connectivity or endpoint evaluation.",
-      "40-pin Raspberry Pi HAT-compatible header for GPIO expansion and HAT module compatibility.",
-      "FTDI FT2232H provides USB JTAG + UART; onboard download controller.",
-    ],
-    warnings: [
-      "Pinout is NOT included here — the 256-ball BGA requires the FPGA-EB-02032 user guide schematics for exact connector-to-ball assignments.",
-      "Requires 12 V external supply — USB powers only the FTDI programming interface.",
-      "I/O bank voltages are configurable per bank; verify VCCIO jumper settings before connecting peripherals.",
-      "DDR3 interface is hardwired to a specific bank; refer to user guide for DDR calibration requirements.",
-    ],
-    sourceLinks: [
-      {
-        label: "Certus-NX Versa Evaluation Board User Guide FPGA-EB-02032-1.0 (Farnell PDF)",
-        url: "https://www.farnell.com/datasheets/3437166.pdf",
-        type: "Manual",
-      },
-      {
-        label: "Certus-NX Versa Evaluation Board product page (Lattice)",
-        url: "https://www.latticesemi.com/products/developmentboardsandkits/certus_nx_versa_eval",
-        type: "Docs",
-      },
-    ],
-  },
-
-  // -----------------------------------------------------------------------
-  // CertusPro-NX Versa Evaluation Board
-  // Source: Lattice FPGA-EB-02053 CertusPro-NX Versa Board User Guide (v1.1, v1.3)
-  //         Farnell PDF mirrors
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-certuspro-nx-versa-eval",
-    name: "Lattice CertusPro-NX Versa Evaluation Board",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "CertusPro-NX",
-    processor: "Lattice LFCPNX-100-9LFG672I (672-ball LFG BGA, 100K logic cells, 28 nm FD-SOI)",
-    logicLevel: "Wide-range I/O (1.0 V – 3.3 V configurable per bank)",
-    power: "12 V external supply for main regulators; USB for programming",
-    formFactor: "Large evaluation PCB with SFP, PCIe, DDR, CSI-2, USB3, Raspberry Pi, and PMOD headers",
-    description:
-      "A high-capability evaluation board for the CertusPro-NX FPGA (100K logic cells, 28 nm FD-SOI, 2× SerDes). Features SFP optical cage, PCIe Gen2 x1, MIPI CSI-2 camera connector, USB 3.0 controller, 40-pin Raspberry Pi HAT header, Digilent PMOD header, 4 DIP switches, 5 push buttons, 8 LEDs, and 7-segment display. Targets networking, storage, and industrial interface applications.",
-    tags: ["Lattice", "CertusPro-NX", "FPGA", "LFCPNX", "Nexus", "SFP", "PCIe", "CSI", "USB3", "Raspberry Pi"],
-    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB", "Ethernet", "PCIe", "CSI", "I2C"],
-    highlights: [
-      "LFCPNX-100 in 672-ball LFG BGA: 100K LUTs, 2× 5G SerDes, instant-on NV configuration.",
-      "SFP optical cage for 1G/2.5G fiber Ethernet or other SFP-based SerDes applications.",
-      "MIPI CSI-2 camera header with soft D-PHY for embedded vision use cases.",
-      "USB 3.0 controller for SuperSpeed USB device/host interface designs.",
-      "40-pin Raspberry Pi GPIO-compatible HAT header plus PMOD connector for rapid prototyping.",
-    ],
-    warnings: [
-      "Pinout is NOT included here — the 672-ball BGA and multiple high-speed interfaces require the FPGA-EB-02053 user guide schematics for accurate connector-to-ball assignments.",
-      "Multiple hardware revision levels (1.1, 1.2, 1.3) exist — verify revision label on board; schematic differences may exist.",
-      "Requires 12 V external supply for main FPGA and DDR power rails.",
-      "SFP and PCIe SerDes signal integrity requirements: use matched-impedance cables and connectors per Lattice guidelines.",
-    ],
-    sourceLinks: [
-      {
-        label: "CertusPro-NX Versa Board User Guide FPGA-EB-02053-1.1 (Lattice, Farnell mirror)",
-        url: "https://www.farnell.com/datasheets/4478416.pdf",
-        type: "Manual",
-      },
-      {
-        label: "CertusPro-NX Versa Board product page (Lattice)",
-        url: "https://www.latticesemi.com/products/developmentboardsandkits/certuspro-nx-versa-board",
-        type: "Docs",
-      },
-      {
-        label: "LFCPNX-VERSA-EVN product listing (DigiKey)",
-        url: "https://www.digikey.com/en/products/detail/lattice-semiconductor-corporation/LFCPNX-VERSA-EVN/16353382",
-        type: "Docs",
-      },
-    ],
-  },
-
-  // -----------------------------------------------------------------------
   // MachXO2 Breakout Board
-  // Source: Lattice EB68 MachXO2 Breakout Board Evaluation Kit User's Guide (Sep 2013)
-  //         Octopart datasheet PDF; NewArk product page
+  // Source: Lattice EB68 MachXO2 Breakout Board Evaluation Kit User's Guide
   // -----------------------------------------------------------------------
   {
     id: "lattice-machxo2-breakout",
@@ -8397,31 +8007,32 @@ const latticeBoards: Board[] = [
     vendor: "Lattice Semiconductor",
     category: "Development Board",
     family: "MachXO2",
-    processor: "Lattice LCMXO2-7000HE-5TG144C (144-pin TQFP, 6864 LUTs, instant-on NV Flash)",
-    logicLevel: "3.3 V (configurable I/O banks; 1.2 V core)",
+    processor: "Lattice LCMXO2-7000HE-4TG144C (144-pin TQFP, 6,864 LUTs, instant-on NV Flash)",
+    logicLevel: "3.3 V VCCIO defaults on all banks (1.2 V core)",
     power: "USB mini-B (5 V); onboard regulator provides 3.3 V and 1.2 V",
-    formFactor: "3\" × 3\" PCB with 100-mil header holes exposing all 114 user I/Os",
+    formFactor: "3\" × 3\" PCB with four 2x20 100-mil expansion header landings",
     description:
-      "A simple, low-cost breakout board for the MachXO2-7000HE FPGA in a 144-pin TQFP package. Each I/O on the TQFP device connects to a 100-mil (0.1\") header hole on the PCB, providing direct breadboard access to all user I/O. The MachXO2-7000HE features embedded Flash for instant-on, non-volatile operation, two PLLs, 256 kbits embedded RAM, and hardened I2C/SPI/counter/timer/user Flash blocks.",
+      "A low-cost breakout board for the MachXO2-7000HE FPGA in a 144-pin TQFP package. Four unpopulated 2x20 header landings expose 108 FPGA I/Os plus bank power, core power, ground, and configuration signals. The device provides embedded Flash for instant-on operation, two PLLs, 256 kbits of embedded RAM, and hardened I2C/SPI blocks.",
     tags: ["Lattice", "MachXO2", "FPGA", "CPLD", "breakout", "instant-on", "non-volatile", "TQFP"],
     interfaces: ["GPIO", "SPI", "I2C", "UART", "JTAG", "USB"],
     highlights: [
       "LCMXO2-7000HE: 6,864 LUTs, embedded NV Flash (no external config device needed), instant-on.",
-      "All 114 user I/Os of the 144-pin TQFP brought out to 100-mil through-holes for breadboard use.",
+      "108 I/Os from the 144-pin TQFP are accessible through four 100-mil expansion header landings.",
       "Hardened I2C, SPI, timer/counter blocks, and 256 kbits embedded SRAM in fabric.",
       "USB mini-B provides both power and JTAG programming via onboard FT2232HL USB bridge.",
       "Small 3\" × 3\" form factor; LED array and prototype area included.",
-      "Works with both Lattice Diamond and free iCEcube2 design software.",
+      "Supported by Lattice Diamond and Diamond Programmer.",
     ],
     warnings: [
-      "Pinout is NOT included here — exact header hole to TQFP-pin mapping requires the EB68 user guide Table and schematic.",
-      "MachXO2 I/O banks support mixed voltages (1.2 V – 3.3 V); verify VCCO bank settings before connecting external logic.",
+      "The pinout is for the LCMXO2-7000HE-4TG144C population; EB68 also documents an older -1200ZE population with different signal names.",
+      "The board ties VCCIO0-5 to 3.3 V by default. Do not connect lower-voltage external logic without checking the board power configuration and I/O standard.",
+      "DONE, INITn, PROGn, JTAGEN, JTAG, and SPI configuration functions share expansion pins; avoid driving them incompatibly during configuration.",
       "The embedded User Flash Memory (UFM) and boot Flash share the same NV memory array; take care not to overwrite configuration when writing UFM.",
     ],
     sourceLinks: [
       {
-        label: "MachXO2 Breakout Board Evaluation Kit User's Guide EB68 (Lattice / Octopart PDF)",
-        url: "https://datasheet.octopart.com/LCMXO2-7000HE-B-EVN-Lattice-Semiconductor-datasheet-21069903.pdf",
+        label: "MachXO2 Breakout Board Evaluation Kit User's Guide EB68 (Lattice)",
+        url: "https://www.latticesemi.com/view_document?document_id=38834",
         type: "Manual",
       },
       {
@@ -8435,64 +8046,12 @@ const latticeBoards: Board[] = [
         type: "Docs",
       },
     ],
-  },
-
-  // -----------------------------------------------------------------------
-  // MachXO3LF Starter Kit
-  // Source: Lattice EB95 MachXO3 Starter Kit User's Guide v1.2 (Mar 2016)
-  //         DigiKey htmldatasheet (MachXO3L Starter Kit Guide)
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-machxo3lf-starter",
-    name: "Lattice MachXO3LF Starter Kit",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "MachXO3",
-    processor: "Lattice LCMXO3LF-6900C-5BG256C (256-ball caBGA 14×14 mm, instant-on NV Flash)",
-    logicLevel: "3.3 V default (configurable I/O banks, 1.0–3.3 V per bank; 1.2 V core)",
-    power: "USB mini-B (5 V); on-board LDO generates 3.3 V and 1.2 V",
-    formFactor: "3\" × 3\" PCB with four expansion header landings (J3, J4, J6, J8)",
-    description:
-      "A compact, easy-to-use starter kit for the MachXO3LF FPGA (6,900 LUTs, embedded NV Flash, two PLLs, 256 kbits embedded RAM, hardened I2C/SPI). The 256-ball caBGA provides up to 206 usable I/Os, with 150 accessible via four expansion header landings (J3, J4, J6, J8). Pre-loaded with a counter design using the embedded oscillator to drive LEDs.",
-    tags: ["Lattice", "MachXO3", "MachXO3LF", "FPGA", "CPLD", "starter kit", "instant-on", "non-volatile", "BGA"],
-    interfaces: ["GPIO", "SPI", "I2C", "UART", "JTAG", "USB"],
-    highlights: [
-      "LCMXO3LF-6900C: 6,900 LUTs, embedded NV Flash for instant-on power-up without external config device.",
-      "150 of 206 usable I/Os accessible via four 0.1\" expansion header landings (J3, J4, J6, J8).",
-      "Two PLLs, 256 kbits embedded RAM, hardened I2C and SPI controller blocks in fabric.",
-      "USB mini-B provides both power and JTAG/SPI programming (onboard FT2232HL bridge).",
-      "Preloaded counter demo uses MachXO3 internal ring oscillator — no external clock needed.",
-      "Compatible with Lattice Diamond design software and Diamond Programmer (free download).",
-    ],
-    warnings: [
-      "Pinout is NOT included here — exact expansion header pin-to-BGA-ball mapping requires EB95 user guide Tables and schematic.",
-      "256-ball caBGA package (14 mm × 14 mm); I/O ball assignments differ from TQFP packages.",
-      "I/O bank voltage is configurable (1.0–3.3 V) but board defaults to 3.3 V; check before attaching 1.8 V peripherals.",
-      "LF variant includes Flash; L variant uses SRAM config with NVCM — verify exact part number on your board.",
-    ],
-    sourceLinks: [
-      {
-        label: "MachXO3 Starter Kit User Guide EB95 v1.2 (Lattice, Mar 2016)",
-        url: "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/MQ/MachXO3StarterKitUsersGuideEB95.ashx?document_id=50873",
-        type: "Manual",
-      },
-      {
-        label: "MachXO3LF Starter Kit product page (Lattice)",
-        url: "https://www.latticesemi.com/en/Products/DevelopmentBoardsAndKits/MachXO3LFStarterKit",
-        type: "Docs",
-      },
-      {
-        label: "LCMXO3LF-6900C-S-EVN product listing (DigiKey)",
-        url: "https://www.digikey.com/en/products/detail/lattice-semiconductor-corporation/LCMXO3LF-6900C-S-EVN/5395903",
-        type: "Docs",
-      },
-    ],
+    pinout: machxo2BreakoutPinout,
   },
 
   // -----------------------------------------------------------------------
   // MachXO3D Breakout Board
-  // Source: Lattice FPGA-UG-02084 MachXO3D Breakout Board User Guide (v0.90, Jul 2019)
-  //         Farnell PDF mirror; Newark product page
+  // Source: Lattice FPGA-UG-02084-0.90 MachXO3D Breakout Board User Guide
   // -----------------------------------------------------------------------
   {
     id: "lattice-machxo3d-breakout",
@@ -8501,25 +8060,26 @@ const latticeBoards: Board[] = [
     category: "Development Board",
     family: "MachXO3D",
     processor: "Lattice LCMXO3D-9400HC-5BG256C (256-ball caBGA, 9,400 LUTs, Hardware Root of Trust)",
-    logicLevel: "3.3 V default (configurable I/O banks; 1.2 V core)",
+    logicLevel: "3.3 V VCCIO on Banks 0-5",
     power: "USB mini-B (5 V); on-board LDO generates 3.3 V and 1.2 V",
     formFactor: "3\" × 3\" PCB with four 2×20 expansion header landings plus 1×8 JTAG and 1×6 SPI/I2C headers",
     description:
-      "A breakout board for the MachXO3D security-enhanced FPGA (9,400 LUTs, embedded Hardware Root of Trust, instant-on NV Flash). The MachXO3D adds an immutable security block with hardware attestation, secure boot, and cryptographic services on top of the MachXO3 fabric. Four 2×20 expansion header landings expose 150 of 206 I/Os for general-purpose use. Includes 8 LEDs, 16 Mbit SPI flash, and 40-hole prototype area.",
+      "A breakout board for the MachXO3D security-enhanced FPGA (9,400 LUTs, embedded Hardware Root of Trust, instant-on NV Flash). The MachXO3D adds an immutable security block with hardware attestation, secure boot, and cryptographic services on top of the MachXO3 fabric. Four 2×20 expansion header landings expose 127 FPGA signal positions plus bank power and ground. Includes 8 LEDs, 16 Mbit SPI flash, and a 40-hole prototype area.",
     tags: ["Lattice", "MachXO3D", "FPGA", "CPLD", "security", "hardware root of trust", "secure boot", "breakout"],
     interfaces: ["GPIO", "SPI", "I2C", "UART", "JTAG", "USB"],
     highlights: [
       "LCMXO3D-9400HC: MachXO3 fabric + immutable hardware Root of Trust (HRoT) security block.",
       "Secure boot, hardware attestation, and cryptographic key storage integrated in silicon.",
-      "150 of 206 usable I/Os accessible via four 2×20 expansion headers (J1–J4).",
+      "127 FPGA signal positions accessible via four 2×20 expansion headers (J3, J4, J6, J8).",
       "1×8 dedicated JTAG header and 1×6 SPI/I2C header for debug and utility access.",
       "8 onboard user LEDs, 16 Mbit serial flash (external SPI boot support), 40-hole proto area.",
       "USB mini-B for both 5 V power and JTAG programming via FT2232HL.",
     ],
     warnings: [
-      "Pinout is NOT included here — exact expansion header pin-to-BGA-ball mapping requires the FPGA-UG-02084 user guide Tables.",
+      "The connector map applies to LCMXO3D-9400HC-5BG256C and preliminary board guide FPGA-UG-02084-0.90.",
       "MachXO3D security block requires Lattice-specific provisioning tools; refer to MachXO3D Security Design Guide.",
-      "I/O bank voltage is configurable (default 3.3 V); verify bank VCCO before attaching 1.8 V peripherals.",
+      "The board supplies 3.3 V to VCCIO0-5. Do not attach lower-voltage logic without level translation or a documented board modification.",
+      "INITn, DONE, and JTAGENB share J3 expansion pins and can affect configuration if externally driven at power-up.",
       "User guide version 0.90 (preliminary, Jul 2019) was the latest found; check Lattice for updated revisions.",
     ],
     sourceLinks: [
@@ -8539,63 +8099,7 @@ const latticeBoards: Board[] = [
         type: "Docs",
       },
     ],
-  },
-
-  // -----------------------------------------------------------------------
-  // Lattice Avant-E Evaluation Board
-  // Source: Lattice FPGA-EB-02057 Avant-E Evaluation Board User Guide
-  //         Lattice Avant-E product page; DigiKey LAV-500E-EVN listing
-  //         Mouser Avant Platform Datasheet (FPGA-DS-02107-0.80)
-  // -----------------------------------------------------------------------
-  {
-    id: "lattice-avant-e-eval",
-    name: "Lattice Avant-E Evaluation Board",
-    vendor: "Lattice Semiconductor",
-    category: "Development Board",
-    family: "Avant",
-    processor: "Lattice Avant-E LFG1156 package (16 nm FinFET, mid-range FPGA)",
-    logicLevel: "Wide-range I/O (1.0 V – 3.3 V configurable per bank)",
-    power: "12 V external supply for main regulators; USB for programming",
-    formFactor: "Large evaluation PCB with FMC HPC, Raspberry Pi HAT, and PMOD headers",
-    description:
-      "An evaluation board for Lattice's Avant-E mid-range FPGA family (16 nm FinFET process), targeting compute, wireless infrastructure, and industrial applications. Features 95 wide-range I/Os, 468 high-speed differential I/Os (234 pairs), FMC HPC mezzanine, 40-pin Raspberry Pi HAT header, PMOD connector, 8 green LEDs, 8 red LEDs, 3 seven-segment displays, 8 DIP switches, and 4 push buttons. Part number LAV-500E-EVN.",
-    tags: ["Lattice", "Avant", "Avant-E", "FPGA", "16nm", "FinFET", "FMC", "Raspberry Pi", "high speed", "mid-range"],
-    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB", "PCIe", "Ethernet"],
-    highlights: [
-      "16 nm FinFET process: higher performance and lower power than 28 nm Nexus family.",
-      "95 wide-range I/Os + 468 high-speed differential I/Os (234 LVDS pairs) for demanding interfaces.",
-      "FMC HPC mezzanine connector for high-speed FPGA expansion and specialty add-in cards.",
-      "40-pin Raspberry Pi 2/3 GPIO-compatible header for HAT expansion modules.",
-      "User I/O resources: 8 DIP switches, 4 push buttons, 8 green + 8 red LEDs, 3 seven-segment displays.",
-    ],
-    warnings: [
-      "Pinout is NOT included here — the LFG1156 (1156-ball BGA) package requires the FPGA-EB-02057 user guide schematics for accurate connector-to-ball assignments.",
-      "Requires 12 V external supply — USB alone powers only the programming interface.",
-      "Avant-E family documentation was in preliminary status as of 2023; verify production datasheet revision before committing to designs.",
-      "High-speed differential I/Os have strict PCB routing requirements; use Lattice SI guidelines.",
-    ],
-    sourceLinks: [
-      {
-        label: "Avant-E Evaluation Board User Guide FPGA-EB-02057 (Scribd mirror)",
-        url: "https://www.scribd.com/document/682599679/FPGA-EB-02057-1-2-Avant-E-Evaluation-Board",
-        type: "Manual",
-      },
-      {
-        label: "Avant-E Evaluation Board product page (Lattice)",
-        url: "https://www.latticesemi.com/products/developmentboardsandkits/avant-e-evaluation-board",
-        type: "Docs",
-      },
-      {
-        label: "LAV-500E-EVN product listing (DigiKey)",
-        url: "https://www.digikey.com/en/products/detail/lattice-semiconductor-corporation/LAV-500E-EVN/18135889",
-        type: "Docs",
-      },
-      {
-        label: "Avant Platform Overview Datasheet FPGA-DS-02107-0.80 (Mouser PDF)",
-        url: "https://www.mouser.com/pdfDocs/FPGA-DS-02107-0-80-Avant-Platform-DataSheet-Overview.pdf",
-        type: "Datasheet",
-      },
-    ],
+    pinout: machxo3dBreakoutPinout,
   },
 ];
 
