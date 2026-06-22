@@ -420,6 +420,19 @@ export const boardVisuals: Record<string, BoardVisual> = {
     ports: ["usb-mini"],
     revisionNote: "UG FPGA-UG-02084 v0.90 (Jul 2019) was preliminary; check for updated revisions.",
   }),
+  // iCE40 / CrossLink-NX families
+  "lattice-icestick": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-a"],
+  }),
+  "lattice-machxo3l-starter": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-mini"],
+  }),
+  "lattice-crosslink-nx-eval": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-micro"],
+  }),
 };
 
 // Default PCB accent by vendor, used when a visual does not specify one.

@@ -10,6 +10,7 @@ const vendorDomains: Record<string, string> = {
   Arduino: "arduino.cc",
   "Banana Pi": "banana-pi.org",
   Hardkernel: "hardkernel.com",
+  "Lattice Semiconductor": "latticesemi.com",
   "Libre Computer": "libre.computer",
   LilyGO: "lilygo.cc",
   LOLIN: "wemos.cc",

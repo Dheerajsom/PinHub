@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Expand, Maximize2, X } from "lucide-react";
+import { clsx } from "clsx";
+import { Expand, ExternalLink, Maximize2, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import {
   buildBoardGeometry,
@@ -12,6 +13,7 @@ import { BoardStage } from "@/components/board-visual/BoardStage";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
+import { InspectorBody } from "@/components/board-visual/InspectorBody";
 import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
 
 // Dev-time integrity gate: surfaces missing coverage, unanchored pins, or
@@ -58,6 +60,14 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
 
   const liveAnchor = anchorsByKey.get(activeKey ?? selectedKey ?? "") ?? null;
   const stageTitle = `${board.name} — ${board.pinout.connector}`;
+  // Dense schematic headers (FPGA expansion landings, 50+ pads) are cramped in
+  // the narrow detail column, so we steer users to the roomy standalone view.
+  const isComplex =
+    geometry.kind === "group-strips" || geometry.anchors.length > 48;
+  // Very tall schematic diagrams letterbox down to an unreadable sliver if we
+  // force the whole thing into the panel height. For those we render at full
+  // panel width and scroll vertically; flatter boards keep the fit-to-view look.
+  const tall = geometry.vbh / geometry.vbw > 1.4;
 
   function handleEscape() {
     if (expanded) {
@@ -89,15 +99,33 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             {geometry.orientation}
           </p>
         </div>
-        <button
-          ref={expandButtonRef}
-          type="button"
-          onClick={() => setExpanded(true)}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-white/15 bg-[#15181f] px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
-        >
-          <Expand className="size-3.5" aria-hidden="true" />
-          Inspect
-        </button>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <button
+            ref={expandButtonRef}
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-[#15181f] px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
+          >
+            <Expand className="size-3.5" aria-hidden="true" />
+            Inspect
+          </button>
+          <a
+            href={`/pinout/${board.id}`}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Open the ${board.name} pinout in a new tab`}
+            title="Open the full pinout in a new tab"
+            className={clsx(
+              "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition",
+              isComplex
+                ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50 hover:bg-cyan-300/20"
+                : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
+            )}
+          >
+            <ExternalLink className="size-3.5" aria-hidden="true" />
+            Full view
+          </a>
+        </div>
       </div>
 
       <div className="mt-3">
@@ -108,27 +136,53 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         />
       </div>
 
+      {/* Tall schematic boards render at full panel width and scroll vertically
+          so pads stay legible; flatter boards letterbox to fit the panel. */}
       <div
-        className="bv-stage-wrap mt-3 w-full overflow-hidden rounded-md bg-[#0a0c11]"
-        style={{
-          aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-          maxHeight: 460,
-        }}
+        className={clsx(
+          "bv-stage-wrap mt-3 w-full rounded-md bg-[#0a0c11]",
+          tall ? "overflow-y-auto overflow-x-hidden" : "overflow-hidden",
+        )}
+        style={tall ? { maxHeight: 460 } : undefined}
       >
-        <BoardStage
-          geometry={geometry}
-          title={stageTitle}
-          selectedKey={selectedKey}
-          activeKey={activeKey ?? selectedKey}
-          activeRole={activeRole}
-          showAllLabels={false}
-          onSelect={(key) => {
-            setSelectedKey(key);
-            setActiveKey(key);
+        <div
+          className="w-full"
+          style={{
+            aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
+            maxHeight: tall ? undefined : 460,
           }}
-          onActiveKey={setActiveKey}
-        />
+        >
+          <BoardStage
+            geometry={geometry}
+            title={stageTitle}
+            selectedKey={selectedKey}
+            activeKey={activeKey ?? selectedKey}
+            activeRole={activeRole}
+            showAllLabels={false}
+            onSelect={(key) => {
+              setSelectedKey(key);
+              setActiveKey(key);
+            }}
+            onActiveKey={setActiveKey}
+          />
+        </div>
       </div>
+
+      {isComplex ? (
+        <p className="mt-2 flex items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
+          <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
+          Dense header — open{" "}
+          <a
+            href={`/pinout/${board.id}`}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium underline underline-offset-2 hover:text-cyan-100"
+          >
+            Full view
+          </a>{" "}
+          for a roomier, fully-labelled diagram.
+        </p>
+      ) : null}
 
       {geometry.notToScale ? (
         <p className="mt-2 text-[11px] leading-5 text-zinc-500">
@@ -279,50 +333,19 @@ function ExpandedInspector({
           </button>
         </div>
 
-        <div className="grid min-h-0 flex-1 gap-4 overflow-y-auto p-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-          <div className="min-w-0">
-            <PinRoleLegend
-              present={presentRoles}
-              activeRole={activeRole}
-              onToggle={onToggleRole}
-            />
-            <div className="mt-3 w-full overflow-auto rounded-md bg-[#0a0c11] p-2">
-              <div
-                className="mx-auto"
-                style={{
-                  aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-                  minWidth: Math.min(geometry.vbw, 760),
-                  maxWidth: geometry.vbw,
-                }}
-              >
-                <BoardStage
-                  geometry={geometry}
-                  title={`${board.name} — ${board.pinout?.connector ?? "pinout"}`}
-                  selectedKey={selectedKey}
-                  activeKey={activeKey}
-                  activeRole={activeRole}
-                  showAllLabels
-                  onSelect={onSelect}
-                  onActiveKey={onActiveKey}
-                />
-              </div>
-            </div>
-            <div className="mt-3">
-              <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} />
-            </div>
-          </div>
-
-          <div className="min-w-0">
-            <h4 className="mb-2 text-sm font-semibold text-white">All pins</h4>
-            <PinoutTable
-              anchors={geometry.anchors}
-              activeKey={activeKey}
-              selectedKey={selectedKey}
-              activeRole={activeRole}
-              onSelect={onSelect}
-              onActiveKey={onActiveKey}
-            />
-          </div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          <InspectorBody
+            board={board}
+            geometry={geometry}
+            selectedKey={selectedKey}
+            activeKey={activeKey}
+            activeRole={activeRole}
+            liveAnchor={liveAnchor}
+            presentRoles={presentRoles}
+            onSelect={onSelect}
+            onActiveKey={onActiveKey}
+            onToggleRole={onToggleRole}
+          />
         </div>
       </div>
     </div>

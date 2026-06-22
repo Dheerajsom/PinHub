@@ -7996,6 +7996,152 @@ const machxo3dBreakoutPinout: Pinout = {
   ],
 };
 
+const icestickPinout: Pinout = {
+  connector: "J1 / J3 expansion headers and J2 Pmod connector",
+  layout: "grouped",
+  notes: [
+    "Header signal names and iCE40HX1K TQ144 package pins are from EB82 Tables 1-3; FPGA pin numbers cross-checked against the canonical iCEstick.pcf constraint file.",
+    "J1 and J3 are unpopulated 1x10 footprints; solder your own headers and confirm pin 1 from the EB82 silkscreen before wiring.",
+    "J2 is a populated 2x6 Digilent Pmod: positions 5/11 are GND and 6/12 are 3.3 V; the eight remaining positions are FPGA I/O.",
+    "All I/O are 3.3 V LVCMOS and are not 5 V tolerant. JTAG/SPI configuration runs through the on-board FT2232H and is not broken out to these headers.",
+  ],
+  groups: [
+    {
+      label: "J1 - Bank 0",
+      pins: latticeExpansionPins([
+        "3.3 V", "GND", "PIO0_02 (pin 112)", "PIO0_03 (pin 113)", "PIO0_04 (pin 114)",
+        "PIO0_05 (pin 115)", "PIO0_06 (pin 116)", "PIO0_07 (pin 117)", "PIO0_08 (pin 118)",
+        "PIO0_09 (pin 119)",
+      ]),
+    },
+    {
+      label: "J3 - Bank 2",
+      pins: latticeExpansionPins([
+        "3.3 V", "GND", "PIO2_17 (pin 62)", "PIO2_16 (pin 61)", "PIO2_15 (pin 60)",
+        "PIO2_14 (pin 56)", "PIO2_13 (pin 48)", "PIO2_12 (pin 47)", "PIO2_11 (pin 45)",
+        "PIO2_10 (pin 44)",
+      ]),
+    },
+    {
+      label: "J2 - Pmod (Bank 1)",
+      pins: latticeExpansionPins([
+        "PIO1_02 (pin 78)", "PIO1_03 (pin 79)", "PIO1_04 (pin 80)", "PIO1_05 (pin 81)",
+        "GND", "3.3 V", "PIO1_06 (pin 87)", "PIO1_07 (pin 88)", "PIO1_08 (pin 90)",
+        "PIO1_09 (pin 91)", "GND", "3.3 V",
+      ]),
+    },
+  ],
+};
+
+const machxo3lStarterPinout: Pinout = {
+  connector: "J3, J4, J6, and J8 2x20 expansion header landings",
+  layout: "grouped",
+  notes: [
+    "Physical positions, signal names, and 256-caBGA balls are transcribed from EB95 (MachXO3 Starter Kit User Guide) Tables 4-7.",
+    "J3 positions 3, 4, and 14 are shared with INITn, DONE, and JTAGENB; treat them as configuration straps during boot and do not drive them externally at power-up.",
+    "J8 spans Banks 3, 4, and 5 and exposes different VCCIO rails at positions 1, 2, and 40; do not assume one voltage for the whole connector.",
+    "The headers are unpopulated 100 mil landings shared by the LCMXO3L (NVCM) and LCMXO3LF (Flash) board populations.",
+  ],
+  groups: [
+    {
+      label: "J3 - Bank 0",
+      pins: latticeExpansionPins([
+        "VCCIO0 (balls D5,D12,G8,G9)", "VCCIO0 (balls D5,D12,G8,G9)", "PT36C/INITn (ball A13)",
+        "PT36D/DONE (ball C13)", "PT22A (ball F8)", "PT35B (ball B12)", "PT35A (ball C12)",
+        "PT26B (ball E11)", "PT27B (ball E10)", "PT27A (ball D10)", "GND", "GND",
+        "PT26A (ball F9)", "PT27C/JTAGENB (ball C10)", "PT17B (ball E8)", "PT21B (ball E9)",
+        "PT14B (ball E7)", "PT21A (ball D8)", "PT16B (ball D7)", "PT15B (ball C7)", "GND", "GND",
+        "PT10B (ball C5)", "PT14A (ball D6)", "PT16A (ball E6)", "PT9A (ball C4)",
+        "PT25B (ball A10)", "PT17A (ball F7)", "PT22B (ball D9)", "PT25A (ball B9)", "GND", "GND",
+        "PT11B (ball B6)", "PT15A (ball B7)", "PT9B (ball B5)", "PT11A (ball A5)",
+        "PT12B (ball B4)", "PT10A (ball A4)", "GND", "PT12A (ball A3)",
+      ]),
+    },
+    {
+      label: "J4 - Bank 1",
+      pins: latticeExpansionPins([
+        "VCCIO1 (balls E13,H10,J10,M13)", "VCCIO1 (balls E13,H10,J10,M13)", "PR19D (ball K12)",
+        "PR19C (ball K13)", "PR23A (ball M14)", "PR24B (ball N14)", "PR18B (ball L14)",
+        "PR24A (ball N16)", "PR23B (ball M15)", "PR21B (ball M16)", "GND", "GND",
+        "PR21A (ball L15)", "PR18A (ball L16)", "PR17A (ball K14)", "PR16B (ball K16)",
+        "PR17B (ball K15)", "PR15B (ball J14)", "PR12A/PCLKT1_0 (ball H14)", "PR16A (ball J15)",
+        "GND", "GND", "PR15A (ball J16)", "PR11B (ball H15)", "PR12B/PCLKC1_0 (ball H16)",
+        "PR9A (ball G15)", "PR11A (ball G16)", "PR5B (ball F15)", "PR7B (ball F16)",
+        "PR2B/R_GPLLC_FB (ball E15)", "GND", "GND", "PR5A (ball E16)",
+        "PR3B/R_GPLLC_IN (ball E14)", "PR3A/R_GPLLT_IN (ball D16)", "PR2C (ball C15)",
+        "PR2A/R_GPLLT_FB (ball D14)", "PR7A (ball F14)", "PR9B (ball G14)", "PR2D (ball B16)",
+      ]),
+    },
+    {
+      label: "J6 - Bank 2",
+      pins: latticeExpansionPins([
+        "VCCIO2 (balls K8,K9,N5,N12)", "VCCIO2 (balls K8,K9,N5,N12)", "PB35B (ball T12)",
+        "PB34B (ball T14)", "PB35A (ball R11)", "PB34A (ball R13)", "PB31A (ball T11)",
+        "PB28B (ball M11)", "PB31B (ball P11)", "PB28A (ball N10)", "GND", "GND",
+        "PB26B (ball T10)", "PB29A (ball P10)", "PB26A (ball R9)", "PB29B (ball R10)",
+        "PB23A/PCLKT2_1 (ball T9)", "PB21B (ball N9)", "PB23B/PCLKC2_1 (ball P9)",
+        "PB21A (ball M8)", "GND", "GND", "PB18B (ball T8)", "PB15B (ball L8)", "PB18A (ball P8)",
+        "PB15A (ball M6)", "PB13A (ball R7)", "PB16B/PCLKC2_0 (ball R8)", "PB13B (ball P7)",
+        "PB16A/PCLKT2_0 (ball T7)", "GND", "GND", "PB10B (ball L7)", "PB9B (ball R6)",
+        "PB10A (ball N6)", "PB9A (ball T5)", "PB7B (ball R4)", "PB4A (ball P4)", "PB7A (ball T3)",
+        "PB4B (ball T4)",
+      ]),
+    },
+    {
+      label: "J8 - Banks 3/4/5",
+      pins: latticeExpansionPins([
+        "VCCIO5 (ball E4)", "VCCIO3 (ball M4)", "PL9D (ball H6)", "PL25B (ball N3)",
+        "PL25A (ball M2)", "PL22B/PCLKC3_0 (ball M1)", "PL22A/PCLKT3_0 (ball L2)",
+        "PL19A (ball L1)", "PL19B (ball L3)", "PL19D (ball L5)", "GND", "GND", "PL19C (ball K4)",
+        "PL12A/PCLKT4_0 (ball J1)", "PL15B (ball K1)", "PL15A (ball J2)",
+        "PL12B/PCLKC4_0 (ball J3)", "PL11A (ball H3)", "PL10B (ball H2)", "PL11B (ball H1)",
+        "GND", "GND", "PL9A (ball G2)", "PL10A (ball G1)", "PL6B/PCLKC5_0 (ball F2)",
+        "PL8B (ball F1)", "PL4A/L_GPLLT_IN (ball E2)", "PL6A/PCLKT5_0 (ball E1)", "PL4D (ball D2)",
+        "PL3B/L_GPLLC_FB (ball D1)", "GND", "PL2D (ball C2)", "PL4C (ball C1)", "PL9B (ball G3)",
+        "PL2C (ball B1)", "PL3A/L_GPLLT_FB (ball D3)", "PL4B/L_GPLLC_IN (ball E3)",
+        "PL8A (ball F3)", "PL9C (ball F5)", "VCCIO4 (balls H7,J7)",
+      ]),
+    },
+  ],
+};
+
+const crosslinkNxEvalPinout: Pinout = {
+  connector: "J17, J18, and J19 Pmod expansion headers",
+  layout: "grouped",
+  notes: [
+    "Pmod I/O signal names and LIFCL-40 caBGA balls are from FPGA-EB-02028 Table 8.6; each header is a 2x6 Digilent Pmod exposing eight FPGA I/O.",
+    "Per the Digilent Pmod 1.2.0 standard, positions 5/11 are GND and 6/12 are 3.3 V; only the eight signal positions are device-connected.",
+    "These Pmod banks are the board's general-purpose breakout. Camera, D-PHY, and MIPI interfaces run at 1.2-1.8 V and are not interchangeable with 3.3 V Pmod accessories.",
+    "The board needs its 12 V supply for PCIe and full-power operation; USB-B alone powers only the programming path.",
+  ],
+  groups: [
+    {
+      label: "J17 - PMOD0",
+      pins: latticeExpansionPins([
+        "PMOD0_1 (ball D10)", "PMOD0_2 (ball D9)", "PMOD0_3 (ball D7)", "PMOD0_4 (ball D8)",
+        "GND", "3.3 V", "PMOD0_7 (ball D6)", "PMOD0_8 (ball D5)", "PMOD0_9 (ball D4)",
+        "PMOD0_10 (ball D3)", "GND", "3.3 V",
+      ]),
+    },
+    {
+      label: "J18 - PMOD1",
+      pins: latticeExpansionPins([
+        "PMOD1_1 (ball E10)", "PMOD1_2 (ball E9)", "PMOD1_3 (ball E7)", "PMOD1_4 (ball E8)",
+        "GND", "3.3 V", "PMOD1_7 (ball E4)", "PMOD1_8 (ball E3)", "PMOD1_9 (ball E2)",
+        "PMOD1_10 (ball F1)", "GND", "3.3 V",
+      ]),
+    },
+    {
+      label: "J19 - PMOD2",
+      pins: latticeExpansionPins([
+        "PMOD2_1 (ball J2)", "PMOD2_2 (ball J1)", "PMOD2_3 (ball K2)", "PMOD2_4 (ball K1)",
+        "GND", "3.3 V", "PMOD2_7 (ball K3)", "PMOD2_8 (ball K4)", "PMOD2_9 (ball D17)",
+        "PMOD2_10 (ball E18)", "GND", "3.3 V",
+      ]),
+    },
+  ],
+};
+
 const latticeBoards: Board[] = [
   // -----------------------------------------------------------------------
   // MachXO2 Breakout Board
@@ -8100,6 +8246,164 @@ const latticeBoards: Board[] = [
       },
     ],
     pinout: machxo3dBreakoutPinout,
+  },
+
+  // -----------------------------------------------------------------------
+  // iCEstick Evaluation Kit
+  // Source: Lattice EB82 iCEstick Evaluation Kit User's Guide
+  // -----------------------------------------------------------------------
+  {
+    id: "lattice-icestick",
+    name: "Lattice iCEstick Evaluation Kit",
+    vendor: "Lattice Semiconductor",
+    category: "Development Board",
+    family: "iCE40",
+    processor: "Lattice iCE40HX1K-TQ144 (144-pin TQFP, 1,280 LUTs, 2 PLLs)",
+    logicLevel: "3.3 V LVCMOS I/O (not 5 V tolerant)",
+    power: "USB-A bus powered (5 V); on-board regulators provide 3.3 V and 1.2 V",
+    formFactor: "USB-stick PCB with a male USB-A edge, two 1x10 headers, and one 2x6 Pmod",
+    description:
+      "A USB-stick evaluation board for the low-power iCE40HX-1K FPGA. Two unpopulated 1x10 expansion headers (J1, J3) and a populated 2x6 Digilent Pmod (J2) break out 24 FPGA I/Os, alongside five LEDs, an IrDA transceiver, and an FT2232H for USB programming. It was one of the first boards to gain open-source (Project IceStorm) toolchain support.",
+    tags: ["Lattice", "iCE40", "iCEstick", "FPGA", "Pmod", "IceStorm", "USB", "low-power"],
+    interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB"],
+    highlights: [
+      "iCE40HX1K: 1,280 LUTs, two PLLs, and 64 kbit embedded block RAM in a compact TQFP-144.",
+      "Self-contained USB-A stick form factor — plugs directly into a host port, no external supply.",
+      "J1 + J3 expose 16 general-purpose I/Os (Banks 0 and 2); J2 is a standard 2x6 Digilent Pmod with 8 I/Os.",
+      "On-board FT2232H provides both the JTAG/SPI programming channel and a USB-UART bridge.",
+      "Five user LEDs and an IrDA transceiver wired to dedicated FPGA pins.",
+      "First-class open-source flow via Project IceStorm / Yosys / nextpnr in addition to Lattice iCEcube2.",
+    ],
+    warnings: [
+      "All FPGA I/O are 3.3 V LVCMOS and are not 5 V tolerant; level-shift any 5 V signals.",
+      "J1 and J3 ship as unpopulated 1x10 footprints; confirm pin 1 from the EB82 silkscreen before soldering headers.",
+      "On the J2 Pmod, positions 5/11 are GND and 6/12 are 3.3 V — they are power-only, not FPGA I/O.",
+      "JTAG/SPI configuration is routed through the FT2232H and is not exposed on the expansion headers; CRESET is tied to the bridge.",
+    ],
+    sourceLinks: [
+      {
+        label: "iCEstick Evaluation Kit User's Guide EB82 (Lattice)",
+        url: "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/EI2/EB82-iCEstick_User_Manual.ashx?document_id=50701",
+        type: "Manual",
+      },
+      {
+        label: "iCEstick Evaluation Kit product page (Lattice)",
+        url: "https://www.latticesemi.com/products/developmentboardsandkits/icestick",
+        type: "Docs",
+      },
+      {
+        label: "iCEstick.pcf constraint file (FPGA pin cross-reference)",
+        url: "https://github.com/mcmayer/iCE40/blob/master/iCEstick.pcf",
+        type: "Pinout",
+      },
+    ],
+    pinout: icestickPinout,
+  },
+
+  // -----------------------------------------------------------------------
+  // MachXO3 Starter Kit (MachXO3L / MachXO3LF)
+  // Source: Lattice EB95 MachXO3 Starter Kit User Guide
+  // -----------------------------------------------------------------------
+  {
+    id: "lattice-machxo3l-starter",
+    name: "Lattice MachXO3 Starter Kit",
+    vendor: "Lattice Semiconductor",
+    category: "Development Board",
+    family: "MachXO3",
+    processor: "Lattice LCMXO3L-6900C-5BG256C / LCMXO3LF-6900C-5BG256C (256-ball caBGA, 6,900 LUTs)",
+    logicLevel: "3.3 V VCCIO on all expansion banks",
+    power: "USB mini-B (5 V); on-board regulators generate 3.3 V, 2.5 V, and 1.2 V",
+    formFactor: "~85 x 55 mm PCB with four 2x20 expansion headers plus 1x8 JTAG and 1x6 SPI/I2C headers",
+    description:
+      "A starter board that exposes all six I/O banks of the MachXO3L (NVCM) or MachXO3LF (Flash) device through four 2x20 expansion headers (J3, J4, J6, J8). It carries an FT2232H for USB JTAG/UART, eight LEDs, an 8-position DIP switch, and a 12 MHz oscillator, and is supported by Lattice Diamond. The same board is sold as the MachXO3L and MachXO3LF Starter Kit.",
+    tags: ["Lattice", "MachXO3", "MachXO3L", "MachXO3LF", "FPGA", "CPLD", "starter kit", "caBGA"],
+    interfaces: ["GPIO", "SPI", "I2C", "UART", "JTAG", "USB"],
+    highlights: [
+      "LCMXO3L/LF-6900: 6,900 LUTs and up to 206 user I/Os with instant-on Flash/NVCM configuration.",
+      "Four 2x20 expansion headers cover all six device I/O banks (Banks 0-5).",
+      "J3 (Bank 0) brings out INITn and DONE configuration status pins for monitoring.",
+      "J8 spans Banks 3/4/5 including the left-side GPLL clock inputs and feedback.",
+      "On-board FT2232H gives USB-JTAG programming plus a USB-UART channel.",
+      "Powers entirely from USB; 12 MHz oscillator and 8 LEDs / 8 DIP switches for quick bring-up.",
+    ],
+    warnings: [
+      "The connector map applies to the LCMXO3L-6900C-5BG256C / LCMXO3LF-6900C-5BG256C population documented in EB95.",
+      "All expansion headers are 3.3 V; do not connect 5 V logic without level translation.",
+      "J3 positions 3, 4, and 14 are shared with INITn, DONE, and JTAGENB and act as configuration straps at power-up.",
+      "J8 exposes VCCIO5, VCCIO3, and VCCIO4 at positions 1, 2, and 40 — do not assume one voltage across the whole connector.",
+      "Headers are unpopulated 100 mil landings; read connector orientation from the EB95 figures before soldering.",
+    ],
+    sourceLinks: [
+      {
+        label: "MachXO3 Starter Kit User Guide EB95 (Lattice)",
+        url: "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/MQ/MachXO3StarterKitUsersGuideEB95.ashx?document_id=50873",
+        type: "Manual",
+      },
+      {
+        label: "MachXO3L Starter Kit User Guide (DigiKey mirror)",
+        url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/1268/MachXO3L_StarterKit_UG.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "MachXO3 family product page (Lattice)",
+        url: "https://www.latticesemi.com/products/fpgaandcpld/machxo3",
+        type: "Docs",
+      },
+    ],
+    pinout: machxo3lStarterPinout,
+  },
+
+  // -----------------------------------------------------------------------
+  // CrossLink-NX Evaluation Board (LIFCL-40-EVN)
+  // Source: Lattice FPGA-EB-02028 CrossLink-NX Evaluation Board User Guide
+  // -----------------------------------------------------------------------
+  {
+    id: "lattice-crosslink-nx-eval",
+    name: "Lattice CrossLink-NX Evaluation Board",
+    vendor: "Lattice Semiconductor",
+    category: "Development Board",
+    family: "CrossLink-NX",
+    processor: "Lattice LIFCL-40-9BG400C (CrossLink-NX, 28 nm FD-SOI Nexus, 400-ball caBGA)",
+    logicLevel: "3.3 V on the Pmod banks; 1.2-1.8 V on the camera / MIPI banks",
+    power: "USB-B for programming; separate 12 V jack for PCIe and full-board power",
+    formFactor: "~100 x 80 mm PCB with FMC LPC, Raspberry Pi GPIO, MIPI/D-PHY, and three Pmod headers",
+    description:
+      "An evaluation board for the CrossLink-NX LIFCL-40 FPGA, targeting video bridging, imaging, and edge-AI designs. Three Digilent-compatible Pmod headers (J17, J18, J19) provide a general-purpose GPIO breakout alongside an FMC LPC connector, a Raspberry Pi GPIO header, MIPI CSI-2 camera connectors, a D-PHY header, and a PCIe x1 interface. It is supported by Lattice Radiant software.",
+    tags: ["Lattice", "CrossLink-NX", "Nexus", "LIFCL-40", "FPGA", "Pmod", "MIPI", "edge AI"],
+    interfaces: ["GPIO", "SPI", "I2C", "JTAG", "USB", "CSI", "PCIe"],
+    highlights: [
+      "CrossLink-NX LIFCL-40: 40K logic cells on the 28 nm FD-SOI Nexus platform with instant-on configuration.",
+      "Three independent Digilent Pmod headers (J17/J18/J19), each on a different I/O bank, for GPIO breakout.",
+      "FMC LPC connector and a Raspberry Pi GPIO header for high-density and HAT-style expansion.",
+      "MIPI CSI-2 camera connectors and a D-PHY header for imaging and video-bridging pipelines.",
+      "On-board PCIe x1 Gen2 interface and FTDI-based USB-B JTAG programming.",
+      "Developed with Lattice Radiant; well-suited to sensor-bridging and low-power vision designs.",
+    ],
+    warnings: [
+      "The Pmod map applies to the LIFCL-40-9BG400C board documented in FPGA-EB-02028.",
+      "Pmod headers are 3.3 V; the camera, D-PHY, and MIPI banks run at 1.2-1.8 V and are not interchangeable with 3.3 V Pmod accessories.",
+      "On each Pmod, positions 5/11 are GND and 6/12 are 3.3 V per the Digilent standard — only the eight signal positions are device-connected.",
+      "The FMC VADJ rail is jumper-selectable; set it before attaching FMC modules.",
+      "A 12 V supply is required for PCIe and full-power operation; USB-B alone powers only the programming path.",
+    ],
+    sourceLinks: [
+      {
+        label: "CrossLink-NX Evaluation Board User Guide FPGA-EB-02028 (Lattice)",
+        url: "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/1D2/FPGA-EB-02028-1-4-CrossLink-NX-Evaluation-Board.ashx?document_id=52807",
+        type: "Manual",
+      },
+      {
+        label: "CrossLink-NX Evaluation Board (LIFCL-40-EVN) user guide (ManualsLib)",
+        url: "https://www.manualslib.com/manual/3014515/Lattice-Semiconductor-Lifcl-40-Evn.html",
+        type: "Docs",
+      },
+      {
+        label: "CrossLink-NX product family (Lattice)",
+        url: "https://www.latticesemi.com/products/fpgaandcpld/crosslink-nx",
+        type: "Docs",
+      },
+    ],
+    pinout: crosslinkNxEvalPinout,
   },
 ];
 
