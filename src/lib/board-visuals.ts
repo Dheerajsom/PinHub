@@ -407,6 +407,72 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "lilygo-t-display-s3": preset("grouped"),
   "ti-lp-mspm0g3507": preset("grouped", { accent: "#b91c1c" }),
   "silabs-xg24-explorer-kit": preset("grouped", { accent: "#1d4ed8" }),
+
+  // --- Lattice Semiconductor FPGA boards ------------------------------------
+  // iCE40 family — purple PCB accent (#6d28d9) reflects Lattice's brand colour
+  "lattice-icestick": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-a"],
+    revisionNote: "USB-A plug integrated on the PCB itself (stick form factor).",
+  }),
+  "lattice-ice40hx8k-breakout": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-micro"],
+    revisionNote: "EB85 v1.0 (Nov 2013) and v1.1 (Jan 2016) exist; verify board silkscreen.",
+  }),
+  "lattice-ice40up-breakout": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-micro"],
+  }),
+  "lattice-ice40up-mdp": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-micro"],
+    revisionNote: "Multi-FPGA platform — four iCE40UP5K subsystems for display/audio/sensor/camera.",
+  }),
+  // ECP5 family
+  "lattice-ecp5-5g-eval": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["barrel"],
+    revisionNote: "Requires external 12 V supply; USB-B is for programming only.",
+  }),
+  // CrossLink-NX family
+  "lattice-crosslink-nx-eval": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["barrel"],
+    revisionNote: "LIFCL-40-9BG400C; UG FPGA-EB-02028 rev 1.0 (Dec 2019) to 1.3 (Nov 2020).",
+  }),
+  // Certus-NX / CertusPro-NX family
+  "lattice-certus-nx-versa-eval": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["barrel"],
+    revisionNote: "LFD2NX-40-8BG256C in 256-ball caBGA; user guide FPGA-EB-02032-1.0 (Apr 2021).",
+  }),
+  "lattice-certuspro-nx-versa-eval": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["barrel"],
+    revisionNote: "LFCPNX-100-9LFG672I; multiple UG revisions (1.1–1.3) — verify board label.",
+  }),
+  // MachXO2 / MachXO3 / MachXO3D family
+  "lattice-machxo2-breakout": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-micro"],
+  }),
+  "lattice-machxo3lf-starter": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-micro"],
+    revisionNote: "LF (Flash) and L (NVCM) variants exist — verify part number suffix.",
+  }),
+  "lattice-machxo3d-breakout": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["usb-micro"],
+    revisionNote: "UG FPGA-UG-02084 v0.90 (Jul 2019) was preliminary; check for updated revisions.",
+  }),
+  // Avant family
+  "lattice-avant-e-eval": preset("grouped", {
+    accent: "#6d28d9",
+    ports: ["barrel"],
+    revisionNote: "16 nm FinFET; LFG1156 package. LAV-500E-EVN part number.",
+  }),
 };
 
 // Default PCB accent by vendor, used when a visual does not specify one.
@@ -426,6 +492,7 @@ const vendorAccents: Record<string, string> = {
   "Nordic Semiconductor": "#1d4ed8",
   "Texas Instruments": "#b91c1c",
   Particle: "#0ea5e9",
+  "Lattice Semiconductor": "#6d28d9",
   PJRC: "#166534",
   "BBC micro:bit": "#0d9488",
   "Micro:bit Educational Foundation": "#0d9488",
