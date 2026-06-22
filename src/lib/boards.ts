@@ -7869,6 +7869,7 @@ const machxo2BreakoutPinout: Pinout = {
   notes: [
     "Physical header positions and TQ144 package pins are from EB68 Tables 3-6 for the LCMXO2-7000HE board population.",
     "J2 pins 3/4/13/14/25/26/29/30 are shared with DONE, INITn, PROGn, JTAGEN, TMS, TCK, TDI, and TDO respectively.",
+    "J4 pins 5-8 expose the left general-PLL feedback/input pads (L_GPLLT_FB, L_GPLLC_FB, L_GPLLT_IN, L_GPLLC_IN); EB68 prints the second as the transposed L_GPPLC_FB.",
     "J5 pins 3/5/31/33/39 are shared with SISPI, SN, SPISO, CCLK, and CSSPIN configuration functions.",
     "The headers are unpopulated 100 mil landings; connector numbering must be read from the EB68 callout drawings before soldering.",
   ],
@@ -7901,8 +7902,9 @@ const machxo2BreakoutPinout: Pinout = {
     {
       label: "J4 - Banks 3/4/5",
       pins: latticeExpansionPins([
-        "3.3 V", "VCCIO3/4/5 (TQ144 pins 30, 16, 7)", "3.3 V", "NC", "TQ144 pin 1", "TQ144 pin 2",
-        "TQ144 pin 3", "TQ144 pin 4", "TQ144 pin 5 / PCLKT5_0", "TQ144 pin 6 / PCLKC5_0", "TQ144 pin 9",
+        "3.3 V", "VCCIO3/4/5 (TQ144 pins 30, 16, 7)", "3.3 V", "NC",
+        "TQ144 pin 1 / L_GPLLT_FB", "TQ144 pin 2 / L_GPLLC_FB", "TQ144 pin 3 / L_GPLLT_IN",
+        "TQ144 pin 4 / L_GPLLC_IN", "TQ144 pin 5 / PCLKT5_0", "TQ144 pin 6 / PCLKC5_0", "TQ144 pin 9",
         "TQ144 pin 10", "GND", "GND", "TQ144 pin 11", "TQ144 pin 12", "TQ144 pin 13", "TQ144 pin 14",
         "GND", "GND", "TQ144 pin 19 / PCLKT4_0", "TQ144 pin 20 / PCLKC4_0", "TQ144 pin 21", "TQ144 pin 22",
         "GND", "GND", "TQ144 pin 23", "TQ144 pin 24", "TQ144 pin 25", "TQ144 pin 26", "GND", "GND",
@@ -8178,8 +8180,13 @@ const latticeBoards: Board[] = [
     sourceLinks: [
       {
         label: "MachXO2 Breakout Board Evaluation Kit User's Guide EB68 (Lattice)",
-        url: "https://www.latticesemi.com/view_document?document_id=38834",
+        url: "https://www.latticesemi.com/~/media/LatticeSemi/Documents/UserManuals/MQ/MachXO2BreakoutBoardEvaluationKitUsersGuide.pdf",
         type: "Manual",
+      },
+      {
+        label: "MachXO2 Family Data Sheet FPGA-DS-02056 (Lattice)",
+        url: "https://www.latticesemi.com/view_document?document_id=38834",
+        type: "Datasheet",
       },
       {
         label: "MachXO2 Breakout Board product page (Lattice)",
