@@ -112,7 +112,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           <a
             href={`/pinout/${board.id}`}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             aria-label={`Open the ${board.name} pinout in a new tab`}
             title="Open the full pinout in a new tab"
             className={clsx(
@@ -175,7 +175,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           <a
             href={`/pinout/${board.id}`}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="font-medium underline underline-offset-2 hover:text-cyan-100"
           >
             Full view

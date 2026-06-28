@@ -42,6 +42,47 @@ const allCategory = "All";
 const allInterface = "All";
 const favoritesStorageKey = "pinhub.favorites";
 
+type BoardSearchEntry = {
+  board: Board;
+  name: string;
+  nameWords: string[];
+  primary: string;
+  secondary: string;
+  body: string;
+};
+
+const boardIds = new Set(boards.map((board) => board.id));
+const boardSearchEntries: BoardSearchEntry[] = boards.map((board) => {
+  const name = board.name.toLowerCase();
+  return {
+    board,
+    name,
+    nameWords: name.split(/[^a-z0-9+]+/),
+    primary: [board.vendor, board.family, board.processor]
+      .join(" ")
+      .toLowerCase(),
+    secondary: [board.category, ...board.tags, ...board.interfaces]
+      .join(" ")
+      .toLowerCase(),
+    body: [board.description, ...board.warnings].join(" ").toLowerCase(),
+  };
+});
+
+const categoryCounts = new Map<string, number>();
+categoryCounts.set(allCategory, boards.length);
+for (const board of boards) {
+  categoryCounts.set(
+    board.category,
+    (categoryCounts.get(board.category) ?? 0) + 1,
+  );
+}
+
+const interfaceCount = new Set(boards.flatMap((board) => board.interfaces)).size;
+const sourceCount = boards.reduce(
+  (total, board) => total + board.sourceLinks.length,
+  0,
+);
+
 // Favorites live in localStorage and are exposed to React through a tiny
 // external store so the component can read them via useSyncExternalStore.
 const emptyFavorites: ReadonlySet<string> = new Set();
@@ -52,9 +93,12 @@ function getFavoritesSnapshot(): ReadonlySet<string> {
   if (favoritesSnapshot === null) {
     try {
       const stored = window.localStorage.getItem(favoritesStorageKey);
-      const ids = stored ? (JSON.parse(stored) as string[]) : [];
+      const parsed: unknown = stored ? JSON.parse(stored) : [];
+      const ids = Array.isArray(parsed) ? parsed : [];
       favoritesSnapshot = new Set(
-        ids.filter((id) => boards.some((board) => board.id === id)),
+        ids.filter(
+          (id): id is string => typeof id === "string" && boardIds.has(id),
+        ),
       );
     } catch {
       favoritesSnapshot = new Set();
@@ -107,35 +151,27 @@ function toggleFavoriteId(id: string) {
 // on the name rank above substring hits, which rank above matches in
 // secondary fields, so "pi" surfaces Raspberry Pi boards before boards that
 // only mention SPI in their interface list.
-function scoreBoardForToken(board: Board, token: string): number {
-  const name = board.name.toLowerCase();
-  if (name.split(/[^a-z0-9+]+/).some((word) => word.startsWith(token))) {
+function scoreBoardEntryForToken(
+  entry: BoardSearchEntry,
+  token: string,
+): number {
+  if (entry.nameWords.some((word) => word.startsWith(token))) {
     return 100;
   }
-  if (name.includes(token)) return 60;
-
-  const primary = [board.vendor, board.family, board.processor]
-    .join(" ")
-    .toLowerCase();
-  if (primary.includes(token)) return 40;
-
-  const secondary = [board.category, ...board.tags, ...board.interfaces]
-    .join(" ")
-    .toLowerCase();
-  if (secondary.includes(token)) return 20;
-
-  const text = [board.description, ...board.warnings].join(" ").toLowerCase();
-  if (text.includes(token)) return 10;
+  if (entry.name.includes(token)) return 60;
+  if (entry.primary.includes(token)) return 40;
+  if (entry.secondary.includes(token)) return 20;
+  if (entry.body.includes(token)) return 10;
 
   return 0;
 }
 
 // Every whitespace-separated token must match somewhere; the board's score
 // is the sum of its per-token scores, used to rank results by relevance.
-function scoreBoard(board: Board, tokens: string[]): number {
+function scoreBoardEntry(entry: BoardSearchEntry, tokens: string[]): number {
   let total = 0;
   for (const token of tokens) {
-    const score = scoreBoardForToken(board, token);
+    const score = scoreBoardEntryForToken(entry, token);
     if (score === 0) return 0;
     total += score;
   }
@@ -165,12 +201,13 @@ export function PinHubApp() {
   const filteredBoards = useMemo(() => {
     const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
-    const scored = boards
-      .map((board) => ({
-        board,
-        score: tokens.length === 0 ? 1 : scoreBoard(board, tokens),
+    const scored = boardSearchEntries
+      .map((entry) => ({
+        entry,
+        score: tokens.length === 0 ? 1 : scoreBoardEntry(entry, tokens),
       }))
-      .filter(({ board, score }) => {
+      .filter(({ entry, score }) => {
+        const { board } = entry;
         if (score === 0) return false;
         if (showFavoritesOnly && !favorites.has(board.id)) return false;
         if (activeCategory !== allCategory && board.category !== activeCategory) {
@@ -188,28 +225,13 @@ export function PinHubApp() {
     if (tokens.length > 0) {
       scored.sort((a, b) => b.score - a.score);
     }
-    return scored.map(({ board }) => board);
+    return scored.map(({ entry }) => entry.board);
   }, [activeCategory, activeInterface, query, favorites, showFavoritesOnly]);
-
-  const categoryCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    counts.set(allCategory, boards.length);
-    for (const board of boards) {
-      counts.set(board.category, (counts.get(board.category) ?? 0) + 1);
-    }
-    return counts;
-  }, []);
 
   const selectedBoard =
     filteredBoards.find((board) => board.id === selectedId) ??
     filteredBoards[0] ??
     boards[0];
-
-  const interfaceCount = new Set(boards.flatMap((board) => board.interfaces)).size;
-  const sourceCount = boards.reduce(
-    (total, board) => total + board.sourceLinks.length,
-    0,
-  );
 
   const hasActiveFilters =
     query.trim().length > 0 ||
@@ -560,7 +582,7 @@ function GitHubButton() {
     <a
       href={repoUrl}
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       aria-label="View PinHub source on GitHub (opens in a new tab)"
       title="View source on GitHub"
       className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-lg border border-white/15 bg-[#15181f] px-2.5 text-sm font-medium text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/60 hover:bg-[#1c2029] hover:text-white active:scale-[0.97] sm:px-3"
@@ -839,7 +861,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
               key={source.url}
               href={source.url}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="surface-well group flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#13161c] hover:text-white"
             >
               <span className="flex min-w-0 items-baseline gap-2">

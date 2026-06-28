@@ -54,7 +54,8 @@ export function VendorLogo({ vendor, size = 18 }: VendorLogoProps) {
       alt={`${vendor} logo`}
       width={size}
       height={size}
-      unoptimized
+      decoding="async"
+      referrerPolicy="no-referrer"
       className="shrink-0 rounded-sm"
       onError={() => setFailed(true)}
     />
