@@ -263,9 +263,13 @@ export const boardVisuals: Record<string, BoardVisual> = {
     ports: ["usb-a", "hdmi", "ethernet"],
     revisionNote: "Header sits on the rear edge of the keyboard unit.",
   }),
+  "raspberry-pi-2-model-b": preset("sbc"),
+  "raspberry-pi-1-model-b-plus": preset("sbc"),
   "raspberry-pi-zero-2-w": preset("sbcZero"),
   "raspberry-pi-zero-w": preset("sbcZero"),
+  "raspberry-pi-zero": preset("sbcZero"),
   "banana-pi-bpi-m5": preset("sbc"),
+  "banana-pi-bpi-m2-zero": preset("sbcZero"),
   "odroid-c4": preset("sbc"),
   "pine64-rockpro64": preset("sbc", { aspect: 1.6, ports: ["ethernet", "usb-a", "hdmi"] }),
   "libre-computer-le-potato": preset("sbc"),
@@ -284,6 +288,7 @@ export const boardVisuals: Record<string, BoardVisual> = {
       "40-pin expansion header is exposed on the rear of the HMI enclosure.",
   }),
   "beagley-ai": preset("sbc"),
+  "seeed-beaglebone-green": preset("grouped", { accent: "#0f766e" }),
   "seeed-wio-terminal": preset("sbc", {
     aspect: 1.1,
     ports: ["usb-c"],
@@ -307,6 +312,7 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "esp32-s3-devkitc-1": preset("esp32Devkit"),
   "esp32-c3-devkitm-1": preset("esp32Devkit", { aspect: 0.36 }),
   "esp32-c6-devkitc-1": preset("esp32Devkit"),
+  "esp32-h2-devkitm-1": preset("esp32Devkit", { ports: ["usb-c"] }),
   "esp32-s2-saola-1": preset("esp32Devkit", { aspect: 0.36 }),
   "nodemcu-devkit-v1": preset("esp32Devkit", { aspect: 0.46 }),
 
@@ -348,12 +354,14 @@ export const boardVisuals: Record<string, BoardVisual> = {
   }),
 
   // --- Teensy / Pro Micro / ESP32 Thing (DIP modules) ---------------------
+  "teensy-32": preset("grouped", { accent: "#166534" }),
   "teensy-40": preset("moduleDip", { aspect: 0.46, ports: ["usb-micro"] }),
   "teensy-lc": preset("moduleDip", { aspect: 0.46, ports: ["usb-micro"] }),
   "sparkfun-pro-micro-rp2040": preset("moduleDip", {
     aspect: 0.5,
     ports: ["usb-c"],
   }),
+  "arduino-pro-mini": preset("grouped", { accent: "#0e7c86" }),
   "sparkfun-esp32-thing": preset("moduleDip", { aspect: 0.4 }),
   "lolin-d1-mini": preset("moduleDip", { aspect: 0.78 }),
 
@@ -361,8 +369,12 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "milkv-duo": preset("moduleDip", { aspect: 0.42, source: "groups" }),
 
   // --- Arduino UNO-footprint shields --------------------------------------
+  "arduino-uno-rev3": preset("arduinoUno"),
   "arduino-uno-r4-wifi": preset("arduinoUno", { ports: ["usb-c", "barrel"] }),
   "arduino-uno-r4-minima": preset("arduinoUno", { ports: ["usb-c", "barrel"] }),
+  "arduino-leonardo": preset("grouped", { accent: "#0e7c86" }),
+  "arduino-zero": preset("grouped", { accent: "#0e7c86" }),
+  "arduino-micro": preset("grouped", { accent: "#0e7c86" }),
 
   // --- Arduino Mega-footprint shields -------------------------------------
   "arduino-mega-2560-rev3": preset("arduinoMega"),
@@ -370,6 +382,8 @@ export const boardVisuals: Record<string, BoardVisual> = {
 
   // --- Nucleo-64 -----------------------------------------------------------
   "stm32-nucleo-f401re": preset("nucleo", { accent: "#155e75" }),
+  "stm32-nucleo-f103rb": preset("nucleo", { accent: "#155e75" }),
+  "stm32-nucleo-f446re": preset("nucleo", { accent: "#155e75" }),
   "stm32-nucleo-l476rg": preset("nucleo", { accent: "#155e75" }),
   "stm32-nucleo-g071rb": preset("nucleo", { accent: "#155e75" }),
 
