@@ -4,7 +4,6 @@ import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
 import {
   roleChipStyles,
-  roleGlyphs,
   roleLabels,
   roleOrder,
 } from "@/components/board-visual/roles";
@@ -44,9 +43,6 @@ export function PinRoleLegend({ present, activeRole, onToggle }: PinRoleLegendPr
                   : "opacity-95 hover:opacity-100",
             )}
           >
-            <span aria-hidden="true" className="font-mono">
-              {roleGlyphs[role]}
-            </span>
             {roleLabels[role]}
           </button>
         );

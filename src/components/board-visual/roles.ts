@@ -57,24 +57,6 @@ export const roleSvgColors: Record<
   reserved: { fill: "#44403c", stroke: "#a8a29e", text: "#f5f5f4" },
 };
 
-// A short symbol per role so meaning is not carried by color alone (used on the
-// pads and in the legend, satisfying the "do not encode by color only" rule).
-export const roleGlyphs: Record<PinRole, string> = {
-  power: "+",
-  ground: "⏚",
-  gpio: "·",
-  i2c: "I",
-  spi: "S",
-  uart: "U",
-  adc: "A",
-  dac: "D",
-  pwm: "~",
-  debug: "✦",
-  system: "!",
-  special: "*",
-  reserved: "×",
-};
-
 export const roleOrder: PinRole[] = [
   "power",
   "ground",

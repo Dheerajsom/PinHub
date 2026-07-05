@@ -23,3 +23,8 @@
 - Keep the app dense, scannable, and engineer-friendly.
 - Use icons for tools and commands, not decorative filler.
 - Avoid marketing-page sections; the catalog should remain the first screen.
+
+## GitHub Commit Rules
+
+- Always commit to the MAIN branch unless explicitly commanded not to.
+- The agent may push its own commits to GitHub when the user asks it to publish changes.
