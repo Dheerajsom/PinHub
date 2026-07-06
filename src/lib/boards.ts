@@ -9392,11 +9392,397 @@ const latticeBoards: Board[] = [
   },
 ];
 
+// Pinout verified pin-by-pin against Figure 5 ("Pinout for the 40-pin
+// header") of the official Coral Dev Board datasheet v1.2 (Aug 2019),
+// Google LLC — mirrored at cdn-shop.adafruit.com/product-files/4385/ and
+// live at coral.ai/docs/dev-board/datasheet/.
+const coralDevBoardPinout: Pinout = {
+  connector: "40-pin I/O expansion header",
+  layout: "dual-row",
+  notes: [
+    "All header I/O is 3.3 V logic with programmable 40–255 Ω impedance and a ~82 mA per-pin maximum — exceeding it can brown out the system.",
+    "Every I/O pin defaults to a 90 kΩ pull-down inside the i.MX 8M at boot, except the I2C pins, which pull up to 3.3 V on the SoM.",
+    "UART1 (pins 8/10) is configured as the Mendel Linux serial console by default.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 3, label: "I2C2_SDA", role: "i2c" },
+      { position: 5, label: "I2C2_SCL", role: "i2c" },
+      { position: 7, label: "UART3_TXD", role: "uart" },
+      { position: 9, label: "GND", role: "ground" },
+      { position: 11, label: "UART3_RXD", role: "uart" },
+      { position: 13, label: "GPIO_P13", role: "gpio", aliases: ["GPIO6"] },
+      { position: 15, label: "PWM3", role: "pwm" },
+      { position: 17, label: "3V3", role: "power" },
+      { position: 19, label: "ECSPI1_MOSI", role: "spi" },
+      { position: 21, label: "ECSPI1_MISO", role: "spi" },
+      { position: 23, label: "ECSPI1_SCLK", role: "spi" },
+      { position: 25, label: "GND", role: "ground" },
+      { position: 27, label: "I2C3_SDA", role: "i2c" },
+      { position: 29, label: "GPIO_P29", role: "gpio", aliases: ["GPIO7"] },
+      { position: 31, label: "GPIO_P31", role: "gpio", aliases: ["GPIO8"] },
+      { position: 33, label: "PWM2", role: "pwm" },
+      { position: 35, label: "SAI1_TXFS", role: "special", aliases: ["SAI audio"] },
+      {
+        position: 37,
+        label: "GPIO_P37",
+        role: "gpio",
+        aliases: ["NAND_DATA07"],
+      },
+      { position: 39, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "5V", role: "power" },
+      { position: 4, label: "5V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      {
+        position: 8,
+        label: "UART1_TXD",
+        role: "uart",
+        note: "Serial console by default under Mendel Linux.",
+      },
+      {
+        position: 10,
+        label: "UART1_RXD",
+        role: "uart",
+        note: "Serial console by default under Mendel Linux.",
+      },
+      { position: 12, label: "SAI1_TXC", role: "special", aliases: ["SAI audio"] },
+      { position: 14, label: "GND", role: "ground" },
+      {
+        position: 16,
+        label: "GPIO_P16",
+        role: "gpio",
+        aliases: ["NAND_DATA03"],
+      },
+      {
+        position: 18,
+        label: "GPIO_P18",
+        role: "gpio",
+        aliases: ["ECSPI2_SCLK"],
+      },
+      { position: 20, label: "GND", role: "ground" },
+      {
+        position: 22,
+        label: "GPIO_P22",
+        role: "gpio",
+        aliases: ["ECSPI2_MISO"],
+      },
+      { position: 24, label: "ECSPI1_SS0", role: "spi" },
+      { position: 26, label: "ECSPI1_SS1", role: "spi" },
+      { position: 28, label: "I2C3_SCL", role: "i2c" },
+      { position: 30, label: "GND", role: "ground" },
+      { position: 32, label: "PWM1", role: "pwm" },
+      { position: 34, label: "GND", role: "ground" },
+      {
+        position: 36,
+        label: "GPIO_P36",
+        role: "gpio",
+        aliases: ["ECSPI2_SS0"],
+      },
+      { position: 38, label: "SAI1_RXD0", role: "special", aliases: ["SAI audio"] },
+      { position: 40, label: "SAI1_TXD0", role: "special", aliases: ["SAI audio"] },
+    ],
+  },
+};
+
+// Boards heavily used in industry and university coursework, researched and
+// source-verified July 2026. Entries without an in-app pin map link the
+// official pin reference instead; per the content rules, maps are only
+// imported once the pin data can be verified against an authoritative source.
+const industryEducationBoards: Board[] = [
+  {
+    id: "stm32f4-discovery",
+    name: "STM32F4 Discovery",
+    vendor: "STMicroelectronics",
+    category: "Development Board",
+    family: "STM32 Discovery",
+    processor: "STM32F407VGT6 Arm Cortex-M4F @ 168 MHz, 1 MB flash",
+    logicLevel: "3.3 V GPIO",
+    power: "USB (ST-LINK or OTG) or external 5 V via P1/P2",
+    formFactor: "66 × 97 mm board, two 2.54 mm 50-pin headers",
+    description:
+      "The classic low-cost Cortex-M4 board that introduced a generation of embedded-systems students to STM32, with an onboard ST-LINK/V2-A debugger, accelerometer, digital mic, and audio DAC for signal-processing labs.",
+    tags: ["stm32", "cortex-m4", "discovery", "st-link", "education"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "SWD", "JTAG"],
+    highlights: [
+      "Onboard ST-LINK/V2-A doubles as an external SWD programmer for other STM32 targets.",
+      "All 100 LQFP I/Os broken out to the P1/P2 headers for probing and prototyping.",
+      "ST-MEMS accelerometer, digital microphone, and audio DAC with speaker driver on board.",
+      "Free STM32CubeIDE and STM32CubeF4 HAL keep it viable for coursework.",
+    ],
+    warnings: [
+      "BOOT0 is pulled low via solder bridge SB18; entering the system bootloader requires re-soldering SB18/SB19, and P2 pin 21 carries BOOT0 — a common accidental-conflict pin.",
+      "ST-LINK/V2-A limits the target application supply to a 3 V minimum and cannot source more than ~100 mA over USB.",
+      "CN2 (external SWD out) and the CN3 ST-LINK jumpers are mutually exclusive; leaving CN3 jumpered while wiring CN2 disturbs programming.",
+      "Enabling STM32 readout protection on this board permanently prevents the target application from running — keep it disabled (UM1472).",
+    ],
+    sourceLinks: [
+      {
+        label: "UM1472 Discovery kit user manual (ST)",
+        url: "https://www.st.com/resource/en/user_manual/um1472-discovery-kit-with-stm32f407vg-mcu-stmicroelectronics.pdf",
+        type: "Manual",
+      },
+      {
+        label: "STM32F407VG datasheet",
+        url: "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf",
+        type: "Datasheet",
+      },
+    ],
+  },
+  {
+    id: "ti-ek-tm4c123gxl-launchpad",
+    name: "Tiva C TM4C123G LaunchPad",
+    vendor: "Texas Instruments",
+    category: "Development Board",
+    family: "LaunchPad",
+    processor: "TM4C123GH6PMI Arm Cortex-M4F @ 80 MHz",
+    logicLevel: "3.3 V GPIO",
+    power: "5 V via ICDI or device USB Micro-B, switch-selected",
+    formFactor: "50 × 57 mm LaunchPad with BoosterPack XL headers",
+    description:
+      "TI's classic Cortex-M4F evaluation board and a staple of university embedded-systems courses, with an onboard ICDI debugger, BoosterPack ecosystem, and native USB on the target MCU.",
+    tags: ["tiva", "launchpad", "cortex-m4f", "boosterpack", "education"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "SWD", "JTAG"],
+    highlights: [
+      "Onboard ICDI enumerates as debugger plus virtual COM port over one USB cable.",
+      "Motion-control PWM (two modules, 16 outputs) supports 3-phase inverter designs directly.",
+      "BoosterPack XL header is backward compatible with MSP430 LaunchPad BoosterPacks.",
+      "Native USB 2.0 host/device/OTG on the target MCU itself.",
+    ],
+    warnings: [
+      "USB host/OTG mode requires populating 0 Ω resistors R25/R29, which permanently repurpose PB0/PB1 and conflict with J1 pins 3–4 (SPMU296).",
+      "Header pins are heavily alternate-function muxed; consult SPMU296 tables 2-3 to 2-6 before wiring.",
+      "A board that will not power on may be latched in Hibernate — wake via SW2 (PF0/WAKE).",
+      "J3/J4 carry board-specific extended functions; MSP430-style BoosterPacks designed only for J1/J2 can miswire on them.",
+    ],
+    sourceLinks: [
+      {
+        label: "EK-TM4C123GXL user's guide (SPMU296)",
+        url: "https://www.ti.com/lit/pdf/spmu296",
+        type: "Manual",
+      },
+      {
+        label: "TM4C123GH6PM product page and datasheet",
+        url: "https://www.ti.com/product/TM4C123GH6PM",
+        type: "Datasheet",
+      },
+    ],
+  },
+  {
+    id: "digilent-arty-a7",
+    name: "Digilent Arty A7",
+    vendor: "Digilent",
+    category: "Development Board",
+    family: "Arty",
+    processor: "AMD/Xilinx Artix-7 FPGA (XC7A35T or XC7A100T)",
+    logicLevel: "3.3 V logic (not 5 V tolerant)",
+    power: "USB 5 V or 7–15 V DC barrel jack, auto-arbitrated",
+    formFactor: "Arduino/chipKIT shield-compatible FPGA board",
+    description:
+      "A widely used low-cost Artix-7 board built around MicroBlaze soft-processor designs, common in university digital-design and computer-architecture courses thanks to free Vivado licensing and Digilent's tutorial ecosystem.",
+    tags: ["fpga", "xilinx", "artix-7", "vivado", "microblaze"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "Ethernet", "USB", "JTAG"],
+    highlights: [
+      "Fully supported by the free Vivado edition including MicroBlaze soft cores.",
+      "Four Pmod connectors plus an Arduino/chipKIT shield header with 49 GPIO.",
+      "10/100 Ethernet MAC, 256 MB DDR3L, and onboard XADC voltage/current monitoring.",
+      "Master XDC pin-constraint file published on Digilent's GitHub.",
+    ],
+    warnings: [
+      "Not compatible with shields that output 5 V digital or analog signals — driving shield pins above the 3.3 V bank voltage can damage the FPGA (reference manual §11).",
+      "High-speed Pmods JB/JC ship with 0 Ω shunts instead of series protection resistors — no short-circuit protection.",
+      "JP1 selects SPI-flash vs JTAG configuration at power-on; an unset/wrong jumper is a common 'board won't boot' cause.",
+      "External supply must be 7–15 V center-positive; there is no reverse-polarity protection beyond the source-arbitration MOSFET.",
+    ],
+    sourceLinks: [
+      {
+        label: "Arty A7 reference manual (Digilent)",
+        url: "https://digilent.com/reference/programmable-logic/arty-a7/reference-manual",
+        type: "Manual",
+      },
+      {
+        label: "Arty A7 reference manual PDF (DigiKey mirror)",
+        url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/781/Arty_A7_RM_Web.pdf",
+        type: "Manual",
+      },
+      {
+        label: "Arty A7-100 master XDC pin constraints",
+        url: "https://github.com/Digilent/digilent-xdc/blob/master/Arty-A7-100-Master.xdc",
+        type: "Pinout",
+      },
+    ],
+  },
+  {
+    id: "digilent-basys-3",
+    name: "Digilent Basys 3",
+    vendor: "Digilent",
+    category: "Development Board",
+    family: "Basys",
+    processor: "AMD/Xilinx Artix-7 XC7A35T-1CPG236C",
+    logicLevel: "3.3 V logic",
+    power: "USB-JTAG port or external 4.5–5.5 V via J6 (JP2 selects)",
+    formFactor: "Self-contained trainer board with switches, LEDs, 7-segment display",
+    description:
+      "The most common introductory FPGA teaching board in university digital-design courses: 16 switches, 16 LEDs, a 4-digit 7-segment display, VGA, and USB-HID host mean intro labs need no external hardware.",
+    tags: ["fpga", "xilinx", "artix-7", "vivado", "education"],
+    interfaces: ["GPIO", "SPI", "USB", "JTAG"],
+    highlights: [
+      "Fully self-contained lab board — switches, LEDs, buttons, 7-segment display, VGA out.",
+      "USB HID host port reads a real keyboard/mouse via an onboard PS/2 emulator.",
+      "Three Pmod ports plus a dedicated XADC Pmod for analog experiments.",
+      "Can self-configure from a FAT32 USB drive without a PC.",
+    ],
+    warnings: [
+      "JP1 has three configuration-source positions (SPI flash / JTAG / USB); a wrong jumper after a lab session is the most common 'bitstream won't load' issue.",
+      "The USB host port passes unregulated power to attached devices — external battery packs must stay at 5.5 V max.",
+      "PS/2-over-USB emulation requires FPGA-side pull-ups enabled on DATA/CLK or keyboard/mouse input fails silently.",
+      "Pmod connectors are not impedance- or delay-matched; unsuitable for high-speed signaling.",
+    ],
+    sourceLinks: [
+      {
+        label: "Basys 3 reference manual (Digilent)",
+        url: "https://digilent.com/reference/programmable-logic/basys-3/reference-manual",
+        type: "Manual",
+      },
+      {
+        label: "Basys 3 reference manual PDF (AMD university program mirror)",
+        url: "https://www.amd.com/content/dam/amd/en/documents/university/aup-boards/XUPBasys3/documentation/Basys3_rm_8_22_2014.pdf",
+        type: "Manual",
+      },
+    ],
+  },
+  {
+    id: "google-coral-dev-board",
+    name: "Coral Dev Board",
+    vendor: "Google Coral",
+    category: "AI Dev Kit",
+    family: "Coral",
+    processor: "NXP i.MX 8M (quad Cortex-A53 + M4F) + Google Edge TPU",
+    logicLevel: "3.3 V GPIO (~82 mA max per pin)",
+    power: "USB-C 5 V at 2–3 A (not powerable from a PC USB port)",
+    formFactor: "85 × 56 mm SBC with 40-pin header",
+    description:
+      "A Raspberry-Pi-header-compatible single-board computer built for on-device ML inferencing with the Edge TPU (4 TOPS at ~2 W); an early and influential edge-AI dev board still widely deployed and taught.",
+    tags: ["edge-tpu", "machine-learning", "imx8m", "tensorflow-lite", "sbc"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Wi-Fi", "Bluetooth", "Ethernet"],
+    highlights: [
+      "Edge TPU runs MobileNet v2 at ~400 FPS via TensorFlow Lite at low power.",
+      "40-pin Raspberry-Pi-style header exposes UART, I2C, SPI, PWM, and GPIO from the i.MX 8M.",
+      "MIPI-DSI display and MIPI-CSI-2 camera connectors plus HDMI 2.0a and Gigabit Ethernet.",
+      "ATECC608A cryptographic coprocessor for device identity and secure boot.",
+    ],
+    warnings: [
+      "Per-pin I/O limit is ~82 mA — drawing more browns out the system (datasheet, I/O header pinout).",
+      "Do not power from a computer USB port; a 2–3 A / 5 V USB-C supply is required.",
+      "All I/O defaults to a 90 kΩ pull-down at boot except the I2C pins, which pull up to 3.3 V — override via device-tree overlay.",
+      "The heat sink runs hot enough to burn during operation, with or without the fan.",
+    ],
+    sourceLinks: [
+      {
+        label: "Coral Dev Board datasheet (coral.ai)",
+        url: "https://coral.ai/docs/dev-board/datasheet/",
+        type: "Datasheet",
+      },
+      {
+        label: "Coral Dev Board datasheet v1.2 PDF (Adafruit mirror)",
+        url: "https://cdn-shop.adafruit.com/product-files/4385/4385_Coral-Dev-Board-datasheet.pdf",
+        type: "Datasheet",
+      },
+    ],
+    pinout: coralDevBoardPinout,
+  },
+  {
+    id: "arduino-portenta-h7",
+    name: "Arduino Portenta H7",
+    vendor: "Arduino",
+    category: "Microcontroller",
+    family: "Portenta",
+    processor: "STM32H747XI dual-core Cortex-M7 @ 480 MHz + M4 @ 240 MHz",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, VIN, or Li-Po 3.7 V with onboard charger",
+    formFactor: "MKR-style footprint plus two 80-pin high-density connectors",
+    description:
+      "An industrial-grade dual-core Arduino for edge-AI and industrial-IoT products, used as the reference platform for Arduino's PRO ecosystem with vision, motor-control, and secure-boot workloads split across two cores.",
+    tags: ["stm32h7", "dual-core", "industrial", "portenta", "edge-ai"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "Wi-Fi", "Bluetooth", "SWD", "Ethernet"],
+    highlights: [
+      "Asymmetric dual-core lets one core run an RTOS/ML workload while the other handles I/O.",
+      "22 breadboard-friendly pins plus two 80-pin high-density connectors for carrier boards.",
+      "USB-C, Li-Po charging with fuel-gauge input, and onboard Wi-Fi/Bluetooth.",
+      "Official pinout PDF documents every pin including the high-density connectors.",
+    ],
+    warnings: [
+      "Total I/O current is limited to 140 mA summed across all pins, 20 mA per pin — easy to exceed on the high-density connectors (official pinout, rev 2021-10-26).",
+      "High-density connectors carry FORCE_BOOTLOADER, BOOT_SOURCE, and POWER_ON_REQ pins that carrier boards must handle or the module will not boot as expected.",
+      "Ethernet, USB-HS ULPI, and MIPI signals share high-density pins with GPIO/timer functions — consult the full mux table before designing a carrier.",
+      "Documentation uses CIPO/COPI naming; legacy MISO/MOSI example code must be remapped.",
+    ],
+    sourceLinks: [
+      {
+        label: "Portenta H7 official pinout PDF",
+        url: "https://content.arduino.cc/assets/Pinout-PortentaH7_latest.pdf",
+        type: "Pinout",
+      },
+      {
+        label: "Portenta H7 documentation",
+        url: "https://docs.arduino.cc/hardware/portenta-h7",
+        type: "Docs",
+      },
+      {
+        label: "Portenta H7 collective datasheet",
+        url: "https://docs.arduino.cc/resources/datasheets/ABX00042-ABX00045-ABX00046-datasheet.pdf",
+        type: "Datasheet",
+      },
+    ],
+  },
+  {
+    id: "nordic-nrf9160-dk",
+    name: "Nordic nRF9160 DK",
+    vendor: "Nordic Semiconductor",
+    category: "Development Board",
+    family: "Nordic DK",
+    processor: "nRF9160 SiP Cortex-M33 @ 64 MHz with LTE-M/NB-IoT/GNSS modem",
+    logicLevel: "3.3 V GPIO",
+    power: "USB (debug, programming, and power)",
+    formFactor: "Arduino Uno R3-compatible shield form factor",
+    description:
+      "The reference cellular-IoT development kit pairing Nordic's nRF9160 LTE-M/NB-IoT/GNSS SiP with an nRF52840 board controller; widely used in industry for asset-tracking and telemetry prototypes.",
+    tags: ["cellular-iot", "lte-m", "nb-iot", "nrf9160", "gnss"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "Bluetooth", "SWD"],
+    highlights: [
+      "Onboard nRF52840 acts as board controller and a full Bluetooth LE MCU, so the DK can double as an nRF9160-to-BLE gateway.",
+      "Integrated GNSS alongside the LTE-M/NB-IoT modem in a single SiP.",
+      "Arduino Uno-compatible header hosts standard shields.",
+      "4FF SIM slot plus MFF2 eSIM footprint, with a bundled evaluation eSIM.",
+    ],
+    warnings: [
+      "nRF9160 GPIO is routed through analog switches controlled by the onboard nRF52840 — signals can be silently rerouted to onboard LEDs/buttons if the switch state isn't configured as expected (hardware user guide).",
+      "Nordic recommends the newer nRF9151 DK for new designs; this is a mature previous-generation platform.",
+      "The cellular modem needs correct SIM and antenna setup before it will attach to a network.",
+    ],
+    sourceLinks: [
+      {
+        label: "nRF9160 DK product page (Nordic)",
+        url: "https://www.nordicsemi.com/Products/Development-hardware/nRF9160-DK",
+        type: "Docs",
+      },
+      {
+        label: "nRF9160 DK board documentation (Zephyr Project)",
+        url: "https://docs.zephyrproject.org/latest/boards/nordic/nrf9160dk/doc/index.html",
+        type: "Docs",
+      },
+    ],
+  },
+];
+
 export const boards: Board[] = [
   ...baseBoards,
   ...additionalBoards,
   ...expansionBoards,
   ...latticeBoards,
+  ...industryEducationBoards,
 ];
 
 export const categories = ["All", ...new Set(boards.map((board) => board.category))];

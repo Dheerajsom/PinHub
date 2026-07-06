@@ -496,7 +496,7 @@ export function PinHubApp() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
+      <div className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
         <aside
           id="mobile-filters"
           className={clsx(
@@ -958,7 +958,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
                 href={source.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="surface-well group flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#13161c] hover:text-white"
+                className="surface-well group flex min-w-0 items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#13161c] hover:text-white"
               >
                 <span className="flex min-w-0 items-baseline gap-2">
                   <span className="shrink-0 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-zinc-500 transition group-hover:text-zinc-300">

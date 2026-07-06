@@ -38,6 +38,8 @@ const vendorDomains: Record<string, string[]> = {
   "Micro:bit Educational Foundation": ["microbit.org"],
   "Libre Computer": ["libre.computer"],
   Khadas: ["khadas.com"],
+  Digilent: ["digilent.com", "digilentinc.com"],
+  "Google Coral": ["coral.ai", "google.com", "withgoogle.com"],
 };
 
 // GitHub organizations that count as the vendor publishing under github.com.
@@ -48,6 +50,7 @@ const vendorGitHubOrgs: Record<string, string[]> = {
   SparkFun: ["sparkfun"],
   Adafruit: ["adafruit"],
   "Raspberry Pi": ["raspberrypi"],
+  Digilent: ["digilent"],
 };
 
 function hostMatchesDomain(host: string, domain: string): boolean {

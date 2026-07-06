@@ -447,6 +447,28 @@ export const boardVisuals: Record<string, BoardVisual> = {
     accent: "#6d28d9",
     ports: ["usb-micro"],
   }),
+
+  // --- Industry / education boards (July 2026 research batch) --------------
+  // Coral has a Raspberry-Pi-style 40-pin header along the top edge.
+  "google-coral-dev-board": preset("sbc", {
+    accent: "#ea8600",
+    ports: ["ethernet", "usb-a", "hdmi", "usb-c"],
+  }),
+  // The remaining boards have official pin references linked but no in-app
+  // map yet, so only artwork renders; presets match their physical form.
+  "stm32f4-discovery": preset("devKit", {
+    accent: "#155e75",
+    ports: ["usb-micro"],
+  }),
+  "ti-ek-tm4c123gxl-launchpad": preset("launchpad", { accent: "#b91c1c" }),
+  "digilent-arty-a7": preset("devKit", { accent: "#b45309" }),
+  "digilent-basys-3": preset("devKit", {
+    accent: "#b45309",
+    usb: "left",
+    ports: ["usb-micro", "usb-a"],
+  }),
+  "arduino-portenta-h7": preset("mkr", { accent: "#0e7c86", ports: ["usb-c"] }),
+  "nordic-nrf9160-dk": preset("devKit", { accent: "#1d4ed8" }),
 };
 
 // Default PCB accent by vendor, used when a visual does not specify one.
@@ -472,6 +494,8 @@ const vendorAccents: Record<string, string> = {
   "Micro:bit Educational Foundation": "#0d9488",
   BeagleBoard: "#7e22ce",
   "BeagleBoard.org": "#7e22ce",
+  Digilent: "#b45309",
+  "Google Coral": "#ea8600",
 };
 
 export function accentForBoard(boardId: string, vendor: string): string {
