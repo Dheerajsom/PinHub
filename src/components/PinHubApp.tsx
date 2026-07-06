@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import {
+  memo,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -150,6 +152,14 @@ function toggleFavoriteId(id: string) {
   for (const listener of favoritesListeners) listener();
 }
 
+// JS-initiated scrolling honors the user's reduced-motion preference (the CSS
+// `scroll-behavior` media query does not override an explicit JS behavior).
+function scrollBehavior(): ScrollBehavior {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+}
+
 // Scores how well a board matches a single search token. Word-boundary hits
 // on the name rank above substring hits, which rank above matches in
 // secondary fields, so "pi" surfaces Raspberry Pi boards before boards that
@@ -274,14 +284,19 @@ export function PinHubApp() {
     setShowFavoritesOnly(false);
   }
 
-  function selectBoard(id: string) {
+  // Stable identity so the memoized result rows don't re-render when only the
+  // query or an unrelated row's state changes.
+  const selectBoard = useCallback((id: string) => {
     setSelectedId(id);
     // On single-column layouts the detail panel sits below the result list,
     // so bring it into view when a board is picked.
     if (window.matchMedia("(max-width: 1023px)").matches) {
-      detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      detailRef.current?.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "start",
+      });
     }
-  }
+  }, []);
 
   return (
     <main className="relative min-h-screen">
@@ -538,8 +553,8 @@ export function PinHubApp() {
                 board={board}
                 selected={board.id === selectedBoard.id}
                 favorite={favorites.has(board.id)}
-                onSelect={() => selectBoard(board.id)}
-                onToggleFavorite={() => toggleFavoriteId(board.id)}
+                onSelect={selectBoard}
+                onToggleFavorite={toggleFavoriteId}
               />
             ))}
           </div>
@@ -572,7 +587,7 @@ export function PinHubApp() {
             board={selectedBoard}
             onBackToResults={() =>
               resultsRef.current?.scrollIntoView({
-                behavior: "smooth",
+                behavior: scrollBehavior(),
                 block: "start",
               })
             }
@@ -722,11 +737,15 @@ type BoardResultProps = {
   board: Board;
   selected: boolean;
   favorite: boolean;
-  onSelect: () => void;
-  onToggleFavorite: () => void;
+  onSelect: (id: string) => void;
+  onToggleFavorite: (id: string) => void;
 };
 
-function BoardResult({
+// Memoized with stable callbacks so a keystroke, selection change, or favorite
+// toggle only re-renders the rows whose props actually changed, not the whole
+// catalog. content-visibility lets the browser skip layout/paint for rows far
+// off screen, which keeps scrolling smooth on phones and low-end machines.
+const BoardResult = memo(function BoardResult({
   board,
   selected,
   favorite,
@@ -734,10 +753,10 @@ function BoardResult({
   onToggleFavorite,
 }: BoardResultProps) {
   return (
-    <div className="relative">
+    <div className="relative [contain-intrinsic-size:auto_9rem] [content-visibility:auto]">
       <button
         type="button"
-        onClick={onSelect}
+        onClick={() => onSelect(board.id)}
         className={clsx(
           "w-full rounded-lg border-y border-r border-l-2 p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
           selected
@@ -796,7 +815,7 @@ function BoardResult({
       </button>
       <button
         type="button"
-        onClick={onToggleFavorite}
+        onClick={() => onToggleFavorite(board.id)}
         aria-label={
           favorite
             ? `Remove ${board.name} from favorites`
@@ -816,7 +835,7 @@ function BoardResult({
       </button>
     </div>
   );
-}
+});
 
 type BoardDetailProps = {
   board: Board;

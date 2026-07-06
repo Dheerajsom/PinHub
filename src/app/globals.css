@@ -277,6 +277,18 @@ button {
   animation: fav-breathe 3.6s ease-in-out infinite;
 }
 
+/* Touch devices get a static resting glow instead of the infinite breathe:
+   an always-running box-shadow animation repaints every frame, which costs
+   battery on phones for an effect designed around a mouse hovering nearby. */
+@media (hover: none) {
+  .fav-button:not(:hover) {
+    animation: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(251, 191, 36, 0.4),
+      0 0 14px -2px rgba(250, 204, 21, 0.35);
+  }
+}
+
 /* A diagonal light sweep that streaks across the button on hover. */
 .fav-button::after {
   content: "";
@@ -380,9 +392,25 @@ button {
   }
 }
 
+/* On phones and tablets the backdrop is a dim accent behind a single-column
+   catalog; the slow glow drift and board float aren't perceptible there but
+   keep the compositor awake and drain battery. Freeze them and keep only the
+   one-shot fade-in. Desktop keeps the full composition. */
+@media (max-width: 1023px) {
+  .pinhub-glow,
+  .pinhub-float,
+  .pinhub-float-b,
+  .pinhub-float-c {
+    animation-name: none;
+  }
+}
+
 /* Respect users who prefer reduced motion: keep the static composition,
    drop every animation. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .pinhub-glow,
   .pinhub-float,
   .pinhub-float-b,

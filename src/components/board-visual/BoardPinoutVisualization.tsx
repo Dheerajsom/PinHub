@@ -303,6 +303,26 @@ function ExpandedInspector({
       }}
       onKeyDown={(event) => {
         if (event.key === "Escape") onClose();
+        // Keep Tab cycling inside the dialog while it is open; without this
+        // focus walks out into the (visually inert) page behind the overlay.
+        if (event.key === "Tab") {
+          const dialog = dialogRef.current;
+          if (!dialog) return;
+          const focusable = dialog.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), summary, [tabindex]:not([tabindex="-1"])',
+          );
+          if (focusable.length === 0) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          const active = document.activeElement;
+          if (event.shiftKey && (active === first || !dialog.contains(active))) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        }
       }}
     >
       <div
