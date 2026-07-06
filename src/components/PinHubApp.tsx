@@ -12,6 +12,7 @@ import {
 import {
   ArrowUp,
   ArrowUpRight,
+  BadgeCheck,
   BookOpen,
   CircuitBoard,
   Cpu,
@@ -33,7 +34,9 @@ import {
   type Board,
   type BoardCategory,
   type BoardInterface,
+  type SourceLink,
 } from "@/lib/boards";
+import { classifySource } from "@/lib/source-trust";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
@@ -344,6 +347,25 @@ export function PinHubApp() {
                 }
                 if (event.key === "Enter" && filteredBoards[0]) {
                   selectBoard(filteredBoards[0].id);
+                }
+                // Arrow keys walk the selection through the current results
+                // without leaving the search field, so a lookup can stay
+                // entirely on the keyboard: type, arrow, read the pin map.
+                if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                  event.preventDefault();
+                  if (filteredBoards.length === 0) return;
+                  const index = filteredBoards.findIndex(
+                    (board) => board.id === selectedBoard.id,
+                  );
+                  const step = event.key === "ArrowDown" ? 1 : -1;
+                  const next =
+                    filteredBoards[
+                      Math.min(
+                        Math.max(index + step, 0),
+                        filteredBoards.length - 1,
+                      )
+                    ];
+                  if (next) setSelectedId(next.id);
                 }
               }}
               placeholder="Search boards, vendors, interfaces, warnings..."
@@ -737,6 +759,15 @@ function BoardResult({
                 Pin map
               </span>
             ) : null}
+            {board.warnings.length > 0 ? (
+              <span
+                className="flex items-center gap-1 rounded border border-orange-300/40 bg-orange-400/10 px-1.5 py-0.5 text-[11px] text-orange-100"
+                title={`${board.warnings.length} wiring caution${board.warnings.length === 1 ? "" : "s"} — see “Check before wiring”`}
+              >
+                <ShieldAlert className="size-3" aria-hidden="true" />
+                {board.warnings.length}
+              </span>
+            ) : null}
           </div>
           <span className="min-w-0 break-words pr-9 font-mono text-xs text-zinc-500 sm:text-right">
             {board.vendor} · {board.logicLevel}
@@ -792,7 +823,26 @@ type BoardDetailProps = {
   onBackToResults: () => void;
 };
 
+// The one link a user should open before touching wires: prefer the official
+// pinout reference, then progressively more general documents.
+const verifySourcePriority: SourceLink["type"][] = [
+  "Pinout",
+  "Datasheet",
+  "Schematic",
+  "Manual",
+  "Docs",
+];
+
+function verifySourceFor(board: Board): SourceLink | undefined {
+  for (const type of verifySourcePriority) {
+    const source = board.sourceLinks.find((link) => link.type === type);
+    if (source) return source;
+  }
+  return board.sourceLinks[0];
+}
+
 function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
+  const verifySource = verifySourceFor(board);
   return (
     <aside className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
       {/* Stacked-layout escape hatch: the detail panel sits below the result
@@ -832,6 +882,30 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         </dl>
       </section>
 
+      {verifySource ? (
+        <a
+          href={verifySource.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-center justify-between gap-3 rounded-lg border border-orange-300/30 bg-[#1b1410] px-3.5 py-2.5 text-sm text-orange-100/90 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-orange-300/60 hover:text-orange-50"
+        >
+          <span className="flex min-w-0 items-center gap-2">
+            <ShieldAlert
+              className="size-4 shrink-0 text-orange-200"
+              aria-hidden="true"
+            />
+            <span className="min-w-0 truncate">
+              Verify before wiring:{" "}
+              <span className="font-medium">{verifySource.label}</span>
+            </span>
+          </span>
+          <ArrowUpRight
+            className="size-4 shrink-0 text-orange-200/60 transition group-hover:text-orange-100"
+            aria-hidden="true"
+          />
+        </a>
+      ) : null}
+
       <PinoutTabs board={board} />
 
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
@@ -856,26 +930,48 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           Source references
         </div>
         <div className="grid gap-2">
-          {board.sourceLinks.map((source) => (
-            <a
-              key={source.url}
-              href={source.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="surface-well group flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#13161c] hover:text-white"
-            >
-              <span className="flex min-w-0 items-baseline gap-2">
-                <span className="shrink-0 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-zinc-500 transition group-hover:text-zinc-300">
-                  {source.type}
+          {board.sourceLinks.map((source) => {
+            const official =
+              classifySource(board.vendor, source.url) === "official";
+            return (
+              <a
+                key={source.url}
+                href={source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="surface-well group flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#13161c] hover:text-white"
+              >
+                <span className="flex min-w-0 items-baseline gap-2">
+                  <span className="shrink-0 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-zinc-500 transition group-hover:text-zinc-300">
+                    {source.type}
+                  </span>
+                  <span className="min-w-0 truncate">{source.label}</span>
                 </span>
-                <span className="min-w-0 truncate">{source.label}</span>
-              </span>
-              <ArrowUpRight
-                className="size-4 shrink-0 text-zinc-500 transition group-hover:text-cyan-200"
-                aria-hidden="true"
-              />
-            </a>
-          ))}
+                <span className="flex shrink-0 items-center gap-2">
+                  {official ? (
+                    <span
+                      className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-100"
+                      title={`Published by ${board.vendor}`}
+                    >
+                      <BadgeCheck className="size-3" aria-hidden="true" />
+                      Official
+                    </span>
+                  ) : (
+                    <span
+                      className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-zinc-400"
+                      title={`Not published by ${board.vendor} — cross-check against vendor documentation`}
+                    >
+                      3rd-party
+                    </span>
+                  )}
+                  <ArrowUpRight
+                    className="size-4 text-zinc-500 transition group-hover:text-cyan-200"
+                    aria-hidden="true"
+                  />
+                </span>
+              </a>
+            );
+          })}
         </div>
       </section>
     </aside>

@@ -4,6 +4,7 @@ import {
   roleChipStyles as roleStyles,
   roleLabels,
 } from "@/components/board-visual/roles";
+import { CopyPinTable } from "@/components/CopyPinTable";
 
 type PinoutDiagramProps = {
   pinout?: Pinout;
@@ -42,7 +43,11 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
             {pinout.connector}
           </h3>
         </div>
-        <div className="flex flex-wrap gap-1.5" aria-label="Pin role legend">
+        <CopyPinTable pinout={pinout} />
+        <div
+          className="flex w-full flex-wrap gap-1.5"
+          aria-label="Pin role legend"
+        >
           {Object.entries(roleLabels)
             .filter(([role]) => presentRoles.has(role as PinRole))
             .map(([role, label]) => (
