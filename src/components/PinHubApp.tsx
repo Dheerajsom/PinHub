@@ -582,17 +582,19 @@ export function PinHubApp() {
           ) : null}
         </section>
 
-        <div ref={detailRef} className="min-w-0 scroll-mt-32">
-          <BoardDetail
-            board={selectedBoard}
-            onBackToResults={() =>
-              resultsRef.current?.scrollIntoView({
-                behavior: scrollBehavior(),
-                block: "start",
-              })
-            }
-          />
-        </div>
+        {filteredBoards.length > 0 ? (
+          <div ref={detailRef} className="min-w-0 scroll-mt-32">
+            <BoardDetail
+              board={selectedBoard}
+              onBackToResults={() =>
+                resultsRef.current?.scrollIntoView({
+                  behavior: scrollBehavior(),
+                  block: "start",
+                })
+              }
+            />
+          </div>
+        ) : null}
       </div>
 
       <footer className="border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
@@ -753,18 +755,22 @@ const BoardResult = memo(function BoardResult({
   onToggleFavorite,
 }: BoardResultProps) {
   return (
-    <div className="relative [contain-intrinsic-size:auto_9rem] [content-visibility:auto]">
+    <article
+      className={clsx(
+        "relative rounded-lg border-y border-r border-l-2 [contain-intrinsic-size:auto_9rem] [content-visibility:auto] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
+        selected
+          ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-[#0e1c23] shadow-[0_0_0_1px_rgba(34,211,238,0.14),0_12px_34px_-14px_rgba(34,211,238,0.32)]"
+          : "border-y-white/10 border-r-white/10 border-l-white/15 bg-[#14161d] hover:border-y-white/20 hover:border-r-white/20 hover:border-l-white/30 hover:bg-[#191c24]",
+      )}
+    >
       <button
         type="button"
         onClick={() => onSelect(board.id)}
-        className={clsx(
-          "w-full rounded-lg border-y border-r border-l-2 p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
-          selected
-            ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-[#0e1c23] shadow-[0_0_0_1px_rgba(34,211,238,0.14),0_12px_34px_-14px_rgba(34,211,238,0.32)]"
-            : "border-y-white/10 border-r-white/10 border-l-white/15 bg-[#14161d] hover:border-y-white/20 hover:border-r-white/20 hover:border-l-white/30 hover:bg-[#191c24]",
-        )}
+        aria-label={`Select ${board.name}`}
         aria-pressed={selected}
-      >
+        className="absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
+      />
+      <div className="pointer-events-none relative z-10 p-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <VendorLogo vendor={board.vendor} />
@@ -812,7 +818,7 @@ const BoardResult = memo(function BoardResult({
             </span>
           ) : null}
         </div>
-      </button>
+      </div>
       <button
         type="button"
         onClick={() => onToggleFavorite(board.id)}
@@ -823,7 +829,7 @@ const BoardResult = memo(function BoardResult({
         }
         aria-pressed={favorite}
         title={favorite ? "Remove from favorites" : "Add to favorites"}
-        className="absolute right-2 top-2 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
+        className="absolute right-2 top-2 z-20 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
       >
         <Star
           className={clsx(
@@ -833,7 +839,7 @@ const BoardResult = memo(function BoardResult({
           aria-hidden="true"
         />
       </button>
-    </div>
+    </article>
   );
 });
 

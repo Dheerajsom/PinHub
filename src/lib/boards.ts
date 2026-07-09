@@ -5043,11 +5043,6 @@ const baseBoards: Board[] = [
     ],
     sourceLinks: [
       {
-        label: "BeagleBone Black connector documentation",
-        url: "https://docs.beagleboard.org/boards/beaglebone/black/ch07.html",
-        type: "Docs",
-      },
-      {
         label: "BeagleBone Black documentation home",
         url: "https://docs.beagleboard.org/boards/beaglebone/black/index.html",
         type: "Docs",

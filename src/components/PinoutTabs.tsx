@@ -10,6 +10,7 @@ import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutV
 type PinoutTab = "static" | "dynamic";
 const storageKey = "pinhub.pinoutTab";
 const defaultTab: PinoutTab = "dynamic";
+const tabOrder: readonly PinoutTab[] = ["static", "dynamic"];
 
 // The chosen tab is persisted in localStorage and exposed to React through a
 // tiny external store (same approach as favorites), which keeps SSR/hydration
@@ -57,6 +58,41 @@ export function PinoutTabs({ board }: { board: Board }) {
     getServerTabSnapshot,
   );
 
+  function selectTab(next: PinoutTab) {
+    setTabPreference(next);
+  }
+
+  function handleTabListKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const currentIndex = tabOrder.indexOf(tab);
+    let next: PinoutTab | undefined;
+
+    switch (event.key) {
+      case "ArrowLeft":
+      case "ArrowUp":
+        next = tabOrder[(currentIndex - 1 + tabOrder.length) % tabOrder.length];
+        break;
+      case "ArrowRight":
+      case "ArrowDown":
+        next = tabOrder[(currentIndex + 1) % tabOrder.length];
+        break;
+      case "Home":
+        next = tabOrder[0];
+        break;
+      case "End":
+        next = tabOrder[tabOrder.length - 1];
+        break;
+      default:
+        return;
+    }
+
+    if (!next) return;
+    event.preventDefault();
+    selectTab(next);
+    event.currentTarget
+      .querySelector<HTMLButtonElement>(`#pinout-tab-${next}`)
+      ?.focus();
+  }
+
   return (
     <section>
       <div className="mb-2.5 flex items-center justify-between gap-3">
@@ -66,6 +102,7 @@ export function PinoutTabs({ board }: { board: Board }) {
         <div
           role="tablist"
           aria-label="Pin map view"
+          onKeyDown={handleTabListKeyDown}
           className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-[#0a0c11] p-1"
         >
           <TabButton
@@ -73,14 +110,14 @@ export function PinoutTabs({ board }: { board: Board }) {
             label="Static"
             icon={<Rows3 className="size-3.5" aria-hidden="true" />}
             active={tab === "static"}
-            onClick={() => setTabPreference("static")}
+            onClick={() => selectTab("static")}
           />
           <TabButton
             id="dynamic"
             label="Dynamic"
             icon={<CircuitBoard className="size-3.5" aria-hidden="true" />}
             active={tab === "dynamic"}
-            onClick={() => setTabPreference("dynamic")}
+            onClick={() => selectTab("dynamic")}
           />
         </div>
       </div>
@@ -127,6 +164,7 @@ function TabButton({
       id={`pinout-tab-${id}`}
       aria-selected={active}
       aria-controls={`pinout-panel-${id}`}
+      tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={clsx(
         "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition",

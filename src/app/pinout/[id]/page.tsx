@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { boards } from "@/lib/boards";
 import { PinoutFullView } from "@/components/board-visual/PinoutFullView";
 
+// This catalog is fully static; reject unknown IDs instead of rendering them
+// on demand at runtime.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return boards.map((board) => ({ id: board.id }));
 }
