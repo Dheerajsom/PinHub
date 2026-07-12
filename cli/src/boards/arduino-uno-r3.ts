@@ -18,7 +18,7 @@ function col(
 const V5 = { voltage: "5 V" };
 
 export const arduinoUnoR3: Board = {
-  id: "arduino-uno-r3",
+  id: "arduino-uno-rev3",
   name: "Arduino UNO R3",
   manufacturer: "Arduino",
   aliases: ["uno", "uno-r3", "arduino-uno", "arduino-uno-r3", "arduino-uno-rev3"],

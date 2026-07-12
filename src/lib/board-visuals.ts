@@ -308,7 +308,12 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "raspberry-pi-pico-2-w": preset("pico"),
 
   // --- ESP32 DevKits -------------------------------------------------------
-  "esp32-devkitc": preset("esp32Devkit"),
+  "esp32-devkit-v1": preset("esp32Devkit"),
+  "esp32-devkitc": preset("esp32Devkit", {
+    source: "groups",
+    revisionNote:
+      "J2 and J3 follow the official ESP32-DevKitC V4 header numbering.",
+  }),
   "esp32-s3-devkitc-1": preset("esp32Devkit"),
   "esp32-c3-devkitm-1": preset("esp32Devkit", { aspect: 0.36 }),
   "esp32-c6-devkitc-1": preset("esp32Devkit"),

@@ -19,10 +19,13 @@ describe("alias resolution", () => {
     ["raspberry pi pico", "raspberry-pi-pico"],
     ["picow", "raspberry-pi-pico-w"],
     ["pico-w", "raspberry-pi-pico-w"],
-    ["uno", "arduino-uno-r3"],
-    ["arduino uno r3", "arduino-uno-r3"],
+    ["uno", "arduino-uno-rev3"],
+    ["arduino uno r3", "arduino-uno-rev3"],
+    ["arduino-uno-r3", "arduino-uno-rev3"],
     ["esp32", "esp32-devkit-v1"],
     ["esp32 devkit v1", "esp32-devkit-v1"],
+    ["esp32-devkit-v1", "esp32-devkit-v1"],
+    ["esp32 devkitc", "esp32-devkitc"],
   ])("resolves %j to %s", (query, id) => {
     expect(resolveBoard(query)?.id).toBe(id);
   });

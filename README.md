@@ -12,6 +12,7 @@ one clean interface.
 - Static board catalog in `src/lib/boards.ts`
 - Search by board name, vendor, processor, tag, interface, or warning text
 - Filters for category and common interfaces
+- Local favorites with cross-tab sync and a favorites-only filter
 - Detail view with specs, wiring warnings, source references, and in-app pin maps
 - Source-backed catalog for Raspberry Pi, Arduino, ESP32, STM32 Nucleo,
   BeagleBone, Jetson, Radxa, Orange Pi, Teensy, Adafruit, Seeed, SparkFun,
@@ -40,6 +41,8 @@ development, and release instructions.
 
 ```bash
 npm run lint
+npm run typecheck
+npm test
 npm run build
 ```
 
@@ -60,5 +63,4 @@ Board entries live in `src/lib/boards.ts` and include:
   and power pins
 - User-submitted board entries with review status
 - Downloadable quick-reference sheets
-- Favorites or saved boards
 - Community verification for submitted pinouts

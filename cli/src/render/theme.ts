@@ -2,7 +2,10 @@ import { Chalk, type ChalkInstance } from "chalk";
 import type { Pin, WarningSeverity } from "../model.js";
 
 export function makeChalk(colorEnabled: boolean): ChalkInstance {
-  return new Chalk({ level: colorEnabled ? 3 : 0 });
+  // The palette uses only the portable 16-color range. Avoid emitting truecolor
+  // sequences merely because stdout is a TTY; older consoles can still render
+  // this level cleanly.
+  return new Chalk({ level: colorEnabled ? 1 : 0 });
 }
 
 /**

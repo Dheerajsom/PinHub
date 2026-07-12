@@ -1,4 +1,6 @@
+import stringWidth from "string-width";
 import { describe, expect, it } from "vitest";
+import { boards } from "../src/catalog.js";
 import { runCli } from "../src/run.js";
 
 const ANSI = new RegExp(String.fromCharCode(27) + "\\[");
@@ -17,7 +19,18 @@ describe("rendering", () => {
   it("renders ASCII-only output with --ascii", async () => {
     const result = await runCli(["rpi5", "--ascii"], WIDE);
     expect(result.stdout).toContain("+--");
-    expect(result.stdout).not.toMatch(/[┌┐└┘─│┬┴⚠ℹ•]/);
+    expect(Array.from(result.stdout).every((character) => character.charCodeAt(0) <= 0x7f)).toBe(true);
+  });
+
+  it("keeps danger, warning, and info distinct without relying on color", async () => {
+    const unicode = await runCli(["rpi5", "--no-color"], WIDE);
+    const ascii = await runCli(["rpi5", "--ascii", "--no-color"], WIDE);
+    expect(unicode.stdout).toContain("✖ GPIO uses 3.3 V logic");
+    expect(unicode.stdout).toContain("⚠ Physical pins 27 and 28");
+    expect(unicode.stdout).toContain("ℹ Pin numbers are the physical");
+    expect(ascii.stdout).toContain("X GPIO uses 3.3 V logic");
+    expect(ascii.stdout).toContain("! Physical pins 27 and 28");
+    expect(ascii.stdout).toContain("i Pin numbers are the physical");
   });
 
   it("emits no ANSI codes when piped (non-TTY)", async () => {
@@ -32,6 +45,15 @@ describe("rendering", () => {
 
   it("honors NO_COLOR even on a TTY", async () => {
     const result = await runCli(["rpi5"], { ...WIDE, isTTY: true, env: { NO_COLOR: "1" } });
+    expect(result.stdout).not.toMatch(ANSI);
+  });
+
+  it("honors an empty NO_COLOR value", async () => {
+    const result = await runCli(["rpi5"], {
+      ...WIDE,
+      isTTY: true,
+      env: { NO_COLOR: "" },
+    });
     expect(result.stdout).not.toMatch(ANSI);
   });
 
@@ -55,12 +77,47 @@ describe("rendering", () => {
     expect(result.stdout).toContain("Source:");
   });
 
+  it("keeps every catalog board within narrow terminal widths", async () => {
+    for (const width of [20, 40]) {
+      for (const board of boards) {
+        const result = await runCli([board.id, "--width", String(width)], {
+          env: {},
+          isTTY: false,
+        });
+        expect(result.code, board.id).toBe(0);
+        for (const line of result.stdout.trimEnd().split("\n")) {
+          expect(stringWidth(line), `${board.id} @ ${width}: ${line}`).toBeLessThanOrEqual(width);
+        }
+      }
+    }
+  });
+
+  it("shows pin-specific safety notes and expands hidden functions with --details", async () => {
+    const normal = await runCli(["rpi5"], WIDE);
+    const detailed = await runCli(["rpi5", "--details"], WIDE);
+    expect(normal.stdout).toContain("Pin notes");
+    expect(normal.stdout).toContain("Pin 27: Reserved for HAT ID EEPROM");
+    expect(normal.stdout).toContain("use --details to show them");
+    expect(detailed.stdout).toContain("Pin 12: additional functions: PCM_CLK");
+    expect(detailed.stdout).not.toContain("use --details to show them");
+
+    const detailedInfo = await runCli(["info", "rpi5", "--details"], WIDE);
+    expect(detailedInfo.stdout).toContain("Pin details");
+    expect(detailedInfo.stdout).toContain("functions: PWM0, PCM_CLK");
+  });
+
   it("prints source links with --source, marking third-party sources", async () => {
     const rpi = await runCli(["rpi5", "--source"], WIDE);
     expect(rpi.stdout).toContain("(official)");
     expect(rpi.stdout).toContain("https://www.raspberrypi.com/");
     const esp = await runCli(["esp32", "--source"], WIDE);
     expect(esp.stdout).toContain("(third-party)");
+  });
+
+  it("headlines the exact DOIT carrier layout source without hiding its provenance", async () => {
+    const result = await runCli(["esp32", "--no-color"], WIDE);
+    expect(result.stdout).toContain("Source: Last Minute Engineers");
+    expect(result.stdout).toContain("30-pin layout (third-party)");
   });
 
   it("lists all boards with `ph list`", async () => {
@@ -70,8 +127,9 @@ describe("rendering", () => {
       "raspberry-pi-5",
       "raspberry-pi-pico",
       "raspberry-pi-pico-w",
-      "arduino-uno-r3",
+      "arduino-uno-rev3",
       "esp32-devkit-v1",
+      "esp32-devkitc",
     ]) {
       expect(result.stdout).toContain(id);
     }
@@ -81,7 +139,7 @@ describe("rendering", () => {
     const result = await runCli(["search", "raspberry"], WIDE);
     expect(result.code).toBe(0);
     expect(result.stdout).toContain("raspberry-pi-5");
-    expect(result.stdout).not.toContain("arduino-uno-r3");
+    expect(result.stdout).not.toContain("arduino-uno-rev3");
   });
 
   it("renders board metadata with `ph info`", async () => {

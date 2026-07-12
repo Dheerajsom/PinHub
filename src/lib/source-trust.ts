@@ -1,12 +1,12 @@
-import type { Board } from "@/lib/boards";
+import type { Board, SourceLink } from "@/lib/boards";
 
 // Classifies a board's source links as vendor-official or third-party from
 // the link's host, so the UI can badge provenance without hand-annotating
-// every entry in boards.ts. A link is "official" only when its host (or, for
-// GitHub, its organization) belongs to the board's own vendor — an
-// authoritative reference published by someone else (e.g. CircuitPython
-// pins.c for a SparkFun board) is still labeled third-party, matching the
-// content rule that non-vendor references must be clearly marked.
+// every entry in boards.ts. A link is "official" when its host (or, for
+// GitHub, its organization) belongs to the board vendor. The two explicit
+// carrier-board exceptions below accept the primary chip/module vendor's
+// electrical documentation; other references published by someone else (for
+// example CircuitPython pins.c for a SparkFun board) remain third-party.
 
 export type SourceProvenance = "official" | "third-party";
 
@@ -19,6 +19,9 @@ const vendorDomains: Record<string, string[]> = {
   "Seeed Studio": ["seeedstudio.com"],
   SparkFun: ["sparkfun.com"],
   Espressif: ["espressif.com"],
+  // DOIT's 30-pin carrier uses an Espressif module; Espressif's module and
+  // chip datasheets are the authoritative electrical references.
+  DOIT: ["espressif.com"],
   STMicroelectronics: ["st.com"],
   "Lattice Semiconductor": ["latticesemi.com"],
   PJRC: ["pjrc.com"],
@@ -42,6 +45,9 @@ const vendorDomains: Record<string, string[]> = {
   Khadas: ["khadas.com"],
   Digilent: ["digilent.com", "digilentinc.com"],
   "Google Coral": ["coral.ai", "google.com", "withgoogle.com"],
+  // Blue Pill boards are generic STM32F103 designs without a single board
+  // vendor; ST's MCU datasheet is their authoritative primary reference.
+  Generic: ["st.com"],
 };
 
 // GitHub organizations that count as the vendor publishing under github.com.
@@ -96,6 +102,7 @@ export function validateBoardSources(boards: readonly Board[]): string[] {
     }
 
     const seenUrls = new Set<string>();
+    let hasOfficialSource = false;
     for (const source of board.sourceLinks) {
       if (!isSafeExternalUrl(source.url)) {
         errors.push(
@@ -107,7 +114,13 @@ export function validateBoardSources(boards: readonly Board[]): string[] {
           `Board "${board.id}" repeats source URL "${source.url}".`,
         );
       }
+      if (classifySource(board.vendor, source.url) === "official") {
+        hasOfficialSource = true;
+      }
       seenUrls.add(source.url);
+    }
+    if (!hasOfficialSource) {
+      errors.push(`Board "${board.id}" has no official source link.`);
     }
   }
 
@@ -147,4 +160,38 @@ export function classifySource(
   }
 
   return "third-party";
+}
+
+const verificationTypeScore: Record<SourceLink["type"], number> = {
+  // A source that depicts the connector itself is more useful for the
+  // "verify before wiring" action than a component datasheet, even when the
+  // only exact carrier-board map is clearly labeled third-party.
+  Pinout: 2000,
+  Schematic: 800,
+  Datasheet: 70,
+  Manual: 60,
+  Docs: 50,
+};
+
+function verificationSourceScore(board: Board, source: SourceLink): number {
+  const official = classifySource(board.vendor, source.url) === "official";
+  const searchable = `${source.label} ${source.url}`;
+  const connectorSpecific = /pinout|gpio|connector|header/i.test(searchable);
+
+  return (
+    (official ? 1000 : 0) +
+    (connectorSpecific ? 200 : 0) +
+    verificationTypeScore[source.type]
+  );
+}
+
+/** Select the source most useful for checking the displayed physical map. */
+export function verificationSourceFor(board: Board): SourceLink | undefined {
+  return board.sourceLinks.reduce<SourceLink | undefined>((best, source) => {
+    if (!best) return source;
+    return verificationSourceScore(board, source) >
+      verificationSourceScore(board, best)
+      ? source
+      : best;
+  }, undefined);
 }

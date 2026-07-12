@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { boards as websiteBoards } from "../../src/lib/boards";
 import { boards, normalizeQuery } from "../src/catalog.js";
 
 describe("catalog invariants", () => {
@@ -6,14 +7,16 @@ describe("catalog invariants", () => {
     const ids = boards.map((b) => b.id);
     expect(ids).toContain("raspberry-pi-5");
     expect(ids).toContain("raspberry-pi-pico");
-    expect(ids).toContain("arduino-uno-r3");
+    expect(ids).toContain("arduino-uno-rev3");
     expect(ids).toContain("esp32-devkit-v1");
+    expect(ids).toContain("esp32-devkitc");
   });
 
   it("carries the full website catalog", () => {
-    expect(boards.length).toBeGreaterThanOrEqual(125);
+    expect(boards.length).toBe(websiteBoards.length);
     const ids = new Set(boards.map((b) => b.id));
     expect(ids.size).toBe(boards.length);
+    expect(ids).toEqual(new Set(websiteBoards.map((board) => board.id)));
   });
 
   it("gives every board at least one source, preferably official", () => {
@@ -73,5 +76,21 @@ describe("catalog invariants", () => {
         }
       }
     }
+  });
+
+  it("keeps the ESP32 GPIO15 boot-log strap guidance electrically correct", () => {
+    const board = boards.find((candidate) => candidate.id === "esp32-devkit-v1");
+    const pin = board?.headers
+      .flatMap((header) => header.pins)
+      .find((candidate) => candidate.gpio === "GPIO15");
+    expect(pin?.notes?.join(" ")).toContain("pull low");
+    expect(pin?.notes?.join(" ")).not.toContain("keep high");
+  });
+
+  it("retains the early ESP32-DevKitC V4 revision warning", () => {
+    const board = boards.find((candidate) => candidate.id === "esp32-devkitc");
+    expect(board?.warnings.map((warning) => warning.text).join(" ")).toContain(
+      "C15",
+    );
   });
 });

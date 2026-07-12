@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useId, useSyncExternalStore } from "react";
 import { clsx } from "clsx";
 import { CircuitBoard, Rows3 } from "lucide-react";
 import type { Board } from "@/lib/boards";
@@ -52,6 +52,7 @@ function setTabPreference(next: PinoutTab) {
 // Wraps the two pinout presentations behind a small segmented control. "Static"
 // is the dense, scannable list map; "Dynamic" is the interactive board diagram.
 export function PinoutTabs({ board }: { board: Board }) {
+  const instanceId = useId();
   const tab = useSyncExternalStore(
     subscribeTab,
     getTabSnapshot,
@@ -89,7 +90,7 @@ export function PinoutTabs({ board }: { board: Board }) {
     event.preventDefault();
     selectTab(next);
     event.currentTarget
-      .querySelector<HTMLButtonElement>(`#pinout-tab-${next}`)
+      .querySelector<HTMLButtonElement>(`[data-pinout-tab="${next}"]`)
       ?.focus();
   }
 
@@ -107,6 +108,8 @@ export function PinoutTabs({ board }: { board: Board }) {
         >
           <TabButton
             id="static"
+            tabId={`${instanceId}-pinout-tab-static`}
+            panelId={`${instanceId}-pinout-panel-static`}
             label="Static"
             icon={<Rows3 className="size-3.5" aria-hidden="true" />}
             active={tab === "static"}
@@ -114,6 +117,8 @@ export function PinoutTabs({ board }: { board: Board }) {
           />
           <TabButton
             id="dynamic"
+            tabId={`${instanceId}-pinout-tab-dynamic`}
+            panelId={`${instanceId}-pinout-panel-dynamic`}
             label="Dynamic"
             icon={<CircuitBoard className="size-3.5" aria-hidden="true" />}
             active={tab === "dynamic"}
@@ -124,16 +129,16 @@ export function PinoutTabs({ board }: { board: Board }) {
 
       <div
         role="tabpanel"
-        id="pinout-panel-static"
-        aria-labelledby="pinout-tab-static"
+        id={`${instanceId}-pinout-panel-static`}
+        aria-labelledby={`${instanceId}-pinout-tab-static`}
         hidden={tab !== "static"}
       >
         {tab === "static" ? <PinoutDiagram pinout={board.pinout} /> : null}
       </div>
       <div
         role="tabpanel"
-        id="pinout-panel-dynamic"
-        aria-labelledby="pinout-tab-dynamic"
+        id={`${instanceId}-pinout-panel-dynamic`}
+        aria-labelledby={`${instanceId}-pinout-tab-dynamic`}
         hidden={tab !== "dynamic"}
       >
         {tab === "dynamic" ? (
@@ -146,12 +151,16 @@ export function PinoutTabs({ board }: { board: Board }) {
 
 function TabButton({
   id,
+  tabId,
+  panelId,
   label,
   icon,
   active,
   onClick,
 }: {
   id: PinoutTab;
+  tabId: string;
+  panelId: string;
   label: string;
   icon: React.ReactNode;
   active: boolean;
@@ -161,9 +170,10 @@ function TabButton({
     <button
       type="button"
       role="tab"
-      id={`pinout-tab-${id}`}
+      id={tabId}
+      data-pinout-tab={id}
       aria-selected={active}
-      aria-controls={`pinout-panel-${id}`}
+      aria-controls={panelId}
       tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={clsx(

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { clsx } from "clsx";
 import { Expand, ExternalLink, Maximize2, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
@@ -14,14 +15,6 @@ import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
-import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
-
-// Dev-time integrity gate: surfaces missing coverage, unanchored pins, or
-// out-of-range coordinates immediately while developing. Stripped from the
-// production bundle.
-if (process.env.NODE_ENV !== "production") {
-  assertBoardVisualsValid();
-}
 
 export function BoardPinoutVisualization({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
@@ -249,7 +242,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           onToggleRole={setActiveRole}
           onClose={() => {
             setExpanded(false);
-            expandButtonRef.current?.focus();
+            window.requestAnimationFrame(() => expandButtonRef.current?.focus());
           }}
         />
       ) : null}
@@ -288,13 +281,17 @@ function ExpandedInspector({
   useEffect(() => {
     closeRef.current?.focus();
     const previousOverflow = document.body.style.overflow;
+    const appRoot = document.querySelector("main");
+    const wasInert = appRoot instanceof HTMLElement ? appRoot.inert : false;
     document.body.style.overflow = "hidden";
+    if (appRoot instanceof HTMLElement) appRoot.inert = true;
     return () => {
       document.body.style.overflow = previousOverflow;
+      if (appRoot instanceof HTMLElement) appRoot.inert = wasInert;
     };
   }, []);
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-3 sm:p-6"
       role="presentation"
@@ -368,6 +365,7 @@ function ExpandedInspector({
           />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

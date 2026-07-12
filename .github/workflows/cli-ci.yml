@@ -5,11 +5,18 @@ on:
     branches: [main]
     paths:
       - "cli/**"
+      - "src/lib/boards.ts"
+      - "src/lib/source-trust.ts"
       - ".github/workflows/cli-ci.yml"
   pull_request:
     paths:
       - "cli/**"
+      - "src/lib/boards.ts"
+      - "src/lib/source-trust.ts"
       - ".github/workflows/cli-ci.yml"
+
+permissions:
+  contents: read
 
 defaults:
   run:
@@ -22,7 +29,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [20, 22]
+        node: ["18.18.0", 20, 22]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -33,9 +40,7 @@ jobs:
           cache-dependency-path: cli/package-lock.json
       - run: npm ci
       - name: Check generated board data is in sync with the website catalog
-        run: |
-          npm run generate:boards
-          git diff --exit-code src/boards/generated.ts
+        run: npm run check:boards
       - run: npm run lint
       - run: npm test
       - run: npm run build

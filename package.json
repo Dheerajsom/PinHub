@@ -4,13 +4,15 @@
   "private": true,
   "packageManager": "npm@11.11.0",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "^20.17.0 || >=22.9.0"
   },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",
@@ -29,7 +31,8 @@
     "eslint-config-next": "16.2.10",
     "postcss": "8.5.16",
     "tailwindcss": "4.3.2",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
   },
   "overrides": {
     "postcss": "8.5.16"

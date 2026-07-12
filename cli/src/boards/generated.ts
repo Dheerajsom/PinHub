@@ -43,12 +43,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Raspberry Pi 4 datasheet",
         "url": "https://datasheets.raspberrypi.com/rpi4/raspberry-pi-4-datasheet.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -518,12 +520,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Raspberry Pi Zero 2 W product brief",
         "url": "https://datasheets.raspberrypi.com/rpizero2/raspberry-pi-zero-2-w-product-brief.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -977,7 +981,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "UNO R4 keeps the classic UNO shield form factor and 5 V operating voltage."
+        "text": "UNO Rev3 and UNO R4 share the classic shield header footprint and 5 V operating voltage, but MCU-specific alternate functions differ."
       },
       {
         "severity": "info",
@@ -992,12 +996,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino UNO R4 WiFi documentation",
         "url": "https://docs.arduino.cc/hardware/uno-r4-wifi",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "UNO R4 WiFi cheat sheet",
         "url": "https://docs.arduino.cc/tutorials/uno-r4-wifi/cheat-sheet",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -1291,12 +1297,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Nano ESP32 documentation",
         "url": "https://docs.arduino.cc/hardware/nano-esp32",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Nano ESP32 datasheet",
         "url": "https://docs.arduino.cc/resources/datasheets/ABX00083-datasheet.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -1664,6 +1672,625 @@ export const generatedBoards: Board[] = [
     ]
   },
   {
+    "id": "esp32-devkitc",
+    "name": "ESP32-DevKitC V4",
+    "manufacturer": "Espressif",
+    "aliases": [
+      "devkitc",
+      "esp32-devkitc-v4"
+    ],
+    "description": "Espressif's official 38-pin ESP32 development board, with module IO broken out across J2 and J3 breadboard-friendly headers.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Use only one power source at a time: USB, 5V/GND, or 3V3/GND."
+      },
+      {
+        "severity": "warning",
+        "text": "D0, D1, D2, D3, CMD, and CLK connect to module flash and are not recommended for other uses."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO0, GPIO2, GPIO5, GPIO12, and GPIO15 are boot-strapping pins; external pulls can alter startup."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO16 and GPIO17 are unavailable on ESP32-WROVER module variants; verify the installed module and board revision."
+      },
+      {
+        "severity": "warning",
+        "text": "On early ESP32-DevKitC V4 revisions, C15 can cause Download-mode boots or disturb a GPIO0 clock signal; follow Espressif's Note on C15 if either issue occurs."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO uses 3.3 V logic; never apply 5 V to an IO pin."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, 5 V VIN, 3.3 V regulator."
+      },
+      {
+        "severity": "info",
+        "text": "Official Espressif header numbering for ESP32-DevKitC V4; J2 and J3 each use positions 1 through 19."
+      },
+      {
+        "severity": "info",
+        "text": "D0, D1, D2, D3, CMD, and CLK connect to module flash and are not recommended for general use."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO16 and GPIO17 are available on ESP32-WROOM/SOLO modules but reserved on ESP32-WROVER modules."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-DevKitC V4 user guide",
+        "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "Espressif ESP32-DevKitC product page",
+        "url": "https://www.espressif.com/en/products/devkits/esp32-devkitc",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j2",
+        "name": "J2",
+        "description": "ESP32-DevKitC V4 J2/J3 headers",
+        "layout": {
+          "rows": 19,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "EN",
+            "category": "reserved"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "VP",
+            "category": "analog",
+            "functions": [
+              "GPIO36",
+              "ADC1_CH0"
+            ],
+            "notes": [
+              "Input only"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "VN",
+            "category": "analog",
+            "functions": [
+              "GPIO39",
+              "ADC1_CH3"
+            ],
+            "notes": [
+              "Input only"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "IO34",
+            "category": "analog",
+            "functions": [
+              "GPIO34",
+              "ADC1_CH6"
+            ],
+            "notes": [
+              "Input only"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "IO35",
+            "category": "analog",
+            "functions": [
+              "GPIO35",
+              "ADC1_CH7"
+            ],
+            "notes": [
+              "Input only"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "IO32",
+            "category": "analog",
+            "functions": [
+              "GPIO32",
+              "ADC1_CH4",
+              "Touch9"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "IO33",
+            "category": "analog",
+            "functions": [
+              "GPIO33",
+              "ADC1_CH5",
+              "Touch8"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "IO25",
+            "category": "analog",
+            "functions": [
+              "GPIO25",
+              "ADC2_CH8",
+              "DAC1"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "IO26",
+            "category": "analog",
+            "functions": [
+              "GPIO26",
+              "ADC2_CH9",
+              "DAC2"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "IO27",
+            "category": "gpio",
+            "functions": [
+              "GPIO27",
+              "ADC2_CH7",
+              "Touch7"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "IO14",
+            "category": "communication",
+            "functions": [
+              "GPIO14",
+              "ADC2_CH6",
+              "Touch6",
+              "MTMS"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "IO12",
+            "category": "reserved",
+            "functions": [
+              "GPIO12",
+              "ADC2_CH5",
+              "Touch5",
+              "MTDI"
+            ],
+            "notes": [
+              "Boot strap"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "IO13",
+            "category": "communication",
+            "functions": [
+              "GPIO13",
+              "ADC2_CH4",
+              "Touch4",
+              "MTCK"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "reserved",
+            "functions": [
+              "GPIO9",
+              "Flash HD"
+            ],
+            "notes": [
+              "Connected to module flash"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "reserved",
+            "functions": [
+              "GPIO10",
+              "Flash WP"
+            ],
+            "notes": [
+              "Connected to module flash"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "CMD",
+            "category": "reserved",
+            "functions": [
+              "GPIO11",
+              "Flash CMD"
+            ],
+            "notes": [
+              "Connected to module flash"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "j3",
+        "name": "J3",
+        "layout": {
+          "rows": 19,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IO23",
+            "category": "communication",
+            "functions": [
+              "GPIO23"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "IO22",
+            "category": "communication",
+            "functions": [
+              "GPIO22"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "TX",
+            "category": "communication",
+            "functions": [
+              "GPIO1",
+              "U0TXD"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "RX",
+            "category": "communication",
+            "functions": [
+              "GPIO3",
+              "U0RXD"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "IO21",
+            "category": "communication",
+            "functions": [
+              "GPIO21"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "IO19",
+            "category": "communication",
+            "functions": [
+              "GPIO19"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "IO18",
+            "category": "communication",
+            "functions": [
+              "GPIO18"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "IO5",
+            "category": "reserved",
+            "functions": [
+              "GPIO5"
+            ],
+            "notes": [
+              "Boot strap"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "IO17",
+            "category": "communication",
+            "functions": [
+              "GPIO17"
+            ],
+            "notes": [
+              "Reserved on ESP32-WROVER modules"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "IO16",
+            "category": "communication",
+            "functions": [
+              "GPIO16"
+            ],
+            "notes": [
+              "Reserved on ESP32-WROVER modules"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "IO4",
+            "category": "gpio",
+            "functions": [
+              "GPIO4",
+              "ADC2_CH0",
+              "Touch0"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "IO0",
+            "category": "reserved",
+            "functions": [
+              "GPIO0",
+              "ADC2_CH1",
+              "Touch1",
+              "BOOT"
+            ],
+            "notes": [
+              "Boot strap"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "IO2",
+            "category": "reserved",
+            "functions": [
+              "GPIO2",
+              "ADC2_CH2",
+              "Touch2"
+            ],
+            "notes": [
+              "Boot strap"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "IO15",
+            "category": "reserved",
+            "functions": [
+              "GPIO15",
+              "ADC2_CH3",
+              "Touch3",
+              "MTDO"
+            ],
+            "notes": [
+              "Boot strap"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "reserved",
+            "functions": [
+              "GPIO8",
+              "Flash SD1"
+            ],
+            "notes": [
+              "Connected to module flash"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "reserved",
+            "functions": [
+              "GPIO7",
+              "Flash SD0"
+            ],
+            "notes": [
+              "Connected to module flash"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "CLK",
+            "category": "reserved",
+            "functions": [
+              "GPIO6",
+              "Flash CLK"
+            ],
+            "notes": [
+              "Connected to module flash"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "stm32-nucleo-f401re",
     "name": "STM32 Nucleo-F401RE",
     "manufacturer": "STMicroelectronics",
@@ -1702,12 +2329,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ST Nucleo-64 user manual UM1724",
         "url": "https://www.st.com/resource/en/user_manual/um1724-stm32-nucleo64-boards-mb1136-stmicroelectronics.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "NUCLEO-F401RE product page",
         "url": "https://www.st.com/en/evaluation-tools/nucleo-f401re.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -2065,12 +2694,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "BeagleBone Black documentation home",
         "url": "https://docs.beagleboard.org/boards/beaglebone/black/index.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "BeagleBone Black P8/P9 header pin tables",
         "url": "https://docs.beagleboard.org/boards/beaglebone/black/ch07.html",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -3234,12 +3865,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Jetson Orin Nano carrier board specification",
         "url": "https://developer.nvidia.com/downloads/assets/embedded/secure/jetson/orin_nano/docs/jetson_orin_nano_devkit_carrier_board_specification_sp.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
-        "title": "Jetson Orin Nano GPIO reference by JetsonHacks (third-party)",
+        "title": "Jetson Orin Nano GPIO reference by JetsonHacks",
         "url": "https://jetsonhacks.com/nvidia-jetson-orin-nano-gpio-header-pinout/",
-        "official": false
+        "official": false,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -3660,17 +4293,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "PJRC Teensy 4.1 product and pinout page",
         "url": "https://www.pjrc.com/store/teensy41.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "PJRC Teensy schematics",
         "url": "https://www.pjrc.com/teensy/schematic.html",
-        "official": true
+        "official": true,
+        "type": "Schematic"
       },
       {
         "title": "PJRC Teensy 4.1 pinout card",
         "url": "https://www.pjrc.com/teensy/pinout.html",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -4333,12 +4969,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Radxa ZERO 3 hardware interface",
         "url": "https://docs.radxa.com/en/zero/zero3/hardware-design/hardware-interface",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Radxa ZERO 3W product page",
         "url": "https://www.radxa.com/products/zeros/zero3w/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -4824,12 +5462,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Orange Pi 5 product page",
         "url": "https://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Orange Pi 5 user manual",
         "url": "https://orangepi.net/wp-content/uploads/2024/09/OrangePi_5_RK3588S_User-Manual_v2.1.1.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -5186,12 +5826,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit Feather RP2040 pinouts",
         "url": "https://learn.adafruit.com/adafruit-feather-rp2040-pico/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       },
       {
         "title": "CircuitPython board page",
         "url": "https://circuitpython.org/board/adafruit_feather_rp2040/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -5573,17 +6215,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi Pico 2 documentation",
         "url": "https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "RP2350 datasheet pinout",
         "url": "https://pip.raspberrypi.com/documents/RP-008373-DS-rp2350-datasheet.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
         "title": "Raspberry Pi Pico 2 pinout PDF",
         "url": "https://pip-assets.raspberrypi.com/categories/1005-raspberry-pi-pico-2/documents/RP-008301-DS-1-Pico-2-Pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -6050,12 +6695,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Mega 2560 Rev3 documentation",
         "url": "https://docs.arduino.cc/hardware/mega-2560/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Arduino Mega 2560 full pinout PDF",
         "url": "https://docs.arduino.cc/resources/pinouts/A000067-full-pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -6804,12 +7451,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Nano documentation and pinout",
         "url": "https://docs.arduino.cc/hardware/nano",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Arduino Nano official pinout (PDF)",
         "url": "https://docs.arduino.cc/resources/pinouts/A000005-full-pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -7169,12 +7818,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Nano 33 BLE Sense documentation",
         "url": "https://docs.arduino.cc/hardware/nano-33-ble-sense",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Nano 33 BLE Sense cheat sheet",
         "url": "https://docs.arduino.cc/tutorials/nano-33-ble-sense/cheat-sheet",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -7584,12 +8235,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino MKR WiFi 1010 documentation",
         "url": "https://docs.arduino.cc/hardware/mkr-wifi-1010",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "MKR WiFi 1010 datasheet",
         "url": "https://docs.arduino.cc/resources/datasheets/ABX00023-datasheet.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -7980,7 +8633,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "ESP32-S3-DevKitC-1 user guide",
         "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -8451,7 +9105,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "ESP32-C3-DevKitM-1 user guide",
         "url": "https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/hw-reference/esp32c3/user-guide-devkitm-1.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -8792,7 +9447,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "ESP32-C6-DevKitC-1 user guide",
         "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/user_guide.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -9164,12 +9820,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ESP32-S2-Saola-1 user guide",
         "url": "https://docs.espressif.com/projects/esp-idf/en/v5.1/esp32s2/hw-reference/esp32s2/user-guide-saola-1-v1.2.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "ESP32-S2-Saola-1 header pinout (Espressif)",
         "url": "https://docs.espressif.com/projects/esp-idf/en/v5.1/esp32s2/hw-reference/esp32s2/user-guide-saola-1-v1.2.html#header-block",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -9714,7 +10372,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "micro:bit edge connector pinout",
         "url": "https://tech.microbit.org/hardware/edgeconnector/",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -10084,7 +10743,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed XIAO RP2040 getting started and pinout",
         "url": "https://wiki.seeedstudio.com/XIAO-RP2040/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -10297,12 +10957,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed XIAO ESP32S3 getting started and pinout",
         "url": "https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Seeed XIAO ESP32S3 pin multiplexing",
         "url": "https://wiki.seeedstudio.com/xiao_esp32s3_pin_multiplexing/",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -10517,7 +11179,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit QT Py ESP32-S3 pinouts",
         "url": "https://learn.adafruit.com/adafruit-qt-py-esp32-s3/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -10735,7 +11398,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit QT Py ESP32-C3 pinouts",
         "url": "https://learn.adafruit.com/adafruit-qt-py-esp32-c3-wifi-dev-board/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -10953,7 +11617,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit Metro ESP32-S3 pinouts",
         "url": "https://learn.adafruit.com/adafruit-metro-esp32-s3/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -11425,17 +12090,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "SparkFun RP2040 Thing Plus hookup guide",
         "url": "https://learn.sparkfun.com/tutorials/rp2040-thing-plus-hookup-guide/all",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "SparkFun Thing Plus RP2040 product page",
         "url": "https://www.sparkfun.com/sparkfun-thing-plus-rp2040.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "CircuitPython Thing Plus RP2040 pins.c",
         "url": "https://github.com/adafruit/circuitpython/blob/main/ports/raspberrypi/boards/sparkfun_thing_plus_rp2040/pins.c",
-        "official": true
+        "official": false,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -11722,17 +12390,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "SparkFun ESP32 Thing Plus USB-C hookup guide",
         "url": "https://learn.sparkfun.com/tutorials/esp32-thing-plus-usb-c-hookup-guide/all",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "SparkFun Thing Plus ESP32 WROOM USB-C product page",
         "url": "https://www.sparkfun.com/sparkfun-thing-plus-esp32-wroom-usb-c.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "SparkFun ESP32 Thing Plus graphical datasheet",
         "url": "https://cdn.sparkfun.com/assets/3/9/5/f/e/SparkFun_Thing_Plus_ESP32_WROOM_C_graphical_datasheet2.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -12061,17 +12732,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "SparkFun RedBoard Artemis ATP hookup guide",
         "url": "https://learn.sparkfun.com/tutorials/hookup-guide-for-the-sparkfun-redboard-artemis-atp/all",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "SparkFun RedBoard Artemis ATP product page",
         "url": "https://www.sparkfun.com/sparkfun-redboard-artemis-atp.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "SparkFun Artemis ATP GPIO header map",
         "url": "https://cdn.sparkfun.com/assets/learn_tutorials/9/2/7/15442-SparkFun-Artemis-ATP-GPIOPins.jpg",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -12638,12 +13312,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi 3 Model B+ product brief",
         "url": "https://datasheets.raspberrypi.com/rpi3/raspberry-pi-3-b-plus-product-brief.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
         "title": "Raspberry Pi computers documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -13116,12 +13792,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi 500 product brief",
         "url": "https://datasheets.raspberrypi.com/pi500/raspberry-pi-500-product-brief.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
         "title": "Raspberry Pi computers documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -13594,12 +14272,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "STM32F103x8/xB datasheet",
         "url": "https://www.st.com/resource/en/datasheet/stm32f103c8.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
-        "title": "STM32-base Blue Pill board reference (third party) (third-party)",
+        "title": "STM32-base Blue Pill board reference (third party)",
         "url": "https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill.html",
-        "official": false
+        "official": false,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -14141,17 +14821,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "WeAct MiniSTM32F4x1 schematics and docs (GitHub)",
         "url": "https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1",
-        "official": true
+        "official": true,
+        "type": "Schematic"
       },
       {
         "title": "STM32F411xC/xE datasheet",
         "url": "https://www.st.com/resource/en/datasheet/stm32f411ce.pdf",
-        "official": true
+        "official": false,
+        "type": "Datasheet"
       },
       {
-        "title": "WeAct Black Pill V2.0 (STM32F411CE) board pinout (third-party)",
+        "title": "WeAct Black Pill V2.0 (STM32F411CE) board pinout",
         "url": "https://stm32-base.org/boards/STM32F411CEU6-WeAct-Black-Pill-V2.0.html",
-        "official": false
+        "official": false,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -14686,17 +15369,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "nRF52840 DK product page",
         "url": "https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "nRF52840 DK user guide",
         "url": "https://docs.nordicsemi.com/bundle/ug_nrf52840_dk/page/UG/dk/intro.html",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "nRF52840 DK connector/Arduino header pin map",
         "url": "https://docs.nordicsemi.com/bundle/ug_nrf52840_dk/page/UG/dk/hw_external_memory.html",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -15114,12 +15800,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "MSP-EXP430G2ET tool page",
         "url": "https://www.ti.com/tool/MSP-EXP430G2ET",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "MSP-EXP430G2ET user's guide (SLAU772)",
         "url": "https://www.ti.com/lit/ug/slau772a/slau772a.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -15379,7 +16067,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Banana Pi BPI-M5 official documentation",
         "url": "https://docs.banana-pi.org/en/BPI-M5/BananaPi_BPI-M5",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -15879,12 +16568,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ODROID-C4 expansion connectors wiki",
         "url": "https://wiki.odroid.com/odroid-c4/hardware/expansion_connectors",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       },
       {
         "title": "ODROID-C4 product page",
         "url": "https://www.hardkernel.com/shop/odroid-c4/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -16363,12 +17054,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ROCKPro64 Pine64 wiki (docs, schematics)",
         "url": "https://wiki.pine64.org/wiki/ROCKPro64",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "ROCKPro64 Pi-2 connector pinout",
         "url": "https://files.pine64.org/doc/rockpro64/Rockpro64%20Pi-2%20Connector%20ver0.2.png",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -16849,12 +17542,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "AML-S905X-CC product page and resources",
         "url": "https://libre.computer/products/aml-s905x-cc/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Libre Computer GPIO header maps",
         "url": "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -17375,7 +18070,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Milk-V Duo official documentation",
         "url": "https://milkv.io/docs/duo/getting-started/duo",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -17802,7 +18498,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "T-Display-S3 schematics and docs (GitHub)",
         "url": "https://github.com/Xinyuan-LilyGO/T-Display-S3",
-        "official": true
+        "official": true,
+        "type": "Schematic"
       }
     ],
     "headers": [
@@ -18142,7 +18839,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "LOLIN D1 Mini official documentation",
         "url": "https://www.wemos.cc/en/latest/d1/d1_mini.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -18394,7 +19092,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "LOLIN S2 Mini official documentation",
         "url": "https://www.wemos.cc/en/latest/s2/s2_mini.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -18764,12 +19463,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "NodeMCU DevKit v1.0 hardware repo (schematics)",
         "url": "https://github.com/nodemcu/nodemcu-devkit-v1.0",
-        "official": true
+        "official": true,
+        "type": "Schematic"
       },
       {
         "title": "ESP8266EX datasheet",
         "url": "https://www.espressif.com/sites/default/files/documentation/0a-esp8266ex_datasheet_en.pdf",
-        "official": true
+        "official": false,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -19205,7 +19906,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Particle Photon 2 datasheet",
         "url": "https://docs.particle.io/reference/datasheets/wi-fi/photon-2-datasheet/",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -19669,7 +20371,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Wio Terminal getting started wiki",
         "url": "https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -20189,7 +20892,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Introducing Adafruit ItsyBitsy M4 (learn guide)",
         "url": "https://learn.adafruit.com/introducing-adafruit-itsybitsy-m4",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -20626,12 +21330,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino GIGA R1 WiFi documentation",
         "url": "https://docs.arduino.cc/hardware/giga-r1-wifi/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "GIGA R1 WiFi full pinout PDF",
         "url": "https://docs.arduino.cc/resources/pinouts/ABX00063-full-pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -21529,12 +22235,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Pro Mini retired-board documentation",
         "url": "https://docs.arduino.cc/retired/boards/arduino-pro-mini/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Arduino Pro Mini schematic",
         "url": "https://www.arduino.cc/en/uploads/Main/Arduino-Pro-Mini-schematic.pdf",
-        "official": true
+        "official": true,
+        "type": "Schematic"
       }
     ],
     "headers": [
@@ -21982,12 +22690,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ESP32-H2-DevKitM-1 user guide",
         "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32h2/esp32-h2-devkitm-1/user_guide.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "ESP32-H2-DevKitM-1 schematic v1.3",
         "url": "https://dl.espressif.com/dl/schematics/SCH_ESP32-H2-DevKitM-1_V1_3_20240411.pdf",
-        "official": true
+        "official": true,
+        "type": "Schematic"
       }
     ],
     "headers": [
@@ -22371,7 +23081,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Banana Pi BPI-M2 Zero documentation",
         "url": "https://docs.banana-pi.org/en/BPI-M2_Zero/BananaPi_BPI-M2_Zero",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -22849,12 +23560,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed Studio BeagleBone Green wiki",
         "url": "https://wiki.seeedstudio.com/BeagleBone_Green/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Seeed Studio BeagleBone Green SRM v3",
         "url": "https://files.seeedstudio.com/wiki/BeagleBone_Green/res/BeagleBone_Green_SRM_v3.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -24019,7 +24732,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -24493,12 +25207,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi Zero product page",
         "url": "https://www.raspberrypi.com/products/raspberry-pi-zero/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -24968,12 +25684,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi 3 Model A+ product brief",
         "url": "https://pip.raspberrypi.com/documents/RP-008331-DS-raspberry-pi-3-a-plus-product-brief.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -25447,12 +26165,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi 2 Model B product page",
         "url": "https://www.raspberrypi.com/products/raspberry-pi-2-model-b/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -25926,12 +26646,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi 1 Model B+ product page",
         "url": "https://www.raspberrypi.com/products/raspberry-pi-1-model-b-plus/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -26401,12 +27123,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi 400 product brief",
         "url": "https://datasheets.raspberrypi.com/rpi400/raspberry-pi-400-product-brief.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
         "title": "Raspberry Pi GPIO documentation",
         "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -26864,7 +27588,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "UNO R4 keeps the classic UNO shield form factor and 5 V operating voltage."
+        "text": "UNO Rev3 and UNO R4 share the classic shield header footprint and 5 V operating voltage, but MCU-specific alternate functions differ."
       },
       {
         "severity": "info",
@@ -26879,7 +27603,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino UNO R4 Minima documentation",
         "url": "https://docs.arduino.cc/hardware/uno-r4-minima",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -27179,12 +27904,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Leonardo documentation",
         "url": "https://docs.arduino.cc/hardware/leonardo/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Arduino Leonardo full pinout PDF",
         "url": "https://docs.arduino.cc/resources/pinouts/A000057-full-pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -27643,12 +28370,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Micro documentation",
         "url": "https://docs.arduino.cc/hardware/micro/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Arduino Micro full pinout PDF",
         "url": "https://docs.arduino.cc/resources/pinouts/A000053-full-pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -28157,12 +28886,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Zero documentation",
         "url": "https://docs.arduino.cc/hardware/zero/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Arduino Zero full pinout PDF",
         "url": "https://docs.arduino.cc/resources/pinouts/ABX00003-full-pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -28636,7 +29367,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Due documentation",
         "url": "https://docs.arduino.cc/hardware/due",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -29393,12 +30125,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Nano Every documentation",
         "url": "https://docs.arduino.cc/hardware/nano-every",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Arduino Nano Every official pinout (PDF)",
         "url": "https://docs.arduino.cc/resources/pinouts/ABX00028-full-pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -29747,7 +30481,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Nano 33 IoT documentation",
         "url": "https://docs.arduino.cc/hardware/nano-33-iot",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -30164,7 +30899,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino Nano RP2040 Connect documentation",
         "url": "https://docs.arduino.cc/hardware/nano-rp2040-connect",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -30575,7 +31311,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino MKR Zero documentation",
         "url": "https://docs.arduino.cc/hardware/mkr-zero",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -30971,7 +31708,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arduino MKR WAN 1310 documentation",
         "url": "https://docs.arduino.cc/hardware/mkr-wan-1310",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -31367,7 +32105,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit Feather M4 Express pinouts",
         "url": "https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -31767,7 +32506,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit nRF52840 Feather pinouts",
         "url": "https://learn.adafruit.com/introducing-the-adafruit-nrf52840-feather/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -32163,7 +32903,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit ESP32-S3 Feather pinouts",
         "url": "https://learn.adafruit.com/adafruit-esp32-s3-feather/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -32549,7 +33290,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit ItsyBitsy RP2040 pinouts",
         "url": "https://learn.adafruit.com/adafruit-itsybitsy-rp2040/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -32885,7 +33627,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit Metro M4 Express pinouts",
         "url": "https://learn.adafruit.com/adafruit-metro-m4-express-featuring-atsamd51/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -33287,7 +34030,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit Grand Central pinouts",
         "url": "https://learn.adafruit.com/adafruit-grand-central/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -34066,7 +34810,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed XIAO SAMD21 wiki",
         "url": "https://wiki.seeedstudio.com/Seeeduino-XIAO/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -34282,7 +35027,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed XIAO nRF52840 wiki",
         "url": "https://wiki.seeedstudio.com/XIAO_BLE/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -34497,7 +35243,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed XIAO ESP32C3 wiki",
         "url": "https://wiki.seeedstudio.com/XIAO_ESP32C3_Getting_Started/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -34712,7 +35459,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed XIAO ESP32C6 wiki",
         "url": "https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -34927,7 +35675,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Seeed reTerminal wiki",
         "url": "https://wiki.seeedstudio.com/reTerminal/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -35401,7 +36150,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "SparkFun Pro Micro RP2040 hookup guide",
         "url": "https://learn.sparkfun.com/tutorials/pro-micro-rp2040-hookup-guide",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -35706,12 +36456,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "SparkFun RedBoard Turbo hookup guide",
         "url": "https://learn.sparkfun.com/tutorials/redboard-turbo-hookup-guide",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "SparkFun RedBoard Turbo graphical datasheet",
         "url": "https://github.com/sparkfun/RedBoard_Turbo/blob/master/Documentation/GraphicalDatasheet-SAMD21TurboDev_1.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -36074,7 +36826,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "SparkFun ESP32 Thing hookup guide",
         "url": "https://learn.sparkfun.com/tutorials/esp32-thing-hookup-guide",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -36468,17 +37221,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "PJRC Teensy 3.2 product page",
         "url": "https://www.pjrc.com/store/teensy32.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "PJRC Teensy 3.2 front pinout card",
         "url": "https://www.pjrc.com/teensy/card7a_rev3_web.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       },
       {
         "title": "PJRC Teensy 3.2 back pinout card",
         "url": "https://www.pjrc.com/teensy/card7b_rev3_web.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -37031,12 +37787,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "PJRC Teensy 4.0 product page",
         "url": "https://www.pjrc.com/store/teensy40.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "PJRC Teensy 4.0 pinout card",
         "url": "https://www.pjrc.com/teensy/pinout.html",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -37413,7 +38171,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "PJRC Teensy LC product page",
         "url": "https://www.pjrc.com/store/teensylc.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -37779,7 +38538,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Particle Boron datasheet",
         "url": "https://docs.particle.io/reference/datasheets/b-series/boron-datasheet/",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -38109,7 +38869,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Particle Argon datasheet",
         "url": "https://docs.particle.io/reference/datasheets/wi-fi/argon-datasheet/",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -38439,12 +39200,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Jetson Nano developer kit user guide",
         "url": "https://developer.nvidia.com/embedded/dlc/jetson_nano_developer_kit_user_guide",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "Jetson Nano 40-pin expansion header (J41) GPIO usage",
         "url": "https://developer.nvidia.com/embedded/dlc/jetson-nano-40-pin-expansion-header-1.2",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -38878,7 +39641,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Jetson Xavier NX developer kit getting started guide",
         "url": "https://developer.nvidia.com/embedded/learn/get-started-jetson-xavier-nx-devkit",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -39318,7 +40082,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "BeagleY-AI official documentation",
         "url": "https://docs.beagleboard.org/latest/boards/beagley/ai/index.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -39789,12 +40554,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "BeagleBone AI-64 official documentation",
         "url": "https://docs.beagleboard.org/latest/boards/beaglebone/ai-64/index.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "BeagleBone AI-64 expansion header tables",
         "url": "https://docs.beagleboard.org/boards/beaglebone/ai-64/04-expansion.html",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -40689,12 +41456,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Radxa ROCK 5B documentation",
         "url": "https://docs.radxa.com/en/rock5/rock5b",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Radxa ROCK 5B hardware interface",
         "url": "https://docs.radxa.com/en/rock5/rock5b/hardware-design/hardware-interface",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -41168,7 +41937,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Radxa ZERO 3 hardware interface",
         "url": "https://docs.radxa.com/en/zero/zero3/hardware-design/hardware-interface",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -41652,7 +42422,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "ODROID-N2 expansion connectors wiki",
         "url": "https://wiki.odroid.com/odroid-n2/hardware/expansion_connectors",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -42122,7 +42893,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "ODROID-M1 expansion connectors wiki",
         "url": "https://wiki.odroid.com/odroid-m1/hardware/expansion_connectors",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -42586,7 +43358,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Quartz64 Pine64 wiki",
         "url": "https://wiki.pine64.org/wiki/Quartz64",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -43038,12 +43811,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Khadas VIM4 documentation",
         "url": "https://docs.khadas.com/products/sbc/vim4/",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Khadas VIM4 40-pin header",
         "url": "https://docs.khadas.com/products/sbc/vim4/applications/gpio/40pin-header",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -43469,12 +44244,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ST NUCLEO-F103RB product page",
         "url": "https://www.st.com/en/evaluation-tools/nucleo-f103rb.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "ST Nucleo-64 user manual UM1724",
         "url": "https://www.st.com/resource/en/user_manual/um1724-stm32-nucleo64-boards-mb1136-stmicroelectronics.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -43833,12 +44610,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ST NUCLEO-F446RE product page",
         "url": "https://www.st.com/en/evaluation-tools/nucleo-f446re.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "ST Nucleo-64 user manual UM1724",
         "url": "https://www.st.com/resource/en/user_manual/um1724-stm32-nucleo64-boards-mb1136-stmicroelectronics.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -44193,12 +44972,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "ST NUCLEO-L476RG product page",
         "url": "https://www.st.com/en/evaluation-tools/nucleo-l476rg.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "ST Nucleo-64 user manual UM1724",
         "url": "https://www.st.com/resource/en/user_manual/um1724-stm32-nucleo64-boards-mb1136-stmicroelectronics.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -44553,7 +45334,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "ST NUCLEO-G071RB product page",
         "url": "https://www.st.com/en/evaluation-tools/nucleo-g071rb.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -44949,7 +45731,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Nordic nRF5340 DK product page",
         "url": "https://www.nordicsemi.com/Products/Development-hardware/nRF5340-DK",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -45331,7 +46114,8 @@ export const generatedBoards: Board[] = [
       {
         "title": "Nordic nRF52 DK product page",
         "url": "https://www.nordicsemi.com/Products/Development-hardware/nRF52-DK",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -45717,12 +46501,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "TI LP-MSPM0G3507 tool page",
         "url": "https://www.ti.com/tool/LP-MSPM0G3507",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "MSPM0G3507 LaunchPad user's guide",
         "url": "https://www.ti.com/lit/pdf/SLAU873",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -46223,12 +47009,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Silicon Labs xG24 Explorer Kit page",
         "url": "https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "xG24 Explorer Kit user's guide",
         "url": "https://www.silabs.com/documents/public/user-guides/ug533-xg24-ek2703a.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       }
     ],
     "headers": [
@@ -46560,12 +47348,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Raspberry Pi Pico 2 W documentation",
         "url": "https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Raspberry Pi Pico 2 W pinout PDF",
         "url": "https://pip-assets.raspberrypi.com/categories/1005-raspberry-pi-pico-2/documents/RP-008301-DS-1-Pico-2-Pinout.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -47040,12 +47830,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Adafruit QT Py RP2040 learn guide",
         "url": "https://learn.adafruit.com/adafruit-qt-py-rp2040",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Adafruit QT Py RP2040 pinouts",
         "url": "https://learn.adafruit.com/adafruit-qt-py-rp2040/pinouts",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -47280,12 +48072,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Waveshare RP2040-Zero wiki",
         "url": "https://www.waveshare.com/wiki/RP2040-Zero",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Waveshare RP2040-Zero schematic",
         "url": "https://www.waveshare.com/w/upload/2/21/RP2040-Zero-Schematic.pdf",
-        "official": true
+        "official": true,
+        "type": "Schematic"
       }
     ],
     "headers": [
@@ -47617,22 +48411,26 @@ export const generatedBoards: Board[] = [
       {
         "title": "MachXO2 Breakout Board Evaluation Kit User's Guide EB68 (Lattice)",
         "url": "https://www.latticesemi.com/~/media/LatticeSemi/Documents/UserManuals/MQ/MachXO2BreakoutBoardEvaluationKitUsersGuide.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "MachXO2 Family Data Sheet FPGA-DS-02056 (Lattice)",
         "url": "https://www.latticesemi.com/view_document?document_id=38834",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
         "title": "MachXO2 Breakout Board product page (Lattice)",
         "url": "https://www.latticesemi.com/products/developmentboardsandkits/machxo2breakoutboard",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
-        "title": "LCMXO2-7000HE-B-EVN product listing (DigiKey) (third-party)",
+        "title": "LCMXO2-7000HE-B-EVN product listing (DigiKey)",
         "url": "https://www.digikey.com/en/products/detail/lattice-semiconductor-corporation/LCMXO2-7000HE-B-EVN/3906092",
-        "official": false
+        "official": false,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -49169,19 +49967,22 @@ export const generatedBoards: Board[] = [
     ],
     "sources": [
       {
-        "title": "MachXO3D Breakout Board User Guide FPGA-UG-02084-0.90 (Farnell PDF) (third-party)",
+        "title": "MachXO3D Breakout Board User Guide FPGA-UG-02084-0.90 (Farnell PDF)",
         "url": "https://www.farnell.com/datasheets/3216755.pdf",
-        "official": false
+        "official": false,
+        "type": "Manual"
       },
       {
         "title": "MachXO3D Breakout Board product page (Lattice)",
         "url": "https://www.latticesemi.com/products/developmentboardsandkits/machxo3d_breakout_board",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
-        "title": "LCMXO3D-9400HC-B-EVN product listing (Newark) (third-party)",
+        "title": "LCMXO3D-9400HC-B-EVN product listing (Newark)",
         "url": "https://www.newark.com/lattice-semiconductor/lcmxo3d-9400hc-b-evn/breakout-board-machxo3d-fpga/dp/55AJ2601",
-        "official": false
+        "official": false,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -50716,17 +51517,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "iCEstick Evaluation Kit User's Guide EB82 (Lattice)",
         "url": "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/EI2/EB82-iCEstick_User_Manual.ashx?document_id=50701",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "iCEstick Evaluation Kit product page (Lattice)",
         "url": "https://www.latticesemi.com/products/developmentboardsandkits/icestick",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "iCEstick.pcf constraint file (FPGA pin cross-reference)",
         "url": "https://github.com/mcmayer/iCE40/blob/master/iCEstick.pcf",
-        "official": true
+        "official": false,
+        "type": "Pinout"
       }
     ],
     "headers": [
@@ -51103,17 +51907,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "MachXO3 Starter Kit User Guide EB95 (Lattice)",
         "url": "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/MQ/MachXO3StarterKitUsersGuideEB95.ashx?document_id=50873",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
-        "title": "MachXO3L Starter Kit User Guide (DigiKey mirror) (third-party)",
+        "title": "MachXO3L Starter Kit User Guide (DigiKey mirror)",
         "url": "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/1268/MachXO3L_StarterKit_UG.pdf",
-        "official": false
+        "official": false,
+        "type": "Datasheet"
       },
       {
         "title": "MachXO3 family product page (Lattice)",
         "url": "https://www.latticesemi.com/products/fpgaandcpld/machxo3",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -52652,17 +53459,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "CrossLink-NX Evaluation Board User Guide FPGA-EB-02028 (Lattice)",
         "url": "https://www.latticesemi.com/-/media/LatticeSemi/Documents/UserManuals/1D2/FPGA-EB-02028-1-4-CrossLink-NX-Evaluation-Board.ashx?document_id=52807",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
-        "title": "CrossLink-NX Evaluation Board (LIFCL-40-EVN) user guide (ManualsLib) (third-party)",
+        "title": "CrossLink-NX Evaluation Board (LIFCL-40-EVN) user guide (ManualsLib)",
         "url": "https://www.manualslib.com/manual/3014515/Lattice-Semiconductor-Lifcl-40-Evn.html",
-        "official": false
+        "official": false,
+        "type": "Docs"
       },
       {
         "title": "CrossLink-NX product family (Lattice)",
         "url": "https://www.latticesemi.com/products/fpgaandcpld/crosslink-nx",
-        "official": true
+        "official": true,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -53055,12 +53865,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "UM1472 Discovery kit user manual (ST)",
         "url": "https://www.st.com/resource/en/user_manual/um1472-discovery-kit-with-stm32f407vg-mcu-stmicroelectronics.pdf",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "STM32F407VG datasheet",
         "url": "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": []
@@ -53097,12 +53909,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "EK-TM4C123GXL user's guide (SPMU296)",
         "url": "https://www.ti.com/lit/pdf/spmu296",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "TM4C123GH6PM product page and datasheet",
         "url": "https://www.ti.com/product/TM4C123GH6PM",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": []
@@ -53139,17 +53953,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "Arty A7 reference manual (Digilent)",
         "url": "https://digilent.com/reference/programmable-logic/arty-a7/reference-manual",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
-        "title": "Arty A7 reference manual PDF (DigiKey mirror) (third-party)",
+        "title": "Arty A7 reference manual PDF (DigiKey mirror)",
         "url": "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/781/Arty_A7_RM_Web.pdf",
-        "official": false
+        "official": false,
+        "type": "Manual"
       },
       {
         "title": "Arty A7-100 master XDC pin constraints",
         "url": "https://github.com/Digilent/digilent-xdc/blob/master/Arty-A7-100-Master.xdc",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       }
     ],
     "headers": []
@@ -53186,12 +54003,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Basys 3 reference manual (Digilent)",
         "url": "https://digilent.com/reference/programmable-logic/basys-3/reference-manual",
-        "official": true
+        "official": true,
+        "type": "Manual"
       },
       {
         "title": "Basys 3 reference manual PDF (AMD university program mirror)",
         "url": "https://www.amd.com/content/dam/amd/en/documents/university/aup-boards/XUPBasys3/documentation/Basys3_rm_8_22_2014.pdf",
-        "official": true
+        "official": false,
+        "type": "Manual"
       }
     ],
     "headers": []
@@ -53240,12 +54059,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "Coral Dev Board datasheet (coral.ai)",
         "url": "https://coral.ai/docs/dev-board/datasheet/",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       },
       {
         "title": "Coral Dev Board datasheet v1.2 PDF (Adafruit mirror)",
         "url": "https://cdn-shop.adafruit.com/product-files/4385/4385_Coral-Dev-Board-datasheet.pdf",
-        "official": true
+        "official": false,
+        "type": "Datasheet"
       }
     ],
     "headers": [
@@ -53695,17 +54516,20 @@ export const generatedBoards: Board[] = [
       {
         "title": "Portenta H7 official pinout PDF",
         "url": "https://content.arduino.cc/assets/Pinout-PortentaH7_latest.pdf",
-        "official": true
+        "official": true,
+        "type": "Pinout"
       },
       {
         "title": "Portenta H7 documentation",
         "url": "https://docs.arduino.cc/hardware/portenta-h7",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "Portenta H7 collective datasheet",
         "url": "https://docs.arduino.cc/resources/datasheets/ABX00042-ABX00045-ABX00046-datasheet.pdf",
-        "official": true
+        "official": true,
+        "type": "Datasheet"
       }
     ],
     "headers": []
@@ -53738,12 +54562,14 @@ export const generatedBoards: Board[] = [
       {
         "title": "nRF9160 DK product page (Nordic)",
         "url": "https://www.nordicsemi.com/Products/Development-hardware/nRF9160-DK",
-        "official": true
+        "official": true,
+        "type": "Docs"
       },
       {
         "title": "nRF9160 DK board documentation (Zephyr Project)",
         "url": "https://docs.zephyrproject.org/latest/boards/nordic/nrf9160dk/doc/index.html",
-        "official": true
+        "official": false,
+        "type": "Docs"
       }
     ],
     "headers": []

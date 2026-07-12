@@ -32,11 +32,9 @@ export const esp32DevkitV1: Board = {
   aliases: [
     "esp32",
     "esp32-devkit",
-    "esp32-devkit-v1",
     "esp32-devkitv1",
     "doit-esp32-devkit-v1",
     "esp32-wroom-32",
-    "esp32-devkitc",
   ],
   description:
     "The ubiquitous 30-pin ESP32-WROOM-32 breadboard dev kit. Wi-Fi + Bluetooth, two breadboard-friendly headers, 3.3 V logic.",
@@ -69,16 +67,19 @@ export const esp32DevkitV1: Board = {
       title: "Espressif ESP32-WROOM-32 datasheet",
       url: "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf",
       official: true,
+      type: "Datasheet",
     },
     {
       title: "Espressif ESP32 series datasheet",
       url: "https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf",
       official: true,
+      type: "Datasheet",
     },
     {
-      title: "Last Minute Engineers — ESP32 DevKit pinout reference (third-party board layout)",
+      title: "Last Minute Engineers — ESP32 DevKit 30-pin layout",
       url: "https://lastminuteengineers.com/esp32-pinout-reference/",
       official: false,
+      type: "Pinout",
     },
   ],
   headers: [
@@ -144,7 +145,7 @@ export const esp32DevkitV1: Board = {
         pin(28, "D15", "gpio", {
           gpio: "GPIO15",
           functions: ["ADC2_CH3", "HSPI CS"],
-          notes: ["Boot strap: keep high at reset to silence boot log"],
+          notes: ["Boot strap; pull low at reset to silence the ROM boot log"],
           ...V33,
         }),
         pin(29, "GND", "ground"),

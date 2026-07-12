@@ -18,6 +18,7 @@ export const curatedAliases: Record<string, string[]> = {
   "arduino-nano-esp32": ["nano-esp32"],
   "arduino-nano-33-ble-sense": ["nano-33-ble", "nano-33"],
   "arduino-mkr-wifi-1010": ["mkr-wifi", "mkr1010"],
+  "esp32-devkitc": ["devkitc", "esp32-devkitc-v4"],
   "esp32-s3-devkitc-1": ["esp32-s3", "s3-devkitc"],
   "esp32-c3-devkitm-1": ["esp32-c3"],
   "esp32-c6-devkitc-1": ["esp32-c6"],

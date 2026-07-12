@@ -1,6 +1,6 @@
 {
   "name": "@dheerajsom/pinhub",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Hardware board pinout diagrams in your terminal. `ph rpi5` and go.",
   "keywords": [
     "pinout",
@@ -43,15 +43,17 @@
   "scripts": {
     "dev": "tsx src/cli.ts",
     "generate:boards": "tsx scripts/generate-boards.ts",
+    "check:boards": "tsx scripts/generate-boards.ts --check",
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "lint": "eslint .",
     "package:check": "npm pack --dry-run",
-    "prepublishOnly": "npm run lint && npm run test && npm run build"
+    "prepublishOnly": "npm run check:boards && npm run lint && npm run test && npm run build"
   },
   "dependencies": {
     "chalk": "^5.4.1",
-    "commander": "^13.1.0"
+    "commander": "^13.1.0",
+    "string-width": "^7.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",

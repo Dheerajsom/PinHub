@@ -53,12 +53,13 @@ export function VendorLogo({ vendor, size = 18 }: VendorLogoProps) {
   return (
     <Image
       src={`https://www.google.com/s2/favicons?domain=${domain}&sz=64`}
-      alt={`${vendor} logo`}
+      alt=""
       width={size}
       height={size}
       decoding="async"
       referrerPolicy="no-referrer"
       className="shrink-0 rounded-sm"
+      aria-hidden="true"
       onError={() => setFailed(true)}
     />
   );

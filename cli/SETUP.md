@@ -50,7 +50,7 @@ If `ph` prints a pinout diagram, you're done.
 ## 3. Install from source (this repository)
 
 ```bash
-git clone https://github.com/<your-org>/PinHub.git
+git clone https://github.com/Dheerajsom/PinHub.git
 cd PinHub/cli
 npm install
 npm run build
@@ -70,7 +70,7 @@ npm run dev -- rpi5
 ## 4. First steps
 
 ```bash
-ph list                 # see all 125 boards in the catalog
+ph list                 # see all 126 boards in the catalog
 ph rpi5                 # Raspberry Pi 5 GPIO header
 ph pico                 # Raspberry Pi Pico
 ph uno                  # Arduino UNO R3
@@ -83,8 +83,13 @@ ph info esp32           # warnings, sources, aliases
 ph rpi5 --source        # official documentation links
 ```
 
-Useful flags: `--compact` (small terminals), `--ascii` (no Unicode),
-`--no-color`, `--json` (script-friendly), `--width <n>`.
+Useful flags: `--compact` (small terminals), `--ascii` (strict ASCII),
+`--no-color`, `--no-motion`, `--details` (all alternate functions), `--json`
+(script-friendly), and `--width <n>` (20 to 1000 columns).
+
+`--json` is a separate machine-readable view and cannot be combined with
+`--ascii`, `--compact`, `--details`, `--source`, or `--width`. Source and detail
+views require one board and cannot be requested together.
 
 Board names are forgiving — `ph rpi5`, `ph pi5`, and `ph raspberry pi 5` all
 work. If you guess wrong, `ph` suggests the closest matches.
@@ -110,6 +115,11 @@ Color is automatically disabled when output is piped or when the
 [`NO_COLOR`](https://no-color.org/) environment variable is set. Force it off
 per-invocation with `--no-color`.
 
+**You prefer no terminal animation**
+The short signal pulse only appears in an interactive color terminal. It is
+automatically disabled for pipes, CI, `TERM=dumb`, help, version, and JSON.
+Use `--no-motion` for one command, or set `PINHUB_NO_MOTION=1` to keep it off.
+
 **The diagram looks cramped or wraps badly**
 `ph` adapts to terminal width and falls back to a compact layout, but you can
 control it: widen the terminal, or use `--compact`, or `--width 100`.
@@ -125,5 +135,6 @@ npm uninstall -g @dheerajsom/pinhub
 `ph` shows each board's voltage levels, reserved pins, and boot-strap pins,
 and cites its documentation sources — but board revisions differ (ESP32
 boards especially). Always cross-check your exact board's silkscreen and the
-official documentation (`ph <board> --source`) before wiring. 3.3 V GPIO does
+source list (`ph <board> --source`), including any third-party label, before
+wiring. 3.3 V GPIO does
 not forgive 5 V.

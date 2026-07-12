@@ -6,7 +6,7 @@
  * The five flagship boards keep their richer hand-written modules in
  * src/boards/ and are skipped here (SKIP_IDS).
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -16,6 +16,7 @@ import {
   type PinRole,
   type Pinout,
 } from "../../src/lib/boards";
+import { classifySource } from "../../src/lib/source-trust";
 import type { Board, Header, Pin, PinCategory, Source, Warning } from "../src/model.js";
 import { curatedAliases } from "./curated-aliases.js";
 
@@ -25,24 +26,7 @@ const SKIP_IDS = new Set([
   "raspberry-pi-pico",
   "raspberry-pi-pico-w",
   "arduino-uno-rev3",
-  "esp32-devkitc",
-]);
-
-/**
- * Domains whose documents are NOT first-party vendor documentation.
- * Everything else in the site catalog links vendor docs/datasheets (including
- * vendor GitHub orgs), which PinHub curates as source-backed.
- */
-const THIRD_PARTY_HOSTS = new Set([
-  "stm32-base.org",
-  "jetsonhacks.com",
-  "www.manualslib.com",
-  "mm.digikey.com",
-  "www.digikey.com",
-  "www.farnell.com",
-  "www.newark.com",
-  "randomnerdtutorials.com",
-  "lastminuteengineers.com",
+  "esp32-devkit-v1",
 ]);
 
 const ROLE_TO_CATEGORY: Record<PinRole, PinCategory> = {
@@ -124,12 +108,12 @@ function toWarnings(board: SiteBoard): Warning[] {
 
 function toSources(board: SiteBoard): Source[] {
   return board.sourceLinks.map((link) => {
-    const host = new URL(link.url).host;
-    const official = !THIRD_PARTY_HOSTS.has(host);
+    const official = classifySource(board.vendor, link.url) === "official";
     return {
-      title: official ? link.label : `${link.label} (third-party)`,
+      title: link.label,
       url: link.url,
       official,
+      type: link.type,
     };
   });
 }
@@ -172,6 +156,26 @@ if (problems.length > 0) {
 const banner = `// AUTO-GENERATED from the PinHub website catalog (src/lib/boards.ts).\n// Do not edit by hand — run \`npm run generate:boards\` in cli/ instead.\nimport type { Board } from "../model.js";\n\nexport const generatedBoards: Board[] = `;
 
 const outPath = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "boards", "generated.ts");
-mkdirSync(dirname(outPath), { recursive: true });
-writeFileSync(outPath, banner + JSON.stringify(generated, null, 2) + ";\n", "utf8");
-console.log(`Wrote ${generated.length} boards to ${outPath}`);
+const output = banner + JSON.stringify(generated, null, 2) + ";\n";
+const checkOnly = process.argv.slice(2).includes("--check");
+
+if (checkOnly) {
+  let current = "";
+  try {
+    current = readFileSync(outPath, "utf8");
+  } catch {
+    // A missing generated file is reported by the same actionable message.
+  }
+  // Git may materialize this tracked file with CRLF on Windows. Compare
+  // normalized content so --check detects catalog drift, not checkout policy.
+  if (current.replace(/\r\n?/g, "\n") !== output) {
+    console.error("Generated board data is stale. Run `npm run generate:boards` in cli/.");
+    process.exitCode = 1;
+  } else {
+    console.log(`Verified ${generated.length} generated boards in ${outPath}`);
+  }
+} else {
+  mkdirSync(dirname(outPath), { recursive: true });
+  writeFileSync(outPath, output, "utf8");
+  console.log(`Wrote ${generated.length} boards to ${outPath}`);
+}

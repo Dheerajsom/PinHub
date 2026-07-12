@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, X } from "lucide-react";
 import { clsx } from "clsx";
 import type { Pin, Pinout } from "@/lib/boards";
 import { roleLabels } from "@/components/board-visual/roles";
@@ -43,7 +43,9 @@ function pinoutToMarkdown(pinout: Pinout): string {
 }
 
 export function CopyPinTable({ pinout }: { pinout: Pinout }) {
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
+    "idle",
+  );
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -55,14 +57,16 @@ export function CopyPinTable({ pinout }: { pinout: Pinout }) {
   async function copy() {
     try {
       await navigator.clipboard.writeText(pinoutToMarkdown(pinout));
-      setCopied(true);
-      if (resetTimer.current) clearTimeout(resetTimer.current);
-      resetTimer.current = setTimeout(() => setCopied(false), 2000);
+      setCopyState("copied");
     } catch {
-      // Clipboard can be unavailable (permissions, insecure context); the
-      // button simply stays in its idle state.
+      setCopyState("failed");
     }
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+    resetTimer.current = setTimeout(() => setCopyState("idle"), 2000);
   }
+
+  const copied = copyState === "copied";
+  const failed = copyState === "failed";
 
   return (
     <button
@@ -74,15 +78,21 @@ export function CopyPinTable({ pinout }: { pinout: Pinout }) {
         "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium transition",
         copied
           ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-100"
+          : failed
+            ? "border-red-400/50 bg-red-400/10 text-red-100"
           : "border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/25 hover:text-white",
       )}
     >
       {copied ? (
         <Check className="size-3.5" aria-hidden="true" />
+      ) : failed ? (
+        <X className="size-3.5" aria-hidden="true" />
       ) : (
         <Copy className="size-3.5" aria-hidden="true" />
       )}
-      <span aria-live="polite">{copied ? "Copied" : "Copy table"}</span>
+      <span aria-live="polite">
+        {copied ? "Copied" : failed ? "Copy failed" : "Copy table"}
+      </span>
     </button>
   );
 }

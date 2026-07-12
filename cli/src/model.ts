@@ -21,10 +21,14 @@ export type Warning = {
   text: string;
 };
 
+export type SourceType = "Docs" | "Datasheet" | "Manual" | "Schematic" | "Pinout";
+
 export type Source = {
   title: string;
   url: string;
   official: boolean;
+  /** What the source documents, used to prefer an exact pin map for wiring. */
+  type?: SourceType;
 };
 
 export type Pin = {

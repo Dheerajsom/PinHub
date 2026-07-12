@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import {
+  Fragment,
   memo,
   useCallback,
   useEffect,
@@ -20,6 +21,7 @@ import {
   Cpu,
   Database,
   Layers3,
+  LoaderCircle,
   Search,
   ShieldAlert,
   SlidersHorizontal,
@@ -30,15 +32,13 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 import {
-  boards,
-  categories,
-  interfaceFilters,
   type Board,
   type BoardCategory,
   type BoardInterface,
-  type SourceLink,
 } from "@/lib/boards";
-import { classifySource } from "@/lib/source-trust";
+import type { BoardSummary } from "@/lib/board-summary";
+import { createBoardDetailLoader } from "@/lib/board-detail-loader";
+import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
@@ -46,9 +46,12 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 const allCategory = "All";
 const allInterface = "All";
 const favoritesStorageKey = "pinhub.favorites";
+const initialResultLimit = 32;
+const resultPageSize = 32;
+const desktopMediaQuery = "(min-width: 1024px)";
 
 type BoardSearchEntry = {
-  board: Board;
+  board: BoardSummary;
   name: string;
   nameWords: string[];
   primary: string;
@@ -56,37 +59,36 @@ type BoardSearchEntry = {
   body: string;
 };
 
-const boardIds = new Set(boards.map((board) => board.id));
-const boardSearchEntries: BoardSearchEntry[] = boards.map((board) => {
-  const name = board.name.toLowerCase();
-  return {
-    board,
-    name,
-    nameWords: name.split(/[^a-z0-9+]+/),
-    primary: [board.vendor, board.family, board.processor]
-      .join(" ")
-      .toLowerCase(),
-    secondary: [board.category, ...board.tags, ...board.interfaces]
-      .join(" ")
-      .toLowerCase(),
-    body: [board.description, ...board.warnings].join(" ").toLowerCase(),
-  };
-});
-
-const categoryCounts = new Map<string, number>();
-categoryCounts.set(allCategory, boards.length);
-for (const board of boards) {
-  categoryCounts.set(
-    board.category,
-    (categoryCounts.get(board.category) ?? 0) + 1,
-  );
+function createBoardSearchEntries(catalog: BoardSummary[]): BoardSearchEntry[] {
+  return catalog.map((board) => {
+    const name = board.name.toLowerCase();
+    return {
+      board,
+      name,
+      nameWords: name.split(/[^a-z0-9+]+/),
+      primary: [board.vendor, board.family, board.processor]
+        .join(" ")
+        .toLowerCase(),
+      secondary: [board.category, ...board.tags, ...board.interfaces]
+        .join(" ")
+        .toLowerCase(),
+      body: [board.description, board.warningSearchText]
+        .join(" ")
+        .toLowerCase(),
+    };
+  });
 }
 
-const interfaceCount = new Set(boards.flatMap((board) => board.interfaces)).size;
-const sourceCount = boards.reduce(
-  (total, board) => total + board.sourceLinks.length,
-  0,
-);
+type DetailState =
+  | { status: "ready"; board: Board }
+  | { status: "loading"; board: null; id: string }
+  | { status: "error"; board: null; id: string };
+
+type PinHubAppProps = {
+  catalog: BoardSummary[];
+  initialBoard: Board;
+  sourceCount: number;
+};
 
 // Favorites live in localStorage and are exposed to React through a tiny
 // external store so the component can read them via useSyncExternalStore.
@@ -101,9 +103,7 @@ function getFavoritesSnapshot(): ReadonlySet<string> {
       const parsed: unknown = stored ? JSON.parse(stored) : [];
       const ids = Array.isArray(parsed) ? parsed : [];
       favoritesSnapshot = new Set(
-        ids.filter(
-          (id): id is string => typeof id === "string" && boardIds.has(id),
-        ),
+        ids.filter((id): id is string => typeof id === "string"),
       );
     } catch {
       favoritesSnapshot = new Set();
@@ -191,25 +191,91 @@ function scoreBoardEntry(entry: BoardSearchEntry, tokens: string[]): number {
   return total;
 }
 
-export function PinHubApp() {
+function subscribeToDesktopLayout(listener: () => void): () => void {
+  const mediaQuery = window.matchMedia(desktopMediaQuery);
+  mediaQuery.addEventListener("change", listener);
+  return () => mediaQuery.removeEventListener("change", listener);
+}
+
+function getDesktopLayoutSnapshot(): boolean {
+  return window.matchMedia(desktopMediaQuery).matches;
+}
+
+function getServerDesktopLayoutSnapshot(): boolean {
+  // The server renders the desktop detail once for useful no-JS HTML. Mobile
+  // clients swap to the inline detail surface immediately after hydration.
+  return true;
+}
+
+export function PinHubApp({
+  catalog,
+  initialBoard,
+  sourceCount,
+}: PinHubAppProps) {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] =
     useState<BoardCategory | typeof allCategory>(allCategory);
   const [activeInterface, setActiveInterface] =
     useState<BoardInterface | typeof allInterface>(allInterface);
-  const [selectedId, setSelectedId] = useState(boards[0]?.id ?? "");
+  const [selectedId, setSelectedId] = useState(initialBoard.id);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [visibleLimit, setVisibleLimit] = useState(initialResultLimit);
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const [detailRetry, setDetailRetry] = useState(0);
+  const [detailState, setDetailState] = useState<DetailState>({
+    status: "ready",
+    board: initialBoard,
+  });
   // On phones the filter sidebar is collapsed into a toggle so the catalog
   // stays first; on lg+ it is always shown as a sticky column.
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const favorites = useSyncExternalStore(
+  const storedFavorites = useSyncExternalStore(
     subscribeToFavorites,
     getFavoritesSnapshot,
     getServerFavoritesSnapshot,
   );
+  const isDesktop = useSyncExternalStore(
+    subscribeToDesktopLayout,
+    getDesktopLayoutSnapshot,
+    getServerDesktopLayoutSnapshot,
+  );
   const searchRef = useRef<HTMLInputElement>(null);
-  const detailRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
+  const [detailLoader] = useState(() =>
+    createBoardDetailLoader([initialBoard]),
+  );
+
+  const catalogIds = useMemo(
+    () => new Set(catalog.map((board) => board.id)),
+    [catalog],
+  );
+  const favorites = useMemo(
+    () =>
+      new Set(
+        [...storedFavorites].filter((boardId) => catalogIds.has(boardId)),
+      ),
+    [catalogIds, storedFavorites],
+  );
+  const boardSearchEntries = useMemo(
+    () => createBoardSearchEntries(catalog),
+    [catalog],
+  );
+  const categoryItems = useMemo(
+    () => [allCategory, ...new Set(catalog.map((board) => board.category))],
+    [catalog],
+  );
+  const interfaceItems = useMemo(
+    () => [allInterface, ...new Set(catalog.flatMap((board) => board.interfaces))],
+    [catalog],
+  );
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>([[allCategory, catalog.length]]);
+    for (const board of catalog) {
+      counts.set(board.category, (counts.get(board.category) ?? 0) + 1);
+    }
+    return counts;
+  }, [catalog]);
+  const interfaceCount = interfaceItems.length - 1;
 
   const filteredBoards = useMemo(() => {
     const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -239,12 +305,32 @@ export function PinHubApp() {
       scored.sort((a, b) => b.score - a.score);
     }
     return scored.map(({ entry }) => entry.board);
-  }, [activeCategory, activeInterface, query, favorites, showFavoritesOnly]);
+  }, [
+    activeCategory,
+    activeInterface,
+    boardSearchEntries,
+    query,
+    favorites,
+    showFavoritesOnly,
+  ]);
 
   const selectedBoard =
     filteredBoards.find((board) => board.id === selectedId) ??
     filteredBoards[0] ??
-    boards[0];
+    catalog[0];
+  const visibleBoards = filteredBoards.slice(0, visibleLimit);
+
+  const loadBoardDetail = detailLoader.load;
+
+  const prefetchBoard = useCallback(
+    (id: string) => {
+      void loadBoardDetail(id).catch(() => {
+        // Hover/focus prefetching is opportunistic; selection exposes a retry
+        // state if the endpoint is genuinely unavailable.
+      });
+    },
+    [loadBoardDetail],
+  );
 
   const hasActiveFilters =
     query.trim().length > 0 ||
@@ -257,6 +343,47 @@ export function PinHubApp() {
   const activeFilterCount =
     (activeCategory !== allCategory ? 1 : 0) +
     (activeInterface !== allInterface ? 1 : 0);
+
+  useEffect(() => {
+    if (!selectedBoard || (!isDesktop && !mobileDetailOpen)) return;
+    let current = true;
+    void loadBoardDetail(selectedBoard.id)
+      .then((board) => {
+        if (current) setDetailState({ status: "ready", board });
+      })
+      .catch(() => {
+        if (current) {
+          setDetailState({
+            status: "error",
+            board: null,
+            id: selectedBoard.id,
+          });
+        }
+      });
+
+    return () => {
+      current = false;
+    };
+  }, [
+    detailRetry,
+    isDesktop,
+    loadBoardDetail,
+    mobileDetailOpen,
+    selectedBoard,
+  ]);
+
+  useEffect(() => {
+    if (isDesktop || !mobileDetailOpen || !selectedBoard) return;
+    const frame = window.requestAnimationFrame(() => {
+      const detail = document.getElementById("mobile-board-detail");
+      detail?.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "start",
+      });
+      detail?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [isDesktop, mobileDetailOpen, selectedBoard]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -282,21 +409,35 @@ export function PinHubApp() {
     setActiveCategory(allCategory);
     setActiveInterface(allInterface);
     setShowFavoritesOnly(false);
+    setSelectedId("");
+    setVisibleLimit(initialResultLimit);
+    setMobileDetailOpen(false);
+  }
+
+  function changeQuery(nextQuery: string) {
+    setQuery(nextQuery);
+    setSelectedId("");
+    setVisibleLimit(initialResultLimit);
+    setMobileDetailOpen(false);
   }
 
   // Stable identity so the memoized result rows don't re-render when only the
   // query or an unrelated row's state changes.
   const selectBoard = useCallback((id: string) => {
     setSelectedId(id);
-    // On single-column layouts the detail panel sits below the result list,
-    // so bring it into view when a board is picked.
     if (window.matchMedia("(max-width: 1023px)").matches) {
-      detailRef.current?.scrollIntoView({
-        behavior: scrollBehavior(),
-        block: "start",
-      });
+      setMobileDetailOpen(true);
     }
   }, []);
+
+  const retryBoardDetail = useCallback(() => {
+    setDetailState({
+      status: "loading",
+      board: null,
+      id: selectedBoard.id,
+    });
+    setDetailRetry((value) => value + 1);
+  }, [selectedBoard.id]);
 
   return (
     <main className="relative min-h-screen">
@@ -335,7 +476,7 @@ export function PinHubApp() {
 
           <div className="flex shrink-0 items-center gap-3 sm:gap-5">
             <dl className="hidden items-center gap-5 text-sm sm:flex">
-              <Metric label="Boards" value={boards.length.toString()} />
+              <Metric label="Boards" value={catalog.length.toString()} />
               <Metric label="Interfaces" value={interfaceCount.toString()} />
               <Metric label="Sources" value={sourceCount.toString()} />
             </dl>
@@ -354,14 +495,14 @@ export function PinHubApp() {
             <input
               ref={searchRef}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => changeQuery(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === "Escape") {
-                  setQuery("");
+                  changeQuery("");
                   event.currentTarget.blur();
                 }
-                if (event.key === "Enter" && filteredBoards[0]) {
-                  selectBoard(filteredBoards[0].id);
+                if (event.key === "Enter" && selectedBoard) {
+                  selectBoard(selectedBoard.id);
                 }
                 // Arrow keys walk the selection through the current results
                 // without leaving the search field, so a lookup can stay
@@ -373,24 +514,28 @@ export function PinHubApp() {
                     (board) => board.id === selectedBoard.id,
                   );
                   const step = event.key === "ArrowDown" ? 1 : -1;
-                  const next =
-                    filteredBoards[
-                      Math.min(
-                        Math.max(index + step, 0),
-                        filteredBoards.length - 1,
-                      )
-                    ];
-                  if (next) setSelectedId(next.id);
+                  const nextIndex = Math.min(
+                    Math.max(index + step, 0),
+                    filteredBoards.length - 1,
+                  );
+                  const next = filteredBoards[nextIndex];
+                  if (next) {
+                    setSelectedId(next.id);
+                    if (nextIndex >= visibleLimit) {
+                      setVisibleLimit(nextIndex + 1);
+                    }
+                  }
                 }
               }}
               placeholder="Search boards, vendors, interfaces, warnings..."
               aria-label="Search boards"
+              aria-controls="board-results"
               className="h-10 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-16 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/40"
             />
             {query ? (
               <button
                 type="button"
-                onClick={() => setQuery("")}
+                onClick={() => changeQuery("")}
                 aria-label="Clear search"
                 className="absolute right-1.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded text-zinc-500 transition hover:text-white"
               >
@@ -435,11 +580,18 @@ export function PinHubApp() {
               role="status"
               aria-live="polite"
             >
-              {filteredBoards.length} of {boards.length} boards
+              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
+              {hasActiveFilters ? "matches" : "boards"}
+              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
             </span>
             <button
               type="button"
-              onClick={() => setShowFavoritesOnly((value) => !value)}
+              onClick={() => {
+                setShowFavoritesOnly((value) => !value);
+                setSelectedId("");
+                setVisibleLimit(initialResultLimit);
+                setMobileDetailOpen(false);
+              }}
               aria-pressed={showFavoritesOnly}
               className={clsx(
                 "fav-button ml-1.5 inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-transparent px-3.5 py-1.5 text-xs font-semibold leading-none",
@@ -474,13 +626,23 @@ export function PinHubApp() {
             {activeCategory !== allCategory ? (
               <ActiveFilterChip
                 label={activeCategory}
-                onClear={() => setActiveCategory(allCategory)}
+                onClear={() => {
+                  setActiveCategory(allCategory);
+                  setSelectedId("");
+                  setVisibleLimit(initialResultLimit);
+                  setMobileDetailOpen(false);
+                }}
               />
             ) : null}
             {activeInterface !== allInterface ? (
               <ActiveFilterChip
                 label={activeInterface}
-                onClear={() => setActiveInterface(allInterface)}
+                onClear={() => {
+                  setActiveInterface(allInterface);
+                  setSelectedId("");
+                  setVisibleLimit(initialResultLimit);
+                  setMobileDetailOpen(false);
+                }}
               />
             ) : null}
             {hasActiveFilters ? (
@@ -509,11 +671,14 @@ export function PinHubApp() {
           <FilterPanel
             title="Category"
             icon={<Layers3 className="size-4 text-cyan-200" aria-hidden="true" />}
-            items={categories}
+            items={categoryItems}
             active={activeCategory}
             counts={categoryCounts}
             onChange={(value) => {
               setActiveCategory(value as BoardCategory | typeof allCategory);
+              setSelectedId("");
+              setVisibleLimit(initialResultLimit);
+              setMobileDetailOpen(false);
               setMobileFiltersOpen(false);
             }}
           />
@@ -525,10 +690,13 @@ export function PinHubApp() {
                 aria-hidden="true"
               />
             }
-            items={interfaceFilters}
+            items={interfaceItems}
             active={activeInterface}
             onChange={(value) => {
               setActiveInterface(value as BoardInterface | typeof allInterface);
+              setSelectedId("");
+              setVisibleLimit(initialResultLimit);
+              setMobileDetailOpen(false);
               setMobileFiltersOpen(false);
             }}
           />
@@ -545,19 +713,79 @@ export function PinHubApp() {
           </section>
         </aside>
 
-        <section ref={resultsRef} className="min-w-0 scroll-mt-32" aria-label="Board results">
+        <section
+          ref={resultsRef}
+          id="board-results"
+          className="min-w-0 scroll-mt-32"
+          aria-label="Board results"
+        >
           <div className="grid gap-2.5">
-            {filteredBoards.map((board) => (
-              <BoardResult
-                key={board.id}
-                board={board}
-                selected={board.id === selectedBoard.id}
-                favorite={favorites.has(board.id)}
-                onSelect={selectBoard}
-                onToggleFavorite={toggleFavoriteId}
-              />
+            {visibleBoards.map((board) => (
+              <Fragment key={board.id}>
+                <BoardResult
+                  board={board}
+                  selected={board.id === selectedBoard.id}
+                  favorite={favorites.has(board.id)}
+                  onSelect={selectBoard}
+                  onPrefetch={prefetchBoard}
+                  onToggleFavorite={toggleFavoriteId}
+                />
+                {!isDesktop &&
+                  mobileDetailOpen &&
+                  board.id === selectedBoard.id ? (
+                  <div
+                    id="mobile-board-detail"
+                    role="region"
+                    aria-label={`${board.name} details`}
+                    tabIndex={-1}
+                    className="scroll-mt-32 outline-none lg:hidden"
+                  >
+                    <BoardDetailPanel
+                      expectedBoard={board}
+                      detailState={detailState}
+                      onRetry={retryBoardDetail}
+                      onBackToResults={() => {
+                        setMobileDetailOpen(false);
+                        window.requestAnimationFrame(() => {
+                          document
+                            .getElementById(`board-result-${board.id}`)
+                            ?.scrollIntoView({
+                              behavior: scrollBehavior(),
+                              block: "center",
+                            });
+                          document
+                            .getElementById(`board-result-${board.id}`)
+                            ?.querySelector<HTMLButtonElement>(
+                              'button[aria-label^="Select"]',
+                            )
+                            ?.focus({ preventScroll: true });
+                        });
+                      }}
+                    />
+                  </div>
+                ) : null}
+              </Fragment>
             ))}
           </div>
+
+          {visibleBoards.length < filteredBoards.length ? (
+            <button
+              type="button"
+              onClick={() =>
+                setVisibleLimit((limit) =>
+                  Math.min(limit + resultPageSize, filteredBoards.length),
+                )
+              }
+              className="mt-3 flex min-h-10 w-full items-center justify-center rounded-lg border border-white/10 bg-[#14161d] px-4 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/40 hover:bg-[#191c24] hover:text-white"
+            >
+              Show{" "}
+              {Math.min(
+                resultPageSize,
+                filteredBoards.length - visibleBoards.length,
+              )}{" "}
+              more
+            </button>
+          ) : null}
 
           {filteredBoards.length === 0 ? (
             <div className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-8 text-center">
@@ -582,10 +810,12 @@ export function PinHubApp() {
           ) : null}
         </section>
 
-        {filteredBoards.length > 0 ? (
-          <div ref={detailRef} className="min-w-0 scroll-mt-32">
-            <BoardDetail
-              board={selectedBoard}
+        {filteredBoards.length > 0 && isDesktop ? (
+          <div className="min-w-0 scroll-mt-32">
+            <BoardDetailPanel
+              expectedBoard={selectedBoard}
+              detailState={detailState}
+              onRetry={retryBoardDetail}
               onBackToResults={() =>
                 resultsRef.current?.scrollIntoView({
                   behavior: scrollBehavior(),
@@ -604,7 +834,7 @@ export function PinHubApp() {
             wiring.
           </span>
           <span className="font-mono">
-            {boards.length} boards · {sourceCount} source links
+            {catalog.length} boards · {sourceCount} source links
           </span>
         </div>
       </footer>
@@ -736,10 +966,11 @@ function FilterPanel({
 }
 
 type BoardResultProps = {
-  board: Board;
+  board: BoardSummary;
   selected: boolean;
   favorite: boolean;
   onSelect: (id: string) => void;
+  onPrefetch: (id: string) => void;
   onToggleFavorite: (id: string) => void;
 };
 
@@ -752,12 +983,14 @@ const BoardResult = memo(function BoardResult({
   selected,
   favorite,
   onSelect,
+  onPrefetch,
   onToggleFavorite,
 }: BoardResultProps) {
   return (
     <article
+      id={`board-result-${board.id}`}
       className={clsx(
-        "relative rounded-lg border-y border-r border-l-2 [contain-intrinsic-size:auto_9rem] [content-visibility:auto] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
+        "relative rounded-lg border-y border-r border-l-2 [contain-intrinsic-block-size:9rem] [content-visibility:auto] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
         selected
           ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-[#0e1c23] shadow-[0_0_0_1px_rgba(34,211,238,0.14),0_12px_34px_-14px_rgba(34,211,238,0.32)]"
           : "border-y-white/10 border-r-white/10 border-l-white/15 bg-[#14161d] hover:border-y-white/20 hover:border-r-white/20 hover:border-l-white/30 hover:bg-[#191c24]",
@@ -766,35 +999,37 @@ const BoardResult = memo(function BoardResult({
       <button
         type="button"
         onClick={() => onSelect(board.id)}
+        onPointerEnter={() => onPrefetch(board.id)}
+        onFocus={() => onPrefetch(board.id)}
         aria-label={`Select ${board.name}`}
         aria-pressed={selected}
         className="absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
       />
       <div className="pointer-events-none relative z-10 p-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pr-10">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <VendorLogo vendor={board.vendor} />
             <h2 className="text-base font-semibold text-white">{board.name}</h2>
             <span className="rounded border border-white/10 bg-[#0a0c11] px-1.5 py-0.5 text-[11px] text-zinc-300">
               {board.category}
             </span>
-            {board.pinout ? (
+            {board.hasPinout ? (
               <span className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[11px] text-emerald-100">
                 <CircuitBoard className="size-3" aria-hidden="true" />
                 Pin map
               </span>
             ) : null}
-            {board.warnings.length > 0 ? (
+            {board.warningCount > 0 ? (
               <span
                 className="flex items-center gap-1 rounded border border-orange-300/40 bg-orange-400/10 px-1.5 py-0.5 text-[11px] text-orange-100"
-                title={`${board.warnings.length} wiring caution${board.warnings.length === 1 ? "" : "s"} — see “Check before wiring”`}
+                title={`${board.warningCount} wiring caution${board.warningCount === 1 ? "" : "s"} — see “Check before wiring”`}
               >
                 <ShieldAlert className="size-3" aria-hidden="true" />
-                {board.warnings.length}
+                {board.warningCount}
               </span>
             ) : null}
           </div>
-          <span className="min-w-0 break-words pr-9 font-mono text-xs text-zinc-500 sm:text-right">
+          <span className="min-w-0 break-words font-mono text-xs text-zinc-500 sm:text-right">
             {board.vendor} · {board.logicLevel}
           </span>
         </div>
@@ -848,26 +1083,95 @@ type BoardDetailProps = {
   onBackToResults: () => void;
 };
 
-// The one link a user should open before touching wires: prefer the official
-// pinout reference, then progressively more general documents.
-const verifySourcePriority: SourceLink["type"][] = [
-  "Pinout",
-  "Datasheet",
-  "Schematic",
-  "Manual",
-  "Docs",
-];
+type BoardDetailPanelProps = {
+  expectedBoard: BoardSummary;
+  detailState: DetailState;
+  onRetry: () => void;
+  onBackToResults: () => void;
+};
 
-function verifySourceFor(board: Board): SourceLink | undefined {
-  for (const type of verifySourcePriority) {
-    const source = board.sourceLinks.find((link) => link.type === type);
-    if (source) return source;
-  }
-  return board.sourceLinks[0];
+function BoardDetailPanel({
+  expectedBoard,
+  detailState,
+  onRetry,
+  onBackToResults,
+}: BoardDetailPanelProps) {
+  const board =
+    detailState.status === "ready" &&
+    detailState.board.id === expectedBoard.id
+      ? detailState.board
+      : null;
+  const failed =
+    detailState.status === "error" && detailState.id === expectedBoard.id;
+
+  return (
+    <>
+      <span className="sr-only" role="status" aria-live="polite">
+        {board
+          ? `${expectedBoard.name} details loaded.`
+          : failed
+            ? `${expectedBoard.name} details could not be loaded.`
+            : `Loading ${expectedBoard.name} details.`}
+      </span>
+      {board ? (
+        <BoardDetail board={board} onBackToResults={onBackToResults} />
+      ) : (
+        <aside
+          className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:self-start"
+          aria-busy={!failed}
+        >
+          <button
+            type="button"
+            onClick={onBackToResults}
+            className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white lg:hidden"
+          >
+            <ArrowUp className="size-4" aria-hidden="true" />
+            Back to results
+          </button>
+          <section className="surface-panel rounded-lg p-5">
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
+                {failed ? (
+                  <ShieldAlert className="size-5" aria-hidden="true" />
+                ) : (
+                  <LoaderCircle
+                    className="size-5 motion-safe:animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
+              <div className="min-w-0">
+                <div className="truncate font-semibold text-white">
+                  {expectedBoard.name}
+                </div>
+                <p className="mt-1 text-sm text-zinc-400">
+                  {failed
+                    ? "The board details could not be loaded."
+                    : "Loading source-backed pin data…"}
+                </p>
+              </div>
+            </div>
+            {failed ? (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="mt-4 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-3 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-300/20"
+              >
+                Try again
+              </button>
+            ) : null}
+          </section>
+        </aside>
+      )}
+    </>
+  );
 }
 
 function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
-  const verifySource = verifySourceFor(board);
+  const verifySource = verificationSourceFor(board);
+  const verifySourceOfficial = verifySource
+    ? classifySource(board.vendor, verifySource.url) === "official"
+    : false;
   return (
     <aside className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
       {/* Stacked-layout escape hatch: the detail panel sits below the result
@@ -923,6 +1227,16 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
               Verify before wiring:{" "}
               <span className="font-medium">{verifySource.label}</span>
             </span>
+            <span
+              className={clsx(
+                "shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium",
+                verifySourceOfficial
+                  ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-100"
+                  : "border-white/15 bg-white/[0.05] text-zinc-300",
+              )}
+            >
+              {verifySourceOfficial ? "Official" : "3rd-party"}
+            </span>
           </span>
           <ArrowUpRight
             className="size-4 shrink-0 text-orange-200/60 transition group-hover:text-orange-100"
@@ -976,7 +1290,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
                   {official ? (
                     <span
                       className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-100"
-                      title={`Published by ${board.vendor}`}
+                      title="Official board-vendor or primary-component documentation"
                     >
                       <BadgeCheck className="size-3" aria-hidden="true" />
                       Official
