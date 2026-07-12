@@ -1,0 +1,44 @@
+name: CLI CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cli/**"
+      - ".github/workflows/cli-ci.yml"
+  pull_request:
+    paths:
+      - "cli/**"
+      - ".github/workflows/cli-ci.yml"
+
+defaults:
+  run:
+    working-directory: cli
+
+jobs:
+  test:
+    name: node ${{ matrix.node }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [20, 22]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: cli/package-lock.json
+      - run: npm ci
+      - name: Check generated board data is in sync with the website catalog
+        run: |
+          npm run generate:boards
+          git diff --exit-code src/boards/generated.ts
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npm run package:check
+      - name: Smoke-test the built CLI
+        run: node dist/cli.js rpi5 --ascii --no-color

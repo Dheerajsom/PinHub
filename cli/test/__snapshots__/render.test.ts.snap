@@ -1,0 +1,75 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rendering > matches the Raspberry Pi 5 ASCII snapshot 1`] = `
+"Raspberry Pi 5 — Raspberry Pi
+Source: Raspberry Pi GPIO documentation (official) — see ph raspberry-pi-5 --source
+i The J8 40-pin header layout shown here is shared by all modern 40-pin Raspberry Pi models.
+! GPIO uses 3.3 V logic. Do not apply 5 V to any GPIO pin.
+! Physical pins 27 and 28 (GPIO0/GPIO1, ID_SD/ID_SC) are reserved for the HAT ID EEPROM; avoid
+  general-purpose use.
+i Pin numbers are the physical J8 header numbers; GPIO numbers are BCM numbering.
+
+40-pin GPIO header (J8)
+  Viewed from above with pin 1 at the top-left of the header.
+  +--------------------+----+----+-------------------+
+  | 3V3                |  1 |  2 | 5V                |
+  | GPIO2 / SDA1       |  3 |  4 | 5V                |
+  | GPIO3 / SCL1       |  5 |  6 | GND               |
+  | GPIO4 / GPCLK0     |  7 |  8 | GPIO14 / TXD0     |
+  | GND                |  9 | 10 | GPIO15 / RXD0     |
+  | GPIO17             | 11 | 12 | GPIO18 / PWM0     |
+  | GPIO27             | 13 | 14 | GND               |
+  | GPIO22             | 15 | 16 | GPIO23            |
+  | 3V3                | 17 | 18 | GPIO24            |
+  | GPIO10 / SPI0 MOSI | 19 | 20 | GND               |
+  | GPIO9 / SPI0 MISO  | 21 | 22 | GPIO25            |
+  | GPIO11 / SPI0 SCLK | 23 | 24 | GPIO8 / SPI0 CE0  |
+  | GND                | 25 | 26 | GPIO7 / SPI0 CE1  |
+  | GPIO0 / ID_SD *    | 27 | 28 | GPIO1 / ID_SC *   |
+  | GPIO5              | 29 | 30 | GND               |
+  | GPIO6              | 31 | 32 | GPIO12 / PWM0     |
+  | GPIO13 / PWM1      | 33 | 34 | GND               |
+  | GPIO19 / PCM_FS    | 35 | 36 | GPIO16            |
+  | GPIO26             | 37 | 38 | GPIO20 / PCM_DIN  |
+  | GND                | 39 | 40 | GPIO21 / PCM_DOUT |
+  +--------------------+----+----+-------------------+
+* reserved / control pin — see warnings above
+"
+`;
+
+exports[`rendering > matches the Raspberry Pi 5 output snapshot 1`] = `
+"Raspberry Pi 5 — Raspberry Pi
+Source: Raspberry Pi GPIO documentation (official) — see ph raspberry-pi-5 --source
+ℹ The J8 40-pin header layout shown here is shared by all modern 40-pin Raspberry Pi models.
+⚠ GPIO uses 3.3 V logic. Do not apply 5 V to any GPIO pin.
+⚠ Physical pins 27 and 28 (GPIO0/GPIO1, ID_SD/ID_SC) are reserved for the HAT ID EEPROM; avoid
+  general-purpose use.
+ℹ Pin numbers are the physical J8 header numbers; GPIO numbers are BCM numbering.
+
+40-pin GPIO header (J8)
+  Viewed from above with pin 1 at the top-left of the header.
+  ┌────────────────────┬────┬────┬───────────────────┐
+  │ 3V3                │  1 │  2 │ 5V                │
+  │ GPIO2 / SDA1       │  3 │  4 │ 5V                │
+  │ GPIO3 / SCL1       │  5 │  6 │ GND               │
+  │ GPIO4 / GPCLK0     │  7 │  8 │ GPIO14 / TXD0     │
+  │ GND                │  9 │ 10 │ GPIO15 / RXD0     │
+  │ GPIO17             │ 11 │ 12 │ GPIO18 / PWM0     │
+  │ GPIO27             │ 13 │ 14 │ GND               │
+  │ GPIO22             │ 15 │ 16 │ GPIO23            │
+  │ 3V3                │ 17 │ 18 │ GPIO24            │
+  │ GPIO10 / SPI0 MOSI │ 19 │ 20 │ GND               │
+  │ GPIO9 / SPI0 MISO  │ 21 │ 22 │ GPIO25            │
+  │ GPIO11 / SPI0 SCLK │ 23 │ 24 │ GPIO8 / SPI0 CE0  │
+  │ GND                │ 25 │ 26 │ GPIO7 / SPI0 CE1  │
+  │ GPIO0 / ID_SD *    │ 27 │ 28 │ GPIO1 / ID_SC *   │
+  │ GPIO5              │ 29 │ 30 │ GND               │
+  │ GPIO6              │ 31 │ 32 │ GPIO12 / PWM0     │
+  │ GPIO13 / PWM1      │ 33 │ 34 │ GND               │
+  │ GPIO19 / PCM_FS    │ 35 │ 36 │ GPIO16            │
+  │ GPIO26             │ 37 │ 38 │ GPIO20 / PCM_DIN  │
+  │ GND                │ 39 │ 40 │ GPIO21 / PCM_DOUT │
+  └────────────────────┴────┴────┴───────────────────┘
+* reserved / control pin — see warnings above
+"
+`;

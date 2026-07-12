@@ -24,6 +24,18 @@ npm install
 npm run dev
 ```
 
+## Command-Line Interface
+
+PinHub is also available as the cross-platform `ph` terminal command:
+
+```bash
+npm install -g @dheerajsom/pinhub
+ph rpi5
+```
+
+See the [CLI guide](cli/CLI.md) for commands, output options, board aliases,
+development, and release instructions.
+
 ## Validation
 
 ```bash
