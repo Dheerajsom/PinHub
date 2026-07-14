@@ -1,6 +1,6 @@
 {
   "name": "@dheerajsom/pinhub",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Hardware board pinout diagrams in your terminal. `ph rpi5` and go.",
   "keywords": [
     "pinout",
@@ -34,6 +34,7 @@
   },
   "files": [
     "dist",
+    "README.md",
     "CLI.md",
     "SETUP.md"
   ],
