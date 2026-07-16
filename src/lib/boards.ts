@@ -9590,11 +9590,443 @@ const coralDevBoardPinout: Pinout = {
   },
 };
 
+type SequentialPinDefinition = readonly [
+  label: string,
+  role: PinRole,
+  aliases?: readonly string[],
+  note?: string,
+];
+
+function sequentialPins(definitions: readonly SequentialPinDefinition[]): Pin[] {
+  return definitions.map(([label, role, aliases, note], index) => ({
+    position: index + 1,
+    label,
+    role,
+    ...(aliases ? { aliases: [...aliases] } : {}),
+    ...(note ? { note } : {}),
+  }));
+}
+
+// FRDM-KL25Z Rev. E connector map. The official quick-reference card is the
+// authority for physical placement. NXP support independently corrected the
+// older Rev. 1.0 spreadsheet: J2-18 is PTE0 and J2-20 is PTE1.
+const frdmKl25zPinout: Pinout = {
+  connector: "J1, J2, J9, and J10 I/O headers (Rev. E)",
+  layout: "grouped",
+  notes: [
+    "Header positions are shown in ascending designator order; view the board from the component side with the USB connectors at the bottom.",
+    "The even-numbered outer rows implement the Arduino R3 shield footprint; the odd-numbered inner rows expose additional KL25Z signals.",
+    "All MCU I/O is 3.3 V and is not 5 V tolerant. VIN on J9-16 accepts 4.3-9 V; the 3.3 V pins accept only a regulated 1.71-3.6 V source.",
+    "J2-18 = PTE0/SDA and J2-20 = PTE1/SCL follows NXP's corrected mapping, not the swapped assignments in the older pinout spreadsheet.",
+  ],
+  groups: [
+    {
+      label: "J1 I/O header (2x8)",
+      pins: sequentialPins([
+        ["PTC7", "spi", ["SPI0_MISO", "SPI0_MOSI", "CMP0_IN1"]],
+        ["PTA1", "uart", ["D0", "UART0_RX", "FTM2_CH0"]],
+        ["PTC0", "adc", ["ADC0_SE14", "TSI0_CH13"]],
+        ["PTA2", "uart", ["D1", "UART0_TX", "FTM2_CH1"]],
+        ["PTC3", "uart", ["UART1_RX", "FTM0_CH2", "CLKOUT"]],
+        ["PTD4", "gpio", ["D2", "SPI1_PCS0", "UART2_RX", "FTM0_CH4"]],
+        ["PTC4", "spi", ["SPI0_PCS0", "UART1_TX", "FTM0_CH3"]],
+        ["PTA12", "pwm", ["D3", "FTM1_CH0"]],
+        ["PTC5", "spi", ["SPI0_SCK", "LPTMR0_ALT2", "CMP0_OUT"]],
+        [
+          "PTA4",
+          "gpio",
+          ["D4", "I2C1_SDA", "FTM0_CH1", "NMI_b"],
+          "NMI_b is the reset-state function; configure the pin mux before using it as ordinary GPIO.",
+        ],
+        ["PTC6", "spi", ["SPI0_MOSI", "SPI0_MISO", "CMP0_IN0"]],
+        ["PTA5", "pwm", ["D5", "FTM0_CH2"]],
+        ["PTC10", "i2c", ["I2C1_SCL"]],
+        ["PTC8", "pwm", ["D6", "I2C0_SCL", "FTM0_CH4", "CMP0_IN2"]],
+        ["PTC11", "i2c", ["I2C1_SDA"]],
+        ["PTC9", "pwm", ["D7", "I2C0_SDA", "FTM0_CH5", "CMP0_IN3"]],
+      ]),
+    },
+    {
+      label: "J2 I/O header (2x10)",
+      pins: sequentialPins([
+        ["PTC12", "gpio", ["FTM_CLKIN0"]],
+        ["PTA13", "pwm", ["D8", "FTM1_CH1"]],
+        ["PTC13", "gpio", ["FTM_CLKIN1"]],
+        ["PTD5", "pwm", ["D9", "FTM0_CH5", "SPI1_SCK", "UART2_TX", "ADC0_SE6b"]],
+        ["PTC16", "gpio"],
+        ["PTD0", "spi", ["D10", "SPI0_PCS0", "FTM0_CH0"]],
+        ["PTC17", "gpio"],
+        ["PTD2", "spi", ["D11", "SPI0_MOSI", "UART2_RX", "FTM0_CH2"]],
+        ["PTA16", "spi", ["SPI0_MOSI", "SPI0_MISO"]],
+        ["PTD3", "spi", ["D12", "SPI0_MISO", "UART2_TX", "FTM0_CH3"]],
+        ["PTA17", "spi", ["SPI0_MISO", "SPI0_MOSI"]],
+        [
+          "PTD1",
+          "spi",
+          ["D13", "SPI0_SCK", "ADC0_SE5b", "FTM0_CH1"],
+          "Also drives the onboard blue RGB LED cathode; LED loading affects this header signal.",
+        ],
+        ["PTE31", "pwm", ["FTM0_CH4"]],
+        ["GND", "ground"],
+        ["NC", "reserved", undefined, "No connection."],
+        [
+          "VREFH",
+          "power",
+          ["AREF"],
+          "VREFH is tied to 3.3 V by default. Supplying external AREF requires the Rev. E resistor/jumper modification documented by NXP.",
+        ],
+        ["PTD6", "adc", ["ADC0_SE7b", "SPI1_MOSI", "UART0_RX"]],
+        ["PTE0", "i2c", ["D14", "SDA", "I2C1_SDA", "UART1_TX"], "Corrected NXP mapping: J2-18 is PTE0."],
+        ["PTD7", "gpio", ["SPI1_MISO", "UART0_TX"]],
+        ["PTE1", "i2c", ["D15", "SCL", "I2C1_SCL", "UART1_RX"], "Corrected NXP mapping: J2-20 is PTE1."],
+      ]),
+    },
+    {
+      label: "J9 I/O and power header (2x8)",
+      pins: sequentialPins([
+        ["PTB8", "gpio", ["EXTRG_IN"]],
+        ["SDA_PTD5", "reserved", ["RFU"], "Reserved in the Arduino R3 compatibility chart; do not use as ordinary I/O."],
+        ["PTB9", "gpio"],
+        ["P3V3", "power", ["IOREF"]],
+        ["PTB10", "spi", ["SPI1_PCS0"]],
+        ["RESET / PTA20", "system", ["RESET_b"]],
+        ["PTB11", "spi", ["SPI1_SCK"]],
+        ["P3V3", "power", ["3.3V"]],
+        ["PTE2", "spi", ["SPI1_SCK"]],
+        ["P5V_USB", "power", ["5V"]],
+        ["PTE3", "spi", ["SPI1_MISO", "SPI1_MOSI"]],
+        ["GND", "ground"],
+        ["PTE4", "spi", ["SPI1_PCS0"]],
+        ["GND", "ground"],
+        ["PTE5", "gpio"],
+        ["P5-9V_VIN", "power", ["VIN"], "Regulated board input; NXP specifies 4.3-9 V."],
+      ]),
+    },
+    {
+      label: "J10 analog and auxiliary header (2x6)",
+      pins: sequentialPins([
+        ["PTE20", "adc", ["ADC0_DP0", "ADC0_SE0", "FTM1_CH0", "UART0_TX"]],
+        ["PTB0", "adc", ["A0", "ADC0_SE8", "I2C0_SCL", "FTM1_CH0"]],
+        ["PTE21", "adc", ["ADC0_DM0", "ADC0_SE4a", "FTM1_CH1", "UART0_RX"]],
+        ["PTB1", "adc", ["A1", "ADC0_SE9", "I2C0_SDA", "FTM1_CH1"]],
+        ["PTE22", "adc", ["ADC0_DP3", "ADC0_SE3", "FTM2_CH0", "UART2_TX"]],
+        ["PTB2", "adc", ["A2", "ADC0_SE12", "I2C0_SCL", "FTM2_CH0"]],
+        ["PTE23", "adc", ["ADC0_DM3", "ADC0_SE7a", "FTM2_CH1", "UART2_RX"]],
+        ["PTB3", "adc", ["A3", "ADC0_SE13", "I2C0_SDA", "FTM2_CH1"]],
+        ["PTE29", "adc", ["ADC0_SE4b", "CMP0_IN5", "FTM0_CH2"]],
+        ["PTC2", "i2c", ["A4", "SDA", "I2C1_SDA", "ADC0_SE11", "FTM0_CH1"]],
+        ["PTE30", "dac", ["DAC0_OUT", "ADC0_SE23", "CMP0_IN4", "FTM0_CH3"]],
+        ["PTC1", "i2c", ["A5", "SCL", "I2C1_SCL", "ADC0_SE15", "FTM0_CH0"]],
+      ]),
+    },
+  ],
+};
+
+function nexysPmodPins(label: string, packagePins: readonly string[]): Pin[] {
+  const signalPositions = [1, 2, 3, 4, 7, 8, 9, 10] as const;
+  return [
+    ...signalPositions.slice(0, 4).map((position, index) => ({
+      position,
+      label: `${label}${position}`,
+      role: "gpio" as const,
+      aliases: [`FPGA ${packagePins[index]}`],
+    })),
+    { position: 5, label: "GND", role: "ground" as const },
+    { position: 6, label: "3V3", role: "power" as const },
+    ...signalPositions.slice(4).map((position, index) => ({
+      position,
+      label: `${label}${position}`,
+      role: "gpio" as const,
+      aliases: [`FPGA ${packagePins[index + 4]}`],
+    })),
+    { position: 11, label: "GND", role: "ground" as const },
+    { position: 12, label: "3V3", role: "power" as const },
+  ];
+}
+
+const nexysA7PmodPinout: Pinout = {
+  connector: "JA, JB, JC, JD, and JXADC 2x6 Pmod ports",
+  layout: "grouped",
+  notes: [
+    "Positions follow the front view of each right-angle connector as loaded on the PCB: signals 1-4 and 7-10, GND on 5/11, and 3.3 V on 6/12.",
+    "JA-JD are 3.3 V LVCMOS general-purpose Pmods. Their traces are not impedance-controlled or length-matched.",
+    "JXADC pairs positions 1/7, 2/8, 3/9, and 4/10 for XADC analog input; its coupled routing and partially loaded filters can limit digital speed.",
+    "Specialized USB, Ethernet, microSD, VGA, audio, JTAG, and programming connectors are intentionally excluded from this student-expansion map.",
+  ],
+  groups: [
+    { label: "Pmod JA", pins: nexysPmodPins("JA", ["C17", "D18", "E18", "G17", "D17", "E17", "F18", "G18"]) },
+    { label: "Pmod JB", pins: nexysPmodPins("JB", ["D14", "F16", "G16", "H14", "E16", "F13", "G13", "H16"]) },
+    { label: "Pmod JC", pins: nexysPmodPins("JC", ["K1", "F6", "J2", "G6", "E7", "J3", "J4", "E6"]) },
+    { label: "Pmod JD", pins: nexysPmodPins("JD", ["H4", "H1", "G1", "G3", "H2", "G4", "G2", "F3"]) },
+    {
+      label: "Pmod JXADC (dual analog/digital)",
+      pins: sequentialPins([
+        ["JXADC1", "adc", ["FPGA A13", "AD3P", "XA_P1"]],
+        ["JXADC2", "adc", ["FPGA A15", "AD10P", "XA_P2"]],
+        ["JXADC3", "adc", ["FPGA B16", "AD2P", "XA_P3"]],
+        ["JXADC4", "adc", ["FPGA B18", "AD11P", "XA_P4"]],
+        ["GND", "ground"],
+        ["3V3", "power"],
+        ["JXADC7", "adc", ["FPGA A14", "AD3N", "XA_N1"]],
+        ["JXADC8", "adc", ["FPGA A16", "AD10N", "XA_N2"]],
+        ["JXADC9", "adc", ["FPGA B17", "AD2N", "XA_N3"]],
+        ["JXADC10", "adc", ["FPGA A18", "AD11N", "XA_N4"]],
+        ["GND", "ground"],
+        ["3V3", "power"],
+      ]),
+    },
+  ],
+};
+
+const de10LiteJp1SignalPositions = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+  31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+] as const;
+
+const de10LiteJp1PackagePins = [
+  "V10", "W10", "V9", "W9", "V8", "W8", "V7", "W7", "W6", "V5",
+  "W5", "AA15", "AA14", "W13", "W12", "AB13", "AB12", "Y11", "AB11", "W11",
+  "AB10", "AA10", "AA9", "Y8", "AA8", "Y7", "AA7", "Y6", "AA6", "Y5",
+  "AA5", "Y4", "AB3", "Y3", "AB2", "AA2",
+] as const;
+
+const de10LiteJp1Pins: Pin[] = Array.from({ length: 40 }, (_, index) => {
+  const position = index + 1;
+  if (position === 11) return { position, label: "5V", role: "power" };
+  if (position === 12 || position === 30) return { position, label: "GND", role: "ground" };
+  if (position === 29) return { position, label: "3V3", role: "power" };
+  const signalIndex = de10LiteJp1SignalPositions.indexOf(
+    position as (typeof de10LiteJp1SignalPositions)[number],
+  );
+  return {
+    position,
+    label: `GPIO_${signalIndex}`,
+    role: "gpio",
+    aliases: [`PIN_${de10LiteJp1PackagePins[signalIndex]}`],
+  };
+});
+
+const de10LiteExpansionPinout: Pinout = {
+  connector: "JP1 GPIO and Arduino Uno R3 expansion headers",
+  layout: "grouped",
+  notes: [
+    "JP1 is a 2x20 header numbered odd on one row and even on the other, viewed from the component side. It exposes 36 direct 3.3 V LVTTL FPGA signals.",
+    "JP1 positions 11/29 provide 5 V/3.3 V and positions 12/30 are ground; the two rails can provide 5 W total according to the user manual.",
+    "Arduino digital signals are 3.3 V and are not 5 V tolerant. Only ADC_IN0-ADC_IN5 accept up to 5 V through the board's analog scaling front end.",
+    "JP7 position 8 occupies the Arduino VIN location but is tied to VCC5 through ferrite bead L15; treat it as a 5 V rail, not a 7-12 V VIN input.",
+    "VGA, USB-Blaster, SDRAM, accelerometer, and unpopulated ADC_IN6/ADC_IN7 test points are specialized onboard connections and are intentionally excluded.",
+  ],
+  groups: [
+    { label: "JP1 2x20 GPIO header", pins: de10LiteJp1Pins },
+    {
+      label: "JP3 Arduino digital D0-D7 (1x8)",
+      pins: sequentialPins([
+        ["D7", "gpio", ["Arduino_IO7", "FPGA PIN_AA12"]],
+        ["D6", "gpio", ["Arduino_IO6", "FPGA PIN_AA11"]],
+        ["D5", "gpio", ["Arduino_IO5", "FPGA PIN_Y10"]],
+        ["D4", "gpio", ["Arduino_IO4", "FPGA PIN_AB9"]],
+        ["D3", "gpio", ["Arduino_IO3", "FPGA PIN_AB8"]],
+        ["D2", "gpio", ["Arduino_IO2", "FPGA PIN_AB7"]],
+        ["D1 / TX", "uart", ["Arduino_IO1", "FPGA PIN_AB6"]],
+        ["D0 / RX", "uart", ["Arduino_IO0", "FPGA PIN_AB5"]],
+      ]),
+    },
+    {
+      label: "JP2 Arduino digital D8-D13 and R3 extension (1x10)",
+      pins: sequentialPins([
+        ["SCL", "i2c", ["Arduino_IO15", "FPGA PIN_AA20"]],
+        ["SDA", "i2c", ["Arduino_IO14", "FPGA PIN_AB21"]],
+        ["AREF", "power", undefined, "Analog reference position; do not use as a general-purpose digital signal."],
+        ["GND", "ground"],
+        ["D13 / SCK", "spi", ["Arduino_IO13", "FPGA PIN_AB20"]],
+        ["D12 / MISO", "spi", ["Arduino_IO12", "FPGA PIN_Y19"]],
+        ["D11 / MOSI", "spi", ["Arduino_IO11", "FPGA PIN_AA19"]],
+        ["D10 / SS", "spi", ["Arduino_IO10", "FPGA PIN_AB19"]],
+        ["D9", "gpio", ["Arduino_IO9", "FPGA PIN_AA17"]],
+        ["D8", "gpio", ["Arduino_IO8", "FPGA PIN_AB17"]],
+      ]),
+    },
+    {
+      label: "JP7 Arduino power (1x8)",
+      pins: sequentialPins([
+        ["NC", "reserved", undefined, "No connection."],
+        ["IOREF / 3V3", "power"],
+        ["RESET", "system", ["ARDUINO_RESET_N", "FPGA PIN_F16"]],
+        ["3V3", "power"],
+        ["5V", "power"],
+        ["GND", "ground"],
+        ["GND", "ground"],
+        ["VCC5", "power", ["VIN position"], "This is the Arduino VIN footprint position, but the DE10-Lite schematic ties it to the 5 V rail through L15."],
+      ]),
+    },
+    {
+      label: "JP8 Arduino analog inputs (1x6)",
+      pins: sequentialPins([
+        ["A0 / ADC_IN0", "adc", undefined, "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."],
+        ["A1 / ADC_IN1", "adc", undefined, "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."],
+        ["A2 / ADC_IN2", "adc", undefined, "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."],
+        ["A3 / ADC_IN3", "adc", undefined, "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."],
+        ["A4 / ADC_IN4", "adc", undefined, "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."],
+        ["A5 / ADC_IN5", "adc", undefined, "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."],
+      ]),
+    },
+  ],
+};
+
 // Boards heavily used in industry and university coursework, researched and
 // source-verified July 2026. Entries without an in-app pin map link the
 // official pin reference instead; per the content rules, maps are only
 // imported once the pin data can be verified against an authoritative source.
 const industryEducationBoards: Board[] = [
+  {
+    id: "nxp-frdm-kl25z",
+    name: "NXP FRDM-KL25Z Rev. E",
+    vendor: "NXP Semiconductors",
+    category: "Development Board",
+    family: "Freedom Development Platform",
+    processor: "MKL25Z128VLK4 Arm Cortex-M0+ @ 48 MHz, 128 KB flash",
+    logicLevel: "3.3 V GPIO (not 5 V tolerant)",
+    power: "OpenSDA USB, KL25Z USB, 4.3-9 V VIN, or regulated 1.71-3.6 V",
+    formFactor: "Arduino R3-compatible board with four dual-row I/O headers",
+    description:
+      "A Cortex-M0+ teaching platform used in embedded-systems and microprocessor laboratories, with onboard OpenSDA debugging, an accelerometer, capacitive touch, and a position-complete Rev. E expansion map.",
+    tags: ["NXP", "Kinetis", "KL25Z", "Cortex-M0+", "OpenSDA", "education"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "SWD"],
+    highlights: [
+      "OpenSDA supplies drag-and-drop programming, CMSIS-DAP debugging, and a virtual serial port.",
+      "Arduino R3-compatible outer rows plus inner rows expose 53 MCU I/O signals.",
+      "Onboard MMA8451Q accelerometer, RGB LED, and capacitive touch slider support self-contained labs.",
+      "Used as the target platform in university embedded-system architecture and optimization courses.",
+    ],
+    warnings: [
+      "All GPIO is 3.3 V and not 5 V tolerant; only J9-10 is a 5 V rail and J9-16 is the 4.3-9 V VIN input.",
+      "Older NXP pinout material swaps PTE0/PTE1. NXP's quick-reference card and support correction establish J2-18 = PTE0/SDA and J2-20 = PTE1/SCL.",
+      "PTD1 on J2-12/D13 also drives the onboard blue RGB LED, so the LED circuit loads that signal.",
+      "PTA4 on J1-10/D4 has NMI_b as its reset-state function; configure the port mux before treating it as GPIO.",
+      "This entry targets Rev. E. Rev. D has different power, OpenSDA isolation, USB-host, and VREFH circuitry even though the main I/O placement is similar.",
+    ],
+    sourceLinks: [
+      {
+        label: "FRDM-KL25Z quick-reference card and physical connector map (NXP)",
+        url: "https://www.nxp.com/docs/en/supporting-information/FRDM-KL25Z-Quick-Reference-Card.pdf",
+        type: "Pinout",
+      },
+      {
+        label: "FRDM-KL25Z user's manual Rev. 2 / board Rev. E (NXP)",
+        url: "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/kinetis/66328/1/FRDM-KL25Z%20User%27s%20Manual%20%28Rev%202%29.pdf",
+        type: "Manual",
+      },
+      {
+        label: "NXP support correction for J2 PTE0/PTE1 assignments",
+        url: "https://community.nxp.com/t5/Kinetis-Microcontrollers/Mismatch-of-KL25Z-pin-numbers-between-Pinout-and-User-Manual/m-p/1564605",
+        type: "Docs",
+      },
+      {
+        label: "NC State ECE 561 embedded-system course platform",
+        url: "https://engineeringonline.ncsu.edu/online-courses/spring-2023/ece-561-embedded-system-design/",
+        type: "Docs",
+      },
+    ],
+    pinout: frdmKl25zPinout,
+  },
+  {
+    id: "digilent-nexys-a7-100t",
+    name: "Digilent Nexys A7-100T",
+    vendor: "Digilent",
+    category: "Development Board",
+    family: "Nexys A7",
+    processor: "AMD/Xilinx Artix-7 XC7A100T-1CSG324C FPGA",
+    logicLevel: "3.3 V LVCMOS on Pmod ports (not 5 V tolerant)",
+    power: "USB or 4.5-5.5 V external supply; JP3 selects source",
+    formFactor: "FPGA trainer with five 2x6 Pmod expansion ports",
+    description:
+      "A feature-rich Artix-7 trainer used in digital-system design and computer-architecture laboratories, with five fully mapped Pmod ports, DDR2, Ethernet, USB HID, VGA, audio, and onboard I/O.",
+    tags: ["Digilent", "Nexys A7", "Artix-7", "FPGA", "Vivado", "Pmod", "education"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG", "Ethernet"],
+    highlights: [
+      "XC7A100T FPGA provides 101,440 logic cells and 4.86 Mbit of block RAM.",
+      "Four digital Pmods plus one dual analog/digital XADC Pmod expose 40 FPGA signals.",
+      "Onboard switches, buttons, LEDs, eight-digit display, VGA, audio, Ethernet, and USB HID support full lab sequences without extra hardware.",
+      "Digilent publishes an exact Nexys A7-100T master XDC file for reproducible package-pin constraints.",
+    ],
+    warnings: [
+      "All Pmod I/O is 3.3 V and not 5 V tolerant. Pmod VCC and GND pairs can deliver up to 1 A according to the reference manual.",
+      "JA-JD signals are not impedance-controlled or delay-matched; do not use them as arbitrary high-speed differential links.",
+      "JXADC uses coupled analog-pair routing and unpopulated anti-alias capacitors; its routing can limit digital signal speed.",
+      "This entry is for the Nexys A7-100T/XC7A100T SKU. The Nexys A7-50T uses a different FPGA package and a different master XDC.",
+      "JP3 must match the chosen USB or external power source; the external input is 4.5-5.5 V, not the 7-15 V range used by some other Digilent boards.",
+    ],
+    sourceLinks: [
+      {
+        label: "Nexys A7 reference manual and Pmod front-view table (Digilent)",
+        url: "https://digilent.com/reference/_media/reference/programmable-logic/nexys-a7/nexys-a7_rm.pdf",
+        type: "Manual",
+      },
+      {
+        label: "Nexys A7-100T master XDC package-pin constraints (Digilent)",
+        url: "https://github.com/Digilent/digilent-xdc/blob/master/Nexys-A7-100T-Master.xdc",
+        type: "Pinout",
+      },
+      {
+        label: "Auburn ELEC 4200 Nexys A7 laboratory materials",
+        url: "https://www.eng.auburn.edu/~uguin/teaching/E4200_Spring_2022/course.html",
+        type: "Docs",
+      },
+    ],
+    pinout: nexysA7PmodPinout,
+  },
+  {
+    id: "terasic-de10-lite",
+    name: "Terasic DE10-Lite",
+    vendor: "Terasic",
+    category: "Development Board",
+    family: "DE10",
+    processor: "Intel MAX 10 10M50DAF484C7G FPGA",
+    logicLevel: "3.3 V LVTTL digital I/O; Arduino analog inputs accept up to 5 V",
+    power: "5 V from USB or external power connector",
+    formFactor: "FPGA education board with JP1 2x20 and Arduino Uno R3 headers",
+    description:
+      "Intel's entry academic MAX 10 board, used across digital-logic and FPGA courses, with a complete 40-pin GPIO and Arduino R3 expansion map plus onboard SDRAM, VGA, ADC, accelerometer, switches, LEDs, and displays.",
+    tags: ["Terasic", "DE10-Lite", "Intel", "Altera", "MAX 10", "FPGA", "Quartus", "education"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG"],
+    highlights: [
+      "MAX 10 FPGA integrates 50K logic elements, flash configuration memory, and dual ADCs.",
+      "JP1 exposes 36 direct FPGA I/O signals plus 5 V, 3.3 V, and two grounds.",
+      "Arduino Uno R3 footprint exposes 16 digital signals, six conditioned analog inputs, reset, and power.",
+      "Six seven-segment displays, ten switches, ten LEDs, VGA, SDRAM, and an accelerometer support broad course labs.",
+    ],
+    warnings: [
+      "JP1 and Arduino digital pins are 3.3 V LVTTL and are not 5 V tolerant; the 5 V allowance applies only to ADC_IN0-ADC_IN5 through their analog front end.",
+      "JP7 position 8 is the Arduino VIN footprint position but is tied to VCC5 through L15. Do not apply a normal 7-12 V Arduino VIN supply there.",
+      "The 5 V and 3.3 V rails on JP1 share a 5 W total limit.",
+      "Use the 10M50DAF484C7G device selection and the documented package pins; similar DE-series boards and older MAX 10 part suffixes are not interchangeable.",
+      "Do not alter the onboard clock-generator configuration; the user manual warns that an incorrect setting prevents the system from operating.",
+    ],
+    sourceLinks: [
+      {
+        label: "DE10-Lite product resources and current manual (Terasic)",
+        url: "https://www.terasic.com.tw/cgi-bin/page/archive.pl?CategoryNo=234&Language=English&No=1021&PartNo=4",
+        type: "Docs",
+      },
+      {
+        label: "DE10-Lite user manual with JP1 and Arduino connector tables (Intel FPGA Academic Program)",
+        url: "https://ftp.intel.com/Public/Pub/fpgaup/pub/Intel_Material/Boards/DE10-Lite/DE10_Lite_User_Manual.pdf",
+        type: "Manual",
+      },
+      {
+        label: "Intel FPGA Academic Program DE10-Lite board specification",
+        url: "https://www.intel.com/content/www/us/en/developer/articles/technical/fpga-academic-boards.html",
+        type: "Docs",
+      },
+      {
+        label: "University of Colorado FPGA capstone using DE10-Lite",
+        url: "https://www.colorado.edu/ecee/academics/online-programs/ms-ee-coursera/curriculum/embedded-systems/ecea-5363-fpga-capstone",
+        type: "Docs",
+      },
+    ],
+    pinout: de10LiteExpansionPinout,
+  },
   {
     id: "stm32f4-discovery",
     name: "STM32F4 Discovery",
@@ -9887,6 +10319,22 @@ export const boards: Board[] = [
   ...latticeBoards,
   ...industryEducationBoards,
 ];
+
+// A handful of early grouped maps used Arduino-style zero-based labels as the
+// physical position. Normalize those legacy groups once at catalog assembly so
+// every public pinout obeys the schema's positive, one-based position rule.
+// Shared Pinout objects are mutated only once and retain reference identity.
+const normalizedLegacyPinouts = new Set<Pinout>();
+for (const board of boards) {
+  const pinout = board.pinout;
+  if (!pinout || normalizedLegacyPinouts.has(pinout)) continue;
+  normalizedLegacyPinouts.add(pinout);
+  for (const group of pinout.groups ?? []) {
+    if (group.pins.some((pin) => pin.position === 0)) {
+      for (const pin of group.pins) pin.position += 1;
+    }
+  }
+}
 
 export const categories = ["All", ...new Set(boards.map((board) => board.category))];
 

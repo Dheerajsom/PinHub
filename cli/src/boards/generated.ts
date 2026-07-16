@@ -1017,7 +1017,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -1026,7 +1026,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -1035,7 +1035,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -1044,7 +1044,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -1053,7 +1053,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -1062,7 +1062,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -1071,7 +1071,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -1080,7 +1080,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -1089,7 +1089,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -1098,7 +1098,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -1107,7 +1107,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -1116,7 +1116,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -1125,7 +1125,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -1134,7 +1134,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -2350,7 +2350,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -2359,7 +2359,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -2368,7 +2368,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -2377,7 +2377,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -2386,7 +2386,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -2395,7 +2395,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -2404,7 +2404,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -2413,7 +2413,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -2422,7 +2422,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -2431,7 +2431,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -2440,7 +2440,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -2449,7 +2449,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -2458,7 +2458,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -2467,7 +2467,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -2476,7 +2476,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -2485,7 +2485,7 @@ export const generatedBoards: Board[] = [
             "category": "ground"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -2494,7 +2494,7 @@ export const generatedBoards: Board[] = [
             "category": "power"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -2503,7 +2503,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -4320,7 +4320,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -4332,7 +4332,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -4344,7 +4344,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -4353,7 +4353,7 @@ export const generatedBoards: Board[] = [
             "category": "ground"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -6716,7 +6716,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -6725,7 +6725,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -6734,7 +6734,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -6743,7 +6743,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -6752,7 +6752,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -6761,7 +6761,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -6770,7 +6770,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -6779,7 +6779,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -6788,7 +6788,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -6797,7 +6797,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -6806,7 +6806,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -6815,7 +6815,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -6824,7 +6824,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -6833,7 +6833,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -6842,7 +6842,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -6851,7 +6851,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -6860,7 +6860,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -6869,7 +6869,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -6878,7 +6878,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 18,
+            "physical": 19,
             "position": {
               "row": 19,
               "column": 1
@@ -6887,7 +6887,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 19,
+            "physical": 20,
             "position": {
               "row": 20,
               "column": 1
@@ -6896,7 +6896,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 21,
               "column": 1
@@ -6905,7 +6905,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 22,
               "column": 1
@@ -6914,7 +6914,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 22,
+            "physical": 23,
             "position": {
               "row": 23,
               "column": 1
@@ -6923,7 +6923,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 23,
+            "physical": 24,
             "position": {
               "row": 24,
               "column": 1
@@ -6932,7 +6932,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 24,
+            "physical": 25,
             "position": {
               "row": 25,
               "column": 1
@@ -6941,7 +6941,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 25,
+            "physical": 26,
             "position": {
               "row": 26,
               "column": 1
@@ -6950,7 +6950,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 26,
+            "physical": 27,
             "position": {
               "row": 27,
               "column": 1
@@ -6959,7 +6959,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 27,
+            "physical": 28,
             "position": {
               "row": 28,
               "column": 1
@@ -6968,7 +6968,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 28,
+            "physical": 29,
             "position": {
               "row": 29,
               "column": 1
@@ -6977,7 +6977,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 29,
+            "physical": 30,
             "position": {
               "row": 30,
               "column": 1
@@ -6986,7 +6986,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 30,
+            "physical": 31,
             "position": {
               "row": 31,
               "column": 1
@@ -6995,7 +6995,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 31,
+            "physical": 32,
             "position": {
               "row": 32,
               "column": 1
@@ -7004,7 +7004,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 32,
+            "physical": 33,
             "position": {
               "row": 33,
               "column": 1
@@ -7013,7 +7013,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 33,
+            "physical": 34,
             "position": {
               "row": 34,
               "column": 1
@@ -7022,7 +7022,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 34,
+            "physical": 35,
             "position": {
               "row": 35,
               "column": 1
@@ -7031,7 +7031,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 35,
+            "physical": 36,
             "position": {
               "row": 36,
               "column": 1
@@ -7040,7 +7040,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 36,
+            "physical": 37,
             "position": {
               "row": 37,
               "column": 1
@@ -7049,7 +7049,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 37,
+            "physical": 38,
             "position": {
               "row": 38,
               "column": 1
@@ -7058,7 +7058,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 38,
+            "physical": 39,
             "position": {
               "row": 39,
               "column": 1
@@ -7067,7 +7067,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 39,
+            "physical": 40,
             "position": {
               "row": 40,
               "column": 1
@@ -7076,7 +7076,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 40,
+            "physical": 41,
             "position": {
               "row": 41,
               "column": 1
@@ -7085,7 +7085,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 41,
+            "physical": 42,
             "position": {
               "row": 42,
               "column": 1
@@ -7094,7 +7094,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 42,
+            "physical": 43,
             "position": {
               "row": 43,
               "column": 1
@@ -7103,7 +7103,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 43,
+            "physical": 44,
             "position": {
               "row": 44,
               "column": 1
@@ -7112,7 +7112,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 44,
+            "physical": 45,
             "position": {
               "row": 45,
               "column": 1
@@ -7121,7 +7121,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 45,
+            "physical": 46,
             "position": {
               "row": 46,
               "column": 1
@@ -7130,7 +7130,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 46,
+            "physical": 47,
             "position": {
               "row": 47,
               "column": 1
@@ -7139,7 +7139,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 47,
+            "physical": 48,
             "position": {
               "row": 48,
               "column": 1
@@ -7148,7 +7148,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 48,
+            "physical": 49,
             "position": {
               "row": 49,
               "column": 1
@@ -7157,7 +7157,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 49,
+            "physical": 50,
             "position": {
               "row": 50,
               "column": 1
@@ -7166,7 +7166,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 50,
+            "physical": 51,
             "position": {
               "row": 51,
               "column": 1
@@ -7175,7 +7175,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 51,
+            "physical": 52,
             "position": {
               "row": 52,
               "column": 1
@@ -7184,7 +7184,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 52,
+            "physical": 53,
             "position": {
               "row": 53,
               "column": 1
@@ -7193,7 +7193,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 53,
+            "physical": 54,
             "position": {
               "row": 54,
               "column": 1
@@ -10387,7 +10387,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -10403,7 +10403,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -10419,7 +10419,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -10435,7 +10435,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -10447,7 +10447,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -11632,7 +11632,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -11644,7 +11644,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -11656,7 +11656,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -11668,7 +11668,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -11680,7 +11680,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -11692,7 +11692,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -11704,7 +11704,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -11716,7 +11716,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -11728,7 +11728,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -11740,7 +11740,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -11752,7 +11752,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -11764,7 +11764,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -11776,7 +11776,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -11788,7 +11788,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -12117,7 +12117,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -12126,7 +12126,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -12135,7 +12135,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -12144,7 +12144,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -12153,7 +12153,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -12162,7 +12162,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 6,
               "column": 1
@@ -12171,7 +12171,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 7,
               "column": 1
@@ -12183,7 +12183,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 8,
               "column": 1
@@ -12192,7 +12192,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 9,
               "column": 1
@@ -12201,7 +12201,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 18,
+            "physical": 19,
             "position": {
               "row": 10,
               "column": 1
@@ -12210,7 +12210,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 19,
+            "physical": 20,
             "position": {
               "row": 11,
               "column": 1
@@ -12219,7 +12219,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 12,
               "column": 1
@@ -12228,7 +12228,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 13,
               "column": 1
@@ -12237,7 +12237,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 22,
+            "physical": 23,
             "position": {
               "row": 14,
               "column": 1
@@ -12256,7 +12256,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -12265,7 +12265,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -12274,7 +12274,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -12283,7 +12283,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -15396,7 +15396,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -15408,7 +15408,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -15420,7 +15420,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -15432,7 +15432,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -15444,7 +15444,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -15456,7 +15456,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -15468,7 +15468,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -15480,7 +15480,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -15492,7 +15492,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -15504,7 +15504,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -15516,7 +15516,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -15528,7 +15528,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -15540,7 +15540,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -15552,7 +15552,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -15564,7 +15564,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -15576,7 +15576,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -21351,7 +21351,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -21363,7 +21363,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -21375,7 +21375,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -21387,7 +21387,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -21399,7 +21399,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -21411,7 +21411,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -21423,7 +21423,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -21435,7 +21435,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -21447,7 +21447,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -21459,7 +21459,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -21471,7 +21471,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -21483,7 +21483,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -21495,7 +21495,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -21507,7 +21507,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -21519,7 +21519,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -21531,7 +21531,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -21543,7 +21543,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -21555,7 +21555,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -21567,7 +21567,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 18,
+            "physical": 19,
             "position": {
               "row": 19,
               "column": 1
@@ -21579,7 +21579,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 19,
+            "physical": 20,
             "position": {
               "row": 20,
               "column": 1
@@ -21591,7 +21591,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 21,
               "column": 1
@@ -21603,7 +21603,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 22,
               "column": 1
@@ -21923,7 +21923,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -21935,7 +21935,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -21947,7 +21947,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -21959,7 +21959,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -21971,7 +21971,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -21983,7 +21983,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -21995,7 +21995,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -22007,7 +22007,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -22019,7 +22019,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -22031,7 +22031,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -22043,7 +22043,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -22055,7 +22055,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -22067,7 +22067,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 84,
+            "physical": 85,
             "position": {
               "row": 13,
               "column": 1
@@ -22079,7 +22079,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 85,
+            "physical": 86,
             "position": {
               "row": 14,
               "column": 1
@@ -22091,7 +22091,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 93,
+            "physical": 94,
             "position": {
               "row": 15,
               "column": 1
@@ -22103,7 +22103,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 94,
+            "physical": 95,
             "position": {
               "row": 16,
               "column": 1
@@ -22256,7 +22256,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -22269,7 +22269,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -22282,7 +22282,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -22295,7 +22295,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -22308,7 +22308,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -22320,7 +22320,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -22332,7 +22332,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -22344,7 +22344,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -22356,7 +22356,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -22368,7 +22368,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -22380,7 +22380,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -22392,7 +22392,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -22405,7 +22405,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -22418,7 +22418,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -27618,7 +27618,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -27627,7 +27627,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -27636,7 +27636,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -27645,7 +27645,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -27654,7 +27654,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -27663,7 +27663,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -27672,7 +27672,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -27681,7 +27681,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -27690,7 +27690,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -27699,7 +27699,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -27708,7 +27708,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -27717,7 +27717,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -27726,7 +27726,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -27735,7 +27735,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -27925,7 +27925,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -27938,7 +27938,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -27951,7 +27951,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -27963,7 +27963,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -27976,7 +27976,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -27988,7 +27988,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -28000,7 +28000,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -28013,7 +28013,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -28025,7 +28025,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -28037,7 +28037,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -28050,7 +28050,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -28063,7 +28063,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -28075,7 +28075,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -28087,7 +28087,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -28391,7 +28391,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -28404,7 +28404,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -28417,7 +28417,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -28429,7 +28429,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -28442,7 +28442,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -28454,7 +28454,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -28466,7 +28466,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -28479,7 +28479,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -28491,7 +28491,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -28503,7 +28503,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -28516,7 +28516,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -28529,7 +28529,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -28541,7 +28541,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -28553,7 +28553,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -28565,7 +28565,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -28578,7 +28578,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -28590,7 +28590,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -28603,7 +28603,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -28907,7 +28907,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -28919,7 +28919,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -28931,7 +28931,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -28943,7 +28943,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -28955,7 +28955,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -28967,7 +28967,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -28979,7 +28979,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -28991,7 +28991,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -29003,7 +29003,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -29015,7 +29015,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -29027,7 +29027,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -29039,7 +29039,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -29052,7 +29052,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -29065,7 +29065,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -29077,7 +29077,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 15,
               "column": 1
@@ -29089,7 +29089,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 16,
               "column": 1
@@ -29382,7 +29382,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -29391,7 +29391,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -29400,7 +29400,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -29409,7 +29409,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -29418,7 +29418,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -29427,7 +29427,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -29436,7 +29436,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -29445,7 +29445,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -29454,7 +29454,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -29463,7 +29463,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -29472,7 +29472,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -29481,7 +29481,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -29490,7 +29490,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -29499,7 +29499,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -29508,7 +29508,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -29517,7 +29517,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -29526,7 +29526,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -29535,7 +29535,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -29544,7 +29544,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 18,
+            "physical": 19,
             "position": {
               "row": 19,
               "column": 1
@@ -29553,7 +29553,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 19,
+            "physical": 20,
             "position": {
               "row": 20,
               "column": 1
@@ -29562,7 +29562,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 21,
               "column": 1
@@ -29571,7 +29571,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 22,
               "column": 1
@@ -29580,7 +29580,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 22,
+            "physical": 23,
             "position": {
               "row": 23,
               "column": 1
@@ -29589,7 +29589,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 23,
+            "physical": 24,
             "position": {
               "row": 24,
               "column": 1
@@ -29598,7 +29598,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 24,
+            "physical": 25,
             "position": {
               "row": 25,
               "column": 1
@@ -29607,7 +29607,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 25,
+            "physical": 26,
             "position": {
               "row": 26,
               "column": 1
@@ -29616,7 +29616,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 26,
+            "physical": 27,
             "position": {
               "row": 27,
               "column": 1
@@ -29625,7 +29625,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 27,
+            "physical": 28,
             "position": {
               "row": 28,
               "column": 1
@@ -29634,7 +29634,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 28,
+            "physical": 29,
             "position": {
               "row": 29,
               "column": 1
@@ -29643,7 +29643,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 29,
+            "physical": 30,
             "position": {
               "row": 30,
               "column": 1
@@ -29652,7 +29652,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 30,
+            "physical": 31,
             "position": {
               "row": 31,
               "column": 1
@@ -29661,7 +29661,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 31,
+            "physical": 32,
             "position": {
               "row": 32,
               "column": 1
@@ -29670,7 +29670,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 32,
+            "physical": 33,
             "position": {
               "row": 33,
               "column": 1
@@ -29679,7 +29679,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 33,
+            "physical": 34,
             "position": {
               "row": 34,
               "column": 1
@@ -29688,7 +29688,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 34,
+            "physical": 35,
             "position": {
               "row": 35,
               "column": 1
@@ -29697,7 +29697,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 35,
+            "physical": 36,
             "position": {
               "row": 36,
               "column": 1
@@ -29706,7 +29706,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 36,
+            "physical": 37,
             "position": {
               "row": 37,
               "column": 1
@@ -29715,7 +29715,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 37,
+            "physical": 38,
             "position": {
               "row": 38,
               "column": 1
@@ -29724,7 +29724,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 38,
+            "physical": 39,
             "position": {
               "row": 39,
               "column": 1
@@ -29733,7 +29733,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 39,
+            "physical": 40,
             "position": {
               "row": 40,
               "column": 1
@@ -29742,7 +29742,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 40,
+            "physical": 41,
             "position": {
               "row": 41,
               "column": 1
@@ -29751,7 +29751,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 41,
+            "physical": 42,
             "position": {
               "row": 42,
               "column": 1
@@ -29760,7 +29760,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 42,
+            "physical": 43,
             "position": {
               "row": 43,
               "column": 1
@@ -29769,7 +29769,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 43,
+            "physical": 44,
             "position": {
               "row": 44,
               "column": 1
@@ -29778,7 +29778,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 44,
+            "physical": 45,
             "position": {
               "row": 45,
               "column": 1
@@ -29787,7 +29787,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 45,
+            "physical": 46,
             "position": {
               "row": 46,
               "column": 1
@@ -29796,7 +29796,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 46,
+            "physical": 47,
             "position": {
               "row": 47,
               "column": 1
@@ -29805,7 +29805,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 47,
+            "physical": 48,
             "position": {
               "row": 48,
               "column": 1
@@ -29814,7 +29814,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 48,
+            "physical": 49,
             "position": {
               "row": 49,
               "column": 1
@@ -29823,7 +29823,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 49,
+            "physical": 50,
             "position": {
               "row": 50,
               "column": 1
@@ -29832,7 +29832,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 50,
+            "physical": 51,
             "position": {
               "row": 51,
               "column": 1
@@ -29841,7 +29841,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 51,
+            "physical": 52,
             "position": {
               "row": 52,
               "column": 1
@@ -29850,7 +29850,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 52,
+            "physical": 53,
             "position": {
               "row": 53,
               "column": 1
@@ -29859,7 +29859,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 53,
+            "physical": 54,
             "position": {
               "row": 54,
               "column": 1
@@ -34045,7 +34045,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -34054,7 +34054,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -34063,7 +34063,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -34072,7 +34072,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -34081,7 +34081,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -34090,7 +34090,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -34099,7 +34099,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -34108,7 +34108,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -34117,7 +34117,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -34126,7 +34126,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -34135,7 +34135,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -34144,7 +34144,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -34153,7 +34153,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -34162,7 +34162,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -34171,7 +34171,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -34180,7 +34180,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -34189,7 +34189,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -34198,7 +34198,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -34207,7 +34207,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 18,
+            "physical": 19,
             "position": {
               "row": 19,
               "column": 1
@@ -34216,7 +34216,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 19,
+            "physical": 20,
             "position": {
               "row": 20,
               "column": 1
@@ -34225,7 +34225,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 21,
               "column": 1
@@ -34234,7 +34234,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 22,
               "column": 1
@@ -34243,7 +34243,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 22,
+            "physical": 23,
             "position": {
               "row": 23,
               "column": 1
@@ -34252,7 +34252,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 23,
+            "physical": 24,
             "position": {
               "row": 24,
               "column": 1
@@ -34261,7 +34261,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 24,
+            "physical": 25,
             "position": {
               "row": 25,
               "column": 1
@@ -34270,7 +34270,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 25,
+            "physical": 26,
             "position": {
               "row": 26,
               "column": 1
@@ -34279,7 +34279,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 26,
+            "physical": 27,
             "position": {
               "row": 27,
               "column": 1
@@ -34288,7 +34288,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 27,
+            "physical": 28,
             "position": {
               "row": 28,
               "column": 1
@@ -34297,7 +34297,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 28,
+            "physical": 29,
             "position": {
               "row": 29,
               "column": 1
@@ -34306,7 +34306,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 29,
+            "physical": 30,
             "position": {
               "row": 30,
               "column": 1
@@ -34315,7 +34315,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 30,
+            "physical": 31,
             "position": {
               "row": 31,
               "column": 1
@@ -34324,7 +34324,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 31,
+            "physical": 32,
             "position": {
               "row": 32,
               "column": 1
@@ -34333,7 +34333,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 32,
+            "physical": 33,
             "position": {
               "row": 33,
               "column": 1
@@ -34342,7 +34342,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 33,
+            "physical": 34,
             "position": {
               "row": 34,
               "column": 1
@@ -34351,7 +34351,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 34,
+            "physical": 35,
             "position": {
               "row": 35,
               "column": 1
@@ -34360,7 +34360,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 35,
+            "physical": 36,
             "position": {
               "row": 36,
               "column": 1
@@ -34369,7 +34369,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 36,
+            "physical": 37,
             "position": {
               "row": 37,
               "column": 1
@@ -34378,7 +34378,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 37,
+            "physical": 38,
             "position": {
               "row": 38,
               "column": 1
@@ -34387,7 +34387,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 38,
+            "physical": 39,
             "position": {
               "row": 39,
               "column": 1
@@ -34396,7 +34396,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 39,
+            "physical": 40,
             "position": {
               "row": 40,
               "column": 1
@@ -34405,7 +34405,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 40,
+            "physical": 41,
             "position": {
               "row": 41,
               "column": 1
@@ -34414,7 +34414,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 41,
+            "physical": 42,
             "position": {
               "row": 42,
               "column": 1
@@ -34423,7 +34423,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 42,
+            "physical": 43,
             "position": {
               "row": 43,
               "column": 1
@@ -34432,7 +34432,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 43,
+            "physical": 44,
             "position": {
               "row": 44,
               "column": 1
@@ -34441,7 +34441,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 44,
+            "physical": 45,
             "position": {
               "row": 45,
               "column": 1
@@ -34450,7 +34450,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 45,
+            "physical": 46,
             "position": {
               "row": 46,
               "column": 1
@@ -34459,7 +34459,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 46,
+            "physical": 47,
             "position": {
               "row": 47,
               "column": 1
@@ -34468,7 +34468,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 47,
+            "physical": 48,
             "position": {
               "row": 48,
               "column": 1
@@ -34477,7 +34477,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 48,
+            "physical": 49,
             "position": {
               "row": 49,
               "column": 1
@@ -34486,7 +34486,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 49,
+            "physical": 50,
             "position": {
               "row": 50,
               "column": 1
@@ -34495,7 +34495,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 50,
+            "physical": 51,
             "position": {
               "row": 51,
               "column": 1
@@ -34504,7 +34504,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 51,
+            "physical": 52,
             "position": {
               "row": 52,
               "column": 1
@@ -34513,7 +34513,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 52,
+            "physical": 53,
             "position": {
               "row": 53,
               "column": 1
@@ -34522,7 +34522,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 53,
+            "physical": 54,
             "position": {
               "row": 54,
               "column": 1
@@ -34541,7 +34541,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -34550,7 +34550,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -34559,7 +34559,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -34568,7 +34568,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -34577,7 +34577,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -34586,7 +34586,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -34595,7 +34595,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -34604,7 +34604,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -34613,7 +34613,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -34622,7 +34622,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -34631,7 +34631,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -34640,7 +34640,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -34649,7 +34649,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -34658,7 +34658,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -34667,7 +34667,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -34676,7 +34676,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -36477,7 +36477,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -36486,7 +36486,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -36495,7 +36495,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -36504,7 +36504,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -36513,7 +36513,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -36522,7 +36522,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -36531,7 +36531,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -36540,7 +36540,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -36549,7 +36549,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -36558,7 +36558,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -36567,7 +36567,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -36576,7 +36576,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -36585,7 +36585,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -36594,7 +36594,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -36613,7 +36613,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -36622,7 +36622,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -36631,7 +36631,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -36640,7 +36640,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -36649,7 +36649,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -36658,7 +36658,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -37248,7 +37248,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -37260,7 +37260,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -37272,7 +37272,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -37281,7 +37281,7 @@ export const generatedBoards: Board[] = [
             "category": "ground"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -37293,7 +37293,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -37302,7 +37302,7 @@ export const generatedBoards: Board[] = [
             "category": "reserved"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -37321,7 +37321,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -37333,7 +37333,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -37345,7 +37345,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -37354,7 +37354,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -37363,7 +37363,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -37372,7 +37372,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -37381,7 +37381,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -37390,7 +37390,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -37402,7 +37402,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -37414,7 +37414,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -37426,7 +37426,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -37439,7 +37439,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -37452,7 +37452,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -37465,7 +37465,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -37478,7 +37478,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -37487,7 +37487,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -37496,7 +37496,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -37505,7 +37505,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -37514,7 +37514,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 18,
+            "physical": 19,
             "position": {
               "row": 19,
               "column": 1
@@ -37526,7 +37526,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 19,
+            "physical": 20,
             "position": {
               "row": 20,
               "column": 1
@@ -37538,7 +37538,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 21,
               "column": 1
@@ -37547,7 +37547,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 22,
               "column": 1
@@ -37556,7 +37556,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 22,
+            "physical": 23,
             "position": {
               "row": 23,
               "column": 1
@@ -37565,7 +37565,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 23,
+            "physical": 24,
             "position": {
               "row": 24,
               "column": 1
@@ -38553,7 +38553,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -38562,7 +38562,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -38571,7 +38571,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -38580,7 +38580,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -38589,7 +38589,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -38598,7 +38598,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -38884,7 +38884,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -38893,7 +38893,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -38902,7 +38902,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -38911,7 +38911,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -38920,7 +38920,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -38929,7 +38929,7 @@ export const generatedBoards: Board[] = [
             "category": "analog"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -44265,7 +44265,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -44274,7 +44274,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -44283,7 +44283,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -44292,7 +44292,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -44301,7 +44301,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -44310,7 +44310,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -44319,7 +44319,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -44328,7 +44328,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -44337,7 +44337,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -44346,7 +44346,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -44355,7 +44355,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -44364,7 +44364,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -44373,7 +44373,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -44382,7 +44382,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -44391,7 +44391,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -44400,7 +44400,7 @@ export const generatedBoards: Board[] = [
             "category": "ground"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -44409,7 +44409,7 @@ export const generatedBoards: Board[] = [
             "category": "power"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -44418,7 +44418,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -44631,7 +44631,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -44640,7 +44640,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -44649,7 +44649,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -44658,7 +44658,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -44667,7 +44667,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -44676,7 +44676,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -44685,7 +44685,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -44694,7 +44694,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -44703,7 +44703,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -44712,7 +44712,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -44721,7 +44721,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -44730,7 +44730,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -44739,7 +44739,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -44748,7 +44748,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -44757,7 +44757,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -44766,7 +44766,7 @@ export const generatedBoards: Board[] = [
             "category": "ground"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -44775,7 +44775,7 @@ export const generatedBoards: Board[] = [
             "category": "power"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -44784,7 +44784,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -44993,7 +44993,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -45002,7 +45002,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -45011,7 +45011,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -45020,7 +45020,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -45029,7 +45029,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -45038,7 +45038,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -45047,7 +45047,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -45056,7 +45056,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -45065,7 +45065,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -45074,7 +45074,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -45083,7 +45083,7 @@ export const generatedBoards: Board[] = [
             "category": "gpio"
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -45092,7 +45092,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -45101,7 +45101,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -45110,7 +45110,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -45119,7 +45119,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -45128,7 +45128,7 @@ export const generatedBoards: Board[] = [
             "category": "ground"
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -45137,7 +45137,7 @@ export const generatedBoards: Board[] = [
             "category": "power"
           },
           {
-            "physical": 16,
+            "physical": 17,
             "position": {
               "row": 17,
               "column": 1
@@ -45146,7 +45146,7 @@ export const generatedBoards: Board[] = [
             "category": "communication"
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 18,
               "column": 1
@@ -45349,7 +45349,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -45361,7 +45361,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -45373,7 +45373,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -45385,7 +45385,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -45397,7 +45397,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -45409,7 +45409,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -45421,7 +45421,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -45433,7 +45433,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -45445,7 +45445,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -45457,7 +45457,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -45469,7 +45469,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -45481,7 +45481,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -45493,7 +45493,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -45505,7 +45505,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -45518,7 +45518,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -45530,7 +45530,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -45746,7 +45746,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -45758,7 +45758,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -45770,7 +45770,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -45782,7 +45782,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -45794,7 +45794,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -45806,7 +45806,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -45818,7 +45818,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -45830,7 +45830,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -45842,7 +45842,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -45854,7 +45854,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -45866,7 +45866,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -45878,7 +45878,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -45890,7 +45890,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -45902,7 +45902,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -45914,7 +45914,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -45926,7 +45926,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -46129,7 +46129,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 0,
+            "physical": 1,
             "position": {
               "row": 1,
               "column": 1
@@ -46141,7 +46141,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 1,
+            "physical": 2,
             "position": {
               "row": 2,
               "column": 1
@@ -46153,7 +46153,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 2,
+            "physical": 3,
             "position": {
               "row": 3,
               "column": 1
@@ -46165,7 +46165,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 3,
+            "physical": 4,
             "position": {
               "row": 4,
               "column": 1
@@ -46177,7 +46177,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 4,
+            "physical": 5,
             "position": {
               "row": 5,
               "column": 1
@@ -46189,7 +46189,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 5,
+            "physical": 6,
             "position": {
               "row": 6,
               "column": 1
@@ -46201,7 +46201,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 6,
+            "physical": 7,
             "position": {
               "row": 7,
               "column": 1
@@ -46213,7 +46213,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 8,
             "position": {
               "row": 8,
               "column": 1
@@ -46225,7 +46225,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
+            "physical": 9,
             "position": {
               "row": 9,
               "column": 1
@@ -46237,7 +46237,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 9,
+            "physical": 10,
             "position": {
               "row": 10,
               "column": 1
@@ -46249,7 +46249,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 10,
+            "physical": 11,
             "position": {
               "row": 11,
               "column": 1
@@ -46261,7 +46261,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 11,
+            "physical": 12,
             "position": {
               "row": 12,
               "column": 1
@@ -46273,7 +46273,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 12,
+            "physical": 13,
             "position": {
               "row": 13,
               "column": 1
@@ -46285,7 +46285,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 13,
+            "physical": 14,
             "position": {
               "row": 14,
               "column": 1
@@ -46297,7 +46297,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 15,
               "column": 1
@@ -46309,7 +46309,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 15,
+            "physical": 16,
             "position": {
               "row": 16,
               "column": 1
@@ -53828,6 +53828,2780 @@ export const generatedBoards: Board[] = [
             },
             "label": "3.3 V",
             "category": "power"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "nxp-frdm-kl25z",
+    "name": "NXP FRDM-KL25Z Rev. E",
+    "manufacturer": "NXP Semiconductors",
+    "aliases": [
+      "frdm-kl25z",
+      "kl25z"
+    ],
+    "description": "A Cortex-M0+ teaching platform used in embedded-systems and microprocessor laboratories, with onboard OpenSDA debugging, an accelerometer, capacitive touch, and a position-complete Rev. E expansion map.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "All GPIO is 3.3 V and not 5 V tolerant; only J9-10 is a 5 V rail and J9-16 is the 4.3-9 V VIN input."
+      },
+      {
+        "severity": "warning",
+        "text": "Older NXP pinout material swaps PTE0/PTE1. NXP's quick-reference card and support correction establish J2-18 = PTE0/SDA and J2-20 = PTE1/SCL."
+      },
+      {
+        "severity": "warning",
+        "text": "PTD1 on J2-12/D13 also drives the onboard blue RGB LED, so the LED circuit loads that signal."
+      },
+      {
+        "severity": "warning",
+        "text": "PTA4 on J1-10/D4 has NMI_b as its reset-state function; configure the port mux before treating it as GPIO."
+      },
+      {
+        "severity": "warning",
+        "text": "This entry targets Rev. E. Rev. D has different power, OpenSDA isolation, USB-host, and VREFH circuitry even though the main I/O placement is similar."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO (not 5 V tolerant). Power: OpenSDA USB, KL25Z USB, 4.3-9 V VIN, or regulated 1.71-3.6 V."
+      },
+      {
+        "severity": "info",
+        "text": "Header positions are shown in ascending designator order; view the board from the component side with the USB connectors at the bottom."
+      },
+      {
+        "severity": "info",
+        "text": "The even-numbered outer rows implement the Arduino R3 shield footprint; the odd-numbered inner rows expose additional KL25Z signals."
+      },
+      {
+        "severity": "info",
+        "text": "All MCU I/O is 3.3 V and is not 5 V tolerant. VIN on J9-16 accepts 4.3-9 V; the 3.3 V pins accept only a regulated 1.71-3.6 V source."
+      },
+      {
+        "severity": "info",
+        "text": "J2-18 = PTE0/SDA and J2-20 = PTE1/SCL follows NXP's corrected mapping, not the swapped assignments in the older pinout spreadsheet."
+      }
+    ],
+    "sources": [
+      {
+        "title": "FRDM-KL25Z quick-reference card and physical connector map (NXP)",
+        "url": "https://www.nxp.com/docs/en/supporting-information/FRDM-KL25Z-Quick-Reference-Card.pdf",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "FRDM-KL25Z user's manual Rev. 2 / board Rev. E (NXP)",
+        "url": "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/kinetis/66328/1/FRDM-KL25Z%20User%27s%20Manual%20%28Rev%202%29.pdf",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "NXP support correction for J2 PTE0/PTE1 assignments",
+        "url": "https://community.nxp.com/t5/Kinetis-Microcontrollers/Mismatch-of-KL25Z-pin-numbers-between-Pinout-and-User-Manual/m-p/1564605",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "NC State ECE 561 embedded-system course platform",
+        "url": "https://engineeringonline.ncsu.edu/online-courses/spring-2023/ece-561-embedded-system-design/",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1-i-o-header-2x8",
+        "name": "J1 I/O header (2x8)",
+        "description": "J1, J2, J9, and J10 I/O headers (Rev. E)",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "PTC7",
+            "category": "communication",
+            "functions": [
+              "SPI0_MISO",
+              "SPI0_MOSI",
+              "CMP0_IN1"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "PTA1",
+            "category": "communication",
+            "functions": [
+              "D0",
+              "UART0_RX",
+              "FTM2_CH0"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "PTC0",
+            "category": "analog",
+            "functions": [
+              "ADC0_SE14",
+              "TSI0_CH13"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PTA2",
+            "category": "communication",
+            "functions": [
+              "D1",
+              "UART0_TX",
+              "FTM2_CH1"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "PTC3",
+            "category": "communication",
+            "functions": [
+              "UART1_RX",
+              "FTM0_CH2",
+              "CLKOUT"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "PTD4",
+            "category": "gpio",
+            "functions": [
+              "D2",
+              "SPI1_PCS0",
+              "UART2_RX",
+              "FTM0_CH4"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "PTC4",
+            "category": "communication",
+            "functions": [
+              "SPI0_PCS0",
+              "UART1_TX",
+              "FTM0_CH3"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "PTA12",
+            "category": "gpio",
+            "functions": [
+              "D3",
+              "FTM1_CH0"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "PTC5",
+            "category": "communication",
+            "functions": [
+              "SPI0_SCK",
+              "LPTMR0_ALT2",
+              "CMP0_OUT"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "PTA4",
+            "category": "gpio",
+            "functions": [
+              "D4",
+              "I2C1_SDA",
+              "FTM0_CH1",
+              "NMI_b"
+            ],
+            "notes": [
+              "NMI_b is the reset-state function; configure the pin mux before using it as ordinary GPIO."
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "PTC6",
+            "category": "communication",
+            "functions": [
+              "SPI0_MOSI",
+              "SPI0_MISO",
+              "CMP0_IN0"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "PTA5",
+            "category": "gpio",
+            "functions": [
+              "D5",
+              "FTM0_CH2"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "PTC10",
+            "category": "communication",
+            "functions": [
+              "I2C1_SCL"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "PTC8",
+            "category": "gpio",
+            "functions": [
+              "D6",
+              "I2C0_SCL",
+              "FTM0_CH4",
+              "CMP0_IN2"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "PTC11",
+            "category": "communication",
+            "functions": [
+              "I2C1_SDA"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "PTC9",
+            "category": "gpio",
+            "functions": [
+              "D7",
+              "I2C0_SDA",
+              "FTM0_CH5",
+              "CMP0_IN3"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j2-i-o-header-2x10",
+        "name": "J2 I/O header (2x10)",
+        "layout": {
+          "rows": 20,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "PTC12",
+            "category": "gpio",
+            "functions": [
+              "FTM_CLKIN0"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "PTA13",
+            "category": "gpio",
+            "functions": [
+              "D8",
+              "FTM1_CH1"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "PTC13",
+            "category": "gpio",
+            "functions": [
+              "FTM_CLKIN1"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PTD5",
+            "category": "gpio",
+            "functions": [
+              "D9",
+              "FTM0_CH5",
+              "SPI1_SCK",
+              "UART2_TX",
+              "ADC0_SE6b"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "PTC16",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "PTD0",
+            "category": "communication",
+            "functions": [
+              "D10",
+              "SPI0_PCS0",
+              "FTM0_CH0"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "PTC17",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "PTD2",
+            "category": "communication",
+            "functions": [
+              "D11",
+              "SPI0_MOSI",
+              "UART2_RX",
+              "FTM0_CH2"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "PTA16",
+            "category": "communication",
+            "functions": [
+              "SPI0_MOSI",
+              "SPI0_MISO"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "PTD3",
+            "category": "communication",
+            "functions": [
+              "D12",
+              "SPI0_MISO",
+              "UART2_TX",
+              "FTM0_CH3"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "PTA17",
+            "category": "communication",
+            "functions": [
+              "SPI0_MISO",
+              "SPI0_MOSI"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "PTD1",
+            "category": "communication",
+            "functions": [
+              "D13",
+              "SPI0_SCK",
+              "ADC0_SE5b",
+              "FTM0_CH1"
+            ],
+            "notes": [
+              "Also drives the onboard blue RGB LED cathode; LED loading affects this header signal."
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "PTE31",
+            "category": "gpio",
+            "functions": [
+              "FTM0_CH4"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "VREFH",
+            "category": "power",
+            "functions": [
+              "AREF"
+            ],
+            "notes": [
+              "VREFH is tied to 3.3 V by default. Supplying external AREF requires the Rev. E resistor/jumper modification documented by NXP."
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "PTD6",
+            "category": "analog",
+            "functions": [
+              "ADC0_SE7b",
+              "SPI1_MOSI",
+              "UART0_RX"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "PTE0",
+            "category": "communication",
+            "functions": [
+              "D14",
+              "SDA",
+              "I2C1_SDA",
+              "UART1_TX"
+            ],
+            "notes": [
+              "Corrected NXP mapping: J2-18 is PTE0."
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "PTD7",
+            "category": "gpio",
+            "functions": [
+              "SPI1_MISO",
+              "UART0_TX"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "PTE1",
+            "category": "communication",
+            "functions": [
+              "D15",
+              "SCL",
+              "I2C1_SCL",
+              "UART1_RX"
+            ],
+            "notes": [
+              "Corrected NXP mapping: J2-20 is PTE1."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j9-i-o-and-power-header-2x8",
+        "name": "J9 I/O and power header (2x8)",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "PTB8",
+            "category": "gpio",
+            "functions": [
+              "EXTRG_IN"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "SDA_PTD5",
+            "category": "reserved",
+            "functions": [
+              "RFU"
+            ],
+            "notes": [
+              "Reserved in the Arduino R3 compatibility chart; do not use as ordinary I/O."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "PTB9",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "P3V3",
+            "category": "power",
+            "functions": [
+              "IOREF"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "PTB10",
+            "category": "communication",
+            "functions": [
+              "SPI1_PCS0"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "RESET / PTA20",
+            "category": "reserved",
+            "functions": [
+              "RESET_b"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "PTB11",
+            "category": "communication",
+            "functions": [
+              "SPI1_SCK"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "P3V3",
+            "category": "power",
+            "functions": [
+              "3.3V"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "PTE2",
+            "category": "communication",
+            "functions": [
+              "SPI1_SCK"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "P5V_USB",
+            "category": "power",
+            "functions": [
+              "5V"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "PTE3",
+            "category": "communication",
+            "functions": [
+              "SPI1_MISO",
+              "SPI1_MOSI"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "PTE4",
+            "category": "communication",
+            "functions": [
+              "SPI1_PCS0"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "PTE5",
+            "category": "gpio"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "P5-9V_VIN",
+            "category": "power",
+            "functions": [
+              "VIN"
+            ],
+            "notes": [
+              "Regulated board input; NXP specifies 4.3-9 V."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j10-analog-and-auxiliary-header-2x6",
+        "name": "J10 analog and auxiliary header (2x6)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "PTE20",
+            "category": "analog",
+            "functions": [
+              "ADC0_DP0",
+              "ADC0_SE0",
+              "FTM1_CH0",
+              "UART0_TX"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "PTB0",
+            "category": "analog",
+            "functions": [
+              "A0",
+              "ADC0_SE8",
+              "I2C0_SCL",
+              "FTM1_CH0"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "PTE21",
+            "category": "analog",
+            "functions": [
+              "ADC0_DM0",
+              "ADC0_SE4a",
+              "FTM1_CH1",
+              "UART0_RX"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PTB1",
+            "category": "analog",
+            "functions": [
+              "A1",
+              "ADC0_SE9",
+              "I2C0_SDA",
+              "FTM1_CH1"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "PTE22",
+            "category": "analog",
+            "functions": [
+              "ADC0_DP3",
+              "ADC0_SE3",
+              "FTM2_CH0",
+              "UART2_TX"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "PTB2",
+            "category": "analog",
+            "functions": [
+              "A2",
+              "ADC0_SE12",
+              "I2C0_SCL",
+              "FTM2_CH0"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "PTE23",
+            "category": "analog",
+            "functions": [
+              "ADC0_DM3",
+              "ADC0_SE7a",
+              "FTM2_CH1",
+              "UART2_RX"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "PTB3",
+            "category": "analog",
+            "functions": [
+              "A3",
+              "ADC0_SE13",
+              "I2C0_SDA",
+              "FTM2_CH1"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "PTE29",
+            "category": "analog",
+            "functions": [
+              "ADC0_SE4b",
+              "CMP0_IN5",
+              "FTM0_CH2"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "PTC2",
+            "category": "communication",
+            "functions": [
+              "A4",
+              "SDA",
+              "I2C1_SDA",
+              "ADC0_SE11",
+              "FTM0_CH1"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "PTE30",
+            "category": "analog",
+            "functions": [
+              "DAC0_OUT",
+              "ADC0_SE23",
+              "CMP0_IN4",
+              "FTM0_CH3"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "PTC1",
+            "category": "communication",
+            "functions": [
+              "A5",
+              "SCL",
+              "I2C1_SCL",
+              "ADC0_SE15",
+              "FTM0_CH0"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "digilent-nexys-a7-100t",
+    "name": "Digilent Nexys A7-100T",
+    "manufacturer": "Digilent",
+    "aliases": [
+      "nexys-a7",
+      "nexys-a7-100t",
+      "nexys"
+    ],
+    "description": "A feature-rich Artix-7 trainer used in digital-system design and computer-architecture laboratories, with five fully mapped Pmod ports, DDR2, Ethernet, USB HID, VGA, audio, and onboard I/O.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "All Pmod I/O is 3.3 V and not 5 V tolerant. Pmod VCC and GND pairs can deliver up to 1 A according to the reference manual."
+      },
+      {
+        "severity": "warning",
+        "text": "JA-JD signals are not impedance-controlled or delay-matched; do not use them as arbitrary high-speed differential links."
+      },
+      {
+        "severity": "warning",
+        "text": "JXADC uses coupled analog-pair routing and unpopulated anti-alias capacitors; its routing can limit digital signal speed."
+      },
+      {
+        "severity": "warning",
+        "text": "This entry is for the Nexys A7-100T/XC7A100T SKU. The Nexys A7-50T uses a different FPGA package and a different master XDC."
+      },
+      {
+        "severity": "warning",
+        "text": "JP3 must match the chosen USB or external power source; the external input is 4.5-5.5 V, not the 7-15 V range used by some other Digilent boards."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V LVCMOS on Pmod ports (not 5 V tolerant). Power: USB or 4.5-5.5 V external supply; JP3 selects source."
+      },
+      {
+        "severity": "info",
+        "text": "Positions follow the front view of each right-angle connector as loaded on the PCB: signals 1-4 and 7-10, GND on 5/11, and 3.3 V on 6/12."
+      },
+      {
+        "severity": "info",
+        "text": "JA-JD are 3.3 V LVCMOS general-purpose Pmods. Their traces are not impedance-controlled or length-matched."
+      },
+      {
+        "severity": "info",
+        "text": "JXADC pairs positions 1/7, 2/8, 3/9, and 4/10 for XADC analog input; its coupled routing and partially loaded filters can limit digital speed."
+      },
+      {
+        "severity": "info",
+        "text": "Specialized USB, Ethernet, microSD, VGA, audio, JTAG, and programming connectors are intentionally excluded from this student-expansion map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Nexys A7 reference manual and Pmod front-view table (Digilent)",
+        "url": "https://digilent.com/reference/_media/reference/programmable-logic/nexys-a7/nexys-a7_rm.pdf",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "Nexys A7-100T master XDC package-pin constraints (Digilent)",
+        "url": "https://github.com/Digilent/digilent-xdc/blob/master/Nexys-A7-100T-Master.xdc",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Auburn ELEC 4200 Nexys A7 laboratory materials",
+        "url": "https://www.eng.auburn.edu/~uguin/teaching/E4200_Spring_2022/course.html",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "pmod-ja",
+        "name": "Pmod JA",
+        "description": "JA, JB, JC, JD, and JXADC 2x6 Pmod ports",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JA1",
+            "category": "gpio",
+            "functions": [
+              "FPGA C17"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JA2",
+            "category": "gpio",
+            "functions": [
+              "FPGA D18"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JA3",
+            "category": "gpio",
+            "functions": [
+              "FPGA E18"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JA4",
+            "category": "gpio",
+            "functions": [
+              "FPGA G17"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JA7",
+            "category": "gpio",
+            "functions": [
+              "FPGA D17"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JA8",
+            "category": "gpio",
+            "functions": [
+              "FPGA E17"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JA9",
+            "category": "gpio",
+            "functions": [
+              "FPGA F18"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JA10",
+            "category": "gpio",
+            "functions": [
+              "FPGA G18"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jb",
+        "name": "Pmod JB",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JB1",
+            "category": "gpio",
+            "functions": [
+              "FPGA D14"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JB2",
+            "category": "gpio",
+            "functions": [
+              "FPGA F16"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JB3",
+            "category": "gpio",
+            "functions": [
+              "FPGA G16"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JB4",
+            "category": "gpio",
+            "functions": [
+              "FPGA H14"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JB7",
+            "category": "gpio",
+            "functions": [
+              "FPGA E16"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JB8",
+            "category": "gpio",
+            "functions": [
+              "FPGA F13"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JB9",
+            "category": "gpio",
+            "functions": [
+              "FPGA G13"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JB10",
+            "category": "gpio",
+            "functions": [
+              "FPGA H16"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jc",
+        "name": "Pmod JC",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JC1",
+            "category": "gpio",
+            "functions": [
+              "FPGA K1"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JC2",
+            "category": "gpio",
+            "functions": [
+              "FPGA F6"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JC3",
+            "category": "gpio",
+            "functions": [
+              "FPGA J2"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JC4",
+            "category": "gpio",
+            "functions": [
+              "FPGA G6"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JC7",
+            "category": "gpio",
+            "functions": [
+              "FPGA E7"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JC8",
+            "category": "gpio",
+            "functions": [
+              "FPGA J3"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JC9",
+            "category": "gpio",
+            "functions": [
+              "FPGA J4"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JC10",
+            "category": "gpio",
+            "functions": [
+              "FPGA E6"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jd",
+        "name": "Pmod JD",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JD1",
+            "category": "gpio",
+            "functions": [
+              "FPGA H4"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JD2",
+            "category": "gpio",
+            "functions": [
+              "FPGA H1"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JD3",
+            "category": "gpio",
+            "functions": [
+              "FPGA G1"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JD4",
+            "category": "gpio",
+            "functions": [
+              "FPGA G3"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JD7",
+            "category": "gpio",
+            "functions": [
+              "FPGA H2"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JD8",
+            "category": "gpio",
+            "functions": [
+              "FPGA G4"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JD9",
+            "category": "gpio",
+            "functions": [
+              "FPGA G2"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JD10",
+            "category": "gpio",
+            "functions": [
+              "FPGA F3"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jxadc-dual-analog-digital",
+        "name": "Pmod JXADC (dual analog/digital)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JXADC1",
+            "category": "analog",
+            "functions": [
+              "FPGA A13",
+              "AD3P",
+              "XA_P1"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JXADC2",
+            "category": "analog",
+            "functions": [
+              "FPGA A15",
+              "AD10P",
+              "XA_P2"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JXADC3",
+            "category": "analog",
+            "functions": [
+              "FPGA B16",
+              "AD2P",
+              "XA_P3"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JXADC4",
+            "category": "analog",
+            "functions": [
+              "FPGA B18",
+              "AD11P",
+              "XA_P4"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JXADC7",
+            "category": "analog",
+            "functions": [
+              "FPGA A14",
+              "AD3N",
+              "XA_N1"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JXADC8",
+            "category": "analog",
+            "functions": [
+              "FPGA A16",
+              "AD10N",
+              "XA_N2"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JXADC9",
+            "category": "analog",
+            "functions": [
+              "FPGA B17",
+              "AD2N",
+              "XA_N3"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JXADC10",
+            "category": "analog",
+            "functions": [
+              "FPGA A18",
+              "AD11N",
+              "XA_N4"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "terasic-de10-lite",
+    "name": "Terasic DE10-Lite",
+    "manufacturer": "Terasic",
+    "aliases": [
+      "de10-lite",
+      "de10lite"
+    ],
+    "description": "Intel's entry academic MAX 10 board, used across digital-logic and FPGA courses, with a complete 40-pin GPIO and Arduino R3 expansion map plus onboard SDRAM, VGA, ADC, accelerometer, switches, LEDs, and displays.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "JP1 and Arduino digital pins are 3.3 V LVTTL and are not 5 V tolerant; the 5 V allowance applies only to ADC_IN0-ADC_IN5 through their analog front end."
+      },
+      {
+        "severity": "warning",
+        "text": "JP7 position 8 is the Arduino VIN footprint position but is tied to VCC5 through L15. Do not apply a normal 7-12 V Arduino VIN supply there."
+      },
+      {
+        "severity": "warning",
+        "text": "The 5 V and 3.3 V rails on JP1 share a 5 W total limit."
+      },
+      {
+        "severity": "warning",
+        "text": "Use the 10M50DAF484C7G device selection and the documented package pins; similar DE-series boards and older MAX 10 part suffixes are not interchangeable."
+      },
+      {
+        "severity": "warning",
+        "text": "Do not alter the onboard clock-generator configuration; the user manual warns that an incorrect setting prevents the system from operating."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V LVTTL digital I/O; Arduino analog inputs accept up to 5 V. Power: 5 V from USB or external power connector."
+      },
+      {
+        "severity": "info",
+        "text": "JP1 is a 2x20 header numbered odd on one row and even on the other, viewed from the component side. It exposes 36 direct 3.3 V LVTTL FPGA signals."
+      },
+      {
+        "severity": "info",
+        "text": "JP1 positions 11/29 provide 5 V/3.3 V and positions 12/30 are ground; the two rails can provide 5 W total according to the user manual."
+      },
+      {
+        "severity": "info",
+        "text": "Arduino digital signals are 3.3 V and are not 5 V tolerant. Only ADC_IN0-ADC_IN5 accept up to 5 V through the board's analog scaling front end."
+      },
+      {
+        "severity": "info",
+        "text": "JP7 position 8 occupies the Arduino VIN location but is tied to VCC5 through ferrite bead L15; treat it as a 5 V rail, not a 7-12 V VIN input."
+      },
+      {
+        "severity": "info",
+        "text": "VGA, USB-Blaster, SDRAM, accelerometer, and unpopulated ADC_IN6/ADC_IN7 test points are specialized onboard connections and are intentionally excluded."
+      }
+    ],
+    "sources": [
+      {
+        "title": "DE10-Lite product resources and current manual (Terasic)",
+        "url": "https://www.terasic.com.tw/cgi-bin/page/archive.pl?CategoryNo=234&Language=English&No=1021&PartNo=4",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "DE10-Lite user manual with JP1 and Arduino connector tables (Intel FPGA Academic Program)",
+        "url": "https://ftp.intel.com/Public/Pub/fpgaup/pub/Intel_Material/Boards/DE10-Lite/DE10_Lite_User_Manual.pdf",
+        "official": false,
+        "type": "Manual"
+      },
+      {
+        "title": "Intel FPGA Academic Program DE10-Lite board specification",
+        "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/fpga-academic-boards.html",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "University of Colorado FPGA capstone using DE10-Lite",
+        "url": "https://www.colorado.edu/ecee/academics/online-programs/ms-ee-coursera/curriculum/embedded-systems/ecea-5363-fpga-capstone",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "jp1-2x20-gpio-header",
+        "name": "JP1 2x20 GPIO header",
+        "description": "JP1 GPIO and Arduino Uno R3 expansion headers",
+        "layout": {
+          "rows": 40,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GPIO_0",
+            "category": "gpio",
+            "functions": [
+              "PIN_V10"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO_1",
+            "category": "gpio",
+            "functions": [
+              "PIN_W10"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO_2",
+            "category": "gpio",
+            "functions": [
+              "PIN_V9"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO_3",
+            "category": "gpio",
+            "functions": [
+              "PIN_W9"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO_4",
+            "category": "gpio",
+            "functions": [
+              "PIN_V8"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO_5",
+            "category": "gpio",
+            "functions": [
+              "PIN_W8"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO_6",
+            "category": "gpio",
+            "functions": [
+              "PIN_V7"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO_7",
+            "category": "gpio",
+            "functions": [
+              "PIN_W7"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO_8",
+            "category": "gpio",
+            "functions": [
+              "PIN_W6"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO_9",
+            "category": "gpio",
+            "functions": [
+              "PIN_V5"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO_10",
+            "category": "gpio",
+            "functions": [
+              "PIN_W5"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO_11",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA15"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO_12",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA14"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO_13",
+            "category": "gpio",
+            "functions": [
+              "PIN_W13"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO_14",
+            "category": "gpio",
+            "functions": [
+              "PIN_W12"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO_15",
+            "category": "gpio",
+            "functions": [
+              "PIN_AB13"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO_16",
+            "category": "gpio",
+            "functions": [
+              "PIN_AB12"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GPIO_17",
+            "category": "gpio",
+            "functions": [
+              "PIN_Y11"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "GPIO_18",
+            "category": "gpio",
+            "functions": [
+              "PIN_AB11"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "GPIO_19",
+            "category": "gpio",
+            "functions": [
+              "PIN_W11"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "GPIO_20",
+            "category": "gpio",
+            "functions": [
+              "PIN_AB10"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "GPIO_21",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA10"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 25,
+              "column": 1
+            },
+            "label": "GPIO_22",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA9"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 26,
+              "column": 1
+            },
+            "label": "GPIO_23",
+            "category": "gpio",
+            "functions": [
+              "PIN_Y8"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 27,
+              "column": 1
+            },
+            "label": "GPIO_24",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA8"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 28,
+              "column": 1
+            },
+            "label": "GPIO_25",
+            "category": "gpio",
+            "functions": [
+              "PIN_Y7"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 29,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 30,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 31,
+              "column": 1
+            },
+            "label": "GPIO_26",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA7"
+            ]
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 32,
+              "column": 1
+            },
+            "label": "GPIO_27",
+            "category": "gpio",
+            "functions": [
+              "PIN_Y6"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 33,
+              "column": 1
+            },
+            "label": "GPIO_28",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA6"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 34,
+              "column": 1
+            },
+            "label": "GPIO_29",
+            "category": "gpio",
+            "functions": [
+              "PIN_Y5"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 35,
+              "column": 1
+            },
+            "label": "GPIO_30",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA5"
+            ]
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 36,
+              "column": 1
+            },
+            "label": "GPIO_31",
+            "category": "gpio",
+            "functions": [
+              "PIN_Y4"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 37,
+              "column": 1
+            },
+            "label": "GPIO_32",
+            "category": "gpio",
+            "functions": [
+              "PIN_AB3"
+            ]
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 38,
+              "column": 1
+            },
+            "label": "GPIO_33",
+            "category": "gpio",
+            "functions": [
+              "PIN_Y3"
+            ]
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 39,
+              "column": 1
+            },
+            "label": "GPIO_34",
+            "category": "gpio",
+            "functions": [
+              "PIN_AB2"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 40,
+              "column": 1
+            },
+            "label": "GPIO_35",
+            "category": "gpio",
+            "functions": [
+              "PIN_AA2"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "jp3-arduino-digital-d0-d7-1x8",
+        "name": "JP3 Arduino digital D0-D7 (1x8)",
+        "layout": {
+          "rows": 8,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO7",
+              "FPGA PIN_AA12"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO6",
+              "FPGA PIN_AA11"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO5",
+              "FPGA PIN_Y10"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO4",
+              "FPGA PIN_AB9"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO3",
+              "FPGA PIN_AB8"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO2",
+              "FPGA PIN_AB7"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D1 / TX",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO1",
+              "FPGA PIN_AB6"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D0 / RX",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO0",
+              "FPGA PIN_AB5"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "jp2-arduino-digital-d8-d13-and-r3-extension-1x10",
+        "name": "JP2 Arduino digital D8-D13 and R3 extension (1x10)",
+        "layout": {
+          "rows": 10,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO15",
+              "FPGA PIN_AA20"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO14",
+              "FPGA PIN_AB21"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power",
+            "notes": [
+              "Analog reference position; do not use as a general-purpose digital signal."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D13 / SCK",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO13",
+              "FPGA PIN_AB20"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D12 / MISO",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO12",
+              "FPGA PIN_Y19"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D11 / MOSI",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO11",
+              "FPGA PIN_AA19"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D10 / SS",
+            "category": "communication",
+            "functions": [
+              "Arduino_IO10",
+              "FPGA PIN_AB19"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO9",
+              "FPGA PIN_AA17"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio",
+            "functions": [
+              "Arduino_IO8",
+              "FPGA PIN_AB17"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "jp7-arduino-power-1x8",
+        "name": "JP7 Arduino power (1x8)",
+        "layout": {
+          "rows": 8,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF / 3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved",
+            "functions": [
+              "ARDUINO_RESET_N",
+              "FPGA PIN_F16"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VCC5",
+            "category": "power",
+            "functions": [
+              "VIN position"
+            ],
+            "notes": [
+              "This is the Arduino VIN footprint position, but the DE10-Lite schematic ties it to the 5 V rail through L15."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "jp8-arduino-analog-inputs-1x6",
+        "name": "JP8 Arduino analog inputs (1x6)",
+        "layout": {
+          "rows": 6,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "A0 / ADC_IN0",
+            "category": "analog",
+            "notes": [
+              "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "A1 / ADC_IN1",
+            "category": "analog",
+            "notes": [
+              "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "A2 / ADC_IN2",
+            "category": "analog",
+            "notes": [
+              "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A3 / ADC_IN3",
+            "category": "analog",
+            "notes": [
+              "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A4 / ADC_IN4",
+            "category": "analog",
+            "notes": [
+              "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A5 / ADC_IN5",
+            "category": "analog",
+            "notes": [
+              "Analog front end scales a maximum 5 V input to the MAX 10 ADC range."
+            ]
           }
         ]
       }

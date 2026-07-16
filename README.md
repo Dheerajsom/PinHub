@@ -34,8 +34,8 @@ npm install -g @dheerajsom/pinhub
 ph rpi5
 ```
 
-See the [CLI guide](cli/CLI.md) for commands, output options, board aliases,
-development, and release instructions.
+See the [complete CLI guide](cli/README.md) for installation, commands, output
+options, troubleshooting, board aliases, development, and release instructions.
 
 ## Validation
 

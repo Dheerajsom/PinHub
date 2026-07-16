@@ -454,6 +454,21 @@ export const boardVisuals: Record<string, BoardVisual> = {
   }),
 
   // --- Industry / education boards (July 2026 research batch) --------------
+  "nxp-frdm-kl25z": preset("grouped", {
+    accent: "#0066a1",
+    revisionNote:
+      "Rev. E headers are shown as connector groups in ascending designator order.",
+  }),
+  "digilent-nexys-a7-100t": preset("grouped", {
+    accent: "#b45309",
+    revisionNote:
+      "Five Pmod ports are grouped by connector; JXADC is the dual analog/digital port.",
+  }),
+  "terasic-de10-lite": preset("grouped", {
+    accent: "#166534",
+    revisionNote:
+      "JP1 and the four Arduino R3 headers are grouped by physical connector.",
+  }),
   // Coral has a Raspberry-Pi-style 40-pin header along the top edge.
   "google-coral-dev-board": preset("sbc", {
     accent: "#ea8600",
@@ -500,6 +515,8 @@ const vendorAccents: Record<string, string> = {
   BeagleBoard: "#7e22ce",
   "BeagleBoard.org": "#7e22ce",
   Digilent: "#b45309",
+  "NXP Semiconductors": "#0066a1",
+  Terasic: "#166534",
   "Google Coral": "#ea8600",
 };
 

@@ -31,6 +31,8 @@ const vendorDomains: Record<string, string[]> = {
   NVIDIA: ["nvidia.com"],
   Hardkernel: ["hardkernel.com", "odroid.com"],
   "Texas Instruments": ["ti.com"],
+  "NXP Semiconductors": ["nxp.com"],
+  Terasic: ["terasic.com", "terasic.com.tw"],
   Pine64: ["pine64.org"],
   LOLIN: ["wemos.cc"],
   "BeagleBoard.org": ["beagleboard.org"],

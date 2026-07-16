@@ -34,9 +34,7 @@
   },
   "files": [
     "dist",
-    "README.md",
-    "CLI.md",
-    "SETUP.md"
+    "README.md"
   ],
   "engines": {
     "node": ">=18.18.0"

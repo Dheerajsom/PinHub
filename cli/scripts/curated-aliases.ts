@@ -43,4 +43,7 @@ export const curatedAliases: Record<string, string[]> = {
   "adafruit-feather-rp2040": ["feather-rp2040"],
   "pine64-rockpro64": ["rockpro64"],
   "libre-computer-le-potato": ["le-potato", "potato"],
+  "nxp-frdm-kl25z": ["frdm-kl25z", "kl25z"],
+  "digilent-nexys-a7-100t": ["nexys-a7", "nexys-a7-100t", "nexys"],
+  "terasic-de10-lite": ["de10-lite", "de10lite"],
 };
