@@ -97,7 +97,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             ref={expandButtonRef}
             type="button"
             onClick={() => setExpanded(true)}
-            className="inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-[#15181f] px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
+            className="touch-target inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-[#15181f] px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
           >
             <Expand className="size-3.5" aria-hidden="true" />
             Inspect
@@ -109,7 +109,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             aria-label={`Open the ${board.name} pinout in a new tab`}
             title="Open the full pinout in a new tab"
             className={clsx(
-              "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition",
+              "touch-target inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition",
               isComplex
                 ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50 hover:bg-cyan-300/20"
                 : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
@@ -344,7 +344,7 @@ function ExpandedInspector({
             type="button"
             onClick={onClose}
             aria-label="Close inspector"
-            className="grid size-9 shrink-0 place-items-center rounded-md border border-white/15 text-zinc-300 transition hover:border-cyan-300/60 hover:text-white"
+            className="touch-target grid size-9 shrink-0 place-items-center rounded-md border border-white/15 text-zinc-300 transition hover:border-cyan-300/60 hover:text-white"
           >
             <X className="size-4" aria-hidden="true" />
           </button>

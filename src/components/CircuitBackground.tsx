@@ -509,8 +509,7 @@ function DimensionLine({ label }: { label: string }) {
     <svg
       viewBox="0 0 200 22"
       width="100%"
-      height="auto"
-      style={{ display: "block", marginTop: "2%" }}
+      style={{ display: "block", height: "auto", marginTop: "2%" }}
       aria-hidden
     >
       {/* witness (extension) lines */}

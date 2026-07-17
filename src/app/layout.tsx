@@ -77,6 +77,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const analyticsEnabled = Boolean(process.env.VERCEL);
+
   return (
     <html
       lang="en"
@@ -84,7 +86,7 @@ export default function RootLayout({
     >
       <body>
         {children}
-        <Analytics />
+        {analyticsEnabled ? <Analytics /> : null}
       </body>
     </html>
   );

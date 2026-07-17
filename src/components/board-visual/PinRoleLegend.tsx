@@ -34,7 +34,7 @@ export function PinRoleLegend({ present, activeRole, onToggle }: PinRoleLegendPr
             onClick={() => onToggle(active ? null : role)}
             aria-pressed={active}
             className={clsx(
-              "inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[11px] font-medium transition",
+              "touch-target inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[11px] font-medium transition",
               roleChipStyles[role],
               active
                 ? "ring-2 ring-cyan-300/80"

@@ -578,15 +578,6 @@ export function PinHubApp({
                 </span>
               ) : null}
             </button>
-            <span
-              className="shrink-0 font-mono text-xs text-zinc-400"
-              role="status"
-              aria-live="polite"
-            >
-              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
-              {hasActiveFilters ? "matches" : "boards"}
-              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
-            </span>
             <button
               type="button"
               onClick={() => {
@@ -626,6 +617,15 @@ export function PinHubApp({
                 </span>
               ) : null}
             </button>
+            <span
+              className="shrink-0 font-mono text-xs text-zinc-400"
+              role="status"
+              aria-live="polite"
+            >
+              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
+              {hasActiveFilters ? "matches" : "boards"}
+              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
+            </span>
             {activeCategory !== allCategory ? (
               <ActiveFilterChip
                 label={activeCategory}
@@ -741,7 +741,7 @@ export function PinHubApp({
                     role="region"
                     aria-label={`${board.name} details`}
                     tabIndex={-1}
-                    className="scroll-mt-32 outline-none lg:hidden"
+                    className="min-w-0 scroll-mt-32 outline-none lg:hidden"
                   >
                     <BoardDetailPanel
                       expectedBoard={board}
