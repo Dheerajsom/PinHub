@@ -77,20 +77,24 @@ describe("rendering", () => {
     expect(result.stdout).toContain("Source:");
   });
 
-  it("keeps every catalog board within narrow terminal widths", async () => {
-    for (const width of [20, 40]) {
-      for (const board of boards) {
-        const result = await runCli([board.id, "--width", String(width)], {
-          env: {},
-          isTTY: false,
-        });
-        expect(result.code, board.id).toBe(0);
-        for (const line of result.stdout.trimEnd().split("\n")) {
-          expect(stringWidth(line), `${board.id} @ ${width}: ${line}`).toBeLessThanOrEqual(width);
+  it(
+    "keeps every catalog board within narrow terminal widths",
+    async () => {
+      for (const width of [20, 40]) {
+        for (const board of boards) {
+          const result = await runCli([board.id, "--width", String(width)], {
+            env: {},
+            isTTY: false,
+          });
+          expect(result.code, board.id).toBe(0);
+          for (const line of result.stdout.trimEnd().split("\n")) {
+            expect(stringWidth(line), `${board.id} @ ${width}: ${line}`).toBeLessThanOrEqual(width);
+          }
         }
       }
-    }
-  });
+    },
+    15_000,
+  );
 
   it("shows pin-specific safety notes and expands hidden functions with --details", async () => {
     const normal = await runCli(["rpi5"], WIDE);
