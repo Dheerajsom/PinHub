@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { boards } from "@/lib/boards";
 import { PinoutFullView } from "@/components/board-visual/PinoutFullView";
+import { siteName } from "@/lib/site";
 
 // This catalog is fully static; reject unknown IDs instead of rendering them
 // on demand at runtime.
@@ -18,10 +19,27 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const board = boards.find((b) => b.id === id);
-  if (!board) return { title: "Pinout not found · PinHub" };
+  if (!board) return { title: "Pinout not found" };
+  const title = `${board.name} pinout`;
+  const description = `Interactive, source-backed connector pinout for the ${board.name}.`;
   return {
-    title: `${board.name} pinout · PinHub`,
-    description: `Interactive, source-backed connector pinout for the ${board.name}.`,
+    title,
+    description,
+    alternates: {
+      canonical: `/pinout/${board.id}`,
+    },
+    openGraph: {
+      type: "website",
+      url: `/pinout/${board.id}`,
+      siteName,
+      title: `${title} · ${siteName}`,
+      description,
+    },
+    twitter: {
+      card: "summary",
+      title: `${title} · ${siteName}`,
+      description,
+    },
   };
 }
 

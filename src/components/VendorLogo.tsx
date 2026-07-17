@@ -28,7 +28,8 @@ const vendorDomains: Record<string, string> = {
   "Google Coral": "coral.ai",
   "Micro:bit Educational Foundation": "microbit.org",
   NVIDIA: "nvidia.com",
-  "Orange Pi": "orangepi.org",
+  // Google's favicon endpoint currently returns 404 for orangepi.org. Omit
+  // the optional mark instead of issuing a known-failing production request.
   PJRC: "pjrc.com",
   Radxa: "radxa.com",
   "Raspberry Pi": "raspberrypi.com",

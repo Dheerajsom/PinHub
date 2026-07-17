@@ -75,7 +75,7 @@ export function CopyPinTable({ pinout }: { pinout: Pinout }) {
       aria-label="Copy pin table as Markdown"
       title="Copy pin table as Markdown"
       className={clsx(
-        "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium transition",
+        "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border px-3 py-1 text-[11px] font-medium transition",
         copied
           ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-100"
           : failed

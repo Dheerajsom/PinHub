@@ -18,6 +18,12 @@ const tabOrder: readonly PinoutTab[] = ["static", "dynamic"];
 const listeners = new Set<() => void>();
 let tabSnapshot: PinoutTab | null = null;
 
+function onStorageEvent(event: StorageEvent) {
+  if (event.key !== null && event.key !== storageKey) return;
+  tabSnapshot = null;
+  for (const listener of listeners) listener();
+}
+
 function getTabSnapshot(): PinoutTab {
   if (tabSnapshot === null) {
     try {
@@ -35,8 +41,12 @@ function getServerTabSnapshot(): PinoutTab {
 }
 
 function subscribeTab(listener: () => void): () => void {
+  if (listeners.size === 0) window.addEventListener("storage", onStorageEvent);
   listeners.add(listener);
-  return () => listeners.delete(listener);
+  return () => {
+    listeners.delete(listener);
+    if (listeners.size === 0) window.removeEventListener("storage", onStorageEvent);
+  };
 }
 
 function setTabPreference(next: PinoutTab) {
@@ -177,7 +187,7 @@ function TabButton({
       tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={clsx(
-        "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition",
+        "inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition",
         active
           ? "bg-cyan-300/15 text-cyan-50 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.4)]"
           : "text-zinc-400 hover:bg-white/[0.06] hover:text-white",

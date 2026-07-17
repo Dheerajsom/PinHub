@@ -46,7 +46,10 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 const allCategory = "All";
 const allInterface = "All";
 const favoritesStorageKey = "pinhub.favorites";
-const initialResultLimit = 32;
+// Render a useful first screen without embedding dozens of offscreen cards in
+// the initial HTML. Additional results remain available through the existing
+// pagination control and all records remain searchable client-side.
+const initialResultLimit = 16;
 const resultPageSize = 32;
 const desktopMediaQuery = "(min-width: 1024px)";
 
@@ -530,14 +533,14 @@ export function PinHubApp({
               placeholder="Search boards, vendors, interfaces, warnings..."
               aria-label="Search boards"
               aria-controls="board-results"
-              className="h-10 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-16 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/40"
+              className="h-11 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-16 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/40"
             />
             {query ? (
               <button
                 type="button"
                 onClick={() => changeQuery("")}
                 aria-label="Clear search"
-                className="absolute right-1.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded text-zinc-500 transition hover:text-white"
+                className="absolute right-0 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded text-zinc-500 transition hover:text-white"
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
@@ -561,7 +564,7 @@ export function PinHubApp({
               aria-expanded={mobileFiltersOpen}
               aria-controls="mobile-filters"
               className={clsx(
-                "flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs transition lg:hidden",
+                "flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs transition lg:hidden",
                 mobileFiltersOpen || activeFilterCount > 0
                   ? "border-cyan-300/70 bg-cyan-300/10 text-cyan-50"
                   : "border-white/10 text-zinc-300 hover:border-white/25 hover:text-white",
@@ -594,7 +597,7 @@ export function PinHubApp({
               }}
               aria-pressed={showFavoritesOnly}
               className={clsx(
-                "fav-button ml-1.5 inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-transparent px-3.5 py-1.5 text-xs font-semibold leading-none",
+                "fav-button ml-1.5 inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-transparent px-3.5 py-1.5 text-xs font-semibold leading-none",
                 showFavoritesOnly
                   ? "bg-gradient-to-b from-amber-300 to-amber-400 text-zinc-950"
                   : "bg-amber-400/10 text-amber-200 hover:bg-amber-400/20 hover:text-amber-50",
@@ -1064,7 +1067,7 @@ const BoardResult = memo(function BoardResult({
         }
         aria-pressed={favorite}
         title={favorite ? "Remove from favorites" : "Add to favorites"}
-        className="absolute right-2 top-2 z-20 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
+        className="absolute right-1 top-1 z-20 grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
       >
         <Star
           className={clsx(

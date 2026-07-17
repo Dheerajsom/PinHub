@@ -1,7 +1,9 @@
 import { boards } from "@/lib/boards";
 
 export const dynamic = "force-static";
-export const dynamicParams = false;
+
+// Known boards are generated at build time. Unknown IDs still reach GET so
+// API consumers receive the documented JSON 404 instead of Next's HTML 404.
 
 export function generateStaticParams() {
   return boards.map((board) => ({ id: board.id }));

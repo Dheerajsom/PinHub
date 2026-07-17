@@ -105,4 +105,75 @@ describe("createBoardDetailLoader", () => {
     await expect(loader.load(fetched.id)).resolves.toEqual(fetched);
     expect(fetchBoard).toHaveBeenCalledTimes(2);
   });
+
+  it.each([
+    ["unknown board category", { category: "Other" }],
+    ["unknown interface", { interfaces: ["GPIO", "INVALID"] }],
+    [
+      "unknown source type",
+      {
+        sourceLinks: [
+          {
+            label: "Vendor documentation",
+            url: "https://example.com/docs",
+            type: "Blog",
+          },
+        ],
+      },
+    ],
+    [
+      "insecure source URL",
+      {
+        sourceLinks: [
+          {
+            label: "Vendor documentation",
+            url: "http://example.com/docs",
+            type: "Docs",
+          },
+        ],
+      },
+    ],
+    [
+      "invalid pin role",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [{ position: 1, label: "D1", role: "invalid" }],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "zero pin position",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [{ position: 0, label: "D0", role: "gpio" }],
+            },
+          ],
+        },
+      },
+    ],
+  ])("rejects a payload with %s", async (_label, override) => {
+    const expected = board("strict-boundary");
+    const loader = createBoardDetailLoader(
+      [],
+      vi.fn(async () => Response.json({ ...expected, ...override })),
+    );
+
+    await expect(loader.load(expected.id)).rejects.toThrow(
+      "Board response was invalid",
+    );
+  });
 });

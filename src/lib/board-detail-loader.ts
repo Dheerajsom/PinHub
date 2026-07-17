@@ -1,5 +1,54 @@
 import type { Board } from "@/lib/boards";
 
+const boardCategories = new Set([
+  "SBC",
+  "Microcontroller",
+  "AI Dev Kit",
+  "Development Board",
+]);
+const boardInterfaces = new Set([
+  "GPIO",
+  "I2C",
+  "SPI",
+  "UART",
+  "ADC",
+  "DAC",
+  "PWM",
+  "CAN",
+  "USB",
+  "Wi-Fi",
+  "Bluetooth",
+  "Zigbee",
+  "Thread",
+  "CSI",
+  "PCIe",
+  "SWD",
+  "JTAG",
+  "Ethernet",
+]);
+const pinRoles = new Set([
+  "power",
+  "ground",
+  "gpio",
+  "i2c",
+  "spi",
+  "uart",
+  "adc",
+  "dac",
+  "pwm",
+  "debug",
+  "system",
+  "special",
+  "reserved",
+]);
+const sourceTypes = new Set([
+  "Docs",
+  "Pinout",
+  "Datasheet",
+  "Schematic",
+  "Manual",
+]);
+
 export type BoardDetailLoader = {
   load: (id: string) => Promise<Board>;
   peek: (id: string) => Board | undefined;
@@ -18,13 +67,23 @@ function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
 
+function isHttpsUrl(value: string): boolean {
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 function isPin(value: unknown): boolean {
   if (!isRecord(value)) return false;
   return (
     typeof value.position === "number" &&
-    Number.isFinite(value.position) &&
+    Number.isInteger(value.position) &&
+    value.position > 0 &&
     typeof value.label === "string" &&
     typeof value.role === "string" &&
+    pinRoles.has(value.role) &&
     (value.aliases === undefined || isStringArray(value.aliases)) &&
     (value.note === undefined || typeof value.note === "string")
   );
@@ -80,6 +139,12 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
   if (!requiredStrings.every((key) => typeof value[key] === "string")) {
     return false;
   }
+  if (
+    typeof value.category !== "string" ||
+    !boardCategories.has(value.category)
+  ) {
+    return false;
+  }
 
   const requiredStringArrays = [
     "tags",
@@ -90,6 +155,12 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
   if (!requiredStringArrays.every((key) => isStringArray(value[key]))) {
     return false;
   }
+  if (
+    !isStringArray(value.interfaces) ||
+    !value.interfaces.every((item) => boardInterfaces.has(item))
+  ) {
+    return false;
+  }
 
   if (
     !Array.isArray(value.sourceLinks) ||
@@ -98,7 +169,9 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
         isRecord(source) &&
         typeof source.label === "string" &&
         typeof source.url === "string" &&
-        typeof source.type === "string",
+        typeof source.type === "string" &&
+        sourceTypes.has(source.type) &&
+        isHttpsUrl(source.url),
     )
   ) {
     return false;

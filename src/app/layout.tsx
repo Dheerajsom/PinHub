@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Audiowide, Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { siteDescription, siteName, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,9 +21,36 @@ const audiowide = Audiowide({
 });
 
 export const metadata: Metadata = {
-  title: "PinHub",
-  description:
-    "A searchable pinout catalog for SBCs, microcontrollers, and embedded development boards.",
+  metadataBase: siteUrl,
+  title: {
+    default: siteName,
+    template: `%s · ${siteName}`,
+  },
+  description: siteDescription,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+    images: [
+      {
+        url: "/pinhub-logo.png",
+        width: 512,
+        height: 512,
+        alt: "PinHub logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: siteName,
+    description: siteDescription,
+    images: ["/pinhub-logo.png"],
+  },
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",
@@ -32,6 +60,8 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "PinHub",
   },
+  applicationName: siteName,
+  category: "technology",
 };
 
 export const viewport: Viewport = {

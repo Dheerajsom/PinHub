@@ -46,6 +46,20 @@ npm test
 npm run build
 ```
 
+Both the website and CLI workflows also run `npm audit --audit-level=high`.
+Dependabot checks npm and GitHub Actions dependencies weekly.
+
+## Deployment
+
+The production website is deployed from `main` to
+[pinhub-mauve.vercel.app](https://pinhub-mauve.vercel.app). The application is
+statically generated for every known board, requires no runtime environment
+variables, and publishes a robots policy, sitemap, web app manifest, canonical
+URLs, and social metadata. Unknown API records return a JSON 404.
+
+The CLI is published separately as `@dheerajsom/pinhub` on npm. Run the web
+and CLI validation commands before publishing either surface.
+
 ## Data Model
 
 Board entries live in `src/lib/boards.ts` and include:
