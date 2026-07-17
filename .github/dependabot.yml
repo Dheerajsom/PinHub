@@ -5,8 +5,8 @@ updates:
     schedule:
       interval: weekly
     ignore:
-      # Next.js 16's lint toolchain currently requires TypeScript < 6.1.
-      - dependency-name: typescript
+      # Major toolchain upgrades require an explicit compatibility review.
+      - dependency-name: "*"
         update-types: [version-update:semver-major]
     groups:
       web-dependencies:
@@ -17,8 +17,8 @@ updates:
     schedule:
       interval: weekly
     ignore:
-      # typescript-eslint 8 currently requires TypeScript < 6.1.
-      - dependency-name: typescript
+      # Keep automated updates compatible with the CLI's Node 18 support.
+      - dependency-name: "*"
         update-types: [version-update:semver-major]
     groups:
       cli-dependencies:
