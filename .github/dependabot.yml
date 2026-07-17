@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # Next.js 16's lint toolchain currently requires TypeScript < 6.1.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
     groups:
       web-dependencies:
         patterns: ["*"]
@@ -12,6 +16,10 @@ updates:
     directory: /cli
     schedule:
       interval: weekly
+    ignore:
+      # typescript-eslint 8 currently requires TypeScript < 6.1.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
     groups:
       cli-dependencies:
         patterns: ["*"]
