@@ -116,8 +116,9 @@ debug lime, system orange, alt teal, reserved stone) defined once in
 `board-visual/roles.ts` and reused by chips, SVG pads, legend, and table so
 every rendering of a pin agrees.
 
-- **Background**: static graphite workbench with a masked micro-grid and sparse
-  PCB traces (`CircuitBackground`), visible mainly in gutters. All widgets
+- **Background**: static graphite instrument plates with a masked micro-grid,
+  brushed texture, and legible PCB traces (`CircuitBackground`) confined to the
+  desktop gutters. All widgets
   are opaque — no glass/blur.
 - **Typography**: Geist (UI), Geist Mono (pin labels, numbers, metrics —
   anything an engineer might transcribe), Audiowide (wordmark only).

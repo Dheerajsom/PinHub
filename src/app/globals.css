@@ -124,9 +124,21 @@ button {
    --------------------------------------------------------------------------- */
 .pinhub-background-base {
   background:
-    radial-gradient(circle at 12% 8%, rgba(57, 125, 166, 0.13), transparent 30%),
-    radial-gradient(circle at 88% 78%, rgba(43, 91, 126, 0.08), transparent 32%),
-    linear-gradient(180deg, #090b0f 0%, #0b0f14 48%, #090b0f 100%);
+    radial-gradient(circle at 12% 9%, rgba(63, 142, 181, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 76%, rgba(48, 104, 140, 0.12), transparent 34%),
+    linear-gradient(180deg, #080a0d 0%, #0b1015 48%, #080a0d 100%);
+}
+
+.pinhub-background-grain {
+  background-image: repeating-linear-gradient(
+    112deg,
+    rgba(221, 233, 240, 0.026) 0,
+    rgba(221, 233, 240, 0.026) 1px,
+    transparent 1px,
+    transparent 7px
+  );
+  -webkit-mask-image: linear-gradient(to right, #000, transparent 38%, transparent 62%, #000);
+  mask-image: linear-gradient(to right, #000, transparent 38%, transparent 62%, #000);
 }
 
 .pinhub-background-grid {
@@ -157,7 +169,8 @@ button {
 }
 
 .pinhub-trace-map {
-  opacity: 0.82;
+  opacity: 1;
+  filter: drop-shadow(0 0 5px rgba(74, 203, 216, 0.1));
 }
 
 .pinhub-background-light {
@@ -352,6 +365,10 @@ button {
 @media (max-width: 1023px) {
   .pinhub-trace-map {
     display: none;
+  }
+
+  .pinhub-background-grain {
+    opacity: 0.35;
   }
 
   .pinhub-background-grid {
