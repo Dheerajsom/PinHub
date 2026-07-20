@@ -9,7 +9,7 @@
 
 :root {
   color-scheme: dark;
-  --background: #0b0c0f;
+  --background: #090b0f;
   --foreground: #eef2f3;
 }
 
@@ -26,9 +26,7 @@ body {
   margin: 0;
   /* Guard against accidental horizontal scrolling on narrow phones. */
   overflow-x: hidden;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 220px),
-    var(--background);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   /* Remove the grey tap flash on iOS/Android for a more app-like feel; we
@@ -43,8 +41,8 @@ body {
 
 /* ---------------------------------------------------------------------------
    Solid widget surfaces
-   The decorative blueprint backdrop (CircuitBackground) still shows through the
-   page gutters and the gaps between cards, but the interface widgets themselves
+   The precision-workbench backdrop (CircuitBackground) shows through the page
+   gutters and the gaps between cards, but the interface widgets themselves
    are opaque, lightly-raised panels — not a glass blur — so the catalog reads
    crisp and layered instead of washed-out. Two tiers: a raised "panel" for
    top-level cards and a recessed "well" for content nested inside them.
@@ -120,115 +118,62 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Decorative blueprint background (see components/CircuitBackground.tsx)
-   A fixed, behind-content layer: a fine + coarse drafting grid, a cool
-   cyanotype wash, a vignette, and a few hairline board "plates" arranged with
-   depth. Everything is decorative, low-opacity, and pointer-events:none so the
-   catalog stays first.
+   Precision-workbench background (see components/CircuitBackground.tsx)
+   Static graphite depth, a masked instrument grid, and sparse PCB traces in
+   the gutters. The center stays deliberately quiet behind the catalog.
    --------------------------------------------------------------------------- */
+.pinhub-background-base {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(57, 125, 166, 0.13), transparent 30%),
+    radial-gradient(circle at 88% 78%, rgba(43, 91, 126, 0.08), transparent 32%),
+    linear-gradient(180deg, #090b0f 0%, #0b0f14 48%, #090b0f 100%);
+}
 
-/* Engineering drafting grid: a fine pitch plus a coarse every-fifth-line
-   pitch, in cool blueprint blue, spread across the whole frame so every board
-   sits on the same sheet of drafting paper, and dissolved toward the edges so
-   it never reaches a hard border. */
-.pinhub-grid {
+.pinhub-background-grid {
   background-image:
-    linear-gradient(to right, rgba(125, 147, 176, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(125, 147, 176, 0.05) 1px, transparent 1px),
-    linear-gradient(to right, rgba(125, 147, 176, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(125, 147, 176, 0.12) 1px, transparent 1px);
-  background-size: 28px 28px, 28px 28px, 140px 140px, 140px 140px;
-  -webkit-mask-image: radial-gradient(
-    140% 130% at 50% 48%,
-    rgba(0, 0, 0, 0.85),
-    transparent 82%
+    radial-gradient(circle, rgba(173, 196, 213, 0.12) 0.7px, transparent 0.8px),
+    linear-gradient(to right, rgba(145, 169, 188, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(145, 169, 188, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px, 120px 120px, 120px 120px;
+  background-position: -12px -12px, -1px -1px, -1px -1px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.52) 18%,
+    rgba(0, 0, 0, 0.1) 38%,
+    rgba(0, 0, 0, 0.1) 62%,
+    rgba(0, 0, 0, 0.52) 82%,
+    rgba(0, 0, 0, 0.9) 100%
   );
-  mask-image: radial-gradient(
-    140% 130% at 50% 48%,
-    rgba(0, 0, 0, 0.85),
-    transparent 82%
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.52) 18%,
+    rgba(0, 0, 0, 0.1) 38%,
+    rgba(0, 0, 0, 0.1) 62%,
+    rgba(0, 0, 0, 0.52) 82%,
+    rgba(0, 0, 0, 0.9) 100%
   );
 }
 
-/* Soft colour wash that slowly breathes for a sense of depth. */
-@keyframes pinhub-glow-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: translate3d(2%, -2%, 0) scale(1.08);
-    opacity: 1;
-  }
+.pinhub-trace-map {
+  opacity: 0.82;
 }
 
-.pinhub-glow {
-  animation: pinhub-glow-drift 24s ease-in-out infinite;
+.pinhub-background-light {
+  background: linear-gradient(
+    105deg,
+    rgba(103, 232, 249, 0.028),
+    transparent 24%,
+    transparent 76%,
+    rgba(103, 232, 249, 0.018)
+  );
 }
 
-/* Gentle parallax float for the board silhouettes. Three variants with
-   different drift paths keep the motion from looking mechanical. */
-@keyframes pinhub-float-a {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
-  }
-  50% {
-    transform: translate3d(0, -10px, 0) rotate(calc(var(--tilt, 0deg) + 0.8deg));
-  }
-}
-
-@keyframes pinhub-float-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
-  }
-  50% {
-    transform: translate3d(8px, 10px, 0) rotate(calc(var(--tilt, 0deg) - 0.8deg));
-  }
-}
-
-@keyframes pinhub-float-c {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
-  }
-  33% {
-    transform: translate3d(-7px, -6px, 0) rotate(calc(var(--tilt, 0deg) - 0.6deg));
-  }
-  66% {
-    transform: translate3d(6px, -10px, 0) rotate(calc(var(--tilt, 0deg) + 0.6deg));
-  }
-}
-
-.pinhub-float {
-  animation-name: pinhub-float-a;
-  animation-duration: 26s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  will-change: transform;
-}
-.pinhub-float-b {
-  animation-name: pinhub-float-b;
-}
-.pinhub-float-c {
-  animation-name: pinhub-float-c;
-}
-
-/* Slow fade-in so the scene assembles rather than popping in on load. */
-@keyframes pinhub-rise {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: var(--rest-opacity, 1);
-  }
-}
-
-.pinhub-rise {
-  opacity: 0;
-  animation: pinhub-rise 1.4s ease-out forwards;
+.pinhub-background-vignette {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.26)),
+    radial-gradient(ellipse at center, transparent 52%, rgba(3, 5, 8, 0.3) 100%);
 }
 
 /* ---------------------------------------------------------------------------
@@ -402,16 +347,17 @@ button {
   }
 }
 
-/* On phones and tablets the backdrop is a dim accent behind a single-column
-   catalog; the slow glow drift and board float aren't perceptible there but
-   keep the compositor awake and drain battery. Freeze them and keep only the
-   one-shot fade-in. Desktop keeps the full composition. */
+/* On narrow screens the catalog occupies the frame, so the trace artwork is
+   removed and only the quiet graphite grid remains. */
 @media (max-width: 1023px) {
-  .pinhub-glow,
-  .pinhub-float,
-  .pinhub-float-b,
-  .pinhub-float-c {
-    animation-name: none;
+  .pinhub-trace-map {
+    display: none;
+  }
+
+  .pinhub-background-grid {
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%);
+    mask-image: linear-gradient(to bottom, #000, transparent 75%);
   }
 }
 
@@ -421,11 +367,6 @@ button {
   html {
     scroll-behavior: auto;
   }
-  .pinhub-glow,
-  .pinhub-float,
-  .pinhub-float-b,
-  .pinhub-float-c,
-  .pinhub-rise,
   .fav-button,
   .fav-button:hover .fav-star {
     animation: none;
@@ -433,9 +374,6 @@ button {
   .fav-button:hover::after {
     animation: none;
     opacity: 0;
-  }
-  .pinhub-rise {
-    opacity: var(--rest-opacity, 1);
   }
   .bv-pad,
   .bv-pad-ring,

@@ -65,7 +65,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b0c0f",
+  themeColor: "#090b0f",
   colorScheme: "dark",
   // Cover the full screen (under notches/home indicators) so the dark theme
   // extends edge-to-edge; safe-area insets are then applied in the layout.
