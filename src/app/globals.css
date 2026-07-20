@@ -118,36 +118,24 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Precision-workbench background (see components/CircuitBackground.tsx)
-   Static graphite depth, a masked instrument grid, and sparse PCB traces in
-   the gutters. The center stays deliberately quiet behind the catalog.
+   Reference-board workbench (see components/CircuitBackground.tsx)
+   Detailed hardware sits in the desktop gutters while animated signal traces
+   add life without competing with the dense catalog in the center.
    --------------------------------------------------------------------------- */
 .pinhub-background-base {
   background:
-    radial-gradient(circle at 12% 9%, rgba(63, 142, 181, 0.16), transparent 32%),
-    radial-gradient(circle at 88% 76%, rgba(48, 104, 140, 0.12), transparent 34%),
-    linear-gradient(180deg, #080a0d 0%, #0b1015 48%, #080a0d 100%);
-}
-
-.pinhub-background-grain {
-  background-image: repeating-linear-gradient(
-    112deg,
-    rgba(221, 233, 240, 0.026) 0,
-    rgba(221, 233, 240, 0.026) 1px,
-    transparent 1px,
-    transparent 7px
-  );
-  -webkit-mask-image: linear-gradient(to right, #000, transparent 38%, transparent 62%, #000);
-  mask-image: linear-gradient(to right, #000, transparent 38%, transparent 62%, #000);
+    radial-gradient(ellipse at 9% 39%, rgba(22, 157, 151, 0.13), transparent 28%),
+    radial-gradient(ellipse at 91% 63%, rgba(16, 151, 175, 0.12), transparent 28%),
+    linear-gradient(90deg, #070a0d 0%, #0b1116 18%, #090c10 34%, #090c10 66%, #0b1116 82%, #070a0d 100%);
 }
 
 .pinhub-background-grid {
   background-image:
-    radial-gradient(circle, rgba(173, 196, 213, 0.12) 0.7px, transparent 0.8px),
-    linear-gradient(to right, rgba(145, 169, 188, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(145, 169, 188, 0.035) 1px, transparent 1px);
-  background-size: 24px 24px, 120px 120px, 120px 120px;
-  background-position: -12px -12px, -1px -1px, -1px -1px;
+    radial-gradient(circle, rgba(161, 193, 205, 0.14) 0.65px, transparent 0.75px),
+    linear-gradient(to right, rgba(125, 160, 176, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(125, 160, 176, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px, 100px 100px, 100px 100px;
+  background-position: -10px -10px, -1px -1px, -1px -1px;
   -webkit-mask-image: linear-gradient(
     to right,
     rgba(0, 0, 0, 0.9) 0%,
@@ -169,18 +157,52 @@ button {
 }
 
 .pinhub-trace-map {
-  opacity: 1;
-  filter: drop-shadow(0 0 5px rgba(74, 203, 216, 0.1));
+  opacity: 0.92;
+  filter: saturate(0.92);
+}
+
+.pinhub-board {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: translate;
+}
+
+.pinhub-board-pi {
+  animation: board-drift-pi 11s ease-in-out infinite;
+}
+
+.pinhub-board-uno {
+  animation: board-drift-uno 13s ease-in-out -4s infinite;
+}
+
+.pinhub-signal-traces path {
+  stroke-dasharray: 0.06 0.025;
+  animation: signal-flow 3.8s linear infinite;
+}
+
+.pinhub-signal-traces path:nth-child(even) {
+  animation-direction: reverse;
+  animation-duration: 4.6s;
+}
+
+@keyframes board-drift-pi {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 7px -10px; }
+}
+
+@keyframes board-drift-uno {
+  0%, 100% { translate: 0 0; }
+  50% { translate: -8px 9px; }
+}
+
+@keyframes signal-flow {
+  to { stroke-dashoffset: -0.17; }
 }
 
 .pinhub-background-light {
-  background: linear-gradient(
-    105deg,
-    rgba(103, 232, 249, 0.028),
-    transparent 24%,
-    transparent 76%,
-    rgba(103, 232, 249, 0.018)
-  );
+  background:
+    linear-gradient(90deg, rgba(73, 220, 219, 0.025), transparent 27%, transparent 73%, rgba(73, 220, 219, 0.02)),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.006) 3px 4px);
 }
 
 .pinhub-background-vignette {
@@ -367,10 +389,6 @@ button {
     display: none;
   }
 
-  .pinhub-background-grain {
-    opacity: 0.35;
-  }
-
   .pinhub-background-grid {
     opacity: 0.5;
     -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%);
@@ -395,7 +413,9 @@ button {
   .bv-pad,
   .bv-pad-ring,
   .bv-leader,
-  .bv-label {
+  .bv-label,
+  .pinhub-board,
+  .pinhub-signal-traces path {
     animation: none;
     transition: none;
   }
