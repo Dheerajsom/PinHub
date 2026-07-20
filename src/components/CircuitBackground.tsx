@@ -1,806 +1,195 @@
-import { clsx } from "clsx";
-import type { CSSProperties, ReactNode } from "react";
-
-/* ---------------------------------------------------------------------------
-   CircuitBackground
-   A fixed, behind-content decorative layer: a faint PCB grid, slow drifting
-   colour glows, and a balanced scatter of hairline board silhouettes
-   (Raspberry Pi 4, NVIDIA Jetson Nano, STM32 Nucleo, Arduino Uno, ESP32
-   DevKit, BBC micro:bit, Teensy, Pico/RP2040). Each board keeps just enough of
-   its signature shape — GPIO headers, a finned heatsink, a metal-can antenna,
-   an LED matrix, silkscreen part numbers — to be told apart up close, while
-   staying low contrast so the catalog reads first. Boards are kept inside the
-   frame so nothing clips at the edges, fade hard across the dense centre
-   column, and scale down to subtle corner accents on phones.
-
-   Everything here is aria-hidden + pointer-events:none and animation is gated
-   behind prefers-reduced-motion (see globals.css).
-   --------------------------------------------------------------------------- */
-
-// Tiny silkscreen-style part label.
-function Silk({
-  x,
-  y,
-  size,
-  children,
-  opacity = 0.5,
-  anchor = "middle",
-}: {
-  x: number;
-  y: number;
-  size: number;
-  children: ReactNode;
-  opacity?: number;
-  anchor?: "start" | "middle" | "end";
-}) {
-  return (
-    <text
-      x={x}
-      y={y}
-      fontSize={size}
-      fill="currentColor"
-      fillOpacity={opacity}
-      textAnchor={anchor}
-      style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.04em" }}
-    >
-      {children}
-    </text>
-  );
-}
-
-// A horizontal run of header pins (filled so they scale with the board).
-function HRow({
-  x,
-  y,
-  count,
-  pitch,
-  w = 2.4,
-  h = 2.4,
-  opacity = 0.5,
-}: {
-  x: number;
-  y: number;
-  count: number;
-  pitch: number;
-  w?: number;
-  h?: number;
-  opacity?: number;
-}) {
-  return (
-    <>
-      {Array.from({ length: count }, (_, i) => (
-        <rect
-          key={i}
-          x={x + i * pitch}
-          y={y}
-          width={w}
-          height={h}
-          rx={0.4}
-          fill="currentColor"
-          fillOpacity={opacity}
-        />
-      ))}
-    </>
-  );
-}
-
-// A vertical run of header pins.
-function VRow({
-  x,
-  y,
-  count,
-  pitch,
-  w = 2.4,
-  h = 2.4,
-  opacity = 0.5,
-}: {
-  x: number;
-  y: number;
-  count: number;
-  pitch: number;
-  w?: number;
-  h?: number;
-  opacity?: number;
-}) {
-  return (
-    <>
-      {Array.from({ length: count }, (_, i) => (
-        <rect
-          key={i}
-          x={x}
-          y={y + i * pitch}
-          width={w}
-          height={h}
-          rx={0.4}
-          fill="currentColor"
-          fillOpacity={opacity}
-        />
-      ))}
-    </>
-  );
-}
-
-// QFP/DIP lead ticks along an edge.
-function Leads({
-  x,
-  y,
-  count,
-  pitch,
-  vertical,
-  length = 2.4,
-}: {
-  x: number;
-  y: number;
-  count: number;
-  pitch: number;
-  vertical?: boolean;
-  length?: number;
-}) {
-  return (
-    <>
-      {Array.from({ length: count }, (_, i) =>
-        vertical ? (
-          <line
-            key={i}
-            x1={x}
-            y1={y + i * pitch}
-            x2={x + length}
-            y2={y + i * pitch}
-            stroke="currentColor"
-            strokeOpacity={0.45}
-            strokeWidth={0.9}
-          />
-        ) : (
-          <line
-            key={i}
-            x1={x + i * pitch}
-            y1={y}
-            x2={x + i * pitch}
-            y2={y + length}
-            stroke="currentColor"
-            strokeOpacity={0.45}
-            strokeWidth={0.9}
-          />
-        ),
-      )}
-    </>
-  );
-}
-
-const board = {
-  fill: "currentColor",
-  fillOpacity: 0.05,
-  stroke: "currentColor",
-  strokeOpacity: 0.85,
-  strokeWidth: 1,
-} as const;
-
-const chip = {
-  fill: "currentColor",
-  fillOpacity: 0.1,
-  stroke: "currentColor",
-  strokeOpacity: 0.7,
-  strokeWidth: 0.9,
-} as const;
-
-const connector = {
-  fill: "none",
-  stroke: "currentColor",
-  strokeOpacity: 0.6,
-  strokeWidth: 0.9,
-} as const;
-
-type GlyphProps = { width: number | string };
-
-function svgStyle(width: number | string): CSSProperties {
-  return { width, height: "auto", display: "block" };
-}
-
-// ---- Raspberry Pi 4 -------------------------------------------------------
-// Signature: 40-pin GPIO header, the USB/Ethernet port stack on the right,
-// central BCM2711 SoC.
-function RaspberryPi4({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 158 100" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={2} y={2} width={148} height={96} rx={7} {...board} />
-      {[
-        [12, 12],
-        [140, 12],
-        [12, 88],
-        [140, 88],
-      ].map(([cx, cy]) => (
-        <circle
-          key={`${cx}-${cy}`}
-          cx={cx}
-          cy={cy}
-          r={3.4}
-          {...connector}
-        />
-      ))}
-      {/* 40-pin GPIO header */}
-      <rect x={37} y={8} width={96} height={14} rx={1.5} {...connector} strokeOpacity={0.35} />
-      <HRow x={40} y={10} count={20} pitch={4.6} w={2.4} h={2.4} />
-      <HRow x={40} y={16} count={20} pitch={4.6} w={2.4} h={2.4} />
-      {/* USB + Ethernet stack (overhangs the right edge) */}
-      <rect x={149} y={28} width={9} height={16} {...connector} />
-      <rect x={149} y={48} width={9} height={13} {...connector} />
-      <rect x={149} y={64} width={9} height={13} {...connector} />
-      {/* USB-C power + micro-HDMI along the bottom edge */}
-      <rect x={40} y={95} width={7} height={5} {...connector} />
-      <rect x={52} y={95} width={9} height={5} {...connector} />
-      <rect x={66} y={95} width={9} height={5} {...connector} />
-      {/* SoC + RAM */}
-      <rect x={62} y={42} width={28} height={28} rx={2} {...chip} />
-      <Silk x={76} y={58} size={6}>
-        BCM2711
-      </Silk>
-      <rect x={62} y={74} width={22} height={9} rx={1} {...chip} />
-      <Silk x={75} y={91} size={5.4} opacity={0.45}>
-        Raspberry Pi 4
-      </Silk>
-    </svg>
-  );
-}
-
-// ---- STM32H7 Nucleo -------------------------------------------------------
-// Signature: detachable ST-LINK header, big central LQFP, Morpho/Arduino
-// pin rows down the long edges.
-function STM32Nucleo({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 140 100" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={2} y={2} width={136} height={96} rx={6} {...board} />
-      {/* ST-LINK section + detach break line */}
-      <rect x={58} y={1} width={16} height={6} {...connector} />
-      <rect x={18} y={10} width={16} height={10} rx={1} {...chip} />
-      <Silk x={26} y={18} size={4} opacity={0.5}>
-        ST-LINK
-      </Silk>
-      <line
-        x1={8}
-        y1={28}
-        x2={132}
-        y2={28}
-        stroke="currentColor"
-        strokeOpacity={0.4}
-        strokeWidth={0.8}
-        strokeDasharray="3 3"
-      />
-      {/* Central LQFP with leads on all four sides */}
-      <rect x={52} y={42} width={36} height={36} rx={1.5} {...chip} />
-      <Leads x={56} y={39} count={10} pitch={3} />
-      <Leads x={56} y={78} count={10} pitch={3} />
-      <Leads x={49} y={46} count={10} pitch={3} vertical />
-      <Leads x={88} y={46} count={10} pitch={3} vertical />
-      <Silk x={70} y={62} size={6}>
-        STM32H7
-      </Silk>
-      {/* Morpho + Arduino headers down both long edges */}
-      <VRow x={8} y={34} count={16} pitch={3.4} />
-      <VRow x={13} y={34} count={16} pitch={3.4} />
-      <VRow x={124} y={34} count={16} pitch={3.4} />
-      <VRow x={129} y={34} count={16} pitch={3.4} />
-      {/* User + reset buttons */}
-      <rect x={22} y={82} width={8} height={8} rx={1} {...connector} />
-      <rect x={110} y={82} width={8} height={8} rx={1} {...connector} />
-      <Silk x={70} y={93} size={4.6} opacity={0.45}>
-        NUCLEO-H743
-      </Silk>
-    </svg>
-  );
-}
-
-// ---- ESP32 DevKit ---------------------------------------------------------
-// Signature: ESP32-WROOM metal can with a meander PCB antenna, pin rows down
-// both edges, micro-USB at the bottom.
-function ESP32Devkit({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 56 120" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={4} y={4} width={48} height={112} rx={4} {...board} />
-      {/* Meander PCB antenna */}
-      <polyline
-        points="13,20 13,9 17,9 17,16 21,16 21,9 25,9 25,16 29,16 29,9 33,9 33,16 37,16 37,9 43,9 43,20"
-        fill="none"
-        stroke="currentColor"
-        strokeOpacity={0.6}
-        strokeWidth={0.9}
-      />
-      {/* Shielded module */}
-      <rect x={10} y={22} width={36} height={42} rx={2} {...chip} />
-      <Silk x={28} y={46} size={6}>
-        ESP32
-      </Silk>
-      {/* EN / BOOT buttons */}
-      <rect x={9} y={70} width={8} height={5} rx={1} {...connector} />
-      <rect x={39} y={70} width={8} height={5} rx={1} {...connector} />
-      {/* Pin rows */}
-      <VRow x={5} y={26} count={16} pitch={5.4} w={3} h={2} />
-      <VRow x={48} y={26} count={16} pitch={5.4} w={3} h={2} />
-      {/* micro-USB */}
-      <rect x={20} y={114} width={16} height={6} rx={1} {...connector} />
-    </svg>
-  );
-}
-
-// ---- Raspberry Pi Pico / RP2040 ------------------------------------------
-// Signature: castellated edges, central RP2040, micro-USB at the top.
-function Pico({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 46 104" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={4} y={6} width={38} height={92} rx={6} {...board} />
-      {/* micro-USB */}
-      <rect x={15} y={1} width={16} height={7} rx={1.5} {...connector} />
-      {/* Castellated pads */}
-      <VRow x={3} y={14} count={20} pitch={4.1} w={3} h={2} opacity={0.42} />
-      <VRow x={40} y={14} count={20} pitch={4.1} w={3} h={2} opacity={0.42} />
-      {/* BOOTSEL */}
-      <rect x={16} y={24} width={14} height={7} rx={1.5} {...connector} />
-      {/* RP2040 + flash */}
-      <rect x={14} y={44} width={18} height={18} rx={2} {...chip} />
-      <Silk x={23} y={55} size={4.6}>
-        RP2040
-      </Silk>
-      <rect x={16} y={66} width={14} height={7} rx={1} {...chip} />
-      <Silk x={23} y={92} size={5} opacity={0.45}>
-        PICO
-      </Silk>
-    </svg>
-  );
-}
-
-// ---- Arduino Uno ----------------------------------------------------------
-// Signature: USB-B + barrel jack overhanging the left edge, the ATmega328P
-// DIP, digital + power/analog header rows along the long edges.
-function ArduinoUno({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 168 132" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={4} y={4} width={160} height={124} rx={8} {...board} />
-      {[
-        [14, 14],
-        [156, 16],
-        [14, 118],
-        [156, 118],
-      ].map(([cx, cy]) => (
-        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={3.2} {...connector} />
-      ))}
-      {/* USB-B + barrel jack overhanging the left edge */}
-      <rect x={1} y={22} width={17} height={24} rx={1.5} {...connector} />
-      <rect x={1} y={92} width={17} height={22} rx={2} {...connector} />
-      <circle cx={9.5} cy={103} r={5} {...connector} />
-      {/* Reset + ICSP */}
-      <rect x={40} y={9} width={9} height={9} rx={1.5} {...connector} />
-      <rect x={132} y={70} width={10} height={16} rx={1} {...connector} strokeOpacity={0.4} />
-      {/* Digital header (top) + power/analog header (bottom) */}
-      <rect x={48} y={8} width={104} height={11} rx={1.5} {...connector} strokeOpacity={0.32} />
-      <HRow x={52} y={10} count={10} pitch={5.2} w={2.6} h={2.6} />
-      <HRow x={108} y={10} count={8} pitch={5.2} w={2.6} h={2.6} />
-      <HRow x={40} y={120} count={8} pitch={5.2} w={2.6} h={2.6} />
-      <HRow x={100} y={120} count={6} pitch={5.2} w={2.6} h={2.6} />
-      {/* ATmega328P DIP + crystal */}
-      <rect x={62} y={66} width={50} height={32} rx={2} {...chip} />
-      <Leads x={59} y={70} count={12} pitch={2.4} vertical />
-      <Leads x={112} y={70} count={12} pitch={2.4} vertical />
-      <Silk x={87} y={84} size={6}>
-        ATMEGA328P
-      </Silk>
-      <rect x={44} y={74} width={12} height={8} rx={4} {...chip} />
-      <Silk x={84} y={111} size={6} opacity={0.5}>
-        ARDUINO UNO
-      </Silk>
-    </svg>
-  );
-}
-
-// ---- BBC micro:bit V2 -----------------------------------------------------
-// Signature: 5x5 LED matrix, A/B buttons, the gold edge connector with its
-// five large notched pads (P0, P1, P2, 3V, GND) plus the fine 0.1" pads.
-function Microbit({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 150 124" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={4} y={4} width={142} height={88} rx={11} {...board} />
-      <Silk x={75} y={17} size={7}>
-        micro:bit
-      </Silk>
-      {/* A / B buttons */}
-      <circle cx={19} cy={50} r={6.5} {...connector} />
-      <circle cx={131} cy={50} r={6.5} {...connector} />
-      {/* 5x5 LED matrix */}
-      {Array.from({ length: 5 }, (_, r) =>
-        Array.from({ length: 5 }, (_, c) => (
-          <rect
-            key={`led-${r}-${c}`}
-            x={51 + c * 11.4}
-            y={26 + r * 11.4}
-            width={3.2}
-            height={3.2}
-            rx={0.8}
-            fill="currentColor"
-            fillOpacity={0.55}
-          />
-        )),
-      )}
-      {/* Fine edge pads + five large notched pads */}
-      <HRow x={12} y={94} count={42} pitch={3.1} w={1} h={4} opacity={0.3} />
-      {Array.from({ length: 5 }, (_, i) => (
-        <rect
-          key={`pad-${i}`}
-          x={11 + i * 28.4}
-          y={100}
-          width={17}
-          height={20}
-          rx={1.5}
-          {...connector}
-        />
-      ))}
-    </svg>
-  );
-}
-
-// ---- NVIDIA Jetson Nano Dev Kit -------------------------------------------
-// Signature: the big finned heatsink dominating the carrier, the 40-pin GPIO
-// header, and the port stack overhanging the right edge.
-function JetsonNano({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 152 120" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={4} y={4} width={144} height={112} rx={6} {...board} />
-      {/* 40-pin GPIO header */}
-      <rect x={40} y={8} width={92} height={12} rx={1.5} {...connector} strokeOpacity={0.32} />
-      <HRow x={43} y={9} count={20} pitch={4.4} w={2.2} h={2.2} />
-      <HRow x={43} y={14} count={20} pitch={4.4} w={2.2} h={2.2} />
-      {/* Finned heatsink */}
-      <rect x={46} y={40} width={60} height={62} rx={2} {...chip} />
-      {Array.from({ length: 8 }, (_, i) => (
-        <line
-          key={`fin-${i}`}
-          x1={50}
-          y1={46 + i * 7}
-          x2={102}
-          y2={46 + i * 7}
-          stroke="currentColor"
-          strokeOpacity={0.45}
-          strokeWidth={0.8}
-        />
-      ))}
-      {/* Port stack overhanging the right edge */}
-      <rect x={132} y={32} width={17} height={16} {...connector} />
-      <rect x={132} y={52} width={17} height={14} {...connector} />
-      <rect x={132} y={70} width={17} height={14} {...connector} />
-      <rect x={132} y={88} width={17} height={11} {...connector} />
-      {/* microSD on the left edge */}
-      <rect x={1} y={52} width={12} height={16} rx={1} {...connector} />
-      <Silk x={76} y={111} size={6} opacity={0.5}>
-        JETSON NANO
-      </Silk>
-    </svg>
-  );
-}
-
-// ---- Teensy 4.1 -----------------------------------------------------------
-// Signature: a long, narrow board with USB at the top, dense pin rows down
-// both edges, the IMXRT MCU, and the SD-card slot at the bottom.
-function Teensy({ width }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 46 132" fill="none" style={svgStyle(width)} aria-hidden>
-      <rect x={4} y={6} width={38} height={120} rx={4} {...board} />
-      {/* USB-C at the top */}
-      <rect x={13} y={1} width={20} height={8} rx={1.5} {...connector} />
-      {/* Pin rows down both long edges */}
-      <VRow x={5} y={14} count={24} pitch={4.5} w={3} h={2} opacity={0.45} />
-      <VRow x={38} y={14} count={24} pitch={4.5} w={3} h={2} opacity={0.45} />
-      {/* IMXRT MCU */}
-      <rect x={14} y={40} width={18} height={18} rx={2} {...chip} />
-      <Silk x={23} y={51} size={4.4}>
-        IMXRT
-      </Silk>
-      {/* SD-card slot */}
-      <rect x={13} y={100} width={20} height={11} rx={1} {...chip} />
-      <Silk x={23} y={92} size={4.6} opacity={0.5}>
-        TEENSY
-      </Silk>
-    </svg>
-  );
-}
-
-// A single engineering-drawing dimension line — witness ticks, arrowheads, and
-// a centred measurement — drawn beneath the hero board for an authentic
-// blueprint touch. It spans 100% of the board width so it stays aligned at any
-// size.
-function DimensionLine({ label }: { label: string }) {
-  return (
-    <svg
-      viewBox="0 0 200 22"
-      width="100%"
-      style={{ display: "block", height: "auto", marginTop: "2%" }}
-      aria-hidden
-    >
-      {/* witness (extension) lines */}
-      <line x1={3} y1={1} x2={3} y2={15} stroke="currentColor" strokeOpacity={0.9} strokeWidth={0.9} />
-      <line x1={197} y1={1} x2={197} y2={15} stroke="currentColor" strokeOpacity={0.9} strokeWidth={0.9} />
-      {/* dimension line, broken either side of the label */}
-      <line x1={3} y1={9} x2={84} y2={9} stroke="currentColor" strokeOpacity={0.9} strokeWidth={0.9} />
-      <line x1={116} y1={9} x2={197} y2={9} stroke="currentColor" strokeOpacity={0.9} strokeWidth={0.9} />
-      {/* arrowheads */}
-      <path d="M3 9 L11 6.4 L11 11.6 Z" fill="currentColor" fillOpacity={0.9} />
-      <path d="M197 9 L189 6.4 L189 11.6 Z" fill="currentColor" fillOpacity={0.9} />
-      <text
-        x={100}
-        y={12}
-        fontSize={9}
-        textAnchor="middle"
-        fill="currentColor"
-        fillOpacity={1}
-        style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.06em" }}
-      >
-        {label}
-      </text>
-    </svg>
-  );
-}
-
-type Placement = {
-  key: string;
-  Glyph: (props: GlyphProps) => ReactNode;
-  color: string;
-  width: string;
-  pos: CSSProperties;
-  rest: number;
-  tilt: number;
-  variant?: "pinhub-float-b" | "pinhub-float-c";
-  duration: number;
-  delay: number;
-  // Depth tier: blur + cast shadow that places the board near (sharp, lit) or
-  // far (soft, receding) for a cinematic sense of depth.
-  filter: string;
-  // Supporting boards are desktop-only; phones keep just the hero.
-  hideOnMobile?: boolean;
-  // The hero board carries a single dimension-line callout.
-  annotation?: { label: string };
-};
-
-// One cohesive cyanotype-blue ink, separated by depth and opacity rather than
-// by hue, so the backdrop reads as a single engineering drawing instead of
-// confetti: a bright, sharp hero in the lit lower-left, with quieter, blurred
-// supporting boards receding into the corners.
-const HERO_FILTER =
-  "drop-shadow(0 3px 16px rgba(0,0,0,0.55)) drop-shadow(0 0 12px rgba(170,202,234,0.3))";
-const NEAR_FILTER =
-  "blur(0.4px) drop-shadow(0 2px 12px rgba(0,0,0,0.5)) drop-shadow(0 0 9px rgba(150,186,224,0.22))";
-const MID_FILTER = "blur(0.7px) drop-shadow(0 1px 8px rgba(0,0,0,0.5))";
-const FAR_FILTER = "blur(1.2px)";
-
-// A balanced blueprint scatter: two anchored heroes (Raspberry Pi lower-left,
-// Jetson lower-right) framed by supporting boards that fill the upper corners
-// and side gutters, with a few small, soft accents receding into depth. Every
-// board is kept inside the frame so nothing clips awkwardly at the edges, and
-// the dense centre column is reserved for one faint, far board only.
-const placements: Placement[] = [
-  // ---- Left side ----------------------------------------------------------
-  {
-    key: "pi4",
-    Glyph: RaspberryPi4,
-    color: "#aecdef",
-    // vw-led clamp so the hero scales down to a tasteful corner accent on
-    // phones while still reaching full size on desktop.
-    width: "clamp(160px, 40vw, 340px)",
-    pos: { bottom: "13%", left: "1%" },
-    rest: 0.74,
-    tilt: -3,
-    duration: 46,
-    delay: 0,
-    filter: HERO_FILTER,
-    annotation: { label: "85.0" },
-  },
-  {
-    key: "arduino",
-    Glyph: ArduinoUno,
-    color: "#8aa6cb",
-    width: "clamp(150px, 16vw, 260px)",
-    pos: { top: "7%", left: "1.5%" },
-    rest: 0.62,
-    tilt: -6,
-    variant: "pinhub-float-c",
-    duration: 54,
-    delay: 2,
-    filter: NEAR_FILTER,
-    hideOnMobile: true,
-  },
-  {
-    key: "microbit",
-    Glyph: Microbit,
-    color: "#7790b2",
-    width: "clamp(104px, 11vw, 158px)",
-    pos: { top: "45%", left: "8%" },
-    rest: 0.5,
-    tilt: 6,
-    variant: "pinhub-float-b",
-    duration: 60,
-    delay: 5,
-    filter: MID_FILTER,
-    hideOnMobile: true,
-  },
-  // ---- Right side ---------------------------------------------------------
-  {
-    key: "jetson",
-    Glyph: JetsonNano,
-    color: "#a3c0e3",
-    width: "clamp(196px, 21vw, 320px)",
-    pos: { bottom: "15%", right: "1%" },
-    rest: 0.66,
-    tilt: -5,
-    variant: "pinhub-float-b",
-    duration: 50,
-    delay: 1.2,
-    filter: NEAR_FILTER,
-    // Desktop-only: on phones the top-right Nucleo frames this corner instead,
-    // so the two bottom heroes never collide on a narrow screen.
-    hideOnMobile: true,
-  },
-  {
-    key: "stm32",
-    Glyph: STM32Nucleo,
-    color: "#88a0bf",
-    width: "clamp(150px, 30vw, 286px)",
-    pos: { top: "6%", right: "1.5%" },
-    rest: 0.6,
-    tilt: 7,
-    variant: "pinhub-float-c",
-    duration: 56,
-    delay: 3.5,
-    filter: MID_FILTER,
-  },
-  {
-    key: "teensy",
-    Glyph: Teensy,
-    color: "#7089ab",
-    width: "clamp(40px, 4.5vw, 64px)",
-    pos: { top: "60%", right: "13%" },
-    rest: 0.36,
-    tilt: 9,
-    duration: 52,
-    delay: 6.5,
-    filter: FAR_FILTER,
-    hideOnMobile: true,
-  },
-  {
-    key: "esp32",
-    Glyph: ESP32Devkit,
-    color: "#6f86a6",
-    width: "clamp(80px, 8vw, 124px)",
-    pos: { top: "33%", right: "9%" },
-    rest: 0.38,
-    tilt: 6,
-    variant: "pinhub-float-c",
-    duration: 58,
-    delay: 4,
-    filter: FAR_FILTER,
-    hideOnMobile: true,
-  },
-  // ---- Centre (one faint, far board only) ---------------------------------
-  {
-    key: "pico",
-    Glyph: Pico,
-    color: "#6b839f",
-    width: "clamp(62px, 6vw, 100px)",
-    pos: { bottom: "24%", left: "30%" },
-    rest: 0.3,
-    tilt: -12,
-    variant: "pinhub-float-b",
-    duration: 50,
-    delay: 4.5,
-    filter: FAR_FILTER,
-    hideOnMobile: true,
-  },
-];
-
-// Boards live fully only in the outer gutters and side panels; the dense
-// centre results column fades them hard so text never fights an outline.
-const centerDimMask =
-  "linear-gradient(to right, #000 0%, #000 14%, rgba(0,0,0,0.16) 34%, rgba(0,0,0,0.16) 64%, #000 82%, #000 100%)";
-
+/**
+ * A dark electronics workbench built around two recognizable reference boards.
+ * The detailed artwork lives in the wide desktop gutters, leaving the catalog
+ * itself calm and readable. Motion is decorative and disabled for reduced
+ * motion users and narrow screens.
+ */
 export function CircuitBackground() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden opacity-45 sm:opacity-60 lg:opacity-100"
-      aria-hidden
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      aria-hidden="true"
     >
-      {/* Fine + coarse drafting grid */}
-      <div className="absolute inset-0 pinhub-grid" />
+      <div className="pinhub-background-base absolute inset-0" />
+      <div className="pinhub-background-grid absolute inset-0" />
 
-      {/* Cool cyanotype wash: a key light under the lower-left Pi hero, a
-          softer fill under the lower-right Jetson hero, and a deep navy fog
-          receding across the top so the upper corners settle into depth. */}
-      <div
-        className="pinhub-glow absolute -bottom-[4%] -left-[8%] size-[54vw] rounded-full blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(125,180,224,0.18), transparent 62%)",
-        }}
-      />
-      <div
-        className="pinhub-glow absolute -bottom-[6%] -right-[8%] size-[48vw] rounded-full blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(110,162,210,0.13), transparent 62%)",
-          animationDelay: "12s",
-        }}
-      />
-      <div
-        className="pinhub-glow absolute -top-[14%] left-1/2 size-[60vw] -translate-x-1/2 rounded-full blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(40,70,110,0.13), transparent 60%)",
-          animationDelay: "8s",
-        }}
-      />
-
-      {/* Board plates, faded hard across the central results column. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          WebkitMaskImage: centerDimMask,
-          maskImage: centerDimMask,
-        }}
+      <svg
+        className="pinhub-trace-map absolute inset-0 h-full w-full"
+        viewBox="0 0 1800 1000"
+        preserveAspectRatio="xMidYMid slice"
+        fill="none"
       >
-        {placements.map(
-          ({
-            key,
-            Glyph,
-            color,
-            width,
-            pos,
-            rest,
-            tilt,
-            variant,
-            duration,
-            delay,
-            filter,
-            hideOnMobile,
-            annotation,
-          }) => (
-            <div
-              key={key}
-              className={clsx(
-                "pinhub-rise absolute",
-                hideOnMobile && "hidden lg:block",
-              )}
-              style={{ ...pos, "--rest-opacity": rest } as CSSProperties}
-            >
-              <div
-                className={clsx("pinhub-float", variant)}
-                style={
-                  {
-                    color,
-                    width,
-                    "--tilt": `${tilt}deg`,
-                    animationDuration: `${duration}s`,
-                    animationDelay: `${delay}s`,
-                    filter,
-                  } as CSSProperties
-                }
-              >
-                <Glyph width="100%" />
-                {annotation ? (
-                  <div className="hidden lg:block" style={{ color: "#d6ecff" }}>
-                    <DimensionLine label={annotation.label} />
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          ),
-        )}
-      </div>
+        <defs>
+          <linearGradient id="bench-trace" x1="0" y1="0" x2="1" y2="0">
+            <stop stopColor="#67e8f9" stopOpacity="0" />
+            <stop offset="0.45" stopColor="#67e8f9" stopOpacity="0.38" />
+            <stop offset="1" stopColor="#67e8f9" stopOpacity="0.05" />
+          </linearGradient>
+          <linearGradient id="pi-board" x1="0" y1="0" x2="1" y2="1">
+            <stop stopColor="#184f45" />
+            <stop offset="0.52" stopColor="#0d332f" />
+            <stop offset="1" stopColor="#092622" />
+          </linearGradient>
+          <linearGradient id="uno-board" x1="0" y1="0" x2="1" y2="1">
+            <stop stopColor="#087b8c" />
+            <stop offset="0.55" stopColor="#075365" />
+            <stop offset="1" stopColor="#053844" />
+          </linearGradient>
+          <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+            <stop stopColor="#d6e2e8" stopOpacity="0.7" />
+            <stop offset="0.5" stopColor="#596c78" stopOpacity="0.55" />
+            <stop offset="1" stopColor="#263540" stopOpacity="0.8" />
+          </linearGradient>
+          <radialGradient id="bench-glow">
+            <stop stopColor="#67e8f9" stopOpacity="0.18" />
+            <stop offset="1" stopColor="#67e8f9" stopOpacity="0" />
+          </radialGradient>
+          <filter id="board-shadow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="18" stdDeviation="18" floodColor="#000" floodOpacity="0.7" />
+            <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#56d7df" floodOpacity="0.14" />
+          </filter>
+          <filter id="led-glow" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <pattern id="fine-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0H0V20" stroke="#8faab8" strokeOpacity="0.06" strokeWidth="1" />
+          </pattern>
+        </defs>
 
-      {/* Cinematic vignette: keeps the lit lower band clear for both heroes and
-          sinks only the outer edges and corners into depth. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(125% 125% at 50% 62%, transparent 0%, transparent 58%, rgba(7,8,11,0.4) 84%, rgba(7,8,11,0.66) 100%)",
-        }}
-      />
+        <rect width="1800" height="1000" fill="url(#fine-grid)" />
+        <ellipse cx="190" cy="390" rx="340" ry="420" fill="url(#bench-glow)" />
+        <ellipse cx="1610" cy="610" rx="340" ry="420" fill="url(#bench-glow)" />
 
-      {/* Bottom fade so the footer stays legible */}
-      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0b0c0f] to-transparent" />
+        {/* Routed copper paths connect the two feature boards to the workbench. */}
+        <g className="pinhub-signal-traces" stroke="url(#bench-trace)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path pathLength="1" d="M0 154H92L126 188H244L270 214H346" />
+          <path pathLength="1" d="M0 688H108L142 654H270L300 624H352" />
+          <path pathLength="1" d="M1800 252H1716L1682 286H1578L1548 316H1454" />
+          <path pathLength="1" d="M1800 820H1698L1660 782H1544L1514 752H1450" />
+        </g>
+        <g fill="#8cecf2" fillOpacity="0.5">
+          {[[92, 154], [142, 654], [1716, 252], [1660, 782]].map(([cx, cy]) => (
+            <g key={`${cx}-${cy}`}>
+              <circle cx={cx} cy={cy} r="10" fill="#67e8f9" fillOpacity="0.05" />
+              <circle cx={cx} cy={cy} r="3.5" />
+            </g>
+          ))}
+        </g>
+
+        {/* Raspberry Pi 5 — recognizable I/O edge, 40-pin header and RP1/BCM2712 package. */}
+        <g className="pinhub-board pinhub-board-pi" transform="translate(54 250) rotate(-7 185 280)" filter="url(#board-shadow)">
+          <path d="M28 12H342a28 28 0 0 1 28 28v482a28 28 0 0 1-28 28H28A28 28 0 0 1 0 522V40A28 28 0 0 1 28 12Z" fill="url(#pi-board)" stroke="#7ce5d2" strokeOpacity="0.38" strokeWidth="2" />
+          <g fill="#081a18" stroke="#8be7d8" strokeOpacity="0.35" strokeWidth="2">
+            <circle cx="26" cy="38" r="10" /><circle cx="344" cy="38" r="10" />
+            <circle cx="26" cy="524" r="10" /><circle cx="344" cy="524" r="10" />
+          </g>
+
+          {/* Four USB/Ethernet cans along the outside edge. */}
+          <g fill="url(#metal)" stroke="#b6c8d1" strokeOpacity="0.45">
+            <path d="M310 78h82v78h-82z" /><path d="M310 170h82v78h-82z" />
+            <path d="M304 278h94v102h-94z" /><path d="M304 402h94v98h-94z" />
+          </g>
+          <g stroke="#d6e4e8" strokeOpacity="0.35" strokeWidth="3">
+            <path d="M326 99h50M326 121h50M326 191h50M326 213h50" />
+            <path d="M326 304h50v28h-50zM326 426h50v28h-50z" />
+          </g>
+
+          {/* Dual micro-HDMI, USB-C and camera/display ribbon connectors. */}
+          <g fill="#27343b" stroke="#b9cbd2" strokeOpacity="0.38">
+            <path d="M28-3h60v31H28z" /><path d="M103-3h60v31h-60z" />
+            <rect x="184" y="-6" width="66" height="35" rx="8" />
+            <rect x="42" y="477" width="80" height="22" rx="2" fill="#d6bd6c" />
+            <rect x="154" y="477" width="80" height="22" rx="2" fill="#d6bd6c" />
+          </g>
+
+          {/* 40-pin GPIO header. */}
+          <g transform="translate(38 58)">
+            <rect x="-9" y="-9" width="244" height="38" rx="4" fill="#171a1b" stroke="#e0c255" strokeOpacity="0.45" />
+            {Array.from({ length: 20 }, (_, index) => (
+              <g key={index} transform={`translate(${index * 12} 0)`}>
+                <rect width="7" height="7" rx="1" fill="#d4ae45" />
+                <rect y="13" width="7" height="7" rx="1" fill="#d4ae45" />
+              </g>
+            ))}
+          </g>
+
+          {/* Main silicon and supporting components. */}
+          <g>
+            <rect x="66" y="176" width="128" height="128" rx="6" fill="#26323a" stroke="#a8bec8" strokeOpacity="0.44" />
+            <rect x="77" y="187" width="106" height="106" rx="3" fill="#161d22" stroke="#71858f" strokeOpacity="0.4" />
+            <text x="130" y="231" textAnchor="middle" fill="#b8c9cf" fillOpacity="0.68" fontFamily="var(--font-mono)" fontSize="11" letterSpacing="1.2">BROADCOM</text>
+            <text x="130" y="250" textAnchor="middle" fill="#d6e3e6" fillOpacity="0.8" fontFamily="var(--font-mono)" fontSize="14" fontWeight="700">BCM2712</text>
+            <text x="130" y="270" textAnchor="middle" fill="#8ca0a8" fillOpacity="0.62" fontFamily="var(--font-mono)" fontSize="9">2.4 GHz · 4 CORE</text>
+            <rect x="213" y="204" width="70" height="70" rx="4" fill="#1b252b" stroke="#95aab3" strokeOpacity="0.38" />
+            <text x="248" y="237" textAnchor="middle" fill="#cbd9dd" fillOpacity="0.72" fontFamily="var(--font-mono)" fontSize="12" fontWeight="700">RP1</text>
+            <text x="248" y="253" textAnchor="middle" fill="#879aa2" fillOpacity="0.6" fontFamily="var(--font-mono)" fontSize="7">I/O CONTROLLER</text>
+          </g>
+          <g fill="#b8c8cc" fillOpacity="0.48">
+            {[[54,342],[82,342],[110,342],[138,342],[166,342],[204,326],[230,326],[256,326],[54,382],[90,382],[126,382],[162,382],[218,374],[250,374]].map(([x,y]) => <rect key={`${x}-${y}`} x={x} y={y} width="16" height="8" rx="1" />)}
+          </g>
+          <g stroke="#72d8cc" strokeOpacity="0.28" strokeWidth="1">
+            <path d="M130 304v28H62v10M174 304v50h44v20M213 239h-19M283 239h20M130 176v-62" />
+          </g>
+          <circle cx="279" cy="105" r="4" fill="#67e8a3" filter="url(#led-glow)" />
+          <text x="42" y="448" fill="#d6f3ed" fillOpacity="0.8" fontFamily="var(--font-sans)" fontSize="21" fontWeight="700">Raspberry Pi 5</text>
+          <text x="43" y="465" fill="#8fd5c8" fillOpacity="0.62" fontFamily="var(--font-mono)" fontSize="9" letterSpacing="1.4">8GB · REV 1.0 · 3V3 GPIO</text>
+        </g>
+
+        {/* Arduino Uno R3 — teal board, DIP ATmega328P and familiar shield headers. */}
+        <g className="pinhub-board pinhub-board-uno" transform="translate(1450 320) rotate(8 170 235)" filter="url(#board-shadow)">
+          <path d="M22 12H306l38 38v362l-28 28H22A22 22 0 0 1 0 418V34A22 22 0 0 1 22 12Z" fill="url(#uno-board)" stroke="#67dcec" strokeOpacity="0.5" strokeWidth="2" />
+          <g fill="#052b34" stroke="#7ce6ef" strokeOpacity="0.42" strokeWidth="2">
+            <circle cx="24" cy="38" r="9" /><circle cx="306" cy="58" r="9" />
+            <circle cx="24" cy="414" r="9" /><circle cx="306" cy="414" r="9" />
+          </g>
+          <path d="M-18 70h76v94h-76z" fill="url(#metal)" stroke="#c9d9df" strokeOpacity="0.5" />
+          <path d="M0 91h39v52H0z" fill="#273942" stroke="#d6e2e5" strokeOpacity="0.36" />
+          <rect x="-10" y="295" width="60" height="70" rx="7" fill="#171d20" stroke="#9aaeb5" strokeOpacity="0.5" />
+          <circle cx="20" cy="330" r="16" fill="#0a0d0f" stroke="#53666f" strokeWidth="4" />
+
+          {/* Female shield headers. */}
+          <g fill="#121718" stroke="#9bdde4" strokeOpacity="0.32">
+            <rect x="73" y="35" width="223" height="30" rx="3" />
+            <rect x="73" y="382" width="223" height="30" rx="3" />
+          </g>
+          <g fill="#6f7d80">
+            {Array.from({ length: 14 }, (_, index) => <rect key={`top-${index}`} x={82 + index * 15} y="45" width="7" height="10" rx="1" />)}
+            {Array.from({ length: 14 }, (_, index) => <rect key={`bottom-${index}`} x={82 + index * 15} y="392" width="7" height="10" rx="1" />)}
+          </g>
+
+          {/* ATmega328P in DIP package. */}
+          <rect x="118" y="178" width="164" height="72" rx="8" fill="#15191b" stroke="#95a7ad" strokeOpacity="0.4" />
+          <circle cx="137" cy="214" r="8" fill="#090b0c" stroke="#65747a" strokeOpacity="0.5" />
+          <text x="210" y="205" textAnchor="middle" fill="#d0dde0" fillOpacity="0.8" fontFamily="var(--font-mono)" fontSize="11" fontWeight="700">ATMEGA328P-PU</text>
+          <text x="210" y="225" textAnchor="middle" fill="#8fa2a7" fillOpacity="0.65" fontFamily="var(--font-mono)" fontSize="8">20MHz · AVR · 5V LOGIC</text>
+          <g fill="#c7d1d1" fillOpacity="0.58">
+            {Array.from({ length: 8 }, (_, index) => <rect key={`dip-t-${index}`} x={132 + index * 18} y="169" width="8" height="9" />)}
+            {Array.from({ length: 8 }, (_, index) => <rect key={`dip-b-${index}`} x={132 + index * 18} y="250" width="8" height="9" />)}
+          </g>
+          <rect x="70" y="112" width="60" height="60" rx="4" fill="#26343a" stroke="#a9bdc4" strokeOpacity="0.42" />
+          <text x="100" y="139" textAnchor="middle" fill="#d4e0e2" fillOpacity="0.72" fontFamily="var(--font-mono)" fontSize="8">ATMEGA16U2</text>
+          <text x="100" y="153" textAnchor="middle" fill="#84979d" fillOpacity="0.64" fontFamily="var(--font-mono)" fontSize="7">USB BRIDGE</text>
+          <g stroke="#69dbe7" strokeOpacity="0.24" strokeWidth="1.2">
+            <path d="M58 118h12M130 142h26v27M200 169V66M282 214h28v80H52M102 250v46H52" />
+          </g>
+          <g fill="#d8c06b" fillOpacity="0.75">
+            <circle cx="77" cy="292" r="5" /><circle cx="94" cy="292" r="5" /><circle cx="111" cy="292" r="5" />
+          </g>
+          <circle cx="286" cy="103" r="4" fill="#f5b942" filter="url(#led-glow)" />
+          <circle cx="302" cy="103" r="4" fill="#62efb6" filter="url(#led-glow)" />
+          <text x="74" y="335" fill="#d4f3f6" fillOpacity="0.88" fontFamily="var(--font-sans)" fontSize="23" fontWeight="700">ARDUINO</text>
+          <text x="74" y="355" fill="#9ee1e8" fillOpacity="0.7" fontFamily="var(--font-mono)" fontSize="12" fontWeight="700" letterSpacing="1.4">UNO R3</text>
+        </g>
+
+        <g className="pinhub-bench-labels" fill="#b6c9d2" fillOpacity="0.28" fontFamily="var(--font-mono)" fontSize="9" letterSpacing="1.8">
+          <text x="44" y="918">REFERENCE HARDWARE / COMPUTE</text>
+          <text x="1460" y="918">REFERENCE HARDWARE / CONTROL</text>
+        </g>
+      </svg>
+
+      <div className="pinhub-background-light absolute inset-0" />
+      <div className="pinhub-background-vignette absolute inset-0" />
     </div>
   );
 }

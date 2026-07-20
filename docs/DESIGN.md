@@ -100,7 +100,7 @@ The first screen **is** the catalog. No hero, no marketing copy.
 
 | Token | Value | Role |
 | --- | --- | --- |
-| `--background` | `#0b0c0f` | page base |
+| `--background` | `#090b0f` | page base |
 | panel | `#14161d` | raised opaque card (`.surface-panel`) |
 | well | `#0e1015` | recessed nested surface (`.surface-well`) |
 | header/bar | `#0a0d12` / `#0c0e13` | chrome strips |
@@ -116,8 +116,9 @@ debug lime, system orange, alt teal, reserved stone) defined once in
 `board-visual/roles.ts` and reused by chips, SVG pads, legend, and table so
 every rendering of a pin agrees.
 
-- **Background**: fixed blueprint drafting grid + faint board-plate
-  silhouettes (`CircuitBackground`), visible only in gutters. All widgets
+- **Background**: static graphite instrument plates with a masked micro-grid,
+  brushed texture, and legible PCB traces (`CircuitBackground`) confined to the
+  desktop gutters. All widgets
   are opaque — no glass/blur.
 - **Typography**: Geist (UI), Geist Mono (pin labels, numbers, metrics —
   anything an engineer might transcribe), Audiowide (wordmark only).

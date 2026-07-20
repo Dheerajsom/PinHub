@@ -443,7 +443,7 @@ export function PinHubApp({
   }, [selectedBoard.id]);
 
   return (
-    <main className="relative min-h-screen">
+    <main className="relative isolate min-h-screen">
       <CircuitBackground />
       <header className="relative border-b border-white/10 bg-[#0a0d12] shadow-[0_1px_0_rgba(255,255,255,0.05)_inset,0_12px_30px_-24px_rgba(0,0,0,0.9)] pt-[env(safe-area-inset-top)]">
         <div

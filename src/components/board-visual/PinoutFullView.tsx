@@ -7,6 +7,7 @@ import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
 import { VendorLogo } from "@/components/VendorLogo";
+import { CircuitBackground } from "@/components/CircuitBackground";
 
 // Standalone, full-viewport pinout inspector served at /pinout/[id]. Built for
 // the dense FPGA expansion-header boards whose diagrams are cramped inside the
@@ -33,7 +34,7 @@ export function PinoutFullView({ board }: { board: Board }) {
 
   return (
     <main
-      className="min-h-screen bg-[#070a0d] px-4 py-5 sm:px-6 lg:px-8"
+      className="relative isolate min-h-screen px-4 py-5 sm:px-6 lg:px-8"
       onKeyDown={(event) => {
         if (event.key !== "Escape") return;
         if (selectedKey) {
@@ -44,7 +45,8 @@ export function PinoutFullView({ board }: { board: Board }) {
         }
       }}
     >
-      <div className="mx-auto max-w-[1400px]">
+      <CircuitBackground />
+      <div className="relative mx-auto max-w-[1400px]">
         <header className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-4">
           <div className="min-w-0">
             <Link
