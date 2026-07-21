@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CircuitBoard } from "lucide-react";
+import { ArrowLeft, CircuitBoard, Search, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
@@ -17,6 +17,7 @@ export function PinoutFullView({ board }: { board: Board }) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
+  const [query, setQuery] = useState("");
 
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
@@ -29,6 +30,19 @@ export function PinoutFullView({ board }: { board: Board }) {
     geometry?.anchors.forEach((a) => set.add(a.pin.role));
     return set;
   }, [geometry]);
+
+  const matches = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return [];
+    return (geometry?.anchors ?? []).filter(({ pin }) =>
+      [
+        pin.label,
+        pin.role,
+        pin.note ?? "",
+        ...(pin.aliases ?? []),
+      ].some((value) => value.toLowerCase().includes(needle)),
+    );
+  }, [geometry, query]);
 
   const liveAnchor = anchorsByKey.get(activeKey ?? selectedKey ?? "") ?? null;
 
@@ -50,11 +64,11 @@ export function PinoutFullView({ board }: { board: Board }) {
         <header className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-4">
           <div className="min-w-0">
             <Link
-              href="/"
+              href={`/boards/${board.id}`}
               className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 transition hover:text-cyan-200"
             >
               <ArrowLeft className="size-3.5" aria-hidden="true" />
-              Back to catalog
+              Back to board overview
             </Link>
             <h1 className="mt-2 flex items-center gap-2.5 text-2xl font-semibold text-white">
               <VendorLogo vendor={board.vendor} size={24} />
@@ -73,6 +87,22 @@ export function PinoutFullView({ board }: { board: Board }) {
 
         {geometry ? (
           <div className="mt-5">
+            <section className="surface-panel mb-4 rounded-xl p-3">
+              <label className="relative block">
+                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
+                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find a pin, alias, role, or warning?" aria-label="Search pins" className="h-11 w-full rounded-lg border border-white/10 bg-[#090b10] pl-10 pr-12 text-sm text-white outline-none transition focus:border-cyan-300/70" />
+                {query ? <button type="button" onClick={() => setQuery("")} aria-label="Clear pin search" className="absolute right-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-zinc-500 hover:text-white"><X className="size-4" /></button> : null}
+              </label>
+              {query ? (
+                <div className="mt-2 flex max-h-24 flex-wrap gap-1.5 overflow-y-auto" role="status">
+                  {matches.length ? matches.map((anchor) => (
+                    <button key={anchor.key} type="button" onClick={() => { setSelectedKey(anchor.key); setActiveKey(anchor.key); }} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-xs text-zinc-300 transition hover:border-cyan-300/50 hover:text-white">
+                      {anchor.pin.position} ? {anchor.pin.label}
+                    </button>
+                  )) : <span className="px-1 py-1 text-xs text-zinc-500">No matching pins.</span>}
+                </div>
+              ) : null}
+            </section>
             <InspectorBody
               board={board}
               geometry={geometry}
