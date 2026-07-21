@@ -146,7 +146,7 @@ function urlForState(state: CatalogState): string {
   if (state.favoritesOnly) params.set("favorites", "yes");
   const naturalSort = state.query.trim() ? "relevance" : "name";
   if (state.sort !== naturalSort) params.set("sort", state.sort);
-  return params.size ? `?${params.toString()}` : "/";
+  return params.size ? `?${params.toString()}` : "/compare";
 }
 
 function scoreBoard(board: BoardSummary, query: string): number {
@@ -204,13 +204,17 @@ function matches(
 export function DiscoveryApp({
   catalog,
   sourceCount,
+  initialCompareIds = [],
 }: {
   catalog: BoardSummary[];
   sourceCount: number;
+  initialCompareIds?: string[];
 }) {
   const [state, setState] = useState(defaultState);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareIds, setCompareIds] = useState<string[]>(() =>
+    initialCompareIds.slice(0, 3),
+  );
   const [visible, setVisible] = useState(24);
   const urlReady = useRef(false);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -363,6 +367,23 @@ export function DiscoveryApp({
 
       <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 shadow-2xl backdrop-blur-md">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2.5 px-4 py-3 sm:px-6 lg:px-8">
+          <nav
+            aria-label="PinHub sections"
+            className="flex h-10 shrink-0 items-center rounded-lg border border-white/10 bg-[#090b10] p-1"
+          >
+            <Link
+              href="/"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-zinc-400 transition hover:bg-white/[0.05] hover:text-white"
+            >
+              <CircuitBoard className="size-3.5" /> Pin Maps
+            </Link>
+            <span
+              aria-current="page"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-cyan-300/12 px-2.5 text-xs font-semibold text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.25)]"
+            >
+              <GitCompareArrows className="size-3.5" /> Compare
+            </span>
+          </nav>
           <label className="relative min-w-0 flex-1 basis-full sm:basis-80">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" />
             <input
