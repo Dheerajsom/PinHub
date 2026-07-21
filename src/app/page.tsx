@@ -1,4 +1,4 @@
-import { PinHubApp } from "@/components/PinHubApp";
+import { DiscoveryApp } from "@/components/DiscoveryApp";
 import { boards } from "@/lib/boards";
 import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
 import { assertBoardSourcesValid } from "@/lib/source-trust";
@@ -17,13 +17,9 @@ const sourceCount = boards.reduce(
 );
 
 export default function Home() {
-  const initialBoard = boards[0];
-  if (!initialBoard) return null;
-
   return (
-    <PinHubApp
+    <DiscoveryApp
       catalog={catalog}
-      initialBoard={initialBoard}
       sourceCount={sourceCount}
     />
   );

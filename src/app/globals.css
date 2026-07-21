@@ -420,3 +420,109 @@ button {
     transition: none;
   }
 }
+
+/* Discovery workspace motion communicates state without slowing lookup. */
+@keyframes discovery-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes compare-tray-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes board-hero-scan {
+  0%,
+  65% {
+    transform: translateX(-130%);
+  }
+  100% {
+    transform: translateX(160%);
+  }
+}
+
+.discovery-card {
+  animation: discovery-card-in 420ms both cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.compare-tray {
+  animation: compare-tray-in 260ms both cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.board-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent, rgba(103, 232, 249, 0.035), transparent);
+  animation: board-hero-scan 7s ease-in-out infinite;
+}
+
+@media (max-width: 639px) {
+  .comparison-scroll {
+    margin-inline: -1rem;
+    border-radius: 0;
+    border-inline: 0;
+  }
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    background: white !important;
+    color: #111827 !important;
+  }
+  .pinhub-background-base,
+  .compare-tray,
+  header,
+  footer,
+  button {
+    display: none !important;
+  }
+  .surface-panel,
+  .surface-well,
+  .comparison-scroll {
+    background: white !important;
+    border-color: #d1d5db !important;
+    box-shadow: none !important;
+  }
+  table,
+  th,
+  td,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  dd,
+  dt,
+  span {
+    color: #111827 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discovery-card,
+  .compare-tray,
+  .board-hero::after {
+    animation: none;
+    transition: none;
+  }
+}
