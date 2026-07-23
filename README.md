@@ -1,4 +1,6 @@
-# PinHub
+<p align="center">
+  <img src="public/pinhub-logo.png" alt="PinHub" width="280" />
+</p>
 
 PinHub is a searchable pinout catalog for development boards, SBCs,
 microcontrollers, and embedded hardware. Instead of digging through image search,
