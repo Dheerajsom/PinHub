@@ -42,10 +42,22 @@ export function shouldAnimateSignalPulse(argv: string[], context: SignalPulseCon
   if (isCiEnvironment(context.env) || context.env.TERM?.toLowerCase() === "dumb") return false;
   if (hasNoColor(context.env) || context.env.PINHUB_NO_MOTION || context.env.NO_MOTION) return false;
 
+  // `completion`/`__complete` write machine-consumed text; motion would only
+  // add latency to a Tab press or noise to a script being piped into a file.
   const disablesMotion = argv.some((argument) =>
-    ["help", "-h", "--help", "-v", "-V", "--version", "--json", "--no-motion", "--no-color"].includes(
-      argument,
-    ),
+    [
+      "help",
+      "-h",
+      "--help",
+      "-v",
+      "-V",
+      "--version",
+      "--json",
+      "--no-motion",
+      "--no-color",
+      "completion",
+      "__complete",
+    ].includes(argument),
   );
   return !disablesMotion;
 }

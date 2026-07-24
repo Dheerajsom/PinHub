@@ -90,14 +90,14 @@ export function PinoutFullView({ board }: { board: Board }) {
             <section className="surface-panel mb-4 rounded-xl p-3">
               <label className="relative block">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
-                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find a pin, alias, role, or warning?" aria-label="Search pins" className="h-11 w-full rounded-lg border border-white/10 bg-[#090b10] pl-10 pr-12 text-sm text-white outline-none transition focus:border-cyan-300/70" />
+                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find a pin, alias, role, or warning…" aria-label="Search pins" className="h-11 w-full rounded-lg border border-white/10 bg-[#090b10] pl-10 pr-12 text-sm text-white outline-none transition focus:border-cyan-300/70" />
                 {query ? <button type="button" onClick={() => setQuery("")} aria-label="Clear pin search" className="absolute right-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-zinc-500 hover:text-white"><X className="size-4" /></button> : null}
               </label>
               {query ? (
                 <div className="mt-2 flex max-h-24 flex-wrap gap-1.5 overflow-y-auto" role="status">
                   {matches.length ? matches.map((anchor) => (
                     <button key={anchor.key} type="button" onClick={() => { setSelectedKey(anchor.key); setActiveKey(anchor.key); }} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-xs text-zinc-300 transition hover:border-cyan-300/50 hover:text-white">
-                      {anchor.pin.position} ? {anchor.pin.label}
+                      {anchor.pin.position} · {anchor.pin.label}
                     </button>
                   )) : <span className="px-1 py-1 text-xs text-zinc-500">No matching pins.</span>}
                 </div>

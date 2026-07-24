@@ -1,5 +1,11 @@
 import { Command, CommanderError, InvalidArgumentError } from "commander";
 import { boards, resolveBoard, searchBoards, suggestBoards } from "./catalog.js";
+import {
+  COMPLETION_SHELLS,
+  completeCommandOutput,
+  completionScript,
+  resolveCompletionShell,
+} from "./complete.js";
 import { VERSION } from "./version.js";
 import { asciiChars, unicodeChars } from "./render/chars.js";
 import { makeChalk } from "./render/theme.js";
@@ -64,6 +70,11 @@ export function parseWidth(value: string): number {
  * motion lives in cli.ts and never enters these buffers.
  */
 export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<RunResult> {
+  // Answered before commander sees anything: the words being completed are the
+  // user's own partial command line, and may include flags that belong to `ph`
+  // rather than to `__complete`.
+  if (argv[0] === "__complete") return completeCommandOutput(argv);
+
   let stdout = "";
   let stderr = "";
   let code = 0;
@@ -192,7 +203,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
     )
     .addHelpText(
       "after",
-      "\nExamples:\n  ph rpi5\n  ph raspberry pi 5\n  ph pico --compact\n  ph esp32 --ascii --no-color\n  ph uno --details\n  ph uno --json\n  ph rpi5 --source\n  ph search raspberry",
+      "\nExamples:\n  ph rpi5\n  ph raspberry pi 5\n  ph pico --compact\n  ph esp32 --ascii --no-color\n  ph uno --details\n  ph uno --json\n  ph rpi5 --source\n  ph search raspberry\n\nTab completion:\n  eval \"$(ph completion bash)\"      # add to ~/.bashrc\n  eval \"$(ph completion zsh)\"       # add to ~/.zshrc\n  ph completion fish > ~/.config/fish/completions/ph.fish\n  ph completion powershell | Out-File -Append -Encoding utf8 $PROFILE",
     )
     .action((words: string[], flags: DiagramFlags) => {
       if (words.length === 0) {
@@ -252,6 +263,31 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       }
       const render = buildRender(flags);
       print(flags.source ? renderSources(board, render) : renderInfo(board, render));
+    });
+
+  program
+    .command("completion <shell>")
+    .description(`print a Tab-completion script (${COMPLETION_SHELLS.join(", ")})`)
+    .addHelpText(
+      "after",
+      "\nThe script is printed to stdout; install it once and reopen the shell.\n" +
+        "Examples:\n" +
+        '  eval "$(ph completion bash)"      # add to ~/.bashrc\n' +
+        '  eval "$(ph completion zsh)"       # add to ~/.zshrc\n' +
+        "  ph completion fish > ~/.config/fish/completions/ph.fish\n" +
+        "  ph completion powershell | Out-File -Append -Encoding utf8 $PROFILE",
+    )
+    .action((shell: string) => {
+      const resolved = resolveCompletionShell(shell);
+      if (!resolved) {
+        printErr(
+          `Unknown shell "${safeTerminalText(shell)}". Choose one of: ${COMPLETION_SHELLS.join(", ")}.`,
+        );
+        code = 1;
+        return;
+      }
+      // Scripts are plain text on stdout so they can be piped into a file.
+      print(completionScript(resolved).trimEnd());
     });
 
   try {

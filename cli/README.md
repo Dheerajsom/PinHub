@@ -87,6 +87,7 @@ ph list               # list the complete catalog
 ph search <query>     # search names, aliases, and manufacturers
 ph info <board>       # show description, warnings, headers, and aliases
 ph <board> --source   # show documentation sources
+ph completion <shell> # print a Tab-completion script
 ph help               # show command help
 ph --version          # show the installed version
 ```
@@ -102,6 +103,61 @@ Compatibility notes:
 - `esp32` selects the DOIT 30-pin `esp32-devkit-v1`; the distinct 38-pin
   Espressif board is `esp32-devkitc`.
 - Educational aliases include `frdm-kl25z`, `nexys-a7`, and `de10-lite`.
+
+### Tab completion
+
+Completion is not automatic — shells only complete a command they have been
+taught about. `ph completion <shell>` prints that script to stdout; install it
+once and reopen the shell, and Tab then completes board ids, short aliases,
+subcommands, and flags.
+
+```powershell
+# PowerShell (Windows)
+New-Item -ItemType File -Path $PROFILE -Force   # only if you have no profile yet
+ph completion powershell | Out-File -Append -Encoding utf8 $PROFILE
+```
+
+```bash
+# bash — add to ~/.bashrc
+eval "$(ph completion bash)"
+
+# or install as a bash-completion file
+ph completion bash > ~/.local/share/bash-completion/completions/ph
+```
+
+```bash
+# zsh — add to ~/.zshrc, after compinit has run
+eval "$(ph completion zsh)"
+```
+
+```fish
+# fish
+ph completion fish > ~/.config/fish/completions/ph.fish
+```
+
+If zsh reports `compdef: command not found`, add `autoload -Uz compinit &&
+compinit` above the `eval` line.
+
+Completion knows the context it is in:
+
+```text
+ph rasp<Tab>          # every raspberry-pi-* board
+ph rpi<Tab>           # short aliases: rpi3, rpi4, rpi5, rpi-pico, ...
+ph info pic<Tab>      # pico, pico-w, pico-2, pico2w, ...
+ph rpi5 --so<Tab>     # --source
+ph list --<Tab>       # only the flags list accepts
+ph completion <Tab>   # bash, fish, powershell, zsh
+```
+
+Matching is case-insensitive and covers both canonical ids
+(`raspberry-pi-pico-w`) and curated aliases (`picow`). The shell scripts call
+the hidden `ph __complete` command, which reads the bundled catalog and never
+touches the network.
+
+One PowerShell quirk: it reserves a bare `-` or `--` for its own parameter
+parsing and never forwards those to a native completer, so `ph --<Tab>` lists
+nothing there. Type one more character — `ph --a<Tab>` completes to `--ascii`.
+bash, zsh, and fish complete a bare `--` normally.
 
 ### Output options
 
@@ -150,8 +206,9 @@ Run `ph list` for the current set.
   vertical list as terminal width shrinks.
 - Warnings retain distinct symbols in color and monochrome modes.
 - The interactive signal pulse never runs for pipes, CI, `TERM=dumb`, help,
-  version, JSON, `--no-color`, or `--no-motion`. Set `PINHUB_NO_MOTION=1` to
-  disable it persistently.
+  version, JSON, completion, `--no-color`, or `--no-motion`. Set
+  `PINHUB_NO_MOTION=1` to disable it persistently.
+- Tab completion works from the keyboard alone and needs no color or Unicode.
 
 ## Troubleshooting
 
@@ -171,6 +228,14 @@ also help with piped output in legacy consoles.
 Color and motion turn off automatically for non-interactive output. Check
 `NO_COLOR`, `PINHUB_NO_MOTION`, and `TERM`, or explicitly use `--no-color` and
 `--no-motion` when deterministic output is desired.
+
+### Tab does not complete board names
+
+Nothing is installed by default. Run the matching command in
+[Tab completion](#tab-completion), then open a new shell. Verify the data path
+directly with `ph __complete --prefix=rasp`, which should print board names; if
+that works but Tab does not, the completion script was not loaded by your shell
+profile.
 
 ### The diagram is cramped
 
@@ -231,8 +296,10 @@ npm run package:check
 
 The entry point is `src/cli.ts`. `src/run.ts` contains the deterministic command
 surface and writes to captured buffers for tests. Renderers under `src/render/`
-handle dual-row, compact, and vertical layouts. CI exercises lint, tests, build,
-and smoke coverage on Windows, macOS, and Linux.
+handle dual-row, compact, and vertical layouts. `src/complete.ts` holds the
+shell-completion candidates and scripts, and is loaded on its own fast path so a
+Tab press never pays for commander, chalk, or the renderers. CI exercises lint,
+tests, build, and smoke coverage on Windows, macOS, and Linux.
 
 To publish an intentional SemVer release from `cli/`:
 

@@ -396,7 +396,7 @@ export function DiscoveryApp({
                   event.currentTarget.blur();
                 }
               }}
-              placeholder="Search processor, interface, connector, or warning?"
+              placeholder="Search processor, interface, connector, or warning…"
               aria-label="Search boards"
               className="h-11 w-full rounded-lg border border-white/10 bg-[#090b10] pl-10 pr-12 text-sm text-white outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/30"
             />
@@ -417,8 +417,8 @@ export function DiscoveryApp({
           </button>
           <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as SortKey }))} aria-label="Sort boards" className="h-10 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none">
             {state.query ? <option value="relevance">Best match</option> : null}
-            <option value="name">Name A?Z</option>
-            <option value="vendor">Vendor A?Z</option>
+            <option value="name">Name A–Z</option>
+            <option value="vendor">Vendor A–Z</option>
           </select>
           <span className="ml-auto font-mono text-xs text-zinc-400" role="status" aria-live="polite">{filtered.length} matches</span>
         </div>
@@ -490,7 +490,7 @@ export function DiscoveryApp({
       <footer className="relative border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-zinc-500 sm:px-6 lg:px-8">
           <span>Always verify against linked official documentation before wiring.</span>
-          <span className="font-mono">{catalog.length} boards ? {sourceCount} sources</span>
+          <span className="font-mono">{catalog.length} boards · {sourceCount} sources</span>
         </div>
       </footer>
     </main>
@@ -552,7 +552,7 @@ function BoardCard({
             <Link href={`/boards/${board.id}`} className="text-base font-semibold text-white outline-none before:absolute before:inset-0 before:z-0 focus-visible:before:ring-2 focus-visible:before:ring-cyan-300">{board.name}</Link>
             {board.hasPinout ? <span className="rounded border border-emerald-400/35 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] text-emerald-100">Pin map</span> : null}
           </div>
-          <p className="mt-1 font-mono text-xs text-zinc-500">{board.vendor} ? {board.discovery.computeClass}</p>
+          <p className="mt-1 font-mono text-xs text-zinc-500">{board.vendor} · {board.discovery.computeClass}</p>
         </div>
         <button type="button" onClick={() => onFavorite(board.id)} aria-label={favorite ? `Remove ${board.name} from favorites` : `Add ${board.name} to favorites`} aria-pressed={favorite} className="relative z-10 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-amber-200"><Star className={clsx("size-4", favorite && "fill-amber-300 text-amber-300")} /></button>
       </div>
@@ -560,8 +560,8 @@ function BoardCard({
       <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
         <CardSpec label="Processor" value={board.processor} />
         <CardSpec label="Logic" value={board.discovery.logicProfile} />
-        <CardSpec label="Wireless" value={board.discovery.wireless.join(" ? ") || "None listed"} />
-        <CardSpec label="Connector" value={board.discovery.connectorEcosystems.join(" ? ") || "Board-specific"} />
+        <CardSpec label="Wireless" value={board.discovery.wireless.join(" · ") || "None listed"} />
+        <CardSpec label="Connector" value={board.discovery.connectorEcosystems.join(" · ") || "Board-specific"} />
       </dl>
       <div className="relative z-10 mt-3 flex items-center justify-between gap-3 border-t border-white/8 pt-3">
         <span className={clsx("inline-flex items-center gap-1.5 text-xs", board.warningCount ? "text-orange-200" : "text-zinc-500")}><ShieldAlert className="size-3.5" />{board.warningCount} wiring cautions</span>

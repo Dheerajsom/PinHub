@@ -93,7 +93,7 @@ export default async function BoardPage({
           <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
             <div className="max-w-3xl">
               <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200">
-                <Cpu className="size-3.5" /> {profile.computeClass} ? {board.category}
+                <Cpu className="size-3.5" /> {profile.computeClass} · {board.category}
               </div>
               <h1 className="mt-3 flex items-center gap-3 text-3xl font-semibold text-white sm:text-4xl">
                 <VendorLogo vendor={board.vendor} size={34} />
@@ -183,7 +183,7 @@ export default async function BoardPage({
               {related.map(({ board: item, reasons }) => (
                 <Link key={item.id} href={`/boards/${item.id}`} className="surface-panel group rounded-xl p-4 transition duration-300 hover:-translate-y-1 hover:border-cyan-300/35">
                   <div className="flex items-center gap-2 font-semibold text-white"><VendorLogo vendor={item.vendor} />{item.name}</div>
-                  <p className="mt-2 text-xs leading-5 text-zinc-500">{reasons.join(" ? ")}</p>
+                  <p className="mt-2 text-xs leading-5 text-zinc-500">{reasons.join(" · ")}</p>
                 </Link>
               ))}
             </div>

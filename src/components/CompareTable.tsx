@@ -54,7 +54,7 @@ export function CompareTable({ boards }: { boards: Board[] }) {
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-zinc-400" role="status" aria-live="polite">
           {differencesOnly ? `${visibleRows.length} differing attributes shown` : `${rows.length} attributes shown`}
         </p>
         <div className="flex gap-2">
@@ -71,9 +71,9 @@ export function CompareTable({ boards }: { boards: Board[] }) {
         <table className="w-full min-w-[760px] border-collapse text-left">
           <thead>
             <tr className="border-b border-white/10 bg-[#0c0f14]">
-              <th className="sticky left-0 z-20 w-40 bg-[#0c0f14] p-4 text-xs uppercase tracking-[0.14em] text-zinc-500">Attribute</th>
+              <th scope="col" className="sticky left-0 z-20 w-40 bg-[#0c0f14] p-4 text-xs uppercase tracking-[0.14em] text-zinc-500">Attribute</th>
               {boards.map((board) => (
-                <th key={board.id} className="min-w-52 p-4 align-top">
+                <th scope="col" key={board.id} className="min-w-52 p-4 align-top">
                   <div className="flex items-start justify-between gap-2">
                     <Link href={`/boards/${board.id}`} className="group flex items-center gap-2 font-semibold text-white hover:text-cyan-100">
                       <VendorLogo vendor={board.vendor} size={22} />{board.name}
@@ -93,7 +93,7 @@ export function CompareTable({ boards }: { boards: Board[] }) {
               const differs = uniqueValues(row.values) > 1;
               return (
                 <tr key={row.label} className="border-b border-white/[0.07] last:border-0">
-                  <th className="sticky left-0 z-10 bg-[#11141a] p-4 text-xs font-medium uppercase tracking-[0.1em] text-zinc-500">{row.label}</th>
+                  <th scope="row" className="sticky left-0 z-10 bg-[#11141a] p-4 text-xs font-medium uppercase tracking-[0.1em] text-zinc-500">{row.label}</th>
                   {row.values.map((value, index) => (
                     <td key={boards[index]?.id} className={clsx("p-4 text-sm leading-6 text-zinc-300", differs && "bg-cyan-300/[0.025]")}>{value || "Not documented"}</td>
                   ))}
