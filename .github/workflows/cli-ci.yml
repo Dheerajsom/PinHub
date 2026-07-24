@@ -48,3 +48,10 @@ jobs:
       - run: npm run package:check
       - name: Smoke-test the built CLI
         run: node dist/cli.js rpi5 --ascii --no-color
+      # cli.ts answers completion on its own dynamic-import path, which the
+      # vitest suite bypasses by calling runCli directly.
+      - name: Smoke-test shell completion through the built entry point
+        shell: bash
+        run: |
+          node dist/cli.js completion bash | grep -q '_ph_complete'
+          node dist/cli.js __complete --prefix=rpi5 | grep -qx 'rpi5'
