@@ -1,30 +1,52 @@
 version: 2
+
+# Scheduling note: `interval` governs routine version updates only. Security
+# updates are triggered by advisories, not by this schedule, so moving to
+# monthly slows the housekeeping churn without delaying a CVE fix.
+#
+# Grouping note: a `groups` entry defaults to `applies-to: version-updates`,
+# which is why the next 16.2.11 and postcss 8.5.23 security bumps each arrived
+# as their own PR instead of joining the group. The explicit security-updates
+# groups below bundle them the same way.
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
     ignore:
       # Major toolchain upgrades require an explicit compatibility review.
       - dependency-name: "*"
         update-types: [version-update:semver-major]
     groups:
       web-dependencies:
+        applies-to: version-updates
+        patterns: ["*"]
+      web-security:
+        applies-to: security-updates
         patterns: ["*"]
 
   - package-ecosystem: npm
     directory: /cli
     schedule:
-      interval: weekly
+      interval: monthly
     ignore:
       # Keep automated updates compatible with the CLI's Node 18 support.
       - dependency-name: "*"
         update-types: [version-update:semver-major]
     groups:
       cli-dependencies:
+        applies-to: version-updates
+        patterns: ["*"]
+      cli-security:
+        applies-to: security-updates
         patterns: ["*"]
 
+  # Action pins are small, low-risk, and worth picking up promptly.
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns: ["*"]
