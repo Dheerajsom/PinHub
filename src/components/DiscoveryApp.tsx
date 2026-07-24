@@ -365,27 +365,14 @@ export function DiscoveryApp({
         </div>
       </header>
 
-      <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 shadow-2xl backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2.5 px-4 py-3 sm:px-6 lg:px-8">
-          <nav
-            aria-label="PinHub sections"
-            className="flex h-10 shrink-0 items-center rounded-lg border border-white/10 bg-[#090b10] p-1"
-          >
-            <Link
-              href="/"
-              className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-zinc-400 transition hover:bg-white/[0.05] hover:text-white"
-            >
-              <CircuitBoard className="size-3.5" /> Pin Maps
-            </Link>
-            <span
-              aria-current="page"
-              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-cyan-300/12 px-2.5 text-xs font-semibold text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.25)]"
-            >
-              <GitCompareArrows className="size-3.5" /> Compare
-            </span>
-          </nav>
-          <label className="relative min-w-0 flex-1 basis-full sm:basis-80">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" />
+      <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.95)]">
+        {/* Below sm this is two rows — search, then one horizontally scrolling
+            control row — because wrapping all six controls cost 219px of an
+            844px viewport. From sm up the wrapper below becomes `contents`,
+            so the toolbar lays out exactly as it always has. */}
+        <div className="mx-auto flex max-w-[1560px] flex-col gap-2.5 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:px-6 lg:px-8">
+          <label className="relative order-first min-w-0 sm:order-2 sm:flex-1 sm:basis-80">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
             <input
               ref={searchRef}
               value={state.query}
@@ -408,19 +395,38 @@ export function DiscoveryApp({
               <kbd className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 px-1.5 py-0.5 font-mono text-[11px] text-zinc-500 sm:block">/</kbd>
             )}
           </label>
-          <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 lg:hidden">
-            <SlidersHorizontal className="size-4 text-cyan-200" /> Filters
-            {activeCount ? <span className="rounded bg-cyan-300/15 px-1.5 font-mono text-xs text-cyan-100">{activeCount}</span> : null}
-          </button>
-          <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: !current.favoritesOnly }))} aria-pressed={state.favoritesOnly} className={clsx("inline-flex h-10 items-center gap-2 rounded-lg border px-3 text-sm transition", state.favoritesOnly ? "fav-button border-amber-300/60 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
-            <Star className={clsx("fav-star size-4", state.favoritesOnly && "fill-amber-300")} /> Favorites
-          </button>
-          <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as SortKey }))} aria-label="Sort boards" className="h-10 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none">
-            {state.query ? <option value="relevance">Best match</option> : null}
-            <option value="name">Name A–Z</option>
-            <option value="vendor">Vendor A–Z</option>
-          </select>
-          <span className="ml-auto font-mono text-xs text-zinc-400" role="status" aria-live="polite">{filtered.length} matches</span>
+          <div className="-mx-4 flex items-center gap-2.5 overflow-x-auto px-4 sm:contents">
+            <nav
+              aria-label="PinHub sections"
+              className="flex h-10 shrink-0 items-center rounded-lg border border-white/10 bg-[#090b10] p-1 sm:order-1"
+            >
+              <Link
+                href="/"
+                className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-zinc-400 transition hover:bg-white/[0.05] hover:text-white"
+              >
+                <CircuitBoard className="size-3.5" /> Pin Maps
+              </Link>
+              <span
+                aria-current="page"
+                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-cyan-300/12 px-2.5 text-xs font-semibold text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.25)]"
+              >
+                <GitCompareArrows className="size-3.5" /> Compare
+              </span>
+            </nav>
+            <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 sm:order-3 sm:shrink lg:hidden">
+              <SlidersHorizontal className="size-4 text-cyan-200" /> Filters
+              {activeCount ? <span className="rounded bg-cyan-300/15 px-1.5 font-mono text-xs text-cyan-100">{activeCount}</span> : null}
+            </button>
+            <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: !current.favoritesOnly }))} aria-pressed={state.favoritesOnly} className={clsx("inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm transition sm:order-4 sm:shrink", state.favoritesOnly ? "fav-button border-amber-300/60 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
+              <Star className={clsx("fav-star size-4", state.favoritesOnly && "fill-amber-300")} /> Favorites
+            </button>
+            <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as SortKey }))} aria-label="Sort boards" className="h-10 shrink-0 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none sm:order-5 sm:shrink">
+              {state.query ? <option value="relevance">Best match</option> : null}
+              <option value="name">Name A–Z</option>
+              <option value="vendor">Vendor A–Z</option>
+            </select>
+            <span className="ml-auto shrink-0 font-mono text-xs text-zinc-400 sm:order-6 sm:shrink" role="status" aria-live="polite">{filtered.length} matches</span>
+          </div>
         </div>
       </div>
 
@@ -470,7 +476,7 @@ export function DiscoveryApp({
       </div>
 
       {compareIds.length ? (
-        <div className="compare-tray fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-xl border border-cyan-300/35 bg-[#0d151b]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.7),0_0_35px_-15px_rgba(34,211,238,0.8)] backdrop-blur-xl sm:bottom-5">
+        <div className="compare-tray fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-xl border border-cyan-300/35 bg-[#0d151b] p-3 shadow-[0_20px_70px_rgba(0,0,0,0.7),0_0_35px_-15px_rgba(34,211,238,0.8)] sm:bottom-5">
           <div className="flex items-center gap-3">
             <GitCompareArrows className="hidden size-5 shrink-0 text-cyan-200 sm:block" />
             <div className="min-w-0 flex-1">
