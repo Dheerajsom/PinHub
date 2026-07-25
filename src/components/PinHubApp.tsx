@@ -848,18 +848,6 @@ export function PinHubApp({
           </div>
         ) : null}
       </div>
-
-      <footer className="border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
-        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-zinc-500 sm:px-6 lg:px-8">
-          <span>
-            Always verify against the linked official documentation before
-            wiring.
-          </span>
-          <span className="font-mono">
-            {catalog.length} boards · {sourceCount} source links
-          </span>
-        </div>
-      </footer>
     </main>
   );
 }

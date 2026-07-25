@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Audiowide, Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { siteDescription, siteName, siteUrl } from "@/lib/site";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -86,6 +87,7 @@ export default function RootLayout({
     >
       <body>
         {children}
+        <Footer />
         {analyticsEnabled ? <Analytics /> : null}
       </body>
     </html>
