@@ -42,7 +42,12 @@ jobs:
       - run: npm audit --audit-level=high
       - name: Check generated board data is in sync with the website catalog
         run: npm run check:boards
+      # ESLint 10 requires Node ^20.19 || ^22.13 || >=24, but this package still
+      # supports Node 18.18. Linting is a static check that does not vary by
+      # runtime, so it runs on the newer legs only; the 18.18 leg still proves
+      # Node 18 support through the test, build, and smoke steps below.
       - run: npm run lint
+        if: matrix.node != '18.18.0'
       - run: npm test
       - run: npm run build
       - run: npm run package:check
