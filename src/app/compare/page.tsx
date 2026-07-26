@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, GitCompareArrows } from "lucide-react";
-import { boards } from "@/lib/boards";
+import { boards, type Board } from "@/lib/boards";
 import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
 import { assertBoardSourcesValid } from "@/lib/source-trust";
 import { summarizeBoard } from "@/lib/board-summary";
+import { parseComparedIds } from "@/lib/compare-params";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { CompareTable } from "@/components/CompareTable";
 import { DiscoveryApp } from "@/components/DiscoveryApp";
@@ -31,13 +32,9 @@ export default async function ComparePage({
   searchParams: Promise<{ boards?: string | string[] }>;
 }) {
   const params = await searchParams;
-  const raw = Array.isArray(params.boards)
-    ? params.boards.join(",")
-    : (params.boards ?? "");
-  const requested = [...new Set(raw.split(",").filter(Boolean))].slice(0, 3);
-  const selected = requested
+  const selected = parseComparedIds(params.boards)
     .map((id) => boards.find((board) => board.id === id))
-    .filter((board): board is NonNullable<typeof board> => Boolean(board));
+    .filter((board): board is Board => Boolean(board));
 
   if (selected.length < 2) {
     return (

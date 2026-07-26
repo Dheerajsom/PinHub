@@ -125,10 +125,11 @@ function isPinout(value: unknown): boolean {
 export function isBoardPayload(value: unknown, expectedId: string): value is Board {
   if (!isRecord(value) || value.id !== expectedId) return false;
 
+  // `category` and `interfaces` are checked below against their allowed value
+  // sets, which subsumes the plain string/string[] checks for those two keys.
   const requiredStrings = [
     "name",
     "vendor",
-    "category",
     "family",
     "processor",
     "logicLevel",
@@ -139,26 +140,20 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
   if (!requiredStrings.every((key) => typeof value[key] === "string")) {
     return false;
   }
+
+  const { category, interfaces } = value;
+  if (typeof category !== "string" || !boardCategories.has(category)) {
+    return false;
+  }
   if (
-    typeof value.category !== "string" ||
-    !boardCategories.has(value.category)
+    !isStringArray(interfaces) ||
+    !interfaces.every((item) => boardInterfaces.has(item))
   ) {
     return false;
   }
 
-  const requiredStringArrays = [
-    "tags",
-    "interfaces",
-    "highlights",
-    "warnings",
-  ] as const;
+  const requiredStringArrays = ["tags", "highlights", "warnings"] as const;
   if (!requiredStringArrays.every((key) => isStringArray(value[key]))) {
-    return false;
-  }
-  if (
-    !isStringArray(value.interfaces) ||
-    !value.interfaces.every((item) => boardInterfaces.has(item))
-  ) {
     return false;
   }
 
