@@ -51,15 +51,26 @@ jobs:
       - name: Use the repository's declared npm version
         run: npm install --global npm@11.11.0
       - run: npm ci
-      # Scoped to production dependencies until the ESLint toolchain can be
-      # audit-clean. The only outstanding high advisory is GHSA-mh99-v99m-4gvg
-      # (brace-expansion DoS), reachable solely through eslint-config-next's
+      # Two gates, because the one advisory we cannot currently fix is a
+      # high-severity dev-only issue and dropping dev coverage wholesale would
+      # be a bigger hole than the exemption needs.
+      #
+      # The blocked advisory is GHSA-mh99-v99m-4gvg (brace-expansion DoS),
+      # reachable solely through eslint-config-next's
       # eslint-plugin-{import,jsx-a11y,react}, which still pin minimatch@3.
-      # Neither fix is available yet: a brace-expansion override breaks
-      # minimatch@3's v1 function export, and ESLint 10 breaks those same
-      # plugins (they call the removed context.getFilename()). Restore the full
-      # audit once those plugins ship ESLint 10 support.
-      - run: npm audit --omit=dev --audit-level=high
+      # Neither fix exists yet: a brace-expansion override breaks minimatch@3's
+      # v1 function export, and ESLint 10 breaks those same plugins (they call
+      # the removed context.getFilename()).
+      #
+      # Collapse these back into a single `npm audit --audit-level=high` once
+      # those plugins ship ESLint 10 support.
+      - name: Audit production dependencies (high and above)
+        run: npm audit --omit=dev --audit-level=high
+      # Build-time dependencies still execute in CI with repository access, so
+      # they keep a blocking gate rather than being exempted entirely. Set to
+      # critical because the known exemption above is rated high.
+      - name: Audit all dependencies (critical only)
+        run: npm audit --audit-level=critical
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
