@@ -67,13 +67,9 @@ function clampPitch(pitch: number, count: number, max: number): number {
   return max / (count - 1);
 }
 
-function pins(board: Board) {
-  return board.pinout;
-}
-
 /** Resolve the two edge rows for an edge-dual board (from pins or groups). */
 function edgeRows(board: Board, visual: BoardVisual): { left: Pin[]; right: Pin[] } {
-  const p = pins(board);
+  const p = board.pinout;
   if (visual.source === "groups" && p?.groups && p.groups.length >= 2) {
     return { left: p.groups[0].pins, right: p.groups[1].pins };
   }
@@ -156,7 +152,7 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
 }
 
 function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
-  const p = pins(board);
+  const p = board.pinout;
   const top = p?.pins?.left ?? []; // odd positions
   const bottom = p?.pins?.right ?? []; // even positions
   const n = Math.max(top.length, bottom.length, 1);
@@ -237,7 +233,7 @@ function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
 }
 
 function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
-  const p = pins(board);
+  const p = board.pinout;
   const groups = p?.groups ?? [];
   // shield-split is only assigned to 2-group boards. If a board with 3+ groups
   // were ever pointed here, the extra groups' pins would be unanchored and the
@@ -321,7 +317,7 @@ function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry
 }
 
 function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
-  const p = pins(board);
+  const p = board.pinout;
   const flat: { pin: Pin; group: string }[] = [];
   for (const group of p?.groups ?? []) {
     for (const pin of group.pins) flat.push({ pin, group: group.label });
@@ -385,7 +381,7 @@ function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeomet
 }
 
 function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
-  const p = pins(board);
+  const p = board.pinout;
   const groups = p?.groups ?? [];
   const perRow = 11;
   const colPitch = 78;

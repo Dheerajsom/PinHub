@@ -26,9 +26,14 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
 import type { BoardSummary } from "@/lib/board-summary";
+import {
+  createBoardSearchIndex,
+  scoreBoardSearchEntry,
+  tokenizeQuery,
+} from "@/lib/board-search";
+import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { VendorLogo } from "@/components/VendorLogo";
 
@@ -65,52 +70,6 @@ const defaultState: CatalogState = {
   favoritesOnly: false,
   sort: "name",
 };
-const favoriteKey = "pinhub.favorites";
-const emptyFavorites: ReadonlySet<string> = new Set();
-const favoriteListeners = new Set<() => void>();
-let favoriteSnapshot: ReadonlySet<string> | null = null;
-
-function getFavorites(): ReadonlySet<string> {
-  if (favoriteSnapshot === null) {
-    try {
-      const parsed: unknown = JSON.parse(localStorage.getItem(favoriteKey) ?? "[]");
-      favoriteSnapshot = new Set(
-        Array.isArray(parsed)
-          ? parsed.filter((item): item is string => typeof item === "string")
-          : [],
-      );
-    } catch {
-      favoriteSnapshot = new Set();
-    }
-  }
-  return favoriteSnapshot;
-}
-
-function subscribeFavorites(listener: () => void) {
-  if (!favoriteListeners.size) window.addEventListener("storage", onStorage);
-  favoriteListeners.add(listener);
-  return () => {
-    favoriteListeners.delete(listener);
-    if (!favoriteListeners.size) window.removeEventListener("storage", onStorage);
-  };
-}
-function onStorage(event: StorageEvent) {
-  if (event.key !== null && event.key !== favoriteKey) return;
-  favoriteSnapshot = null;
-  favoriteListeners.forEach((listener) => listener());
-}
-function toggleFavorite(id: string) {
-  const next = new Set(getFavorites());
-  if (next.has(id)) next.delete(id);
-  else next.add(id);
-  favoriteSnapshot = next;
-  try {
-    localStorage.setItem(favoriteKey, JSON.stringify([...next]));
-  } catch {
-    // Local persistence is best effort.
-  }
-  favoriteListeners.forEach((listener) => listener());
-}
 
 function parseUrlState(): CatalogState {
   const params = new URLSearchParams(location.search);
@@ -149,53 +108,26 @@ function urlForState(state: CatalogState): string {
   return params.size ? `?${params.toString()}` : "/compare";
 }
 
-function scoreBoard(board: BoardSummary, query: string): number {
-  const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  if (!tokens.length) return 1;
-  const name = board.name.toLowerCase();
-  const text = [
-    board.name,
-    board.vendor,
-    board.family,
-    board.processor,
-    board.description,
-    board.warningSearchText,
-    board.formFactor,
-    ...board.tags,
-    ...board.interfaces,
-    ...board.discovery.connectorEcosystems,
-  ]
-    .join(" ")
-    .toLowerCase();
-  let total = 0;
-  for (const token of tokens) {
-    if (!text.includes(token)) return 0;
-    total += name.split(/[^a-z0-9]+/).some((word) => word.startsWith(token))
-      ? 100
-      : name.includes(token)
-        ? 60
-        : 20;
-  }
-  return total;
-}
-
-function matches(
+function matchesFilters(
   board: BoardSummary,
   state: CatalogState,
   favorites: ReadonlySet<string>,
 ): boolean {
   const profile = board.discovery;
   return (
-    scoreBoard(board, state.query) > 0 &&
     (!state.favoritesOnly || favorites.has(board.id)) &&
     (!state.pinoutOnly || board.hasPinout) &&
     (!state.category.length || state.category.includes(board.category)) &&
     (!state.platform.length || state.platform.includes(profile.computeClass)) &&
     (!state.interface.length ||
-      state.interface.every((item) => board.interfaces.includes(item as never))) &&
+      state.interface.every((item) =>
+        board.interfaces.some((entry) => entry === item),
+      )) &&
     (!state.logic.length || state.logic.includes(profile.logicProfile)) &&
     (!state.wireless.length ||
-      state.wireless.every((item) => profile.wireless.includes(item as never))) &&
+      state.wireless.every((item) =>
+        profile.wireless.some((entry) => entry === item),
+      )) &&
     (!state.connector.length ||
       state.connector.some((item) => profile.connectorEcosystems.includes(item)))
   );
@@ -218,11 +150,7 @@ export function DiscoveryApp({
   const [visible, setVisible] = useState(24);
   const urlReady = useRef(false);
   const searchRef = useRef<HTMLInputElement>(null);
-  const storedFavorites = useSyncExternalStore(
-    subscribeFavorites,
-    getFavorites,
-    () => emptyFavorites,
-  );
+  const storedFavorites = useFavorites();
   const ids = useMemo(() => new Set(catalog.map((board) => board.id)), [catalog]);
   const favorites = useMemo(
     () => new Set([...storedFavorites].filter((id) => ids.has(id))),
@@ -275,10 +203,16 @@ export function DiscoveryApp({
     }),
     [catalog],
   );
+  const searchIndex = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
   const filtered = useMemo(() => {
-    const scored = catalog
-      .filter((board) => matches(board, state, favorites))
-      .map((board) => ({ board, score: scoreBoard(board, state.query) }));
+    const tokens = tokenizeQuery(state.query);
+    const scored: { board: BoardSummary; score: number }[] = [];
+    for (const entry of searchIndex) {
+      const score = scoreBoardSearchEntry(entry, tokens);
+      if (score === 0) continue;
+      if (!matchesFilters(entry.board, state, favorites)) continue;
+      scored.push({ board: entry.board, score });
+    }
     scored.sort((a, b) => {
       if (state.sort === "relevance") {
         return b.score - a.score || a.board.name.localeCompare(b.board.name);
@@ -292,7 +226,7 @@ export function DiscoveryApp({
       return a.board.name.localeCompare(b.board.name);
     });
     return scored.map(({ board }) => board);
-  }, [catalog, favorites, state]);
+  }, [favorites, searchIndex, state]);
   const activeCount =
     state.category.length +
     state.platform.length +

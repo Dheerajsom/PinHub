@@ -14,7 +14,7 @@ const vendorDomains: Record<string, string> = {
   "Libre Computer": "libre.computer",
   LilyGO: "lilygo.cc",
   LOLIN: "wemos.cc",
-  "M5Stack": "m5stack.com",
+  M5Stack: "m5stack.com",
   "Milk-V": "milkv.io",
   NodeMCU: "nodemcu.com",
   "Nordic Semiconductor": "nordicsemi.com",
@@ -28,8 +28,9 @@ const vendorDomains: Record<string, string> = {
   "Google Coral": "coral.ai",
   "Micro:bit Educational Foundation": "microbit.org",
   NVIDIA: "nvidia.com",
-  // Google's favicon endpoint currently returns 404 for orangepi.org. Omit
-  // the optional mark instead of issuing a known-failing production request.
+  // "Orange Pi" is deliberately absent: Google's favicon endpoint currently
+  // returns 404 for orangepi.org, and the mark is optional, so omitting the
+  // entry avoids a known-failing production request.
   PJRC: "pjrc.com",
   Radxa: "radxa.com",
   "Raspberry Pi": "raspberrypi.com",

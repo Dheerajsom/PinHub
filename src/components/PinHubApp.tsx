@@ -40,6 +40,7 @@ import {
 } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import { createBoardDetailLoader } from "@/lib/board-detail-loader";
+import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
@@ -47,7 +48,6 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 
 const allCategory = "All";
 const allInterface = "All";
-const favoritesStorageKey = "pinhub.favorites";
 // Render a useful first screen without embedding dozens of offscreen cards in
 // the initial HTML. Additional results remain available through the existing
 // pagination control and all records remain searchable client-side.
@@ -94,68 +94,6 @@ type PinHubAppProps = {
   initialBoard: Board;
   sourceCount: number;
 };
-
-// Favorites live in localStorage and are exposed to React through a tiny
-// external store so the component can read them via useSyncExternalStore.
-const emptyFavorites: ReadonlySet<string> = new Set();
-const favoritesListeners = new Set<() => void>();
-let favoritesSnapshot: ReadonlySet<string> | null = null;
-
-function getFavoritesSnapshot(): ReadonlySet<string> {
-  if (favoritesSnapshot === null) {
-    try {
-      const stored = window.localStorage.getItem(favoritesStorageKey);
-      const parsed: unknown = stored ? JSON.parse(stored) : [];
-      const ids = Array.isArray(parsed) ? parsed : [];
-      favoritesSnapshot = new Set(
-        ids.filter((id): id is string => typeof id === "string"),
-      );
-    } catch {
-      favoritesSnapshot = new Set();
-    }
-  }
-  return favoritesSnapshot;
-}
-
-function getServerFavoritesSnapshot(): ReadonlySet<string> {
-  return emptyFavorites;
-}
-
-// Keep favorites in sync when another tab writes to the same storage key.
-function onStorageEvent(event: StorageEvent) {
-  if (event.key !== null && event.key !== favoritesStorageKey) return;
-  favoritesSnapshot = null; // force a re-read on the next getSnapshot call
-  for (const listener of favoritesListeners) listener();
-}
-
-function subscribeToFavorites(listener: () => void): () => void {
-  if (favoritesListeners.size === 0) {
-    window.addEventListener("storage", onStorageEvent);
-  }
-  favoritesListeners.add(listener);
-  return () => {
-    favoritesListeners.delete(listener);
-    if (favoritesListeners.size === 0) {
-      window.removeEventListener("storage", onStorageEvent);
-    }
-  };
-}
-
-function toggleFavoriteId(id: string) {
-  const next = new Set(getFavoritesSnapshot());
-  if (next.has(id)) {
-    next.delete(id);
-  } else {
-    next.add(id);
-  }
-  favoritesSnapshot = next;
-  try {
-    window.localStorage.setItem(favoritesStorageKey, JSON.stringify([...next]));
-  } catch {
-    // Persisting is best-effort.
-  }
-  for (const listener of favoritesListeners) listener();
-}
 
 // JS-initiated scrolling honors the user's reduced-motion preference (the CSS
 // `scroll-behavior` media query does not override an explicit JS behavior).
@@ -234,11 +172,7 @@ export function PinHubApp({
   // On phones the filter sidebar is collapsed into a toggle so the catalog
   // stays first; on lg+ it is always shown as a sticky column.
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const storedFavorites = useSyncExternalStore(
-    subscribeToFavorites,
-    getFavoritesSnapshot,
-    getServerFavoritesSnapshot,
-  );
+  const storedFavorites = useFavorites();
   const isDesktop = useSyncExternalStore(
     subscribeToDesktopLayout,
     getDesktopLayoutSnapshot,
@@ -409,28 +343,37 @@ export function PinHubApp({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  // Any change to the result set invalidates what is currently selected, how
+  // far the list has been paged, and the open mobile detail, so every filter
+  // control funnels through this instead of repeating the three resets.
+  function resetResultView() {
+    setSelectedId("");
+    setVisibleLimit(initialResultLimit);
+    setMobileDetailOpen(false);
+  }
+
   function resetFilters() {
     setQuery("");
     setActiveCategory(allCategory);
     setActiveInterface(allInterface);
     setShowFavoritesOnly(false);
-    setSelectedId("");
-    setVisibleLimit(initialResultLimit);
-    setMobileDetailOpen(false);
+    resetResultView();
   }
 
   function changeQuery(nextQuery: string) {
     setQuery(nextQuery);
-    setSelectedId("");
-    setVisibleLimit(initialResultLimit);
-    setMobileDetailOpen(false);
+    resetResultView();
   }
 
   // Stable identity so the memoized result rows don't re-render when only the
-  // query or an unrelated row's state changes.
+  // query or an unrelated row's state changes — which is why the layout is
+  // read at click time instead of closing over `isDesktop`. It must use the
+  // same query the layout does: a separate `(max-width: 1023px)` query
+  // disagrees at fractional widths, where neither matches and the detail would
+  // then render in neither column.
   const selectBoard = useCallback((id: string) => {
     setSelectedId(id);
-    if (window.matchMedia("(max-width: 1023px)").matches) {
+    if (!getDesktopLayoutSnapshot()) {
       setMobileDetailOpen(true);
     }
   }, []);
@@ -601,9 +544,7 @@ export function PinHubApp({
               type="button"
               onClick={() => {
                 setShowFavoritesOnly((value) => !value);
-                setSelectedId("");
-                setVisibleLimit(initialResultLimit);
-                setMobileDetailOpen(false);
+                resetResultView();
               }}
               aria-pressed={showFavoritesOnly}
               className={clsx(
@@ -650,9 +591,7 @@ export function PinHubApp({
                 label={activeCategory}
                 onClear={() => {
                   setActiveCategory(allCategory);
-                  setSelectedId("");
-                  setVisibleLimit(initialResultLimit);
-                  setMobileDetailOpen(false);
+                  resetResultView();
                 }}
               />
             ) : null}
@@ -661,9 +600,7 @@ export function PinHubApp({
                 label={activeInterface}
                 onClear={() => {
                   setActiveInterface(allInterface);
-                  setSelectedId("");
-                  setVisibleLimit(initialResultLimit);
-                  setMobileDetailOpen(false);
+                  resetResultView();
                 }}
               />
             ) : null}
@@ -698,9 +635,7 @@ export function PinHubApp({
             counts={categoryCounts}
             onChange={(value) => {
               setActiveCategory(value as BoardCategory | typeof allCategory);
-              setSelectedId("");
-              setVisibleLimit(initialResultLimit);
-              setMobileDetailOpen(false);
+              resetResultView();
               setMobileFiltersOpen(false);
             }}
           />
@@ -716,9 +651,7 @@ export function PinHubApp({
             active={activeInterface}
             onChange={(value) => {
               setActiveInterface(value as BoardInterface | typeof allInterface);
-              setSelectedId("");
-              setVisibleLimit(initialResultLimit);
-              setMobileDetailOpen(false);
+              resetResultView();
               setMobileFiltersOpen(false);
             }}
           />
@@ -750,7 +683,7 @@ export function PinHubApp({
                   favorite={favorites.has(board.id)}
                   onSelect={selectBoard}
                   onPrefetch={prefetchBoard}
-                  onToggleFavorite={toggleFavoriteId}
+                  onToggleFavorite={toggleFavorite}
                 />
                 {!isDesktop &&
                   mobileDetailOpen &&
@@ -769,14 +702,14 @@ export function PinHubApp({
                       onBackToResults={() => {
                         setMobileDetailOpen(false);
                         window.requestAnimationFrame(() => {
-                          document
-                            .getElementById(`board-result-${board.id}`)
-                            ?.scrollIntoView({
-                              behavior: scrollBehavior(),
-                              block: "center",
-                            });
-                          document
-                            .getElementById(`board-result-${board.id}`)
+                          const row = document.getElementById(
+                            `board-result-${board.id}`,
+                          );
+                          row?.scrollIntoView({
+                            behavior: scrollBehavior(),
+                            block: "center",
+                          });
+                          row
                             ?.querySelector<HTMLButtonElement>(
                               'button[aria-label^="Select"]',
                             )
