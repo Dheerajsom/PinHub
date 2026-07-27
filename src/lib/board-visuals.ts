@@ -489,6 +489,33 @@ export const boardVisuals: Record<string, BoardVisual> = {
   }),
   "arduino-portenta-h7": preset("mkr", { accent: "#0e7c86", ports: ["usb-c"] }),
   "nordic-nrf9160-dk": preset("devKit", { accent: "#1d4ed8" }),
+
+  // --- RISC-V frontier boards (July 2026 research batch) -------------------
+  "starfive-visionfive-2": preset("sbc", {
+    accent: "#1d4ed8",
+    ports: ["ethernet", "usb-a", "hdmi", "usb-c"],
+    revisionNote:
+      "Header is physically Raspberry-Pi-shaped; GPIO numbering is StarFive's, not BCM.",
+  }),
+  // Single row of 18 pins on a handheld — rendered as a function-grouped strip
+  // rather than a two-row header.
+  "flipper-zero": preset("grouped", {
+    accent: "#ff8200",
+    ports: ["usb-c"],
+    revisionNote: "Map follows the F7 (STM32WB55) main-board firmware target.",
+  }),
+  // Espressif documents J1 as a flat 1-40 list, so it renders as a grouped
+  // strip rather than an interleaved 2xN header.
+  "esp32-p4-function-ev-board": preset("grouped", {
+    accent: "#334155",
+    ports: ["usb-c", "camera"],
+    revisionNote: "Header table follows board revision v1.52.",
+  }),
+  "radxa-rock-3a": preset("sbc", {
+    ports: ["ethernet", "usb-a", "hdmi", "usb-c"],
+    revisionNote:
+      "Hardware V1.3/V1.31 header; V1.2 differs on pins 7, 16, 17, 22, 27, 28, and 37.",
+  }),
 };
 
 // Default PCB accent by vendor, used when a visual does not specify one.

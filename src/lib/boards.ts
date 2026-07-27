@@ -10312,10 +10312,616 @@ const industryEducationBoards: Board[] = [
   },
 ];
 
+// boardId: starfive-visionfive-2 | source: StarFive "VisionFive 2 40-Pin GPIO
+// Header User Guide", doc id VisionFive2-UGEN-001 v1.3 (2023-03-31), GPIO
+// Pinout section | confidence: HIGH
+//
+// Transcribed from the vendor table and re-verified against a second, column-
+// preserving pull of the same page (columns: Sys | dts | GPIO Num | Pin Name |
+// Pin Num). Both passes agree on all 40 rows.
+const visionFive2Pinout: Pinout = {
+  connector: "40-pin GPIO header",
+  layout: "dual-row",
+  notes: [
+    "The header is mechanically Raspberry-Pi-compatible, but the GPIO numbering and functions are NOT the Raspberry Pi map — a HAT that assumes BCM numbering will drive the wrong pins.",
+    "GPIO is 3.3 V logic. StarFive does not document 5 V tolerance for this header, so treat the pins as not 5 V tolerant.",
+    "Default muxed peripherals are i2c0 on pins 3/5, uart0 (ttyS0) on pins 8/10, spi0 (spidev1.0) on pins 19/21/23/24, and pwm0/pwm1 on pins 32/33.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      { position: 3, label: "GPIO58", role: "i2c", aliases: ["I2C SDA", "i2c0"] },
+      { position: 5, label: "GPIO57", role: "i2c", aliases: ["I2C SCL", "i2c0"] },
+      { position: 7, label: "GPIO55", role: "gpio" },
+      { position: 9, label: "GND", role: "ground" },
+      { position: 11, label: "GPIO42", role: "gpio" },
+      { position: 13, label: "GPIO43", role: "gpio" },
+      { position: 15, label: "GPIO47", role: "gpio" },
+      { position: 17, label: "3V3", role: "power" },
+      { position: 19, label: "GPIO52", role: "spi", aliases: ["SPI MOSI", "spi0"] },
+      { position: 21, label: "GPIO53", role: "spi", aliases: ["SPI MISO", "spi0"] },
+      { position: 23, label: "GPIO48", role: "spi", aliases: ["SPI SCLK", "spi0"] },
+      { position: 25, label: "GND", role: "ground" },
+      { position: 27, label: "GPIO45", role: "gpio" },
+      { position: 29, label: "GPIO37", role: "gpio" },
+      { position: 31, label: "GPIO39", role: "gpio" },
+      { position: 33, label: "GPIO59", role: "pwm", aliases: ["PWM1"] },
+      { position: 35, label: "GPIO63", role: "gpio" },
+      { position: 37, label: "GPIO60", role: "gpio" },
+      { position: 39, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "5V", role: "power" },
+      { position: 4, label: "5V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      { position: 8, label: "GPIO5", role: "uart", aliases: ["UART TX", "ttyS0"] },
+      { position: 10, label: "GPIO6", role: "uart", aliases: ["UART RX", "ttyS0"] },
+      { position: 12, label: "GPIO38", role: "gpio" },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 16, label: "GPIO54", role: "gpio" },
+      { position: 18, label: "GPIO51", role: "gpio" },
+      { position: 20, label: "GND", role: "ground" },
+      { position: 22, label: "GPIO50", role: "gpio" },
+      { position: 24, label: "GPIO49", role: "spi", aliases: ["SPI CE0", "spi0"] },
+      { position: 26, label: "GPIO56", role: "gpio" },
+      { position: 28, label: "GPIO40", role: "gpio" },
+      { position: 30, label: "GND", role: "ground" },
+      { position: 32, label: "GPIO46", role: "pwm", aliases: ["PWM0", "pwm0"] },
+      { position: 34, label: "GND", role: "ground" },
+      { position: 36, label: "GPIO36", role: "gpio" },
+      { position: 38, label: "GPIO61", role: "gpio" },
+      { position: 40, label: "GPIO44", role: "gpio" },
+    ],
+  },
+};
+
+// boardId: flipper-zero | sources: gpio_pins[] in
+// targets/f7/furi_hal/furi_hal_resources.c (Flipper Devices firmware, dev
+// branch) for the signal pins, and docs.flipper.net for the power pins and
+// electrical limits | confidence: HIGH
+//
+// The firmware resource table is the authoritative mapping of external header
+// pin number to STM32WB55 port pin — it is what the device itself uses. Pins
+// 1/9 (power) and 8/11/18 (ground) are not in that array because they are not
+// GPIO; they come from the official documentation instead.
+const flipperZeroPinout: Pinout = {
+  connector: "18-pin GPIO header (top edge)",
+  layout: "grouped",
+  notes: [
+    "Single row of 18 pins along the top edge, numbered 1-18 left to right with the screen facing you.",
+    "I/O is 3.3 V. Each pin can source up to 20 mA, and total consumption across all I/O pins must not exceed 5 W.",
+    "Pin 1 (+5 V) is disabled by default and has to be switched on in the GPIO settings menu; pin 9 (+3.3 V) is on by default with a 1.2 A maximum load.",
+    "Pins 10 and 12 are the STM32WB55 SWD debug lines (SWCLK and SWDIO) — using them as general I/O conflicts with debugging and flashing.",
+  ],
+  groups: [
+    {
+      label: "GPIO header (pins 1-18)",
+      pins: [
+        {
+          position: 1,
+          label: "5V",
+          role: "power",
+          note: "Disabled by default — enable via GPIO settings. Output, not an input.",
+        },
+        {
+          position: 2,
+          label: "PA7",
+          role: "gpio",
+          note: "ADC-capable; also on TIM1, so usable for PWM.",
+        },
+        { position: 3, label: "PA6", role: "gpio", note: "ADC-capable." },
+        {
+          position: 4,
+          label: "PA4",
+          role: "gpio",
+          note: "ADC-capable; also on LPTIM2.",
+        },
+        { position: 5, label: "PB3", role: "gpio" },
+        { position: 6, label: "PB2", role: "gpio" },
+        { position: 7, label: "PC3", role: "gpio", note: "ADC-capable." },
+        { position: 8, label: "GND", role: "ground" },
+        {
+          position: 9,
+          label: "3V3",
+          role: "power",
+          note: "Enabled by default; 1.2 A maximum load.",
+        },
+        {
+          position: 10,
+          label: "PA14",
+          role: "debug",
+          aliases: ["SWCLK"],
+          note: "SWD clock. Repurposing this pin breaks debugger/flashing access.",
+        },
+        { position: 11, label: "GND", role: "ground" },
+        {
+          position: 12,
+          label: "PA13",
+          role: "debug",
+          aliases: ["SWDIO"],
+          note: "SWD data. Repurposing this pin breaks debugger/flashing access.",
+        },
+        { position: 13, label: "PB6", role: "uart", aliases: ["USART TX"] },
+        { position: 14, label: "PB7", role: "uart", aliases: ["USART RX"] },
+        { position: 15, label: "PC1", role: "gpio", note: "ADC-capable." },
+        { position: 16, label: "PC0", role: "gpio", note: "ADC-capable." },
+        {
+          position: 17,
+          label: "PB14",
+          role: "special",
+          aliases: ["iButton"],
+          note: "Shared with the onboard iButton / 1-Wire front end.",
+        },
+        { position: 18, label: "GND", role: "ground" },
+      ],
+    },
+  ],
+};
+
+// boardId: esp32-p4-function-ev-board | source: Espressif
+// ESP32-P4-Function-EV-Board User Guide, "Header Block" J1 table (40 rows,
+// columns No. | Name | Type | Function) | confidence: HIGH
+//
+// Espressif publishes J1 as a flat 1-40 list rather than two paired rows, so
+// the connector is modelled as one group. That records exactly what the vendor
+// documents — pin number, name, and function — without asserting a physical
+// row split the source never states.
+const esp32P4FunctionEvPinout: Pinout = {
+  connector: "J1 header (40 pins)",
+  layout: "grouped",
+  notes: [
+    "Espressif documents J1 as a single numbered list of 40 pins; the numbering matches the board schematic.",
+    "GPIO is 3.3 V. Espressif publishes no 5 V tolerance figure for this header.",
+    "Pins 27 and 28 are true no-connects. Pins 22, 23, and 40 are marked NC because their GPIOs are consumed by onboard functions and need a resistor rework before use.",
+    "GPIO0 and GPIO1 are held by the XTAL_32K function; freeing them means moving R61 to R199 and R59 to R197. GPIO45 is held by SD_PWRn and needs R231 moved to R100.",
+  ],
+  groups: [
+    {
+      label: "J1 header (pins 1-40)",
+      pins: [
+        { position: 1, label: "3V3", role: "power" },
+        { position: 2, label: "5V", role: "power" },
+        { position: 3, label: "GPIO7", role: "gpio" },
+        { position: 4, label: "5V", role: "power" },
+        { position: 5, label: "GPIO8", role: "gpio" },
+        { position: 6, label: "GND", role: "ground" },
+        { position: 7, label: "GPIO23", role: "gpio" },
+        { position: 8, label: "GPIO37", role: "uart", aliases: ["U0TXD"] },
+        { position: 9, label: "GND", role: "ground" },
+        { position: 10, label: "GPIO38", role: "uart", aliases: ["U0RXD"] },
+        { position: 11, label: "GPIO21", role: "gpio" },
+        { position: 12, label: "GPIO22", role: "gpio" },
+        { position: 13, label: "GPIO20", role: "gpio" },
+        { position: 14, label: "GND", role: "ground" },
+        { position: 15, label: "GPIO6", role: "gpio" },
+        { position: 16, label: "GPIO5", role: "gpio" },
+        { position: 17, label: "3V3", role: "power" },
+        { position: 18, label: "GPIO4", role: "gpio" },
+        { position: 19, label: "GPIO3", role: "gpio" },
+        { position: 20, label: "GND", role: "ground" },
+        { position: 21, label: "GPIO2", role: "gpio" },
+        {
+          position: 22,
+          label: "NC(1)",
+          role: "reserved",
+          aliases: ["GPIO1"],
+          note: "Not connected by default — GPIO1 is used by XTAL_32K. Move R59 to R197 to free it.",
+        },
+        {
+          position: 23,
+          label: "NC(0)",
+          role: "reserved",
+          aliases: ["GPIO0"],
+          note: "Not connected by default — GPIO0 is used by XTAL_32K. Move R61 to R199 to free it.",
+        },
+        { position: 24, label: "GPIO36", role: "gpio" },
+        { position: 25, label: "GND", role: "ground" },
+        { position: 26, label: "GPIO32", role: "gpio" },
+        { position: 27, label: "NC", role: "reserved", note: "No connection." },
+        { position: 28, label: "NC", role: "reserved", note: "No connection." },
+        { position: 29, label: "GPIO33", role: "gpio" },
+        { position: 30, label: "GND", role: "ground" },
+        {
+          position: 31,
+          label: "GPIO26",
+          role: "gpio",
+          note: "Carries PWM to the LCD adapter board's J6 header.",
+        },
+        { position: 32, label: "GPIO54", role: "gpio" },
+        { position: 33, label: "GPIO48", role: "gpio" },
+        { position: 34, label: "GND", role: "ground" },
+        { position: 35, label: "GPIO53", role: "gpio" },
+        { position: 36, label: "GPIO46", role: "gpio" },
+        { position: 37, label: "GPIO47", role: "gpio" },
+        {
+          position: 38,
+          label: "GPIO27",
+          role: "gpio",
+          note: "Carries RST_LCD to the LCD adapter board's J6 header.",
+        },
+        { position: 39, label: "GND", role: "ground" },
+        {
+          position: 40,
+          label: "NC(45)",
+          role: "reserved",
+          aliases: ["GPIO45"],
+          note: "Not connected by default — GPIO45 is used by SD_PWRn. Move R231 to R100 to free it.",
+        },
+      ],
+    },
+  ],
+};
+
+// boardId: radxa-rock-3a | source: Radxa wiki "Rock3/hardware/3a/gpio",
+// "Hardware V1.3/V1.31" table | confidence: HIGH
+//
+// Transcribed from the raw wiki table markup (two 40-pin tables on one page,
+// one per hardware revision). This map is the V1.3/V1.31 revision. The V1.2
+// board is genuinely different on pins 7, 16, 17, 22, 27, 28, and 37 — those
+// deltas are enumerated in the board's warnings rather than merged in here.
+const radxaRock3aPinout: Pinout = {
+  connector: "40-pin GPIO header (hardware V1.3/V1.31)",
+  layout: "dual-row",
+  notes: [
+    "This map is the V1.3/V1.31 revision. Radxa publishes a separate, different table for hardware V1.2 — check the silkscreen revision before wiring.",
+    "GPIO is 3.3 V. Radxa publishes no 5 V tolerance figure for this header.",
+    "Pins 8 and 10 (UART2) are the debug console by default; Radxa colours them as reserved for that purpose.",
+    "USB 2.0 on pins 27 and 28 is not usable as shipped — it needs a board rework (remove R90526/R90527, add R90536/R90537).",
+    "Alternate functions are listed as aliases in the vendor's Function1-Function4 order.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "+3.3V", role: "power" },
+      {
+        position: 3,
+        label: "GPIO1_A0",
+        role: "i2c",
+        aliases: ["I2C3_SDA_M0", "UART3_RX_M0", "CAN1_RX_M0", "GPIO 32"],
+      },
+      {
+        position: 5,
+        label: "GPIO1_A1",
+        role: "i2c",
+        aliases: ["I2C3_SCL_M0", "UART3_TX_M0", "CAN1_TX_M0", "GPIO 33"],
+      },
+      {
+        position: 7,
+        label: "GPIO0_B5",
+        role: "i2c",
+        aliases: ["I2C2_SCL_M0", "PWM1_M1", "GPIO 13"],
+        note: "Differs from hardware V1.2, where pin 7 is GPIO3_B7.",
+      },
+      { position: 9, label: "GND", role: "ground" },
+      {
+        position: 11,
+        label: "GPIO3_C4",
+        role: "uart",
+        aliases: ["PWM14_M0", "UART7_TX_M1", "GPIO 116"],
+      },
+      {
+        position: 13,
+        label: "GPIO3_C5",
+        role: "uart",
+        aliases: ["PWM15_IR_M0", "UART7_RX_M1", "GPIO 117"],
+      },
+      {
+        position: 15,
+        label: "GPIO0_C0",
+        role: "uart",
+        aliases: ["PWM1_M0", "UART0_RX", "GPIO 16"],
+      },
+      {
+        position: 17,
+        label: "+3.3V",
+        role: "power",
+        note: "On hardware V1.2 this position is GPIO0_C1 (UART0_TX), not a power pin.",
+      },
+      {
+        position: 19,
+        label: "GPIO4_C3",
+        role: "spi",
+        aliases: ["PWM15_IR_M1", "SPI3_MOSI_M1", "CAN1_TX_M1", "GPIO 147"],
+      },
+      {
+        position: 21,
+        label: "GPIO4_C5",
+        role: "spi",
+        aliases: ["PWM12_M1", "SPI3_MISO_M1", "UART9_TX_M1", "GPIO 149"],
+      },
+      {
+        position: 23,
+        label: "GPIO4_C2",
+        role: "spi",
+        aliases: ["PWM14_M1", "SPI3_CLK_M1", "CAN1_RX_M1", "GPIO 146"],
+      },
+      { position: 25, label: "GND", role: "ground" },
+      {
+        position: 27,
+        label: "GPIO0_B4",
+        role: "i2c",
+        aliases: ["I2C1_SDA", "CAN0_RX_M0", "USB_DP", "GPIO 12"],
+        note: "Differs from hardware V1.2 (GPIO0_B6). USB use requires the documented resistor rework.",
+      },
+      {
+        position: 29,
+        label: "GPIO2_D7",
+        role: "uart",
+        aliases: ["UART8_TX_M1", "GPIO 95"],
+      },
+      {
+        position: 31,
+        label: "GPIO3_A0",
+        role: "uart",
+        aliases: ["UART8_RX_M1", "GPIO 96"],
+      },
+      {
+        position: 33,
+        label: "GPIO3_C3",
+        role: "uart",
+        aliases: ["SPI1_CLK_M1", "UART5_RX_M1", "GPIO 115"],
+      },
+      { position: 35, label: "GPIO3_A4", role: "gpio", aliases: ["GPIO 100"] },
+      {
+        position: 37,
+        label: "SARADC_VIN5",
+        role: "adc",
+        note: "On hardware V1.2 this position is GPIO3_C0 instead, and the ADC input sits on pin 22.",
+      },
+      { position: 39, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 2, label: "+5.0V", role: "power" },
+      { position: 4, label: "+5.0V", role: "power" },
+      { position: 6, label: "GND", role: "ground" },
+      {
+        position: 8,
+        label: "GPIO0_D1",
+        role: "uart",
+        aliases: ["UART2_TXD", "GPIO 25"],
+        note: "Debug console by default.",
+      },
+      { position: 10, label: "GPIO0_D0", role: "uart", aliases: ["UART2_RXD", "GPIO 24"], note: "Debug console by default." },
+      { position: 12, label: "GPIO3_A3", role: "gpio", aliases: ["GPIO 99"] },
+      { position: 14, label: "GND", role: "ground" },
+      {
+        position: 16,
+        label: "GPIO0_B6",
+        role: "i2c",
+        aliases: ["I2C2_SDA_M0", "PWM2_M1", "GPIO 14"],
+        note: "Differs from hardware V1.2, where pin 16 is GPIO3_A1.",
+      },
+      {
+        position: 18,
+        label: "GPIO3_B2",
+        role: "uart",
+        aliases: ["UART4_TX_M1", "PWM9_M0", "GPIO 106"],
+      },
+      { position: 20, label: "GND", role: "ground" },
+      {
+        position: 22,
+        label: "GPIO0_C1",
+        role: "uart",
+        aliases: ["PWM2_M0", "UART0_TX", "GPIO 17"],
+        note: "On hardware V1.2 this position is the ADC input ADC_IN5 instead.",
+      },
+      {
+        position: 24,
+        label: "GPIO4_C6",
+        role: "spi",
+        aliases: ["PWM13_M1", "SPI3_CS0_M1", "UART9_RX_M1", "GPIO 150"],
+      },
+      {
+        position: 26,
+        label: "GPIO4_D1",
+        role: "spi",
+        aliases: ["SPI3_CS1_M1", "GPIO 153"],
+      },
+      {
+        position: 28,
+        label: "GPIO0_B3",
+        role: "i2c",
+        aliases: ["I2C1_SCL", "CAN0_TX_M0", "USB_DM", "GPIO 11"],
+        note: "Differs from hardware V1.2 (GPIO0_B5). USB use requires the documented resistor rework.",
+      },
+      { position: 30, label: "GND", role: "ground" },
+      {
+        position: 32,
+        label: "GPIO3_C2",
+        role: "uart",
+        aliases: ["UART5_TX_M1", "GPIO 114"],
+      },
+      { position: 34, label: "GND", role: "ground" },
+      { position: 36, label: "GPIO3_A2", role: "gpio", aliases: ["GPIO 98"] },
+      { position: 38, label: "GPIO3_A6", role: "gpio", aliases: ["GPIO 102"] },
+      { position: 40, label: "GPIO3_A5", role: "gpio", aliases: ["GPIO 101"] },
+    ],
+  },
+};
+
+// RISC-V and other platforms added in the July 2026 research batch. Every map
+// here was transcribed from the vendor's own pin table and re-verified against
+// a second fetch of that table before being committed.
+const riscvFrontierBoards: Board[] = [
+  {
+    id: "starfive-visionfive-2",
+    name: "StarFive VisionFive 2",
+    vendor: "StarFive",
+    category: "SBC",
+    family: "VisionFive",
+    processor: "StarFive JH7110 — quad-core SiFive U74 RV64GC @ 1.5 GHz with IMG BXE-4-32 GPU",
+    logicLevel: "3.3 V GPIO (5 V tolerance not documented by StarFive)",
+    power: "5 V / 3 A via USB-C, or the header 5 V pins",
+    formFactor: "Credit-card SBC with a Raspberry-Pi-compatible 40-pin header footprint",
+    description:
+      "The mainstream affordable RISC-V Linux SBC: a JH7110 quad-core RV64GC board in a Raspberry-Pi-shaped footprint, and the usual first target for RISC-V Linux and bare-metal work.",
+    tags: ["risc-v", "riscv", "jh7110", "starfive", "sifive-u74", "single-board-computer"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "PCIe", "Ethernet"],
+    highlights: [
+      "First widely available RISC-V SBC with a Raspberry-Pi-shaped 40-pin header, so existing physical HATs mount even though the GPIO map differs.",
+      "JH7110 pairs four SiFive U74 application cores with an IMG BXE-4-32 GPU and a video engine.",
+      "StarFive publishes a dedicated 40-pin header user guide with per-pin device-tree names.",
+      "M.2 M-key PCIe, dual Ethernet-capable I/O, and eMMC plus microSD boot options.",
+    ],
+    warnings: [
+      "The 40-pin header is mechanically Raspberry Pi compatible but electrically different — GPIO numbers and default functions do not match the Raspberry Pi map, so RPi HAT drivers and BCM pin numbers will address the wrong signals.",
+      "GPIO is 3.3 V. StarFive does not publish a 5 V tolerance figure for this header; do not drive it from 5 V logic.",
+      "Do not confuse this board with the older VisionFive 1 (JH7100), which is a different SoC and a different pin map.",
+    ],
+    sourceLinks: [
+      {
+        label: "VisionFive 2 40-Pin GPIO Header User Guide — GPIO Pinout (StarFive, v1.3)",
+        url: "https://doc-en.rvspace.org/VisionFive2/40-Pin_GPIO_Header_UG/VisionFive2_40pin_UG/gpio_pinout%20-%20vf2.html",
+        type: "Pinout",
+      },
+      {
+        label: "VisionFive 2 40-Pin GPIO Header User Guide (StarFive, PDF)",
+        url: "https://doc-en.rvspace.org/VisionFive2/PDF/VisionFive2_40-Pin_GPIO_Header_UG.pdf",
+        type: "Manual",
+      },
+      {
+        label: "VisionFive 2 Datasheet (StarFive)",
+        url: "https://doc-en.rvspace.org/VisionFive2/PDF/VisionFive2_Datasheet.pdf",
+        type: "Datasheet",
+      },
+    ],
+    pinout: visionFive2Pinout,
+  },
+  {
+    id: "flipper-zero",
+    name: "Flipper Zero",
+    vendor: "Flipper Devices",
+    category: "Development Board",
+    family: "Flipper Zero",
+    processor: "STM32WB55RG — Arm Cortex-M4 @ 64 MHz application core plus a Cortex-M0+ radio co-processor",
+    logicLevel: "3.3 V I/O, 20 mA per pin, 5 W total across all I/O",
+    power: "Internal LiPo with USB-C charging; switchable 5 V and 3.3 V outputs on the header",
+    formFactor: "Handheld multi-tool with an 18-pin 2.54 mm header on the top edge",
+    description:
+      "A pocket multi-tool for hardware and RF work whose 18-pin top header exposes STM32WB55 GPIO, UART, SWD, and 1-Wire — widely used as an interactive bench tool for probing and bring-up.",
+    tags: ["hardware-hacking", "stm32wb55", "1-wire", "ibutton", "handheld", "sub-ghz"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "SWD"],
+    highlights: [
+      "18-pin header brings out GPIO, UART, SPI, I2C, 1-Wire, and the full SWD debug interface on a device you can hold.",
+      "STM32WB55 pairs a Cortex-M4 application core with a dedicated Cortex-M0+ Bluetooth LE radio core.",
+      "Switchable 5 V and 3.3 V rails on the header can power a small target directly.",
+      "Pin-to-STM32-port mapping is published in the firmware's own resource table, so it can be verified against the code that runs on the device.",
+    ],
+    warnings: [
+      "Header I/O is 3.3 V only — it is not 5 V tolerant. Level-shift anything driven from 5 V logic.",
+      "Pins 10 (PA14/SWCLK) and 12 (PA13/SWDIO) are the SWD debug lines. Driving them as general I/O will interfere with debugging and firmware flashing.",
+      "Pin 1 (+5 V) is off by default and must be enabled in the GPIO settings menu; expecting 5 V there without enabling it is a common bring-up mistake.",
+      "Respect the documented budget: 20 mA per pin and 5 W total across all I/O pins, with a 1.2 A ceiling on the 3.3 V rail.",
+      "Pin 17 (PB14) is shared with the onboard iButton / 1-Wire front end, so external use can conflict with that function.",
+      "Hardware revisions exist; this map is transcribed from the current firmware target for the F7 (STM32WB55) main board.",
+    ],
+    sourceLinks: [
+      {
+        label: "GPIO & Modules — pin functions and electrical limits (Flipper Zero docs)",
+        url: "https://docs.flipper.net/zero/gpio-and-modules",
+        type: "Pinout",
+      },
+      {
+        label: "furi_hal_resources.c — gpio_pins[] header mapping (Flipper Devices firmware)",
+        url: "https://github.com/flipperdevices/flipperzero-firmware/blob/dev/targets/f7/furi_hal/furi_hal_resources.c",
+        type: "Schematic",
+      },
+      {
+        label: "Flipper Zero product site (Flipper Devices)",
+        url: "https://flipperzero.one/",
+        type: "Docs",
+      },
+    ],
+    pinout: flipperZeroPinout,
+  },
+  {
+    id: "esp32-p4-function-ev-board",
+    name: "ESP32-P4-Function-EV-Board",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-P4",
+    processor: "ESP32-P4 dual-core RISC-V @ 400 MHz, paired with an ESP32-C6-MINI-1 for Wi-Fi 6 and Bluetooth",
+    logicLevel: "3.3 V GPIO (5 V tolerance not documented by Espressif)",
+    power: "USB-C (Full-speed, USB 2.0 Type-C, or the 5 V rail) with a power switch",
+    formFactor: "Function evaluation board with a 40-pin J1 header, MIPI DSI and CSI FPC connectors",
+    description:
+      "Espressif's evaluation board for the ESP32-P4 — a high-performance RISC-V application MCU with MIPI display and camera interfaces that has no radio of its own and pairs with an onboard ESP32-C6 for wireless.",
+    tags: ["risc-v", "riscv", "esp32-p4", "mipi-dsi", "mipi-csi", "hmi", "espressif"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth", "CSI", "JTAG"],
+    highlights: [
+      "ESP32-P4 targets HMI and vision work with MIPI DSI display and MIPI CSI camera FPC connectors on board.",
+      "Wireless comes from a separate ESP32-C6-MINI-1 module, so the P4 itself has no on-die radio.",
+      "Built-in USB Serial/JTAG port flashes and debugs the P4 without an external adapter.",
+      "ES8311 audio codec, onboard microphone, and a microSD slot in 4-bit mode.",
+    ],
+    warnings: [
+      "GPIO is 3.3 V and Espressif publishes no 5 V tolerance figure for J1 — do not drive it from 5 V logic.",
+      "J1 pins 27 and 28 are hard no-connects. Pins 22 (GPIO1), 23 (GPIO0), and 40 (GPIO45) read NC on the silkscreen because those GPIOs are consumed by onboard functions.",
+      "Freeing GPIO0/GPIO1 means disabling XTAL_32K by moving R61 to R199 and R59 to R197; freeing GPIO45 means disabling SD_PWRn by moving R231 to R100. These are board reworks, not software settings.",
+      "The USB 2.0 Type-C and Type-A ports share one OTG High-Speed interface and cannot be used at the same time.",
+      "Revision risk: this map follows the current user guide (board v1.52). Revision v1.4 differs, notably in how the debug port is wired — check your board version.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-P4-Function-EV-Board User Guide — Header Block (Espressif)",
+        url: "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html",
+        type: "Pinout",
+      },
+      {
+        label: "ESP32-P4 datasheet (Espressif)",
+        url: "https://www.espressif.com/sites/default/files/documentation/esp32-p4_datasheet_en.pdf",
+        type: "Datasheet",
+      },
+    ],
+    pinout: esp32P4FunctionEvPinout,
+  },
+  {
+    id: "radxa-rock-3a",
+    name: "Radxa ROCK 3A (hardware V1.3/V1.31)",
+    vendor: "Radxa",
+    category: "SBC",
+    family: "ROCK 3",
+    processor: "Rockchip RK3568 — quad-core Cortex-A55 @ 2.0 GHz with Mali-G52 GPU and a 0.8 TOPS NPU",
+    logicLevel: "3.3 V GPIO (5 V tolerance not documented by Radxa)",
+    power: "USB-C power delivery, or the header 5 V pins",
+    formFactor: "Pi-sized SBC with a 40-pin GPIO header",
+    description:
+      "A Rockchip RK3568 SBC in the Raspberry Pi footprint with an M.2 slot and a 40-pin header, aimed at NAS, edge, and general Linux use.",
+    tags: ["rockchip", "rk3568", "rock-3", "radxa", "single-board-computer", "npu"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "PCIe", "Ethernet"],
+    highlights: [
+      "RK3568 brings a 0.8 TOPS NPU, Mali-G52 GPU, and native gigabit Ethernet.",
+      "Header exposes an unusually rich mux: six UARTs, CAN, SPI3, two I2C buses, seven PWM channels, and an ADC input.",
+      "M.2 slot supports NVMe storage alongside eMMC and microSD.",
+      "Radxa documents both hardware revisions' pin tables side by side, so revision differences are checkable.",
+    ],
+    warnings: [
+      "Revision-critical: the V1.2 board and the V1.3/V1.31 board have different 40-pin headers. This entry is the V1.3/V1.31 map. On V1.2, pin 7 is GPIO3_B7, pin 16 is GPIO3_A1, pin 17 is GPIO0_C1 (UART0_TX) rather than +3.3 V, pin 22 is the ADC input ADC_IN5, pin 27 is GPIO0_B6, pin 28 is GPIO0_B5, and pin 37 is GPIO3_C0. Check the silkscreen before wiring.",
+      "GPIO is 3.3 V and Radxa publishes no 5 V tolerance figure — do not drive the header from 5 V logic.",
+      "Pins 8 and 10 carry the UART2 debug console by default; using them as general I/O means giving up serial console access.",
+      "USB 2.0 on pins 27/28 is not available as shipped — it requires removing R90526/R90527 and adding R90536/R90537.",
+      "Pin 17 supplies +3.3 V on this revision. Wiring it as a signal because a V1.2 pinout said GPIO0_C1 would short a rail.",
+    ],
+    sourceLinks: [
+      {
+        label: "ROCK 3A GPIO header — hardware V1.2 and V1.3/V1.31 tables (Radxa wiki)",
+        url: "https://wiki.radxa.com/Rock3/hardware/3a/gpio",
+        type: "Pinout",
+      },
+      {
+        label: "ROCK 3 hardware documentation (Radxa wiki)",
+        url: "https://wiki.radxa.com/Rock3",
+        type: "Docs",
+      },
+    ],
+    pinout: radxaRock3aPinout,
+  },
+];
+
 export const boards: Board[] = [
   ...baseBoards,
   ...additionalBoards,
   ...expansionBoards,
   ...latticeBoards,
   ...industryEducationBoards,
+  ...riscvFrontierBoards,
 ];

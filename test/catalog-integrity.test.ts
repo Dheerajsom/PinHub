@@ -119,6 +119,9 @@ describe("board catalog integrity", () => {
       "nxp-frdm-kl25z": [16, 20, 16, 12],
       "digilent-nexys-a7-100t": [12, 12, 12, 12, 12],
       "terasic-de10-lite": [40, 8, 10, 8, 6],
+      // Single-connector boards whose vendor docs publish one flat pin list.
+      "flipper-zero": [18],
+      "esp32-p4-function-ev-board": [40],
     };
 
     for (const [id, counts] of Object.entries(expectedGroupCounts)) {
@@ -126,6 +129,38 @@ describe("board catalog integrity", () => {
       expect(board, id).toBeDefined();
       expect(board?.pinout?.layout, id).toBe("grouped");
       expect(board?.pinout?.groups?.map((group) => group.pins.length), id).toEqual(counts);
+    }
+  });
+
+  it("keeps the revision-scoped ROCK 3A header on its V1.3/V1.31 assignments", () => {
+    // Radxa documents two different 40-pin tables for this board. The catalog
+    // entry is scoped to V1.3/V1.31, so the pins that differ from V1.2 are the
+    // ones worth pinning down: a silent drift back to the V1.2 values would
+    // put a signal where this revision has a 3.3 V rail.
+    const pinout = boards.find((board) => board.id === "radxa-rock-3a")?.pinout;
+    const byPosition = (position: number) =>
+      [...(pinout?.pins?.left ?? []), ...(pinout?.pins?.right ?? [])].find(
+        (pin) => pin.position === position,
+      );
+
+    expect(byPosition(7)?.label).toBe("GPIO0_B5");
+    expect(byPosition(16)?.label).toBe("GPIO0_B6");
+    expect(byPosition(17)?.label).toBe("+3.3V");
+    expect(byPosition(17)?.role).toBe("power");
+    expect(byPosition(22)?.label).toBe("GPIO0_C1");
+    expect(byPosition(27)?.label).toBe("GPIO0_B4");
+    expect(byPosition(28)?.label).toBe("GPIO0_B3");
+    expect(byPosition(37)?.label).toBe("SARADC_VIN5");
+  });
+
+  it("marks the ESP32-P4 J1 pins that need a board rework as reserved", () => {
+    const pinout = boards.find(
+      (board) => board.id === "esp32-p4-function-ev-board",
+    )?.pinout;
+    const pins = pinout?.groups?.[0]?.pins ?? [];
+    for (const position of [22, 23, 27, 28, 40]) {
+      const pin = pins.find((candidate) => candidate.position === position);
+      expect(pin?.role, `J1 pin ${position}`).toBe("reserved");
     }
   });
 

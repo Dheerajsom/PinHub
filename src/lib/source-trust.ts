@@ -45,6 +45,10 @@ const vendorDomains: Record<string, string[]> = {
   "Micro:bit Educational Foundation": ["microbit.org"],
   "Libre Computer": ["libre.computer"],
   Khadas: ["khadas.com"],
+  // StarFive publishes VisionFive documentation on its RVspace doc portal;
+  // the guides carry StarFive document ids and StarFive copyright.
+  StarFive: ["starfivetech.com", "rvspace.org"],
+  "Flipper Devices": ["flipperzero.one", "flipper.net"],
   Digilent: ["digilent.com", "digilentinc.com"],
   "Google Coral": ["coral.ai", "google.com", "withgoogle.com"],
   // Blue Pill boards are generic STM32F103 designs without a single board
@@ -61,6 +65,7 @@ const vendorGitHubOrgs: Record<string, string[]> = {
   Adafruit: ["adafruit"],
   "Raspberry Pi": ["raspberrypi"],
   Digilent: ["digilent"],
+  "Flipper Devices": ["flipperdevices"],
 };
 
 function hostMatchesDomain(host: string, domain: string): boolean {

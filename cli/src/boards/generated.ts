@@ -57347,5 +57347,1847 @@ export const generatedBoards: Board[] = [
       }
     ],
     "headers": []
+  },
+  {
+    "id": "starfive-visionfive-2",
+    "name": "StarFive VisionFive 2",
+    "manufacturer": "StarFive",
+    "aliases": [
+      "visionfive2",
+      "visionfive-2",
+      "vf2"
+    ],
+    "description": "The mainstream affordable RISC-V Linux SBC: a JH7110 quad-core RV64GC board in a Raspberry-Pi-shaped footprint, and the usual first target for RISC-V Linux and bare-metal work.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "The 40-pin header is mechanically Raspberry Pi compatible but electrically different — GPIO numbers and default functions do not match the Raspberry Pi map, so RPi HAT drivers and BCM pin numbers will address the wrong signals."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V. StarFive does not publish a 5 V tolerance figure for this header; do not drive it from 5 V logic."
+      },
+      {
+        "severity": "warning",
+        "text": "Do not confuse this board with the older VisionFive 1 (JH7100), which is a different SoC and a different pin map."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO (5 V tolerance not documented by StarFive). Power: 5 V / 3 A via USB-C, or the header 5 V pins."
+      },
+      {
+        "severity": "info",
+        "text": "The header is mechanically Raspberry-Pi-compatible, but the GPIO numbering and functions are NOT the Raspberry Pi map — a HAT that assumes BCM numbering will drive the wrong pins."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V logic. StarFive does not document 5 V tolerance for this header, so treat the pins as not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Default muxed peripherals are i2c0 on pins 3/5, uart0 (ttyS0) on pins 8/10, spi0 (spidev1.0) on pins 19/21/23/24, and pwm0/pwm1 on pins 32/33."
+      }
+    ],
+    "sources": [
+      {
+        "title": "VisionFive 2 40-Pin GPIO Header User Guide — GPIO Pinout (StarFive, v1.3)",
+        "url": "https://doc-en.rvspace.org/VisionFive2/40-Pin_GPIO_Header_UG/VisionFive2_40pin_UG/gpio_pinout%20-%20vf2.html",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "VisionFive 2 40-Pin GPIO Header User Guide (StarFive, PDF)",
+        "url": "https://doc-en.rvspace.org/VisionFive2/PDF/VisionFive2_40-Pin_GPIO_Header_UG.pdf",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "VisionFive 2 Datasheet (StarFive)",
+        "url": "https://doc-en.rvspace.org/VisionFive2/PDF/VisionFive2_Datasheet.pdf",
+        "official": true,
+        "type": "Datasheet"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO58",
+            "category": "communication",
+            "functions": [
+              "I2C SDA",
+              "i2c0"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO57",
+            "category": "communication",
+            "functions": [
+              "I2C SCL",
+              "i2c0"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO55",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO42",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO43",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO47",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO52",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI",
+              "spi0"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO53",
+            "category": "communication",
+            "functions": [
+              "SPI MISO",
+              "spi0"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO48",
+            "category": "communication",
+            "functions": [
+              "SPI SCLK",
+              "spi0"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO45",
+            "category": "gpio"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO37",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO39",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO59",
+            "category": "gpio",
+            "functions": [
+              "PWM1"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO63",
+            "category": "gpio"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO60",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO5",
+            "category": "communication",
+            "functions": [
+              "UART TX",
+              "ttyS0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIO6",
+            "category": "communication",
+            "functions": [
+              "UART RX",
+              "ttyS0"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIO38",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO54",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO51",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO50",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIO49",
+            "category": "communication",
+            "functions": [
+              "SPI CE0",
+              "spi0"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO56",
+            "category": "gpio"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIO40",
+            "category": "gpio"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO46",
+            "category": "gpio",
+            "functions": [
+              "PWM0",
+              "pwm0"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO36",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO61",
+            "category": "gpio"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO44",
+            "category": "gpio"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "flipper-zero",
+    "name": "Flipper Zero",
+    "manufacturer": "Flipper Devices",
+    "aliases": [
+      "flipper",
+      "flipperzero"
+    ],
+    "description": "A pocket multi-tool for hardware and RF work whose 18-pin top header exposes STM32WB55 GPIO, UART, SWD, and 1-Wire — widely used as an interactive bench tool for probing and bring-up.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Header I/O is 3.3 V only — it is not 5 V tolerant. Level-shift anything driven from 5 V logic."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins 10 (PA14/SWCLK) and 12 (PA13/SWDIO) are the SWD debug lines. Driving them as general I/O will interfere with debugging and firmware flashing."
+      },
+      {
+        "severity": "warning",
+        "text": "Pin 1 (+5 V) is off by default and must be enabled in the GPIO settings menu; expecting 5 V there without enabling it is a common bring-up mistake."
+      },
+      {
+        "severity": "warning",
+        "text": "Respect the documented budget: 20 mA per pin and 5 W total across all I/O pins, with a 1.2 A ceiling on the 3.3 V rail."
+      },
+      {
+        "severity": "warning",
+        "text": "Pin 17 (PB14) is shared with the onboard iButton / 1-Wire front end, so external use can conflict with that function."
+      },
+      {
+        "severity": "warning",
+        "text": "Hardware revisions exist; this map is transcribed from the current firmware target for the F7 (STM32WB55) main board."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V I/O, 20 mA per pin, 5 W total across all I/O. Power: Internal LiPo with USB-C charging; switchable 5 V and 3.3 V outputs on the header."
+      },
+      {
+        "severity": "info",
+        "text": "Single row of 18 pins along the top edge, numbered 1-18 left to right with the screen facing you."
+      },
+      {
+        "severity": "info",
+        "text": "I/O is 3.3 V. Each pin can source up to 20 mA, and total consumption across all I/O pins must not exceed 5 W."
+      },
+      {
+        "severity": "info",
+        "text": "Pin 1 (+5 V) is disabled by default and has to be switched on in the GPIO settings menu; pin 9 (+3.3 V) is on by default with a 1.2 A maximum load."
+      },
+      {
+        "severity": "info",
+        "text": "Pins 10 and 12 are the STM32WB55 SWD debug lines (SWCLK and SWDIO) — using them as general I/O conflicts with debugging and flashing."
+      }
+    ],
+    "sources": [
+      {
+        "title": "GPIO & Modules — pin functions and electrical limits (Flipper Zero docs)",
+        "url": "https://docs.flipper.net/zero/gpio-and-modules",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "furi_hal_resources.c — gpio_pins[] header mapping (Flipper Devices firmware)",
+        "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/dev/targets/f7/furi_hal/furi_hal_resources.c",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "Flipper Zero product site (Flipper Devices)",
+        "url": "https://flipperzero.one/",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "gpio-header-pins-1-18",
+        "name": "GPIO header (pins 1-18)",
+        "description": "18-pin GPIO header (top edge)",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power",
+            "notes": [
+              "Disabled by default — enable via GPIO settings. Output, not an input."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "PA7",
+            "category": "gpio",
+            "notes": [
+              "ADC-capable; also on TIM1, so usable for PWM."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "PA6",
+            "category": "gpio",
+            "notes": [
+              "ADC-capable."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PA4",
+            "category": "gpio",
+            "notes": [
+              "ADC-capable; also on LPTIM2."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "PB3",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "PB2",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "PC3",
+            "category": "gpio",
+            "notes": [
+              "ADC-capable."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power",
+            "notes": [
+              "Enabled by default; 1.2 A maximum load."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "PA14",
+            "category": "communication",
+            "functions": [
+              "SWCLK"
+            ],
+            "notes": [
+              "SWD clock. Repurposing this pin breaks debugger/flashing access."
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "PA13",
+            "category": "communication",
+            "functions": [
+              "SWDIO"
+            ],
+            "notes": [
+              "SWD data. Repurposing this pin breaks debugger/flashing access."
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "PB6",
+            "category": "communication",
+            "functions": [
+              "USART TX"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "PB7",
+            "category": "communication",
+            "functions": [
+              "USART RX"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "PC1",
+            "category": "gpio",
+            "notes": [
+              "ADC-capable."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "PC0",
+            "category": "gpio",
+            "notes": [
+              "ADC-capable."
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "PB14",
+            "category": "gpio",
+            "functions": [
+              "iButton"
+            ],
+            "notes": [
+              "Shared with the onboard iButton / 1-Wire front end."
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esp32-p4-function-ev-board",
+    "name": "ESP32-P4-Function-EV-Board",
+    "manufacturer": "Espressif",
+    "aliases": [
+      "esp32-p4",
+      "p4-function-ev"
+    ],
+    "description": "Espressif's evaluation board for the ESP32-P4 — a high-performance RISC-V application MCU with MIPI display and camera interfaces that has no radio of its own and pairs with an onboard ESP32-C6 for wireless.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V and Espressif publishes no 5 V tolerance figure for J1 — do not drive it from 5 V logic."
+      },
+      {
+        "severity": "warning",
+        "text": "J1 pins 27 and 28 are hard no-connects. Pins 22 (GPIO1), 23 (GPIO0), and 40 (GPIO45) read NC on the silkscreen because those GPIOs are consumed by onboard functions."
+      },
+      {
+        "severity": "warning",
+        "text": "Freeing GPIO0/GPIO1 means disabling XTAL_32K by moving R61 to R199 and R59 to R197; freeing GPIO45 means disabling SD_PWRn by moving R231 to R100. These are board reworks, not software settings."
+      },
+      {
+        "severity": "warning",
+        "text": "The USB 2.0 Type-C and Type-A ports share one OTG High-Speed interface and cannot be used at the same time."
+      },
+      {
+        "severity": "warning",
+        "text": "Revision risk: this map follows the current user guide (board v1.52). Revision v1.4 differs, notably in how the debug port is wired — check your board version."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO (5 V tolerance not documented by Espressif). Power: USB-C (Full-speed, USB 2.0 Type-C, or the 5 V rail) with a power switch."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif documents J1 as a single numbered list of 40 pins; the numbering matches the board schematic."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V. Espressif publishes no 5 V tolerance figure for this header."
+      },
+      {
+        "severity": "info",
+        "text": "Pins 27 and 28 are true no-connects. Pins 22, 23, and 40 are marked NC because their GPIOs are consumed by onboard functions and need a resistor rework before use."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO0 and GPIO1 are held by the XTAL_32K function; freeing them means moving R61 to R199 and R59 to R197. GPIO45 is held by SD_PWRn and needs R231 moved to R100."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-P4-Function-EV-Board User Guide — Header Block (Espressif)",
+        "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "ESP32-P4 datasheet (Espressif)",
+        "url": "https://www.espressif.com/sites/default/files/documentation/esp32-p4_datasheet_en.pdf",
+        "official": true,
+        "type": "Datasheet"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1-header-pins-1-40",
+        "name": "J1 header (pins 1-40)",
+        "description": "J1 header (40 pins)",
+        "layout": {
+          "rows": 40,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO23",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO37",
+            "category": "communication",
+            "functions": [
+              "U0TXD"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO38",
+            "category": "communication",
+            "functions": [
+              "U0RXD"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO21",
+            "category": "gpio"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO22",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO20",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "gpio"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "gpio"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "gpio"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "NC(1)",
+            "category": "reserved",
+            "functions": [
+              "GPIO1"
+            ],
+            "notes": [
+              "Not connected by default — GPIO1 is used by XTAL_32K. Move R59 to R197 to free it."
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "NC(0)",
+            "category": "reserved",
+            "functions": [
+              "GPIO0"
+            ],
+            "notes": [
+              "Not connected by default — GPIO0 is used by XTAL_32K. Move R61 to R199 to free it."
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "GPIO36",
+            "category": "gpio"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 25,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 26,
+              "column": 1
+            },
+            "label": "GPIO32",
+            "category": "gpio"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 27,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 28,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 29,
+              "column": 1
+            },
+            "label": "GPIO33",
+            "category": "gpio"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 30,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 31,
+              "column": 1
+            },
+            "label": "GPIO26",
+            "category": "gpio",
+            "notes": [
+              "Carries PWM to the LCD adapter board's J6 header."
+            ]
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 32,
+              "column": 1
+            },
+            "label": "GPIO54",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 33,
+              "column": 1
+            },
+            "label": "GPIO48",
+            "category": "gpio"
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 34,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 35,
+              "column": 1
+            },
+            "label": "GPIO53",
+            "category": "gpio"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 36,
+              "column": 1
+            },
+            "label": "GPIO46",
+            "category": "gpio"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 37,
+              "column": 1
+            },
+            "label": "GPIO47",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 38,
+              "column": 1
+            },
+            "label": "GPIO27",
+            "category": "gpio",
+            "notes": [
+              "Carries RST_LCD to the LCD adapter board's J6 header."
+            ]
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 39,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 40,
+              "column": 1
+            },
+            "label": "NC(45)",
+            "category": "reserved",
+            "functions": [
+              "GPIO45"
+            ],
+            "notes": [
+              "Not connected by default — GPIO45 is used by SD_PWRn. Move R231 to R100 to free it."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "radxa-rock-3a",
+    "name": "Radxa ROCK 3A (hardware V1.3/V1.31)",
+    "manufacturer": "Radxa",
+    "aliases": [
+      "rock-3a",
+      "rock3a"
+    ],
+    "description": "A Rockchip RK3568 SBC in the Raspberry Pi footprint with an M.2 slot and a 40-pin header, aimed at NAS, edge, and general Linux use.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Revision-critical: the V1.2 board and the V1.3/V1.31 board have different 40-pin headers. This entry is the V1.3/V1.31 map. On V1.2, pin 7 is GPIO3_B7, pin 16 is GPIO3_A1, pin 17 is GPIO0_C1 (UART0_TX) rather than +3.3 V, pin 22 is the ADC input ADC_IN5, pin 27 is GPIO0_B6, pin 28 is GPIO0_B5, and pin 37 is GPIO3_C0. Check the silkscreen before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V and Radxa publishes no 5 V tolerance figure — do not drive the header from 5 V logic."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins 8 and 10 carry the UART2 debug console by default; using them as general I/O means giving up serial console access."
+      },
+      {
+        "severity": "warning",
+        "text": "USB 2.0 on pins 27/28 is not available as shipped — it requires removing R90526/R90527 and adding R90536/R90537."
+      },
+      {
+        "severity": "warning",
+        "text": "Pin 17 supplies +3.3 V on this revision. Wiring it as a signal because a V1.2 pinout said GPIO0_C1 would short a rail."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO (5 V tolerance not documented by Radxa). Power: USB-C power delivery, or the header 5 V pins."
+      },
+      {
+        "severity": "info",
+        "text": "This map is the V1.3/V1.31 revision. Radxa publishes a separate, different table for hardware V1.2 — check the silkscreen revision before wiring."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V. Radxa publishes no 5 V tolerance figure for this header."
+      },
+      {
+        "severity": "info",
+        "text": "Pins 8 and 10 (UART2) are the debug console by default; Radxa colours them as reserved for that purpose."
+      },
+      {
+        "severity": "info",
+        "text": "USB 2.0 on pins 27 and 28 is not usable as shipped — it needs a board rework (remove R90526/R90527, add R90536/R90537)."
+      },
+      {
+        "severity": "info",
+        "text": "Alternate functions are listed as aliases in the vendor's Function1-Function4 order."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ROCK 3A GPIO header — hardware V1.2 and V1.3/V1.31 tables (Radxa wiki)",
+        "url": "https://wiki.radxa.com/Rock3/hardware/3a/gpio",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "ROCK 3 hardware documentation (Radxa wiki)",
+        "url": "https://wiki.radxa.com/Rock3",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "40-pin GPIO header (hardware V1.3/V1.31)",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "+3.3V",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO1_A0",
+            "category": "communication",
+            "functions": [
+              "I2C3_SDA_M0",
+              "UART3_RX_M0",
+              "CAN1_RX_M0",
+              "GPIO 32"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO1_A1",
+            "category": "communication",
+            "functions": [
+              "I2C3_SCL_M0",
+              "UART3_TX_M0",
+              "CAN1_TX_M0",
+              "GPIO 33"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO0_B5",
+            "category": "communication",
+            "functions": [
+              "I2C2_SCL_M0",
+              "PWM1_M1",
+              "GPIO 13"
+            ],
+            "notes": [
+              "Differs from hardware V1.2, where pin 7 is GPIO3_B7."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO3_C4",
+            "category": "communication",
+            "functions": [
+              "PWM14_M0",
+              "UART7_TX_M1",
+              "GPIO 116"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO3_C5",
+            "category": "communication",
+            "functions": [
+              "PWM15_IR_M0",
+              "UART7_RX_M1",
+              "GPIO 117"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO0_C0",
+            "category": "communication",
+            "functions": [
+              "PWM1_M0",
+              "UART0_RX",
+              "GPIO 16"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "+3.3V",
+            "category": "power",
+            "notes": [
+              "On hardware V1.2 this position is GPIO0_C1 (UART0_TX), not a power pin."
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO4_C3",
+            "category": "communication",
+            "functions": [
+              "PWM15_IR_M1",
+              "SPI3_MOSI_M1",
+              "CAN1_TX_M1",
+              "GPIO 147"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO4_C5",
+            "category": "communication",
+            "functions": [
+              "PWM12_M1",
+              "SPI3_MISO_M1",
+              "UART9_TX_M1",
+              "GPIO 149"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO4_C2",
+            "category": "communication",
+            "functions": [
+              "PWM14_M1",
+              "SPI3_CLK_M1",
+              "CAN1_RX_M1",
+              "GPIO 146"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO0_B4",
+            "category": "communication",
+            "functions": [
+              "I2C1_SDA",
+              "CAN0_RX_M0",
+              "USB_DP",
+              "GPIO 12"
+            ],
+            "notes": [
+              "Differs from hardware V1.2 (GPIO0_B6). USB use requires the documented resistor rework."
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO2_D7",
+            "category": "communication",
+            "functions": [
+              "UART8_TX_M1",
+              "GPIO 95"
+            ]
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO3_A0",
+            "category": "communication",
+            "functions": [
+              "UART8_RX_M1",
+              "GPIO 96"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO3_C3",
+            "category": "communication",
+            "functions": [
+              "SPI1_CLK_M1",
+              "UART5_RX_M1",
+              "GPIO 115"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO3_A4",
+            "category": "gpio",
+            "functions": [
+              "GPIO 100"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "SARADC_VIN5",
+            "category": "analog",
+            "notes": [
+              "On hardware V1.2 this position is GPIO3_C0 instead, and the ADC input sits on pin 22."
+            ]
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "+5.0V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "+5.0V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO0_D1",
+            "category": "communication",
+            "functions": [
+              "UART2_TXD",
+              "GPIO 25"
+            ],
+            "notes": [
+              "Debug console by default."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIO0_D0",
+            "category": "communication",
+            "functions": [
+              "UART2_RXD",
+              "GPIO 24"
+            ],
+            "notes": [
+              "Debug console by default."
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIO3_A3",
+            "category": "gpio",
+            "functions": [
+              "GPIO 99"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO0_B6",
+            "category": "communication",
+            "functions": [
+              "I2C2_SDA_M0",
+              "PWM2_M1",
+              "GPIO 14"
+            ],
+            "notes": [
+              "Differs from hardware V1.2, where pin 16 is GPIO3_A1."
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO3_B2",
+            "category": "communication",
+            "functions": [
+              "UART4_TX_M1",
+              "PWM9_M0",
+              "GPIO 106"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO0_C1",
+            "category": "communication",
+            "functions": [
+              "PWM2_M0",
+              "UART0_TX",
+              "GPIO 17"
+            ],
+            "notes": [
+              "On hardware V1.2 this position is the ADC input ADC_IN5 instead."
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIO4_C6",
+            "category": "communication",
+            "functions": [
+              "PWM13_M1",
+              "SPI3_CS0_M1",
+              "UART9_RX_M1",
+              "GPIO 150"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO4_D1",
+            "category": "communication",
+            "functions": [
+              "SPI3_CS1_M1",
+              "GPIO 153"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIO0_B3",
+            "category": "communication",
+            "functions": [
+              "I2C1_SCL",
+              "CAN0_TX_M0",
+              "USB_DM",
+              "GPIO 11"
+            ],
+            "notes": [
+              "Differs from hardware V1.2 (GPIO0_B5). USB use requires the documented resistor rework."
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO3_C2",
+            "category": "communication",
+            "functions": [
+              "UART5_TX_M1",
+              "GPIO 114"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO3_A2",
+            "category": "gpio",
+            "functions": [
+              "GPIO 98"
+            ]
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO3_A6",
+            "category": "gpio",
+            "functions": [
+              "GPIO 102"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO3_A5",
+            "category": "gpio",
+            "functions": [
+              "GPIO 101"
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];

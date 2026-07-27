@@ -46,4 +46,8 @@ export const curatedAliases: Record<string, string[]> = {
   "nxp-frdm-kl25z": ["frdm-kl25z", "kl25z"],
   "digilent-nexys-a7-100t": ["nexys-a7", "nexys-a7-100t", "nexys"],
   "terasic-de10-lite": ["de10-lite", "de10lite"],
+  "starfive-visionfive-2": ["visionfive2", "visionfive-2", "vf2"],
+  "flipper-zero": ["flipper", "flipperzero"],
+  "esp32-p4-function-ev-board": ["esp32-p4", "p4-function-ev"],
+  "radxa-rock-3a": ["rock-3a", "rock3a"],
 };
