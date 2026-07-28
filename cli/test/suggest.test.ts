@@ -30,4 +30,20 @@ describe("unknown board handling", () => {
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("Invalid --width");
   });
+
+  it("strips terminal controls from parser diagnostics", async () => {
+    const escape = String.fromCharCode(0x1b);
+    const bell = String.fromCharCode(0x07);
+    const hostileOption = `--bad${escape}]52;c;dGVzdA==${bell}`;
+
+    const result = await runCli([hostileOption], {
+      env: {},
+      isTTY: true,
+    });
+
+    expect(result.code).toBe(1);
+    expect(result.stderr).toContain("unknown option");
+    expect(result.stderr).not.toContain(escape);
+    expect(result.stderr).not.toContain(bell);
+  });
 });

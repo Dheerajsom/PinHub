@@ -182,10 +182,10 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
     .exitOverride()
     .configureOutput({
       writeOut: (text) => {
-        stdout += text;
+        stdout += safeTerminalText(text);
       },
       writeErr: (text) => {
-        stderr += text;
+        stderr += safeTerminalText(text);
       },
     })
     .argument("[board...]", "board id or alias (e.g. rpi5, pico, uno, esp32)")
@@ -298,7 +298,11 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       // without a stack trace either way.
       code = error.exitCode;
     } else {
-      printErr(error instanceof Error ? error.message : String(error));
+      printErr(
+        safeTerminalText(
+          error instanceof Error ? error.message : String(error),
+        ),
+      );
       code = 1;
     }
   }

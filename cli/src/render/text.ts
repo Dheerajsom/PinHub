@@ -117,9 +117,15 @@ export function wrapText(
   return output;
 }
 
-/** Remove terminal control sequences before echoing user-provided arguments. */
+/**
+ * Remove terminal control sequences before echoing untrusted text. Preserve
+ * layout whitespace so the same guard can safely wrap parser diagnostics.
+ */
 export function safeTerminalText(text: string): string {
   return Array.from(stripVTControlCharacters(text), (character) => {
+    if (character === "\n" || character === "\r" || character === "\t") {
+      return character;
+    }
     const code = character.codePointAt(0) ?? 0;
     return code <= 0x1f || code === 0x7f ? " " : character;
   }).join("");
