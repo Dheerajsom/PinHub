@@ -1,172 +1,108 @@
 import { useId } from "react";
-import type {
-  BoardGeometry,
-  PortMark,
-  Rect,
-} from "@/lib/board-visual-geometry";
+import type { BoardGeometry, PortMark, Rect } from "@/lib/board-visual-geometry";
 
-// A detailed, technically-recognizable PCB illustration rendered from pure SVG
-// geometry: soldermask substrate with edge bevel and sheen, copper routing and
-// ground-fill vias, a populated component side (main IC, RF can, crystal,
-// regulator, decoupling caps, resistors, LEDs), metal connector shells, and a
-// black-plastic header with per-pin sockets aligned to the interactive pads.
+// The drawing sheet the pads sit on: a pitch grid, the board outline, the
+// connector footprint, and the orientation datum. Rendered as a fabrication
+// drawing — hairlines, no fills, no gradients.
 //
-// Everything here is decorative and hidden from assistive technology — the
-// pins are read through the overlay and the synchronized table.
-export function BoardArtwork({ geometry }: { geometry: BoardGeometry }) {
+// This used to be a photorealistic PCB: soldermask gradients, a leaded IC,
+// decoupling caps, LEDs, copper traces fanning out to the header. All of it was
+// invented. The catalog knows a board's proportions and which edge its USB port
+// is on; it does not know where the regulator sits, so none of that is drawn
+// now. The reader gets a sheet where everything present is true, and the pads
+// are the only filled objects on it.
+//
+// Everything here is decorative in the accessibility sense and hidden from
+// assistive technology — the pins are read through the overlay and the
+// synchronized pin schedule.
+
+const FRAME = "#93a9bb";
+const HAIR = "#5d7183";
+
+export function BoardArtwork({
+  geometry,
+  label,
+}: {
+  geometry: BoardGeometry;
+  /** Board name, set into the outline the way a PCB carries its silkscreen. */
+  label?: string;
+}) {
   const raw = useId();
   const uid = raw.replace(/[^a-zA-Z0-9]/g, "");
   const id = (name: string) => `${name}-${uid}`;
 
-  const { body, accent, headerZones, ports, holes, anchors } = geometry;
-  const free = freeRect(geometry);
-  const dark = shade(accent, -0.55);
-  const mid = shade(accent, -0.2);
-  const light = shade(accent, 0.18);
-  const silk = "#dfe6ec";
-  const copper = "#c6873f";
-
-  const traces = routeTraces(free, headerZones);
-  const parts = populate(free);
+  const { body, headerZones, ports, pitch, cropBottom, kind } = geometry;
+  const outlined = kind !== "group-strips";
+  const field = outlined ? freeField(body, headerZones, ports) : null;
 
   return (
     <g aria-hidden="true">
       <defs>
-        <linearGradient id={id("mask")} x1="0" y1="0" x2="0.25" y2="1">
-          <stop offset="0" stopColor={light} />
-          <stop offset="0.5" stopColor={mid} />
-          <stop offset="1" stopColor={dark} />
-        </linearGradient>
-        <linearGradient id={id("sheen")} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.16" />
-          <stop offset="0.18" stopColor="#ffffff" stopOpacity="0.04" />
-          <stop offset="0.6" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="1" stopColor="#000000" stopOpacity="0.32" />
-        </linearGradient>
-        <linearGradient id={id("metal")} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#f4f6f8" />
-          <stop offset="0.25" stopColor="#c4ccd4" />
-          <stop offset="0.5" stopColor="#9aa3ad" />
-          <stop offset="0.75" stopColor="#c4ccd4" />
-          <stop offset="1" stopColor="#7c858f" />
-        </linearGradient>
-        <linearGradient id={id("plastic")} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#2a2f37" />
-          <stop offset="0.12" stopColor="#161a20" />
-          <stop offset="1" stopColor="#05070a" />
-        </linearGradient>
-        <linearGradient id={id("chip")} x1="0" y1="0" x2="0.4" y2="1">
-          <stop offset="0" stopColor="#33383f" />
-          <stop offset="0.4" stopColor="#1b1e24" />
-          <stop offset="1" stopColor="#0a0c10" />
-        </linearGradient>
-        <radialGradient id={id("gold")} cx="0.35" cy="0.3" r="0.8">
-          <stop offset="0" stopColor="#ffe9a8" />
-          <stop offset="0.5" stopColor="#e7b84f" />
-          <stop offset="1" stopColor="#9a6f1e" />
-        </radialGradient>
+        {/* Grid step is one drawn pin pitch, so the sheet is dimensioned in the
+            unit the connector is actually built on. */}
         <pattern
-          id={id("vias")}
-          width="34"
-          height="34"
+          id={id("pitch")}
+          width={pitch}
+          height={pitch}
           patternUnits="userSpaceOnUse"
         >
-          <circle cx="6" cy="6" r="1.6" fill="#ffffff" fillOpacity="0.05" />
-          <circle cx="23" cy="20" r="1.6" fill="#000000" fillOpacity="0.12" />
+          <path
+            d={`M ${pitch} 0 L 0 0 0 ${pitch}`}
+            fill="none"
+            stroke={HAIR}
+            strokeOpacity={0.22}
+            strokeWidth={1}
+          />
+        </pattern>
+        <pattern
+          id={id("pitch-major")}
+          width={pitch * 5}
+          height={pitch * 5}
+          patternUnits="userSpaceOnUse"
+        >
+          <path
+            d={`M ${pitch * 5} 0 L 0 0 0 ${pitch * 5}`}
+            fill="none"
+            stroke={HAIR}
+            strokeOpacity={0.4}
+            strokeWidth={1.25}
+          />
         </pattern>
       </defs>
 
-      {/* Board substrate with bevel + soldermask + sheen */}
+      {/* Sheet grid, faded away from the connector so it never competes with
+          the pads or their labels. */}
       <rect
-        x={body.x - 3}
-        y={body.y - 3}
-        width={body.w + 6}
-        height={body.h + 6}
-        rx={(body.rx ?? 14) + 3}
-        fill="#000000"
-        fillOpacity={0.35}
+        x={0}
+        y={0}
+        width={geometry.vbw}
+        height={geometry.vbh}
+        fill={`url(#${id("pitch")})`}
       />
       <rect
-        x={body.x}
-        y={body.y}
-        width={body.w}
-        height={body.h}
-        rx={body.rx ?? 14}
-        fill={`url(#${id("mask")})`}
-        stroke={shade(accent, -0.7)}
-        strokeWidth={2}
-      />
-      <rect
-        x={body.x}
-        y={body.y}
-        width={body.w}
-        height={body.h}
-        rx={body.rx ?? 14}
-        fill={`url(#${id("vias")})`}
-      />
-      {/* Silkscreen inner border */}
-      <rect
-        x={body.x + 10}
-        y={body.y + 10}
-        width={body.w - 20}
-        height={body.h - 20}
-        rx={Math.max((body.rx ?? 14) - 6, 4)}
-        fill="none"
-        stroke={silk}
-        strokeOpacity={0.16}
-        strokeWidth={1.5}
+        x={0}
+        y={0}
+        width={geometry.vbw}
+        height={geometry.vbh}
+        fill={`url(#${id("pitch-major")})`}
       />
 
-      {/* Copper routing toward the primary header */}
-      <g stroke={copper} strokeOpacity={0.55} fill="none" strokeLinecap="round">
-        {traces.map((d, i) => (
-          <path key={`tr-${i}`} d={d} strokeWidth={2} />
-        ))}
-      </g>
+      {outlined ? (
+        <BoardOutline body={body} cropBottom={cropBottom} />
+      ) : null}
 
-      {/* Populated component side */}
-      {parts.caps.map((r, i) => (
-        <Smd key={`cap-${i}`} r={r} fill="#b98a4a" cap />
-      ))}
-      {parts.resistors.map((r, i) => (
-        <Smd key={`res-${i}`} r={r} fill="#1a1d22" />
-      ))}
-      {parts.regulator ? (
-        <Regulator r={parts.regulator} metalId={id("metal")} />
+      {/* Datum centrelines and the silkscreened board name. Together they turn
+          the field inside the outline from dead space into the part of the sheet
+          that identifies what is being drawn — which is what a real board uses
+          that area for too. */}
+      {field ? (
+        <>
+          <Centrelines body={body} cropBottom={cropBottom} />
+          {label ? <Silkscreen field={field} label={label} /> : null}
+        </>
       ) : null}
-      {parts.crystal ? (
-        <Crystal r={parts.crystal} metalId={id("metal")} />
-      ) : null}
-      {parts.module ? (
-        <ShieldCan r={parts.module} metalId={id("metal")} />
-      ) : null}
-      {parts.chip ? (
-        <Chip r={parts.chip} chipId={id("chip")} silk={silk} />
-      ) : null}
-      {parts.leds.map((r, i) => (
-        <rect
-          key={`led-${i}`}
-          x={r.x}
-          y={r.y}
-          width={r.w}
-          height={r.h}
-          rx={2}
-          fill={i % 2 === 0 ? "#36d399" : "#f87171"}
-          stroke="#ffffff"
-          strokeOpacity={0.3}
-        />
-      ))}
 
-      {/* Big recognizable connectors with metal shells */}
-      {ports.map((port, i) => (
-        <ConnectorShell
-          key={`port-${i}`}
-          port={port}
-          metalId={id("metal")}
-        />
-      ))}
-
-      {/* Header: black-plastic connector body + per-pin sockets */}
+      {/* Connector footprint: the region the header occupies on the board. */}
       {headerZones.map((zone, i) => (
         <g key={`zone-${i}`}>
           <rect
@@ -175,244 +111,114 @@ export function BoardArtwork({ geometry }: { geometry: BoardGeometry }) {
             width={zone.w}
             height={zone.h}
             rx={zone.rx ?? 6}
-            fill={`url(#${id("plastic")})`}
-            stroke="#000000"
-            strokeOpacity={0.6}
+            fill="#0d1218"
+            fillOpacity={0.85}
+            stroke={HAIR}
+            strokeOpacity={0.75}
+            strokeWidth={1.25}
           />
-          <rect
-            x={zone.x + 1.5}
-            y={zone.y + 1.5}
-            width={zone.w - 3}
-            height={3}
-            rx={1.5}
-            fill="#ffffff"
-            fillOpacity={0.1}
-          />
+          {/* Centreline through the footprint — a drawing convention, and it
+              reads as the row axis the pads are aligned to. */}
+          {zone.w >= zone.h ? (
+            <line
+              x1={zone.x + 8}
+              y1={zone.y + zone.h / 2}
+              x2={zone.x + zone.w - 8}
+              y2={zone.y + zone.h / 2}
+              stroke={HAIR}
+              strokeOpacity={0.3}
+              strokeWidth={1}
+              strokeDasharray="14 5 3 5"
+            />
+          ) : (
+            <line
+              x1={zone.x + zone.w / 2}
+              y1={zone.y + 8}
+              x2={zone.x + zone.w / 2}
+              y2={zone.y + zone.h - 8}
+              stroke={HAIR}
+              strokeOpacity={0.3}
+              strokeWidth={1}
+              strokeDasharray="14 5 3 5"
+            />
+          )}
         </g>
-      ))}
-      {anchors.map((anchor) => (
-        <rect
-          key={`sock-${anchor.key}`}
-          x={anchor.cx - geometry.padR - 2}
-          y={anchor.cy - geometry.padR - 2}
-          width={(geometry.padR + 2) * 2}
-          height={(geometry.padR + 2) * 2}
-          rx={4}
-          fill="#04060a"
-          stroke="#ffffff"
-          strokeOpacity={0.08}
-        />
       ))}
 
-      {/* Mounting holes with copper annular ring */}
-      {holes.map((hole, i) => (
-        <g key={`hole-${i}`}>
-          <circle cx={hole.x} cy={hole.y} r={hole.r + 4} fill={`url(#${id("gold")})`} />
-          <circle
-            cx={hole.x}
-            cy={hole.y}
-            r={hole.r}
-            fill="#05070a"
-            stroke="#000000"
-            strokeOpacity={0.6}
-          />
-        </g>
+      {ports.map((port, i) => (
+        <UsbDatum key={`port-${i}`} port={port} />
       ))}
     </g>
   );
 }
 
-// --- component primitives --------------------------------------------------
-function Chip({ r, chipId, silk }: { r: Rect; chipId: string; silk: string }) {
-  const legs = Math.max(3, Math.round(r.w / 14));
-  const legW = r.w / (legs * 2);
-  const dot = Math.min(r.w, r.h) * 0.1;
-  return (
-    <g>
-      {/* leads on all four sides */}
-      {Array.from({ length: legs }).map((_, i) => {
-        const lx = r.x + legW + i * (r.w / legs);
-        return (
-          <g key={`lg-${i}`} fill="#c9d0d8">
-            <rect x={lx} y={r.y - 5} width={legW} height={6} rx={1} />
-            <rect x={lx} y={r.y + r.h - 1} width={legW} height={6} rx={1} />
-          </g>
-        );
-      })}
-      {Array.from({ length: legs }).map((_, i) => {
-        const ly = r.y + legW + i * (r.h / legs);
-        return (
-          <g key={`lgv-${i}`} fill="#c9d0d8">
-            <rect x={r.x - 5} y={ly} width={6} height={legW} rx={1} />
-            <rect x={r.x + r.w - 1} y={ly} width={6} height={legW} rx={1} />
-          </g>
-        );
-      })}
+/**
+ * Board outline. When `cropBottom` is set the drawing is a detail view of the
+ * connector strip, so the bottom is closed with a break line — the standard way
+ * a drawing says "this part continues, it is just not on this sheet".
+ */
+function BoardOutline({
+  body,
+  cropBottom,
+}: {
+  body: Rect;
+  cropBottom?: boolean;
+}) {
+  const rx = body.rx ?? 14;
+  const bottom = body.y + body.h;
+
+  if (!cropBottom) {
+    // Just the outline. An inset keepout ring used to be drawn here because it
+    // looks like a fab drawing, but the catalog has no keepout data — so it was
+    // a claim the sheet could not back, which is the one thing this drawing does
+    // not do.
+    return (
       <rect
-        x={r.x}
-        y={r.y}
-        width={r.w}
-        height={r.h}
-        rx={Math.min(r.w, r.h) * 0.12}
-        fill={`url(#${chipId})`}
-        stroke="#000000"
+        x={body.x}
+        y={body.y}
+        width={body.w}
+        height={body.h}
+        rx={rx}
+        fill="#0c1219"
+        fillOpacity={0.6}
+        stroke={FRAME}
         strokeOpacity={0.5}
+        strokeWidth={1.75}
       />
-      <circle cx={r.x + dot * 1.6} cy={r.y + dot * 1.6} r={dot} fill={silk} fillOpacity={0.7} />
-      <rect
-        x={r.x + r.w * 0.2}
-        y={r.y + r.h * 0.42}
-        width={r.w * 0.6}
-        height={r.h * 0.12}
-        rx={2}
-        fill="#ffffff"
-        fillOpacity={0.06}
-      />
-    </g>
-  );
-}
-
-function ShieldCan({ r, metalId }: { r: Rect; metalId: string }) {
-  // A soldered-down RF/metal can: brushed-metal lid, a crisp inset seam, and
-  // four corner solder tabs. No dashes (which read like a selection box).
-  const inset = Math.min(r.w, r.h) * 0.14;
-  const screw = Math.min(r.w, r.h) * 0.08;
-  const corners = [
-    [r.x + inset, r.y + inset],
-    [r.x + r.w - inset, r.y + inset],
-    [r.x + inset, r.y + r.h - inset],
-    [r.x + r.w - inset, r.y + r.h - inset],
-  ];
-  return (
-    <g>
-      <rect x={r.x} y={r.y} width={r.w} height={r.h} rx={5} fill={`url(#${metalId})`} stroke="#5c646d" />
-      <rect
-        x={r.x + inset * 0.5}
-        y={r.y + inset * 0.5}
-        width={r.w - inset}
-        height={r.h - inset}
-        rx={3}
-        fill="none"
-        stroke="#ffffff"
-        strokeOpacity={0.18}
-      />
-      {corners.map(([cx, cy], i) => (
-        <circle key={i} cx={cx} cy={cy} r={screw} fill="#6b727b" stroke="#3a4049" strokeWidth={0.8} />
-      ))}
-    </g>
-  );
-}
-
-function Crystal({ r, metalId }: { r: Rect; metalId: string }) {
-  return (
-    <g>
-      <rect
-        x={r.x}
-        y={r.y}
-        width={r.w}
-        height={r.h}
-        rx={r.h * 0.45}
-        fill={`url(#${metalId})`}
-        stroke="#5c646d"
-      />
-      <rect
-        x={r.x + r.w * 0.12}
-        y={r.y + r.h * 0.2}
-        width={r.w * 0.76}
-        height={r.h * 0.6}
-        rx={r.h * 0.3}
-        fill="#ffffff"
-        fillOpacity={0.12}
-      />
-    </g>
-  );
-}
-
-function Regulator({ r, metalId }: { r: Rect; metalId: string }) {
-  const legs = 3;
-  const legW = r.w / (legs * 2);
-  return (
-    <g>
-      {Array.from({ length: legs }).map((_, i) => (
-        <rect
-          key={i}
-          x={r.x + legW + i * (r.w / legs)}
-          y={r.y + r.h - 1}
-          width={legW}
-          height={6}
-          rx={1}
-          fill="#c9d0d8"
-        />
-      ))}
-      <rect x={r.x} y={r.y} width={r.w} height={r.h} rx={2} fill="#15181d" stroke="#000" strokeOpacity={0.5} />
-      <rect x={r.x} y={r.y} width={r.w} height={r.h * 0.4} rx={2} fill={`url(#${metalId})`} fillOpacity={0.5} />
-    </g>
-  );
-}
-
-function Smd({ r, fill, cap = false }: { r: Rect; fill: string; cap?: boolean }) {
-  return (
-    <g>
-      <rect x={r.x} y={r.y} width={r.w} height={r.h} rx={1.5} fill={fill} />
-      {!cap ? (
-        <>
-          <rect x={r.x} y={r.y} width={r.w * 0.22} height={r.h} fill="#cdd3da" />
-          <rect x={r.x + r.w * 0.78} y={r.y} width={r.w * 0.22} height={r.h} fill="#cdd3da" />
-        </>
-      ) : (
-        <rect x={r.x} y={r.y} width={r.w} height={r.h * 0.4} rx={1.5} fill="#ffffff" fillOpacity={0.18} />
-      )}
-    </g>
-  );
-}
-
-function ConnectorShell({ port, metalId }: { port: PortMark; metalId: string }) {
-  const ivory = port.kind === "jst";
-  const barrel = port.kind === "barrel";
-  if (ivory) {
-    return (
-      <rect x={port.x} y={port.y} width={port.w} height={port.h} rx={port.rx ?? 3} fill="#e7e2d2" stroke="#b8b09a" />
     );
   }
-  if (barrel) {
-    return (
-      <g>
-        <rect x={port.x} y={port.y} width={port.w} height={port.h} rx={port.h * 0.4} fill="#0a0c10" stroke="#2a2f37" />
-        <rect x={port.x + port.w * 0.35} y={port.y + port.h * 0.2} width={port.w * 0.3} height={port.h * 0.6} rx={2} fill="#3a4049" />
-      </g>
-    );
-  }
+
   return (
     <g>
-      <rect
-        x={port.x}
-        y={port.y}
-        width={port.w}
-        height={port.h}
-        rx={port.rx ?? 3}
-        fill={`url(#${metalId})`}
-        stroke="#5c646d"
+      <path
+        d={[
+          `M ${body.x} ${bottom}`,
+          `L ${body.x} ${body.y + rx}`,
+          `Q ${body.x} ${body.y} ${body.x + rx} ${body.y}`,
+          `L ${body.x + body.w - rx} ${body.y}`,
+          `Q ${body.x + body.w} ${body.y} ${body.x + body.w} ${body.y + rx}`,
+          `L ${body.x + body.w} ${bottom}`,
+        ].join(" ")}
+        fill="#0c1219"
+        fillOpacity={0.6}
+        stroke={FRAME}
+        strokeOpacity={0.5}
+        strokeWidth={1.75}
+        strokeLinejoin="round"
       />
-      <rect
-        x={port.x + port.w * 0.16}
-        y={port.y + port.h * 0.28}
-        width={port.w * 0.68}
-        height={port.h * 0.44}
-        rx={2}
-        fill="#0a0c10"
-        fillOpacity={0.85}
-      />
+      <BreakLine x1={body.x} x2={body.x + body.w} y={bottom} />
     </g>
   );
 }
 
-// --- layout helpers --------------------------------------------------------
-
-// The board region that is clear of header/connector zones — where we place
-// the populated components.
-function freeRect(geometry: BoardGeometry): Rect {
-  const { body, headerZones } = geometry;
-  const pad = 18;
+/**
+ * The board region left clear by the connector footprints — where the
+ * centrelines cross and the silkscreen sits. Vertical footprints (rows running
+ * down a board edge) trim the field horizontally, horizontal ones trim it
+ * vertically.
+ */
+function freeField(body: Rect, zones: Rect[], ports: Rect[]): Rect | null {
+  const pad = 20;
   let x0 = body.x + pad;
   let y0 = body.y + pad;
   let x1 = body.x + body.w - pad;
@@ -420,141 +226,166 @@ function freeRect(geometry: BoardGeometry): Rect {
   const cx = body.x + body.w / 2;
   const cy = body.y + body.h / 2;
 
-  for (const z of headerZones) {
-    // Ignore zones that fall outside the body (e.g. group-strips render their
-    // strips below the small board artwork).
+  // Ports are trimmed alongside the footprints so the silkscreen never runs into
+  // the orientation datum's caption.
+  for (const zone of [...zones, ...ports]) {
     const inside =
-      z.x < body.x + body.w && z.x + z.w > body.x && z.y < body.y + body.h && z.y + z.h > body.y;
+      zone.x < body.x + body.w &&
+      zone.x + zone.w > body.x &&
+      zone.y < body.y + body.h &&
+      zone.y + zone.h > body.y;
     if (!inside) continue;
-    const horizontal = z.w >= z.h;
-    if (horizontal) {
-      if (z.y + z.h / 2 < cy) y0 = Math.max(y0, z.y + z.h + pad);
-      else y1 = Math.min(y1, z.y - pad);
+    if (zone.w >= zone.h) {
+      if (zone.y + zone.h / 2 < cy) y0 = Math.max(y0, zone.y + zone.h + pad);
+      else y1 = Math.min(y1, zone.y - pad);
     } else {
-      if (z.x + z.w / 2 < cx) x0 = Math.max(x0, z.x + z.w + pad);
-      else x1 = Math.min(x1, z.x - pad);
+      if (zone.x + zone.w / 2 < cx) x0 = Math.max(x0, zone.x + zone.w + pad);
+      else x1 = Math.min(x1, zone.x - pad);
     }
   }
-  // Guard against degenerate regions.
-  if (x1 - x0 < 40) {
-    x0 = body.x + body.w * 0.3;
-    x1 = body.x + body.w * 0.7;
-  }
-  if (y1 - y0 < 40) {
-    y0 = body.y + body.h * 0.3;
-    y1 = body.y + body.h * 0.7;
-  }
-  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+
+  const w = x1 - x0;
+  const h = y1 - y0;
+  // Below this there is not enough clear board to letter without crowding the
+  // pads, so the field is left plain.
+  if (w < 150 || h < 70) return null;
+  return { x: x0, y: y0, w, h };
 }
 
-type Population = {
-  chip: Rect | null;
-  module: Rect | null;
-  crystal: Rect | null;
-  regulator: Rect | null;
-  caps: Rect[];
-  resistors: Rect[];
-  leds: Rect[];
-};
+/** Horizontal and vertical datum axes, in the dash-dot weight drawings use. */
+function Centrelines({ body, cropBottom }: { body: Rect; cropBottom?: boolean }) {
+  // A cropped view has no true vertical centre, so only the row axis is drawn.
+  const cy = body.y + body.h / 2;
+  const cx = body.x + body.w / 2;
+  return (
+    <g
+      stroke={HAIR}
+      strokeOpacity={0.34}
+      strokeWidth={1}
+      strokeDasharray="22 6 4 6"
+    >
+      <line x1={body.x - 10} y1={cy} x2={body.x + body.w + 10} y2={cy} />
+      {cropBottom ? null : (
+        <line x1={cx} y1={body.y - 10} x2={cx} y2={body.y + body.h + 10} />
+      )}
+    </g>
+  );
+}
 
-function populate(free: Rect): Population {
-  const { x, y, w, h } = free;
-  if (w < 24 || h < 24) {
-    return { chip: null, module: null, crystal: null, regulator: null, caps: [], resistors: [], leds: [] };
+/** The board name, set wide and faint like a soldermask silkscreen. */
+function Silkscreen({ field, label }: { field: Rect; label: string }) {
+  const text = label.toUpperCase();
+  const tracking = 0.14;
+  // Fit to the clear field: mono advance is ~0.62em, plus the tracking.
+  const byWidth = (field.w * 0.94) / (text.length * (0.62 + tracking));
+  const size = Math.max(13, Math.min(field.h * 0.42, byWidth, 58));
+
+  return (
+    <text
+      x={field.x + field.w / 2}
+      y={field.y + field.h / 2}
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontFamily="var(--font-technical, monospace)"
+      fontSize={size}
+      fontWeight={700}
+      letterSpacing={`${tracking}em`}
+      fill={FRAME}
+      fillOpacity={0.17}
+    >
+      {text}
+    </text>
+  );
+}
+
+/** The zigzag break line used where a view is cut short. */
+function BreakLine({ x1, x2, y }: { x1: number; x2: number; y: number }) {
+  const amp = 7;
+  const step = 26;
+  const parts: string[] = [`M ${x1} ${y}`];
+  let x = x1;
+  let up = true;
+  while (x < x2 - step) {
+    const nx = Math.min(x + step, x2);
+    parts.push(`L ${nx - step / 2} ${y + (up ? -amp : amp)}`, `L ${nx} ${y}`);
+    x = nx;
+    up = !up;
   }
-  const m = Math.min(w, h);
-  const chipS = clamp(m * 0.42, 40, 220);
-  const u = clamp(chipS * 0.14, 5, 22);
-
-  const chip: Rect = {
-    x: x + w * 0.5 - chipS / 2,
-    y: y + h * 0.5 - chipS / 2,
-    w: chipS,
-    h: chipS,
-  };
-
-  const tall = h > w * 1.2;
-  const canModule: Rect = tall
-    ? { x: x + w * 0.5 - chipS * 0.42, y: y + h * 0.16 - chipS * 0.22, w: chipS * 0.84, h: chipS * 0.5 }
-    : { x: x + w * 0.16 - chipS * 0.22, y: y + h * 0.5 - chipS * 0.3, w: chipS * 0.62, h: chipS * 0.7 };
-
-  const crystal: Rect = tall
-    ? { x: x + w * 0.5 - u * 1.6, y: y + h * 0.8, w: u * 3.2, h: u * 1.5 }
-    : { x: x + w * 0.82 - u * 1.6, y: y + h * 0.32 - u * 0.75, w: u * 3.2, h: u * 1.5 };
-
-  const regulator: Rect = tall
-    ? { x: x + w * 0.74, y: y + h * 0.34, w: u * 2.4, h: u * 1.8 }
-    : { x: x + w * 0.2, y: y + h * 0.8, w: u * 2.4, h: u * 1.8 };
-
-  // Decoupling caps hugging the chip.
-  const caps: Rect[] = Array.from({ length: 4 }).map((_, i) => ({
-    x: chip.x + chip.w * (0.18 + i * 0.21),
-    y: chip.y + chip.h + u * 0.8,
-    w: u * 1.5,
-    h: u * 0.8,
-  }));
-
-  const resistors: Rect[] = Array.from({ length: 3 }).map((_, i) => ({
-    x: tall ? x + w * 0.16 + i * (u * 2.2) : x + w * 0.74 + (i % 2) * (u * 2.2),
-    y: tall ? y + h * 0.34 + i * 0 : y + h * 0.7 + Math.floor(i / 2) * (u * 1.4),
-    w: u * 1.8,
-    h: u * 0.8,
-  }));
-
-  const leds: Rect[] = Array.from({ length: 2 }).map((_, i) => ({
-    x: x + w * 0.86,
-    y: y + h * 0.82 + i * (u * 1.6),
-    w: u * 1.1,
-    h: u * 1.1,
-  }));
-
-  return { chip, module: canModule, crystal, regulator, caps, resistors, leds };
+  parts.push(`L ${x2} ${y}`);
+  return (
+    <path
+      d={parts.join(" ")}
+      fill="none"
+      stroke={FRAME}
+      strokeOpacity={0.45}
+      strokeWidth={1.5}
+      strokeLinejoin="round"
+    />
+  );
 }
 
-// A small fan of copper traces from the chip toward each header zone, so both
-// edges of a dual-edge module look routed (not just one side).
-function routeTraces(free: Rect, zones: Rect[]): string[] {
-  const chipCx = free.x + free.w / 2;
-  const chipCy = free.y + free.h / 2;
-  const paths: string[] = [];
-  // Limit how many zones we route into so dense group-strips stay clean.
-  for (const zone of zones.slice(0, 2)) {
-    const horizontal = zone.w >= zone.h;
-    const count = 6;
-    for (let i = 0; i < count; i++) {
-      const t = (i + 1) / (count + 1);
-      if (horizontal) {
-        const tx = zone.x + zone.w * t;
-        const ty = zone.y + zone.h / 2;
-        const midY = (chipCy + ty) / 2;
-        paths.push(`M ${chipCx} ${chipCy} L ${chipCx + (tx - chipCx) * 0.3} ${midY} L ${tx} ${ty}`);
-      } else {
-        const tx = zone.x + zone.w / 2;
-        const ty = zone.y + zone.h * t;
-        const midX = (chipCx + tx) / 2;
-        paths.push(`M ${chipCx} ${chipCy} L ${midX} ${chipCy + (ty - chipCy) * 0.3} L ${tx} ${ty}`);
-      }
-    }
-  }
-  return paths;
-}
+/**
+ * The orientation datum: a hairline outline on the board edge the USB port sits
+ * on, labelled so the reader can line the sheet up with the board in their hand.
+ */
+function UsbDatum({ port }: { port: PortMark }) {
+  const vertical = port.side === "left" || port.side === "right";
+  const cx = port.x + port.w / 2;
+  const cy = port.y + port.h / 2;
+  const gap = 22;
 
-// --- color helper ----------------------------------------------------------
-function clamp(v: number, lo: number, hi: number): number {
-  return Math.max(lo, Math.min(hi, v));
-}
+  // The caption reads *into* the board, not out of it. Outside the outline it
+  // would either fall off the sheet (a left-edge port sits on the sheet margin)
+  // or land in a label rail; the field inside the outline is always clear.
+  const caption = {
+    top: { x: cx, y: port.y + port.h + gap, rotate: 0 },
+    bottom: { x: cx, y: port.y - gap, rotate: 0 },
+    left: { x: port.x + port.w + gap, y: cy, rotate: -90 },
+    right: { x: port.x - gap, y: cy, rotate: -90 },
+  }[port.side];
 
-function shade(hex: string, amt: number): string {
-  const c = hex.replace("#", "");
-  const full = c.length === 3 ? c.split("").map((ch) => ch + ch).join("") : c;
-  const num = parseInt(full, 16);
-  let r = (num >> 16) & 255;
-  let g = (num >> 8) & 255;
-  let b = num & 255;
-  const target = amt < 0 ? 0 : 255;
-  const p = Math.abs(amt);
-  r = Math.round((target - r) * p) + r;
-  g = Math.round((target - g) * p) + g;
-  b = Math.round((target - b) * p) + b;
-  return `rgb(${r}, ${g}, ${b})`;
+  return (
+    <g>
+      <rect
+        x={port.x}
+        y={port.y}
+        width={port.w}
+        height={port.h}
+        rx={port.rx ?? 4}
+        fill="#0d1218"
+        stroke={FRAME}
+        strokeOpacity={0.7}
+        strokeWidth={1.5}
+      />
+      {/* Shell mouth, so the datum reads as a connector rather than a tab. */}
+      <rect
+        x={port.x + (vertical ? port.w * 0.3 : port.w * 0.14)}
+        y={port.y + (vertical ? port.h * 0.14 : port.h * 0.3)}
+        width={vertical ? port.w * 0.4 : port.w * 0.72}
+        height={vertical ? port.h * 0.72 : port.h * 0.4}
+        rx={2}
+        fill="none"
+        stroke={HAIR}
+        strokeOpacity={0.6}
+        strokeWidth={1}
+      />
+      <text
+        x={caption.x}
+        y={caption.y}
+        textAnchor="middle"
+        dominantBaseline="central"
+        transform={
+          caption.rotate ? `rotate(${caption.rotate} ${caption.x} ${caption.y})` : undefined
+        }
+        fontFamily="var(--font-technical, monospace)"
+        fontSize={15}
+        fontWeight={500}
+        letterSpacing="0.18em"
+        fill={FRAME}
+        fillOpacity={0.85}
+      >
+        USB
+      </text>
+    </g>
+  );
 }

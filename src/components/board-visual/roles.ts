@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { PinRole } from "@/lib/boards";
 
 // Human-readable role names. Kept in one place so the legend, pads, popovers,
@@ -18,60 +19,97 @@ export const roleLabels: Record<PinRole, string> = {
   reserved: "Reserved",
 };
 
-// Tailwind class strings for HTML chips/badges (legend, popover, table).
-export const roleChipStyles: Record<PinRole, string> = {
-  power: "border-red-400/50 bg-red-500/15 text-red-100",
-  ground: "border-zinc-400/40 bg-zinc-500/20 text-zinc-100",
-  gpio: "border-emerald-400/50 bg-emerald-500/15 text-emerald-100",
-  i2c: "border-cyan-400/50 bg-cyan-500/15 text-cyan-100",
-  spi: "border-amber-400/50 bg-amber-500/15 text-amber-100",
-  uart: "border-sky-400/50 bg-sky-500/15 text-sky-100",
-  adc: "border-violet-400/50 bg-violet-500/15 text-violet-100",
-  dac: "border-rose-400/50 bg-rose-500/15 text-rose-100",
-  pwm: "border-fuchsia-400/50 bg-fuchsia-500/15 text-fuchsia-100",
-  debug: "border-lime-400/50 bg-lime-500/15 text-lime-100",
-  system: "border-orange-400/50 bg-orange-500/15 text-orange-100",
-  special: "border-teal-400/50 bg-teal-500/15 text-teal-100",
-  reserved: "border-stone-400/50 bg-stone-500/15 text-stone-100",
+/**
+ * One palette for every surface — SVG pads, HTML chips, table badges.
+ *
+ * The thirteen role hues are sampled from OKLCH at a *fixed lightness and
+ * chroma per ramp*, varying only in hue angle, then baked to sRGB hex (with
+ * chroma reduced per-hue where sRGB could not hold it). Uniform lightness is
+ * the point: with the old full-saturation Tailwind hues, yellow and cyan
+ * shouted while violet receded, so a connector read as confetti and no role
+ * carried more weight than any other by accident. Here every role is equally
+ * loud, which leaves contrast free to mean something — the live probe is the
+ * only thing on the sheet allowed to be brighter than a role.
+ *
+ * Hue angles keep the conventions this audience already reads: power is red,
+ * ground is deliberately chromaless, GPIO is green.
+ *
+ *   ink   L 0.865  label text on the drawing sheet
+ *   edge  L 0.735  pad ring, chip border
+ *   fill  L 0.335  pad body
+ *   wash  L 0.265  chip background
+ */
+export const roleColors: Record<
+  PinRole,
+  { ink: string; edge: string; fill: string; wash: string }
+> = {
+  power: { ink: "#fec1bb", edge: "#f98078", fill: "#572522", wash: "#391b19" },
+  ground: { ink: "#b8c2cc", edge: "#a4aab1", fill: "#34373a", wash: "#242527" },
+  gpio: { ink: "#8eeca3", edge: "#58c375", fill: "#134121", wash: "#122c18" },
+  i2c: { ink: "#40ecfd", edge: "#0ebfce", fill: "#003f45", wash: "#002b30" },
+  spi: { ink: "#fbcb61", edge: "#d4a004", fill: "#473300", wash: "#302305" },
+  uart: { ink: "#acd8ff", edge: "#4cb1fe", fill: "#0c3a5a", wash: "#0f273b" },
+  adc: { ink: "#cdcdff", edge: "#a19bfe", fill: "#33305b", wash: "#23223c" },
+  dac: { ink: "#febdd8", edge: "#ef7eb3", fill: "#53243b", wash: "#371b28" },
+  pwm: { ink: "#f2bcff", edge: "#d288e3", fill: "#47294e", wash: "#2f1d34" },
+  debug: { ink: "#bee27c", edge: "#94b944", fill: "#2e3d0a", wash: "#20290d" },
+  system: { ink: "#fec59f", edge: "#f08d40", fill: "#532a08", wash: "#371e0c" },
+  special: { ink: "#56efd3", edge: "#0bc4a9", fill: "#014137", wash: "#012d25" },
+  reserved: { ink: "#d9d1c7", edge: "#b0a89d", fill: "#393632", wash: "#272522" },
 };
 
-// Solid SVG fill/stroke colors for the pads drawn on the board. These echo the
-// chip palette above but as concrete hex so they render identically regardless
-// of Tailwind's runtime. `text` is the on-pad number color.
-export const roleSvgColors: Record<
-  PinRole,
-  { fill: string; stroke: string; text: string }
-> = {
-  power: { fill: "#7f1d2b", stroke: "#fb7185", text: "#fee2e2" },
-  ground: { fill: "#3f3f46", stroke: "#a1a1aa", text: "#f4f4f5" },
-  gpio: { fill: "#0f5132", stroke: "#34d399", text: "#d1fae5" },
-  i2c: { fill: "#0e5566", stroke: "#22d3ee", text: "#cffafe" },
-  spi: { fill: "#6b4709", stroke: "#fbbf24", text: "#fef3c7" },
-  uart: { fill: "#0c4a6e", stroke: "#38bdf8", text: "#e0f2fe" },
-  adc: { fill: "#4c1d95", stroke: "#a78bfa", text: "#ede9fe" },
-  dac: { fill: "#7a1733", stroke: "#fb7185", text: "#ffe4e6" },
-  pwm: { fill: "#6b1f5e", stroke: "#e879f9", text: "#fae8ff" },
-  debug: { fill: "#3f4d09", stroke: "#a3e635", text: "#ecfccb" },
-  system: { fill: "#7c2d12", stroke: "#fb923c", text: "#ffedd5" },
-  special: { fill: "#115e59", stroke: "#2dd4bf", text: "#ccfbf1" },
-  reserved: { fill: "#44403c", stroke: "#a8a29e", text: "#f5f5f4" },
-};
+// Reserved pins are drawn with a diagonal hatch rather than a solid fill. Hatch
+// is the drafting convention for a restricted region, and it separates reserved
+// from ground by *shape* — both are intentionally chromaless, so hue alone could
+// not tell them apart.
+export const hatchedRoles = new Set<PinRole>(["reserved"]);
 
 export const roleOrder: PinRole[] = [
   "power",
   "ground",
   "gpio",
+  "pwm",
   "i2c",
   "spi",
   "uart",
   "adc",
   "dac",
-  "pwm",
   "debug",
   "system",
   "special",
   "reserved",
 ];
+
+// Legend grouping. The families are how an engineer already thinks about a
+// header — what powers it, what switches, what talks, what measures, what to
+// leave alone — so grouping the chips this way turns a thirteen-swatch row into
+// five short scannable runs.
+export const roleFamilies: Array<{ label: string; roles: PinRole[] }> = [
+  { label: "Rails", roles: ["power", "ground"] },
+  { label: "Digital", roles: ["gpio", "pwm"] },
+  { label: "Buses", roles: ["i2c", "spi", "uart"] },
+  { label: "Analog", roles: ["adc", "dac"] },
+  { label: "Flagged", roles: ["debug", "system", "special", "reserved"] },
+];
+
+/** How many pins carry each role, for the legend's per-chip counts. */
+export function countRoles(pins: Array<{ role: PinRole }>): Map<PinRole, number> {
+  const counts = new Map<PinRole, number>();
+  for (const pin of pins) {
+    counts.set(pin.role, (counts.get(pin.role) ?? 0) + 1);
+  }
+  return counts;
+}
+
+/** Inline style for an HTML role chip, driven by the same palette as the pads. */
+export function roleChipStyle(role: PinRole): CSSProperties {
+  const color = roleColors[role];
+  return {
+    color: color.ink,
+    backgroundColor: color.wash,
+    borderColor: color.edge,
+  };
+}
 
 // Builds the spoken/AT label for a pin, e.g.
 // "Pin 3, GPIO2, I2C, aliases SDA1" (the pin's note, when present, is appended).

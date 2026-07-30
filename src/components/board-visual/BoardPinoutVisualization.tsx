@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { clsx } from "clsx";
-import { Expand, ExternalLink, Maximize2, X } from "lucide-react";
+import { Expand, ExternalLink, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import {
   buildBoardGeometry,
@@ -15,6 +15,9 @@ import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
+import { TitleBlock } from "@/components/board-visual/TitleBlock";
+import { countRoles } from "@/components/board-visual/roles";
+import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 
 export function BoardPinoutVisualization({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
@@ -33,11 +36,13 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
     return map;
   }, [geometry]);
 
-  const presentRoles = useMemo(() => {
-    const set = new Set<PinRole>();
-    geometry?.anchors.forEach((a) => set.add(a.pin.role));
-    return set;
-  }, [geometry]);
+  const roleCounts = useMemo(
+    () => countRoles((geometry?.anchors ?? []).map((anchor) => anchor.pin)),
+    [geometry],
+  );
+  const nets = useBoardNets(geometry?.anchors);
+  const liveKey = activeKey ?? selectedKey;
+  const probe = probedNet(nets, liveKey);
 
   if (!board.pinout || !geometry) {
     return (
@@ -51,16 +56,18 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
     );
   }
 
-  const liveAnchor = anchorsByKey.get(activeKey ?? selectedKey ?? "") ?? null;
+  const liveAnchor = anchorsByKey.get(liveKey ?? "") ?? null;
   const stageTitle = `${board.name} — ${board.pinout.connector}`;
   // Dense schematic headers (FPGA expansion landings, 50+ pads) are cramped in
   // the narrow detail column, so we steer users to the roomy standalone view.
   const isComplex =
     geometry.kind === "group-strips" || geometry.anchors.length > 48;
-  // Very tall schematic diagrams letterbox down to an unreadable sliver if we
-  // force the whole thing into the panel height. For those we render at full
-  // panel width and scroll vertically; flatter boards keep the fit-to-view look.
-  const tall = geometry.vbh / geometry.vbw > 1.4;
+  // Very tall drawings letterbox down to an unreadable sliver if we force the
+  // whole thing into the panel height. For those we render at full panel width
+  // and scroll vertically; flatter boards keep the fit-to-view look. The
+  // threshold clears the tallest module sheet (a 2x20 DIP is about 1.5:1) and
+  // catches the schematic function-block sheets, which run far taller.
+  const tall = geometry.vbh / geometry.vbw > 1.75;
 
   function handleEscape() {
     if (expanded) {
@@ -80,24 +87,16 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         if (event.key === "Escape") handleEscape();
       }}
     >
-      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
-        <div className="min-w-0">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-            Connector
-          </div>
-          <h3 className="mt-1 text-base font-semibold text-white">
-            {board.pinout.connector}
-          </h3>
-          <p className="mt-0.5 text-[11px] text-zinc-500">
-            {geometry.orientation}
-          </p>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <h3 className="pin-eyebrow text-[var(--pin-ink-strong)]">
+          Connector drawing
+        </h3>
         <div className="flex shrink-0 items-center gap-1.5">
           <button
             ref={expandButtonRef}
             type="button"
             onClick={() => setExpanded(true)}
-            className="touch-target inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-[#15181f] px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
+            className="pin-tech touch-target inline-flex items-center gap-1.5 rounded-[3px] border border-[var(--pin-frame)] bg-[#0e141b] px-2.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--pin-rail)] transition hover:border-[var(--pin-probe)] hover:text-white"
           >
             <Expand className="size-3.5" aria-hidden="true" />
             Inspect
@@ -109,88 +108,85 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             aria-label={`Open the ${board.name} pinout in a new tab`}
             title="Open the full pinout in a new tab"
             className={clsx(
-              "touch-target inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition",
+              "pin-tech touch-target inline-flex items-center gap-1.5 rounded-[3px] border px-2.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] transition",
               isComplex
-                ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50 hover:bg-cyan-300/20"
-                : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
+                ? "border-[var(--pin-probe)]/60 bg-[var(--pin-probe)]/10 text-white hover:bg-[var(--pin-probe)]/20"
+                : "border-[var(--pin-frame)] bg-[#0e141b] text-[var(--pin-rail)] hover:border-[var(--pin-probe)] hover:text-white",
             )}
           >
             <ExternalLink className="size-3.5" aria-hidden="true" />
-            Full view
+            Full sheet
           </a>
         </div>
       </div>
 
       <div className="mt-3">
         <PinRoleLegend
-          present={presentRoles}
+          counts={roleCounts}
           activeRole={activeRole}
           onToggle={setActiveRole}
         />
       </div>
 
-      {/* Tall schematic boards render at full panel width and scroll vertically
-          so pads stay legible; flatter boards letterbox to fit the panel. */}
-      <div
-        className={clsx(
-          "bv-stage-wrap mt-3 w-full rounded-md bg-[#0a0c11]",
-          tall ? "overflow-y-auto overflow-x-hidden" : "overflow-hidden",
-        )}
-        style={tall ? { maxHeight: 460 } : undefined}
-      >
+      {/* Tall drawings render at full panel width and scroll vertically so pads
+          stay legible; flatter ones letterbox to fit the panel. */}
+      <div className="mt-3">
         <div
-          className="w-full"
-          style={{
-            aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-            maxHeight: tall ? undefined : 460,
-          }}
+          className={clsx(
+            "pin-sheet w-full rounded-t-[3px]",
+            tall ? "overflow-y-auto overflow-x-hidden" : "overflow-hidden",
+          )}
+          style={tall ? { maxHeight: 460 } : undefined}
         >
-          <BoardStage
-            geometry={geometry}
-            title={stageTitle}
-            selectedKey={selectedKey}
-            activeKey={activeKey ?? selectedKey}
-            activeRole={activeRole}
-            showAllLabels={false}
-            onSelect={(key) => {
-              setSelectedKey(key);
-              setActiveKey(key);
+          <div
+            className="w-full"
+            style={{
+              aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
+              maxHeight: tall ? undefined : 460,
             }}
-            onActiveKey={setActiveKey}
-          />
+          >
+            <BoardStage
+              geometry={geometry}
+              title={stageTitle}
+              sheetLabel={board.name}
+              selectedKey={selectedKey}
+              activeKey={liveKey}
+              activeRole={activeRole}
+              netKeys={probe.keys}
+              onSelect={(key) => {
+                setSelectedKey(key);
+                setActiveKey(key);
+              }}
+              onActiveKey={setActiveKey}
+            />
+          </div>
         </div>
+        <TitleBlock geometry={geometry} connector={board.pinout.connector} />
       </div>
 
       {isComplex ? (
-        <p className="mt-2 flex items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
+        <p className="mt-2 flex items-center gap-1.5 text-[11px] leading-5 text-[var(--pin-rail)]/75">
           <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
-          Dense header — open{" "}
+          Dense connector — open the{" "}
           <a
             href={`/pinout/${board.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium underline underline-offset-2 hover:text-cyan-100"
+            className="font-medium underline underline-offset-2 hover:text-white"
           >
-            Full view
+            full sheet
           </a>{" "}
-          for a roomier, fully-labelled diagram.
+          for a roomier, fully-annotated drawing.
         </p>
       ) : null}
 
-      {geometry.notToScale ? (
-        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-          Simplified diagram, grouped by function — not to physical scale. Pin
-          data is source-backed; verify against the linked documentation.
-        </p>
-      ) : (
-        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-          Simplified technical illustration. Pin data is source-backed; verify
-          against the linked documentation before wiring.
-        </p>
-      )}
-
       <div className="mt-3">
-        <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} />
+        <PinDetails
+          anchor={liveAnchor}
+          pinned={selectedKey !== null}
+          net={probe.net}
+          netSize={probe.keys.size}
+        />
       </div>
 
       {/* Connector caveats from the source-backed pinout notes. */}
@@ -207,15 +203,17 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </ul>
 
       <details className="mt-3 border-t border-white/10 pt-3">
-        <summary className="cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
-          All {geometry.anchors.length} pins (table)
+        <summary className="pin-eyebrow cursor-pointer text-[var(--pin-ink-strong)] transition hover:text-white">
+          Pin schedule · {geometry.anchors.length} pins
         </summary>
         <div className="mt-2 max-h-80 overflow-y-auto pr-1">
           <PinoutTable
             anchors={geometry.anchors}
-            activeKey={activeKey ?? selectedKey}
+            activeKey={liveKey}
             selectedKey={selectedKey}
             activeRole={activeRole}
+            netKeys={probe.keys}
+            netByKey={nets.netByKey}
             onSelect={(key) => {
               setSelectedKey(key);
               setActiveKey(key);
@@ -230,10 +228,9 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           board={board}
           geometry={geometry}
           selectedKey={selectedKey}
-          activeKey={activeKey ?? selectedKey}
+          activeKey={liveKey}
           activeRole={activeRole}
           liveAnchor={liveAnchor}
-          presentRoles={presentRoles}
           onSelect={(key) => {
             setSelectedKey(key);
             setActiveKey(key);
@@ -257,7 +254,6 @@ function ExpandedInspector({
   activeKey,
   activeRole,
   liveAnchor,
-  presentRoles,
   onSelect,
   onActiveKey,
   onToggleRole,
@@ -269,7 +265,6 @@ function ExpandedInspector({
   activeKey: string | null;
   activeRole: PinRole | null;
   liveAnchor: PinAnchor | null;
-  presentRoles: Set<PinRole>;
   onSelect: (key: string | null) => void;
   onActiveKey: (key: string | null) => void;
   onToggleRole: (role: PinRole | null) => void;
@@ -331,20 +326,17 @@ function ExpandedInspector({
       >
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
           <div className="min-w-0">
-            <div className="flex items-center gap-2 text-sm font-semibold text-white">
-              <Maximize2 className="size-4 text-cyan-200" aria-hidden="true" />
+            <div className="pin-eyebrow">Connector drawing</div>
+            <div className="pin-tech mt-1 truncate text-sm font-bold text-white">
               {board.name}
             </div>
-            <p className="truncate text-xs text-zinc-400">
-              {board.pinout?.connector} · {geometry.orientation}
-            </p>
           </div>
           <button
             ref={closeRef}
             type="button"
             onClick={onClose}
             aria-label="Close inspector"
-            className="touch-target grid size-9 shrink-0 place-items-center rounded-md border border-white/15 text-zinc-300 transition hover:border-cyan-300/60 hover:text-white"
+            className="touch-target grid size-9 shrink-0 place-items-center rounded-[3px] border border-[var(--pin-frame)] text-[var(--pin-rail)] transition hover:border-[var(--pin-probe)] hover:text-white"
           >
             <X className="size-4" aria-hidden="true" />
           </button>
@@ -358,7 +350,6 @@ function ExpandedInspector({
             activeKey={activeKey}
             activeRole={activeRole}
             liveAnchor={liveAnchor}
-            presentRoles={presentRoles}
             onSelect={onSelect}
             onActiveKey={onActiveKey}
             onToggleRole={onToggleRole}

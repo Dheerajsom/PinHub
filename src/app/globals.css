@@ -5,6 +5,7 @@
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono",
     "Cascadia Code", "Roboto Mono", monospace;
   --font-display: "Audiowide", "Audiowide Fallback", var(--font-sans);
+  --font-technical: "Chivo Mono", "Chivo Mono Fallback", var(--font-mono);
 }
 
 :root {
@@ -319,30 +320,78 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Board pinout visualization. Motion is purely an enhancement here: the
-   diagram is fully usable (and identical in information) without it. Animations
-   are limited to transform / opacity / SVG stroke so they stay cheap.
+   Pinout sheet
+   The pinout is drawn as a fabrication drawing rather than a picture of a
+   board: hairline outlines, a grid whose spacing is the connector's real pin
+   pitch, dimension rails, a title block, and plated-through-hole pads. Nothing
+   on the sheet is invented — if the catalog does not know where a part sits, it
+   is not drawn.
+
+   Contrast is the scarce resource here. Every role hue is held at the same
+   lightness (see components/board-visual/roles.ts), which leaves brightness
+   free to carry one meaning only: --pin-probe marks what is live.
+
+   Motion is purely an enhancement: the diagram is fully usable, and identical
+   in information, without it. Animations touch transform / opacity / stroke
+   only so they stay cheap.
    --------------------------------------------------------------------------- */
+:root {
+  --pin-sheet: #080b10;
+  --pin-frame: rgba(151, 178, 199, 0.26);
+  --pin-ink: #7d92a5;
+  --pin-ink-strong: #b3c5d4;
+  --pin-rail: #d9e6f0;
+  --pin-probe: #eaf6ff;
+}
+
+/* Annotation type: squared mono, tabular figures so pin numbers in a column
+   line up, and a touch of tracking to hold up at drawing-label sizes. */
+.pin-tech {
+  font-family: var(--font-technical);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* Title-block and rail captions. */
+.pin-eyebrow {
+  font-family: var(--font-technical);
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--pin-ink);
+}
+
+.pin-sheet {
+  background-color: var(--pin-sheet);
+  border: 1px solid var(--pin-frame);
+}
+
 .bv-stage {
   display: block;
 }
 
 .bv-pad {
-  transition:
-    opacity 140ms ease,
-    transform 120ms ease;
+  transition: opacity 140ms ease;
 }
 
 .bv-pad-ring {
   transform-box: fill-box;
   transform-origin: center;
-  animation: bv-ring-in 160ms ease-out;
+  animation: bv-ring-in 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The net path: a hairline that snaps between every pad sharing the probed
+   pin's net, drawn on rather than faded in — it reads as continuity being
+   traced, which is what it reports. */
+.bv-net-path {
+  stroke-dasharray: 2000;
+  animation: bv-net-draw 260ms cubic-bezier(0.33, 1, 0.68, 1) both;
 }
 
 .bv-leader {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  animation: bv-leader-draw 220ms ease-out;
+  animation: bv-leader-draw 180ms ease-out both;
 }
 
 .bv-label {
@@ -353,22 +402,29 @@ button {
   outline: none;
 }
 
-.bv-pad:focus-visible .bv-pad-ring,
-.bv-pad:focus-visible circle:last-of-type {
-  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.9));
-}
-
-.bv-stage-wrap {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.bv-pad:focus-visible .bv-pad-body {
+  stroke: var(--pin-probe);
+  stroke-width: 3.5;
 }
 
 @keyframes bv-ring-in {
   from {
-    transform: scale(0.6);
+    transform: scale(0.55);
     opacity: 0;
   }
   to {
     transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bv-net-draw {
+  from {
+    stroke-dashoffset: 2000;
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
     opacity: 1;
   }
 }
@@ -414,10 +470,16 @@ button {
   .bv-pad-ring,
   .bv-leader,
   .bv-label,
+  .bv-net-path,
   .pinhub-board,
   .pinhub-signal-traces path {
     animation: none;
     transition: none;
+  }
+  /* The net path is drawn by animating its dash offset, so with motion off the
+     dash pattern has to be cleared or the line would never appear. */
+  .bv-net-path {
+    stroke-dasharray: none;
   }
 }
 
@@ -501,6 +563,21 @@ button {
     background: white !important;
     border-color: #d1d5db !important;
     box-shadow: none !important;
+  }
+  /* A pinout is a thing people print and take to the bench. The drawing sheet
+     is built for a dark screen — its hairlines and label inks are baked into the
+     SVG and would come out as pale marks on a black rectangle — so print drops
+     the drawing and keeps the parts that read on paper: the title block, the
+     notes, and the full pin schedule, which is opened for the occasion. */
+  .pin-sheet {
+    display: none !important;
+  }
+  details > *:not(summary) {
+    display: block !important;
+  }
+  .pin-tech,
+  .pin-eyebrow {
+    color: #111827 !important;
   }
   table,
   th,

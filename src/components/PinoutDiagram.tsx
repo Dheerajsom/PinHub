@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import type { Pin, PinRole, Pinout, PinoutGroup } from "@/lib/boards";
 import {
-  roleChipStyles as roleStyles,
+  roleChipStyle,
   roleLabels,
 } from "@/components/board-visual/roles";
 import { CopyPinTable } from "@/components/CopyPinTable";
@@ -53,10 +53,8 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
             .map(([role, label]) => (
               <span
                 key={role}
-                className={clsx(
-                  "rounded border px-1.5 py-0.5 text-[11px] font-medium",
-                  roleStyles[role as PinRole],
-                )}
+                style={roleChipStyle(role as PinRole)}
+                className="pin-tech rounded-[3px] border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em]"
               >
                 {label}
               </span>
@@ -227,12 +225,12 @@ type PinPadProps = {
 function PinPad({ pin, compact = false }: PinPadProps) {
   return (
     <span
+      style={roleChipStyle(pin.role)}
       className={clsx(
-        "inline-grid shrink-0 place-items-center rounded-full border font-mono font-semibold shadow-[0_0_18px_rgba(255,255,255,0.04)] ring-1 ring-white/10",
+        "pin-tech inline-grid shrink-0 place-items-center rounded-full border font-bold",
         compact
           ? "size-8 text-[10px]"
           : "mx-auto size-9 text-[11px] @sm:size-11 @sm:text-xs",
-        roleStyles[pin.role],
       )}
       title={`${pin.position}: ${pin.label}`}
       aria-label={`Pin ${pin.position}, ${pin.label}, ${roleLabels[pin.role]}`}
