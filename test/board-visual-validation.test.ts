@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  artworkPlacementErrors,
   labelPlacementErrors,
   validateBoardVisuals,
 } from "@/lib/board-visual-validation";
@@ -67,5 +68,52 @@ describe("labelPlacementErrors", () => {
     };
     const errors = labelPlacementErrors("broken", broken);
     expect(errors.some((error) => error.includes("outside the sheet"))).toBe(true);
+  });
+});
+
+describe("artworkPlacementErrors", () => {
+  it("accepts every board's illustration", () => {
+    for (const board of boards) {
+      const geometry = buildBoardGeometry(board);
+      if (!geometry) continue;
+      expect(artworkPlacementErrors(board.id, geometry), board.id).toEqual([]);
+    }
+  });
+
+  it("catches a connector drawn over the connector's own pads", () => {
+    const geometry = geometryFor("raspberry-pi-5");
+    const pad = geometry.anchors[0];
+    const broken: BoardGeometry = {
+      ...geometry,
+      ports: [
+        {
+          kind: "usb-c",
+          side: "top",
+          x: pad.cx - 40,
+          y: pad.cy - 20,
+          w: 80,
+          h: 40,
+        },
+      ],
+    };
+    expect(
+      artworkPlacementErrors("broken", broken).some((error) =>
+        error.includes("covers pad"),
+      ),
+    ).toBe(true);
+  });
+
+  it("catches a mounting hole drilled through a pad", () => {
+    const geometry = geometryFor("raspberry-pi-5");
+    const pad = geometry.anchors[3];
+    const broken: BoardGeometry = {
+      ...geometry,
+      holes: [{ x: pad.cx, y: pad.cy, r: 9 }],
+    };
+    expect(
+      artworkPlacementErrors("broken", broken).some((error) =>
+        error.includes("drilled through pad"),
+      ),
+    ).toBe(true);
   });
 });

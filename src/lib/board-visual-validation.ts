@@ -96,6 +96,10 @@ export function validateBoardVisuals(): VisualValidationResult {
 
     // 5. Every signal label is legible: inside the sheet, and clear of the pads.
     errors.push(...labelPlacementErrors(board.id, geometry));
+
+    // 6. The illustration keeps off the pins: no connector shell drawn over a
+    // pad, no mounting hole punched through one, nothing off the sheet.
+    errors.push(...artworkPlacementErrors(board.id, geometry));
   }
 
   return { errors, warnings };
@@ -193,6 +197,73 @@ export function labelPlacementErrors(
         );
         break;
       }
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Placement errors in the board illustration. The drawn parts come from a
+ * board's visual template rather than from its pin data, so this is what stops
+ * a template edit from quietly covering the connector it is meant to sit
+ * beside: a USB shell over pin 1 hides the one mark that tells a reader which
+ * way round the header is.
+ */
+export function artworkPlacementErrors(
+  boardId: string,
+  geometry: BoardGeometry,
+): string[] {
+  const errors: string[] = [];
+  const { body, ports, holes, anchors, padR, vbw, vbh } = geometry;
+  // Connectors straddle the outline by design, so they may sit proud of it.
+  const bleed = 40;
+
+  for (const port of ports) {
+    if (
+      port.x < -bleed ||
+      port.y < -bleed ||
+      port.x + port.w > vbw + bleed ||
+      port.y + port.h > vbh + bleed
+    ) {
+      errors.push(`Board "${boardId}": ${port.kind} connector runs off the sheet.`);
+    }
+    for (const anchor of anchors) {
+      const hit =
+        anchor.cx > port.x - padR &&
+        anchor.cx < port.x + port.w + padR &&
+        anchor.cy > port.y - padR &&
+        anchor.cy < port.y + port.h + padR;
+      if (hit) {
+        errors.push(
+          `Board "${boardId}": ${port.kind} connector covers pad ${anchor.pin.position}.`,
+        );
+        break;
+      }
+    }
+  }
+
+  for (const hole of holes) {
+    if (
+      hole.x - hole.r < body.x ||
+      hole.y - hole.r < body.y ||
+      hole.x + hole.r > body.x + body.w ||
+      hole.y + hole.r > body.y + body.h
+    ) {
+      errors.push(`Board "${boardId}": a mounting hole sits off the board.`);
+      break;
+    }
+  }
+  for (const hole of holes) {
+    const clash = anchors.find(
+      (anchor) =>
+        Math.hypot(anchor.cx - hole.x, anchor.cy - hole.y) < hole.r + padR + 4,
+    );
+    if (clash) {
+      errors.push(
+        `Board "${boardId}": a mounting hole is drilled through pad ${clash.pin.position}.`,
+      );
+      break;
     }
   }
 

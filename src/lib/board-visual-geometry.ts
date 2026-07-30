@@ -48,6 +48,7 @@ export type PinAnchor = {
 
 export type Rect = { x: number; y: number; w: number; h: number; rx?: number };
 export type PortMark = Rect & { kind: PortKind; side: Side };
+export type Hole = { x: number; y: number; r: number };
 
 export type BoardGeometry = {
   kind: BoardVisual["headerKind"];
@@ -56,19 +57,16 @@ export type BoardGeometry = {
   body: Rect;
   accent: string;
   headerZones: Rect[];
-  /** The curated USB edge marker — the sheet's orientation datum. */
+  /** Curated connectors, placed on the edges the visual template records. */
   ports: PortMark[];
+  /** Mounting holes, drawn as plated corner holes on boards that have them. */
+  holes: Hole[];
   anchors: PinAnchor[];
   padR: number;
-  /** Drawn centre-to-centre pin spacing; sets the step of the sheet grid. */
+  /** Drawn centre-to-centre pin spacing; sets the step of the header. */
   pitch: number;
-  /** How the pins are arranged, for the title block — e.g. "2 × 20". */
+  /** How the pins are arranged — e.g. "2 × 20". */
   arrangement: string;
-  /**
-   * The body's bottom edge is a break line: the board continues past the
-   * drawing, which is cropped to the connector.
-   */
-  cropBottom?: boolean;
   notToScale: boolean;
   orientation: string;
   revisionNote?: string;
@@ -194,7 +192,10 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: usbMark(visual, body),
+    // Both long edges are castellated pads on these modules, so every curated
+    // connector lives on the end the template records.
+    ports: boardPorts(visual, body, visual.usb === "bottom" ? "bottom" : "top"),
+    holes: [],
     anchors,
     padR: PAD_R,
     pitch,
@@ -205,13 +206,11 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   };
 }
 
-// A 2xN header is drawn as a *detail view*: the sheet is cropped to the strip of
-// board the connector sits on, with a break line where the board continues.
-// Drawing the whole outline would mean putting the header somewhere on it, and
-// where the header sits on the board is not something the catalog knows — the
-// old full-board version left the connector as a sliver in a large empty
-// rectangle and had nowhere to put the even-row labels except back across the
-// pads.
+// A 2xN header board is drawn as the whole board: the outline in its curated
+// proportions, the connector inset from the top edge where these boards carry
+// it, and the labels taken out to rails clear of the outline — the odd row up
+// out of the top edge, the even row down past the bottom of the board, so no
+// signal name is ever drawn back across a pad it does not belong to.
 function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = board.pinout;
   const odd = p?.pins?.left ?? []; // odd positions, 1 3 5 …
@@ -222,13 +221,16 @@ function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   const hpad = 78;
   const bodyW = headerLen + hpad * 2;
 
-  const topRail = railFor(odd, MIN_LABEL_BAND);
-  const bottomRail = railFor(even, MIN_LABEL_BAND);
+  // A little more room than the text strictly needs, so a name never reads as
+  // if it were about to run off the sheet.
+  const topRail = railFor(odd, MIN_LABEL_BAND) + 12;
+  const bottomRail = railFor(even, MIN_LABEL_BAND) + 12;
 
   const rowGap = 46;
-  const edgeToRow = 44; // board top edge down to the odd row
-  const rowToCrop = 44; // even row down to the break line
-  const bodyH = edgeToRow + rowGap + rowToCrop;
+  const edgeToRow = 52; // board top edge down to the odd row
+  // The board's own proportions, floored so the connector never fills the
+  // outline it is supposed to sit on.
+  const bodyH = clamp(bodyW / visual.aspect, edgeToRow + rowGap + 150, 900);
 
   const vbw = SIDE_MARGIN + bodyW + SIDE_MARGIN;
   const vbh = topRail + bodyH + bottomRail;
@@ -287,12 +289,12 @@ function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: [],
+    ports: boardPorts(visual, body, "bottom"),
+    holes: corners(body, 30),
     anchors,
     padR: PAD_R,
     pitch,
     arrangement: `2 × ${n}`,
-    cropBottom: true,
     notToScale: Boolean(visual.notToScale),
     orientation: visual.orientation,
     revisionNote: visual.revisionNote,
@@ -385,7 +387,10 @@ function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: usbMark(visual, body),
+    // Shield headers run the length of both long edges, so the connectors go
+    // on an end — which is where the Arduino-footprint boards carry them.
+    ports: boardPorts(visual, body, "left"),
+    holes: corners(body, 28),
     anchors,
     padR: PAD_R,
     pitch,
@@ -454,7 +459,10 @@ function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeomet
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: usbMark(visual, body),
+    // The bottom edge is the gold connector itself, so anything else the
+    // template records goes on the top edge.
+    ports: boardPorts(visual, body, "top"),
+    holes: [],
     anchors,
     padR: PAD_R,
     pitch,
@@ -545,6 +553,7 @@ function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
     ports: [],
+    holes: [],
     anchors,
     padR: PAD_R,
     pitch: colPitch,
@@ -555,35 +564,100 @@ function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry
   };
 }
 
-// --- orientation datum -----------------------------------------------------
+// --- connectors and mounting holes -----------------------------------------
 
-// A single marker on the curated USB edge. This is the one non-pin mark on the
-// sheet, and it earns its place: "which end is the USB?" is how a reader lines
-// the drawing up with the board in their hand.
-function usbMark(visual: BoardVisual, body: Rect): PortMark[] {
-  const edge = visual.usb ?? "none";
-  if (edge === "none") return [];
-  const kind: PortKind = visual.ports?.[0] ?? "usb-micro";
-  const across = Math.min(Math.max(body.w, body.h) * 0.22, 130);
-  const depth = 26;
+// Relative size of each connector, as a fraction of the edge it sits on. These
+// are the proportions that make a connector recognizable at a glance — an
+// Ethernet jack is the widest thing on an SBC, a JST battery lead is a nub —
+// which is the whole job of drawing them: orienting the reader, not specifying
+// the board.
+const portSpan: Record<PortKind, number> = {
+  ethernet: 0.155,
+  "usb-a": 0.135,
+  hdmi: 0.11,
+  "usb-c": 0.085,
+  "usb-mini": 0.085,
+  "usb-micro": 0.075,
+  barrel: 0.075,
+  jst: 0.06,
+  camera: 0.055,
+  audio: 0.05,
+};
 
-  if (edge === "top") {
-    return [
-      { kind, side: "top", x: body.x + body.w / 2 - across / 2, y: body.y - depth / 2, w: across, h: depth, rx: 5 },
-    ];
+const portDepth: Record<PortKind, number> = {
+  ethernet: 40,
+  "usb-a": 36,
+  hdmi: 28,
+  "usb-c": 22,
+  "usb-mini": 24,
+  "usb-micro": 22,
+  barrel: 30,
+  jst: 20,
+  camera: 18,
+  audio: 24,
+};
+
+/** A connector straddling one edge of the board, centred `at` along that edge. */
+function edgeMark(kind: PortKind, side: Side, body: Rect, at: number): PortMark {
+  const along = side === "left" || side === "right" ? body.h : body.w;
+  const across = clamp(along * portSpan[kind], 26, 180);
+  const depth = portDepth[kind];
+
+  if (side === "top" || side === "bottom") {
+    const y = side === "top" ? body.y - depth * 0.55 : body.y + body.h - depth * 0.45;
+    return { kind, side, x: body.x + along * at - across / 2, y, w: across, h: depth, rx: 4 };
   }
-  if (edge === "bottom") {
-    return [
-      { kind, side: "bottom", x: body.x + body.w / 2 - across / 2, y: body.y + body.h - depth / 2, w: across, h: depth, rx: 5 },
-    ];
+  const x = side === "left" ? body.x - depth * 0.55 : body.x + body.w - depth * 0.45;
+  return { kind, side, x, y: body.y + along * at - across / 2, w: depth, h: across, rx: 4 };
+}
+
+/**
+ * Places the curated connectors: the first one on the board's recorded USB
+ * edge, the rest spread along `spread` — the edge the header does not occupy.
+ * Boards whose template records no ports get none; nothing is invented here.
+ */
+function boardPorts(
+  visual: BoardVisual,
+  body: Rect,
+  spread: Side,
+): PortMark[] {
+  const list = visual.ports ?? [];
+  if (!list.length) return [];
+
+  const usbEdge = visual.usb ?? "none";
+  const marks: PortMark[] = [];
+  let rest = list;
+
+  if (usbEdge !== "none") {
+    // Down the same edge when the USB shares it with the other connectors.
+    const stacked = usbEdge === spread ? list : [list[0]];
+    stacked.forEach((kind, index) => {
+      marks.push(edgeMark(kind, usbEdge, body, spot(index, stacked.length)));
+    });
+    rest = usbEdge === spread ? [] : list.slice(1);
   }
-  if (edge === "left") {
-    return [
-      { kind, side: "left", x: body.x - depth / 2, y: body.y + body.h / 2 - across / 2, w: depth, h: across, rx: 5 },
-    ];
-  }
+
+  rest.forEach((kind, index) => {
+    marks.push(edgeMark(kind, spread, body, spot(index, rest.length)));
+  });
+
+  return marks;
+}
+
+// Even spacing across the usable middle of an edge, leaving the corners for
+// mounting holes.
+function spot(index: number, count: number): number {
+  if (count <= 1) return 0.5;
+  return 0.17 + (index * 0.66) / (count - 1);
+}
+
+function corners(body: Rect, inset: number): Hole[] {
+  const r = 9;
   return [
-    { kind, side: "right", x: body.x + body.w - depth / 2, y: body.y + body.h / 2 - across / 2, w: depth, h: across, rx: 5 },
+    { x: body.x + inset, y: body.y + inset, r },
+    { x: body.x + body.w - inset, y: body.y + inset, r },
+    { x: body.x + inset, y: body.y + body.h - inset, r },
+    { x: body.x + body.w - inset, y: body.y + body.h - inset, r },
   ];
 }
 

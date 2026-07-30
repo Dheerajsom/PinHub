@@ -6,7 +6,7 @@ import type { PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
 import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
 import {
-  hatchedRoles,
+  PROBE_COLOR,
   pinAccessibleLabel,
   roleColors,
 } from "@/components/board-visual/roles";
@@ -16,11 +16,7 @@ import {
   wrapStackedLabel,
 } from "@/components/board-visual/label-layout";
 
-// The live-probe colour. Every role hue is held at the same lightness, which
-// leaves brightness free to mean exactly one thing on this sheet: this is what
-// you are touching. So the probe is not another hue — it is white, and weight.
-const PROBE = "#eaf6ff";
-const ANNOTATION = "#93a9bb";
+const ANNOTATION = "#9fb0c0";
 
 type BoardStageProps = {
   geometry: BoardGeometry;
@@ -30,6 +26,12 @@ type BoardStageProps = {
   selectedKey: string | null;
   activeKey: string | null; // selected or hovered — drives the live label
   activeRole: PinRole | null;
+  /**
+   * Label every pad. The panel diagram leaves labels to the probe so the board
+   * itself stays readable at postage-stamp size; the roomy inspector and the
+   * full-page view turn them all on.
+   */
+  showAllLabels: boolean;
   /** Anchor keys sharing the probed pin's net. Empty when nothing is probed. */
   netKeys: Set<string>;
   onSelect: (key: string | null) => void;
@@ -44,6 +46,7 @@ export function BoardStage({
   selectedKey,
   activeKey,
   activeRole,
+  showAllLabels,
   netKeys,
   onSelect,
   onActiveKey,
@@ -55,19 +58,20 @@ export function BoardStage({
   const uid = raw.replace(/[^a-zA-Z0-9]/g, "");
   const { anchors, vbw, vbh, padR } = geometry;
 
-  // Every pad carries its label. Each layout reserves rail space for them, so
-  // withholding labels until hover left most of the sheet empty and turned the
-  // drawing into a strip of numbered dots you had to probe to identify.
+  // The schematic sheet has no rails to run labels out to, so its labels are
+  // stacked under each pad and are always drawn.
   const stacked = geometry.kind === "group-strips";
-  // Stacked labels are fitted to the column so long signal names stay whole
-  // rather than being clipped or truncated.
   const stackedFont = stackedFontSize(geometry.pitch);
+  const labelled = showAllLabels || stacked;
 
   // Pin 1 gets a square pad — the silkscreen convention for the corner pin, and
   // the one mark that tells a reader which way round the connector is.
   const pinOne = anchors.find((anchor) => anchor.pin.position === 1) ?? null;
-
   const netPath = netKeys.size > 1 ? buildNetPath(anchors, netKeys) : null;
+  // A 40-pin header shown at phone width leaves each pad about 16 physical
+  // pixels across, so the invisible hit area is grown to tile the row: as much
+  // of the gap as can be claimed without a tap landing on two pins at once.
+  const hitR = Math.max(padR + 9, geometry.pitch * 0.48);
 
   function focusPad(index: number) {
     const next = (index + anchors.length) % anchors.length;
@@ -83,33 +87,9 @@ export function BoardStage({
       className={clsx("bv-stage h-full w-full", className)}
       preserveAspectRatio="xMidYMid meet"
     >
-      <defs>
-        {/* Reserved pins are hatched, not tinted: hatch is the drafting mark for
-            a restricted region, and it separates reserved from ground by shape
-            since both are deliberately chromaless. */}
-        <pattern
-          id={`hatch-${uid}`}
-          width={6}
-          height={6}
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(45)"
-        >
-          <rect width={6} height={6} fill={roleColors.reserved.fill} />
-          <line
-            x1={0}
-            y1={0}
-            x2={0}
-            y2={6}
-            stroke={roleColors.reserved.edge}
-            strokeOpacity={0.55}
-            strokeWidth={2}
-          />
-        </pattern>
-      </defs>
-
       <BoardArtwork geometry={geometry} label={sheetLabel} />
 
-      {/* Function-block titles for the schematic group-strips sheet. */}
+      {/* Function-block titles for the schematic sheet. */}
       {stacked
         ? groupTitles(anchors, padR).map((entry) => (
             <text
@@ -117,10 +97,10 @@ export function BoardStage({
               x={entry.x}
               y={entry.y}
               fontSize={16}
-              fontWeight={500}
-              fontFamily="var(--font-technical, monospace)"
+              fontWeight={600}
+              fontFamily="var(--font-sans, sans-serif)"
               fill={ANNOTATION}
-              letterSpacing="0.16em"
+              letterSpacing="0.14em"
               aria-hidden="true"
             >
               {entry.label.toUpperCase()}
@@ -128,48 +108,43 @@ export function BoardStage({
           ))
         : null}
 
-      {/* Pin 1 index mark. A square pad alone is easy to miss at a glance, and
-          "which end is pin 1" is the question that decides whether a jumper
-          lands on 3V3 or on a GPIO. */}
-      {pinOne && !stacked ? (
-        <PinOneMark anchor={pinOne} padR={padR} />
-      ) : null}
-
-      {/* The net: a hairline stitched between every pad on the probed pin's
-          net. Drawn beneath the pads so it reads as wiring, not as chrome. */}
+      {/* The net: a hairline stitched between every pad on the probed pin's net,
+          drawn beneath the pads so it reads as wiring rather than as chrome. */}
       {netPath ? (
         <path
           className="bv-net-path"
           d={netPath}
           fill="none"
-          stroke={PROBE}
-          strokeOpacity={0.5}
+          stroke={PROBE_COLOR}
+          strokeOpacity={0.45}
           strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       ) : null}
 
-      {/* Signal labels for every pad, plus a brighter leader for the probed one.
-          Drawn before the pads so the pads sit on top. */}
+      {/* Signal labels, with a leader from the pad out to the rail. Drawn before
+          the pads so the pads sit on top of their own leaders. */}
       <g>
         {anchors.map((anchor) => {
+          const active = anchor.key === activeKey;
+          if (!labelled && !active) return null;
           return (
             <LeaderLabel
               key={`lbl-${anchor.key}`}
               anchor={anchor}
-              active={anchor.key === activeKey}
+              active={active}
               onNet={netKeys.has(anchor.key)}
               dimmed={activeRole !== null && anchor.pin.role !== activeRole}
+              showLeader={labelled && !active}
               stacked={stacked}
               stackedFont={stackedFont}
               columnWidth={geometry.pitch}
             />
           );
         })}
-        {anchors.map((anchor) => {
-          if (anchor.key !== activeKey || stacked) return null;
-          return (
+        {anchors.map((anchor) =>
+          anchor.key === activeKey && !stacked ? (
             <line
               key={`lead-${anchor.key}`}
               x1={anchor.cx}
@@ -177,12 +152,12 @@ export function BoardStage({
               x2={anchor.labelX}
               y2={anchor.labelY}
               className="bv-leader"
-              stroke={PROBE}
-              strokeWidth={1.75}
+              stroke={PROBE_COLOR}
+              strokeWidth={2.25}
               strokeLinecap="round"
             />
-          );
-        })}
+          ) : null,
+        )}
       </g>
 
       {/* Interactive pads (roving tab order + arrow keys). */}
@@ -204,23 +179,24 @@ export function BoardStage({
           }
         }}
       >
-        {anchors.map((anchor, i) => (
+        {anchors.map((anchor, index) => (
           <Pad
             key={anchor.key}
-            ref={(el) => {
-              padRefs.current[i] = el;
+            ref={(element) => {
+              padRefs.current[index] = element;
             }}
             anchor={anchor}
             padR={padR}
+            hitR={hitR}
             square={anchor.key === pinOne?.key}
-            hatchId={`hatch-${uid}`}
             selected={anchor.key === selectedKey}
             active={anchor.key === activeKey}
             onNet={netKeys.has(anchor.key)}
             dimmed={activeRole !== null && anchor.pin.role !== activeRole}
-            tabIndex={i === focusIndex ? 0 : -1}
+            tabIndex={index === focusIndex ? 0 : -1}
+            uid={uid}
             onFocus={() => {
-              setFocusIndex(i);
+              setFocusIndex(index);
               onActiveKey(anchor.key);
             }}
             onBlur={() => onActiveKey(selectedKey)}
@@ -237,102 +213,48 @@ export function BoardStage({
 }
 
 /**
- * A caret aimed at pin 1, with the numeral behind it.
- *
- * It approaches from whichever direction is free of label rails: a row running
- * down a board edge has its rail beside it, so the mark comes from above; a row
- * running along the top or bottom has its rail above or below, so the mark comes
- * from the side. Either way it lands inside the outline and never on a pad.
- */
-function PinOneMark({ anchor, padR }: { anchor: PinAnchor; padR: number }) {
-  const gap = padR + 13;
-  const size = padR * 0.62;
-  const fromAbove = anchor.side === "left" || anchor.side === "right";
-
-  // Tip nearest the pad, base and numeral stepping away from it.
-  const tipX = fromAbove ? anchor.cx : anchor.cx - gap;
-  const tipY = fromAbove ? anchor.cy - gap : anchor.cy;
-  const baseX = fromAbove ? tipX : tipX - size;
-  const baseY = fromAbove ? tipY - size : tipY;
-
-  const points = fromAbove
-    ? [
-        [tipX, tipY],
-        [baseX - size * 0.8, baseY],
-        [baseX + size * 0.8, baseY],
-      ]
-    : [
-        [tipX, tipY],
-        [baseX, baseY - size * 0.8],
-        [baseX, baseY + size * 0.8],
-      ];
-
-  return (
-    <g aria-hidden="true">
-      <polygon
-        points={points.map(([x, y]) => `${round(x)},${round(y)}`).join(" ")}
-        fill={ANNOTATION}
-        fillOpacity={0.9}
-      />
-      <text
-        x={fromAbove ? baseX : baseX - 7}
-        y={fromAbove ? baseY - 10 : baseY}
-        textAnchor={fromAbove ? "middle" : "end"}
-        dominantBaseline="central"
-        fontSize={padR * 0.92}
-        fontFamily="var(--font-technical, monospace)"
-        fontWeight={700}
-        fill={ANNOTATION}
-      >
-        1
-      </text>
-    </g>
-  );
-}
-
-/**
- * A plated-through-hole pad: annular ring in the role's colour, the pin's
- * physical position on it, and a square outline for pin 1.
+ * One pin: the pad you probe. A filled disc in the role's colour with the pin's
+ * physical position on it, a square for pin 1, a cyan ring when it is live, and
+ * a quieter ring when it merely shares the probed pin's net.
  */
 function Pad({
   ref,
   anchor,
   padR,
+  hitR,
   square,
-  hatchId,
   selected,
   active,
   onNet,
   dimmed,
   tabIndex,
+  uid,
   onFocus,
   onBlur,
   onPointerEnter,
   onPointerLeave,
   onToggle,
 }: {
-  ref: (el: SVGGElement | null) => void;
+  ref: (element: SVGGElement | null) => void;
   anchor: PinAnchor;
   padR: number;
+  /** Radius of the invisible touch/click area around the pad. */
+  hitR: number;
   square: boolean;
-  hatchId: string;
   selected: boolean;
   active: boolean;
   onNet: boolean;
   dimmed: boolean;
   tabIndex: number;
+  uid: string;
   onFocus: () => void;
   onBlur: () => void;
   onPointerEnter: () => void;
   onPointerLeave: () => void;
   onToggle: () => void;
 }) {
-  const color = roleColors[anchor.pin.role];
-  const fill = hatchedRoles.has(anchor.pin.role) ? `url(#${hatchId})` : color.fill;
-  const { cx, cy } = anchor;
-  // Three digits do not fit inside a pad at the two-digit size.
-  const digits = String(anchor.pin.position).length;
-  const numberSize = digits >= 3 ? padR * 0.72 : padR * 0.98;
+  const colors = roleColors[anchor.pin.role];
+  const gradientId = `pad-${anchor.pin.role}-${uid}`;
 
   return (
     <g
@@ -342,7 +264,7 @@ function Pad({
       aria-pressed={selected}
       aria-label={pinAccessibleLabel(anchor.pin)}
       className="bv-pad cursor-pointer outline-none"
-      style={{ opacity: dimmed ? 0.26 : 1 }}
+      style={{ opacity: dimmed ? 0.28 : 1 }}
       onFocus={onFocus}
       onBlur={onBlur}
       onPointerEnter={onPointerEnter}
@@ -355,94 +277,74 @@ function Pad({
         }
       }}
     >
-      {/* Generous invisible hit area for touch/mouse. */}
-      <circle cx={cx} cy={cy} r={padR + 9} fill="transparent" />
+      <defs>
+        <radialGradient id={gradientId} cx="0.35" cy="0.3" r="0.85">
+          <stop offset="0" stopColor={colors.edge} stopOpacity={0.45} />
+          <stop offset="0.55" stopColor={colors.fill} />
+          <stop offset="1" stopColor={colors.fill} />
+        </radialGradient>
+      </defs>
 
-      {/* Net membership: a quiet halo on every pad the probe reaches. */}
+      {/* Generous invisible hit area for touch and mouse. */}
+      <circle cx={anchor.cx} cy={anchor.cy} r={hitR} fill="transparent" />
+
       {onNet && !active ? (
         <circle
-          cx={cx}
-          cy={cy}
-          r={padR + 4.5}
+          cx={anchor.cx}
+          cy={anchor.cy}
+          r={padR + 4}
           fill="none"
-          stroke={PROBE}
+          stroke={PROBE_COLOR}
           strokeOpacity={0.45}
           strokeWidth={1.5}
         />
       ) : null}
-
-      {/* The live pad — the one the readout is describing — gets the solid ring.
-          A pad that is only held gets a dashed one: while a pin is held you can
-          still hover others, and two identical rings leave no way to tell which
-          pad the readout belongs to. */}
-      {active ? (
+      {active || selected ? (
         <circle
-          cx={cx}
-          cy={cy}
+          cx={anchor.cx}
+          cy={anchor.cy}
           r={padR + 6}
           fill="none"
-          stroke={PROBE}
-          strokeWidth={2.5}
+          stroke={PROBE_COLOR}
+          strokeWidth={3}
           className="bv-pad-ring"
-        />
-      ) : selected ? (
-        <circle
-          cx={cx}
-          cy={cy}
-          r={padR + 6}
-          fill="none"
-          stroke={PROBE}
-          strokeOpacity={0.7}
-          strokeWidth={2}
-          strokeDasharray="4 4"
         />
       ) : null}
 
       {square ? (
         <rect
           className="bv-pad-body"
-          x={cx - padR}
-          y={cy - padR}
+          x={anchor.cx - padR}
+          y={anchor.cy - padR}
           width={padR * 2}
           height={padR * 2}
-          rx={2}
-          fill={fill}
-          stroke={color.edge}
-          strokeWidth={2}
+          rx={3}
+          fill={`url(#${gradientId})`}
+          stroke={colors.edge}
+          strokeWidth={2.25}
         />
       ) : (
         <circle
           className="bv-pad-body"
-          cx={cx}
-          cy={cy}
+          cx={anchor.cx}
+          cy={anchor.cy}
           r={padR}
-          fill={fill}
-          stroke={color.edge}
-          strokeWidth={2}
+          fill={`url(#${gradientId})`}
+          stroke={colors.edge}
+          strokeWidth={2.25}
         />
       )}
 
-      {/* Annular ring — the plating around the drill. */}
-      <circle
-        cx={cx}
-        cy={cy}
-        r={padR * 0.58}
-        fill="none"
-        stroke={color.edge}
-        strokeOpacity={0.55}
-        strokeWidth={1}
-      />
-
       <text
-        x={cx}
-        y={cy}
+        x={anchor.cx}
+        y={anchor.cy}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={numberSize}
-        fontFamily="var(--font-technical, monospace)"
+        fontSize={padR * 0.95}
+        fontFamily="var(--font-mono, monospace)"
         fontWeight={700}
-        fill={color.ink}
-        style={{ pointerEvents: "none" }}
+        fill={colors.ink}
+        pointerEvents="none"
       >
         {anchor.pin.position}
       </text>
@@ -450,20 +352,136 @@ function Pad({
   );
 }
 
-// Finds, per group, the top-left of its strip so a title can sit above it.
+function LeaderLabel({
+  anchor,
+  active,
+  onNet,
+  dimmed,
+  showLeader,
+  stacked,
+  stackedFont,
+  columnWidth,
+}: {
+  anchor: PinAnchor;
+  active: boolean;
+  onNet: boolean;
+  dimmed: boolean;
+  showLeader: boolean;
+  stacked: boolean;
+  stackedFont: number;
+  columnWidth: number;
+}) {
+  const colors = roleColors[anchor.pin.role];
+  const fill = active ? "#eaf8ff" : onNet ? PROBE_COLOR : colors.ink;
+  const opacity = dimmed ? 0.3 : 1;
+
+  if (stacked) {
+    const lines = wrapStackedLabel(anchor.pin.label, columnWidth, stackedFont);
+    return (
+      <g opacity={opacity} className="bv-label">
+        {lines.map((line, index) => (
+          <text
+            key={`${anchor.key}-${index}`}
+            x={anchor.labelX}
+            y={anchor.labelY + index * stackedFont * LABEL_LINE_STEP}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={stackedFont}
+            fontFamily="var(--font-mono, monospace)"
+            fontWeight={active ? 700 : 600}
+            fill={fill}
+          >
+            {line}
+          </text>
+        ))}
+      </g>
+    );
+  }
+
+  return (
+    <g opacity={opacity}>
+      {showLeader ? <Leader anchor={anchor} /> : null}
+      <text
+        x={anchor.labelX}
+        y={anchor.labelY}
+        transform={
+          anchor.rotateLabel
+            ? `rotate(-90 ${anchor.labelX} ${anchor.labelY})`
+            : undefined
+        }
+        textAnchor={anchor.labelAnchor}
+        dominantBaseline="central"
+        fontSize={anchor.rotateLabel ? 17 : 18}
+        fontFamily="var(--font-mono, monospace)"
+        fontWeight={active ? 700 : 600}
+        fill={fill}
+        className="bv-label"
+      >
+        {anchor.pin.label}
+      </text>
+    </g>
+  );
+}
+
+/**
+ * The line tying a label to its pad. A short run is drawn whole; a long one —
+ * the far rail on a full board — would otherwise rule twenty lines across the
+ * artwork, so it is reduced to a tick at each end and the column alignment
+ * carries the rest.
+ */
+function Leader({ anchor }: { anchor: PinAnchor }) {
+  const dx = anchor.labelX - anchor.cx;
+  const dy = anchor.labelY - anchor.cy;
+  const length = Math.hypot(dx, dy);
+  const stroke = { stroke: ANNOTATION, strokeOpacity: 0.32, strokeWidth: 1.25 };
+
+  if (length < 220) {
+    return (
+      <line
+        x1={anchor.cx}
+        y1={anchor.cy}
+        x2={anchor.labelX}
+        y2={anchor.labelY}
+        {...stroke}
+      />
+    );
+  }
+
+  const tick = 26 / length;
+  return (
+    <>
+      <line
+        x1={anchor.cx}
+        y1={anchor.cy}
+        x2={anchor.cx + dx * tick}
+        y2={anchor.cy + dy * tick}
+        {...stroke}
+      />
+      <line
+        x1={anchor.labelX - dx * tick}
+        y1={anchor.labelY - dy * tick}
+        x2={anchor.labelX}
+        y2={anchor.labelY}
+        {...stroke}
+      />
+    </>
+  );
+}
+
+/** Per group, the top-left of its strip, so a title can sit above it. */
 function groupTitles(
   anchors: PinAnchor[],
   padR: number,
 ): Array<{ label: string; x: number; y: number }> {
   const byGroup = new Map<string, { minX: number; minY: number }>();
-  for (const a of anchors) {
-    if (!a.group) continue;
-    const entry = byGroup.get(a.group);
+  for (const anchor of anchors) {
+    if (!anchor.group) continue;
+    const entry = byGroup.get(anchor.group);
     if (!entry) {
-      byGroup.set(a.group, { minX: a.cx, minY: a.cy });
+      byGroup.set(anchor.group, { minX: anchor.cx, minY: anchor.cy });
     } else {
-      entry.minX = Math.min(entry.minX, a.cx);
-      entry.minY = Math.min(entry.minY, a.cy);
+      entry.minX = Math.min(entry.minX, anchor.cx);
+      entry.minY = Math.min(entry.minY, anchor.cy);
     }
   }
   return [...byGroup.entries()].map(([label, { minX, minY }]) => ({
@@ -473,127 +491,11 @@ function groupTitles(
   }));
 }
 
-/**
- * Polyline through every pad on the probed net.
- *
- * Members are walked along the connector's long axis so the line advances
- * steadily instead of doubling back — on a 2xN header the eight grounds are
- * split across two rows, and joining them in raw anchor order would drag one
- * long line back across the whole drawing.
- */
-function buildNetPath(anchors: PinAnchor[], netKeys: Set<string>): string | null {
-  const members = anchors.filter((anchor) => netKeys.has(anchor.key));
-  if (members.length < 2) return null;
-  // Ringing out a rail with a dozen taps draws a scribble rather than a net, so
-  // past that point the pad halos carry the highlight on their own.
-  if (members.length > 12) return null;
-
-  const xs = members.map((m) => m.cx);
-  const ys = members.map((m) => m.cy);
-  const spanX = Math.max(...xs) - Math.min(...xs);
-  const spanY = Math.max(...ys) - Math.min(...ys);
-  const alongX = spanX >= spanY;
-
-  const sorted = [...members].sort((a, b) =>
-    alongX ? a.cx - b.cx || a.cy - b.cy : a.cy - b.cy || a.cx - b.cx,
-  );
-
-  return sorted
-    .map((m, i) => `${i === 0 ? "M" : "L"} ${round(m.cx)} ${round(m.cy)}`)
-    .join(" ");
-}
-
-function round(v: number): number {
-  return Math.round(v * 10) / 10;
-}
-
-function LeaderLabel({
-  anchor,
-  active,
-  onNet,
-  dimmed,
-  stacked,
-  stackedFont,
-  columnWidth,
-}: {
-  anchor: PinAnchor;
-  active: boolean;
-  onNet: boolean;
-  dimmed: boolean;
-  stacked: boolean;
-  stackedFont: number;
-  columnWidth: number;
-}) {
-  const color = roleColors[anchor.pin.role];
-  const fill = active || onNet ? PROBE : color.ink;
-  const opacity = dimmed ? 0.26 : 1;
-
-  // Connector line from the pad toward the rail (skipped for the probed pin,
-  // which gets its own brighter leader drawn on top).
-  const guide =
-    !active && !stacked ? (
-      <line
-        x1={anchor.cx}
-        y1={anchor.cy}
-        x2={anchor.labelX}
-        y2={anchor.labelY}
-        stroke={ANNOTATION}
-        strokeOpacity={0.32}
-        strokeWidth={1}
-      />
-    ) : null;
-
-  if (stacked) {
-    // Function-grouped sheets stack a label under its pad, wrapped to the column
-    // so a name like "18 / A4" reads as two short lines instead of one wide one.
-    const lines = wrapStackedLabel(anchor.pin.label, columnWidth, stackedFont);
-    return (
-      <g opacity={opacity} aria-hidden="true">
-        <text
-          x={anchor.labelX}
-          y={anchor.labelY}
-          textAnchor="middle"
-          fontSize={stackedFont}
-          fontFamily="var(--font-technical, monospace)"
-          fontWeight={active ? 700 : 500}
-          fill={fill}
-          className="bv-label"
-        >
-          {lines.map((line, i) => (
-            <tspan
-              key={line + i}
-              x={anchor.labelX}
-              dy={i === 0 ? 0 : stackedFont * LABEL_LINE_STEP}
-            >
-              {line}
-            </tspan>
-          ))}
-        </text>
-      </g>
-    );
-  }
-
-  const transform = anchor.rotateLabel
-    ? `rotate(-90 ${anchor.labelX} ${anchor.labelY})`
-    : undefined;
-
-  return (
-    <g opacity={opacity} aria-hidden="true">
-      {guide}
-      <text
-        x={anchor.labelX}
-        y={anchor.labelY}
-        transform={transform}
-        textAnchor={anchor.labelAnchor}
-        dominantBaseline="central"
-        fontSize={anchor.rotateLabel ? 17 : 18}
-        fontFamily="var(--font-technical, monospace)"
-        fontWeight={active ? 700 : 500}
-        fill={fill}
-        className="bv-label"
-      >
-        {anchor.pin.label}
-      </text>
-    </g>
-  );
+/** A polyline through every pad on the probed net, in connector order. */
+function buildNetPath(anchors: PinAnchor[], keys: Set<string>): string | null {
+  const points = anchors
+    .filter((anchor) => keys.has(anchor.key))
+    .map((anchor) => `${Math.round(anchor.cx)} ${Math.round(anchor.cy)}`);
+  if (points.length < 2) return null;
+  return `M ${points.join(" L ")}`;
 }

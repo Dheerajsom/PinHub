@@ -36,20 +36,20 @@ export function PinoutTable({
         Full pin list, synchronized with the board drawing.
       </caption>
       <thead>
-        <tr className="border-b border-[var(--pin-frame)]">
-          <th scope="col" className="pin-eyebrow w-8 py-1.5 pr-1.5 text-left">
+        <tr className="border-b border-white/10">
+          <th scope="col" className="w-8 py-1.5 pr-1.5 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
             #
           </th>
-          <th scope="col" className="pin-eyebrow w-[30%] py-1.5 pr-2 text-left">
+          <th scope="col" className="w-[30%] py-1.5 pr-2 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
             Signal
           </th>
-          <th scope="col" className="pin-eyebrow w-[4.75rem] py-1.5 pr-2 text-left">
+          <th scope="col" className="w-[4.75rem] py-1.5 pr-2 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
             Role
           </th>
-          <th scope="col" className="pin-eyebrow w-[4.25rem] py-1.5 pr-2 text-left">
+          <th scope="col" className="w-[4.25rem] py-1.5 pr-2 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
             Net
           </th>
-          <th scope="col" className="pin-eyebrow py-1.5 pr-1 text-left">
+          <th scope="col" className="py-1.5 pr-1 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
             Also / notes
           </th>
         </tr>
@@ -74,7 +74,7 @@ export function PinoutTable({
                 <tr>
                   <th
                     colSpan={5}
-                    className="pin-eyebrow border-t border-[var(--pin-frame)] pb-1.5 pt-5 text-left text-[var(--pin-ink-strong)]"
+                    className="border-t border-white/10 pb-1.5 pt-5 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-400"
                   >
                     {anchor.group}
                   </th>
@@ -86,13 +86,13 @@ export function PinoutTable({
                 onPointerLeave={() => onActiveKey(selectedKey)}
                 className={clsx(
                   "cursor-pointer border-t border-white/5 transition",
-                  isActive && "bg-[var(--pin-probe)]/[0.12]",
-                  onNet && "bg-[var(--pin-probe)]/[0.04]",
+                  isActive && "bg-cyan-300/[0.12]",
+                  onNet && "bg-cyan-300/[0.05]",
                   !isActive && !onNet && "hover:bg-white/[0.04]",
                   dimmed && "opacity-40",
                 )}
               >
-                <td className="pin-tech px-0.5 py-1 text-xs text-[var(--pin-ink)]">
+                <td className="px-0.5 py-1 font-mono text-xs text-zinc-500">
                   {anchor.pin.position}
                 </td>
                 <th
@@ -105,7 +105,7 @@ export function PinoutTable({
                       event.stopPropagation();
                       toggleSelection();
                     }}
-                    className="pin-tech w-full truncate rounded text-left text-[13px] font-bold text-white outline-none transition hover:text-[var(--pin-probe)] focus-visible:ring-1 focus-visible:ring-[var(--pin-probe)]"
+                    className="w-full truncate rounded text-left font-mono text-[13px] font-semibold text-white outline-none transition hover:text-cyan-200 focus-visible:ring-1 focus-visible:ring-cyan-300"
                     aria-label={`${isSelected ? "Unselect" : "Select"} pin ${anchor.pin.position}, ${anchor.pin.label}`}
                     aria-pressed={isSelected}
                   >
@@ -114,7 +114,7 @@ export function PinoutTable({
                 </th>
                 <td className="py-1 pr-2">
                   <span
-                    className="pin-tech inline-flex whitespace-nowrap rounded-[3px] border px-1 py-0.5 text-[9px] font-medium uppercase tracking-[0.08em]"
+                    className="inline-flex whitespace-nowrap rounded border px-1.5 py-0.5 text-[10px] font-medium"
                     style={roleChipStyle(anchor.pin.role)}
                   >
                     {roleLabels[anchor.pin.role]}
@@ -122,10 +122,10 @@ export function PinoutTable({
                 </td>
                 <td
                   className={clsx(
-                    "pin-tech truncate py-1 pr-2 text-[11px]",
+                    "truncate py-1 pr-2 font-mono text-[11px]",
                     onNet || isActive
-                      ? "text-[var(--pin-probe)]"
-                      : "text-[var(--pin-ink)]",
+                      ? "text-cyan-200"
+                      : "text-zinc-500",
                   )}
                 >
                   {net ? net.label : ""}

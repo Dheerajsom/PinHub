@@ -552,7 +552,7 @@ function BoardCard({
             ) : null}
           </p>
         </div>
-        <button type="button" onClick={() => onFavorite(board.id)} aria-label={favorite ? `Remove ${board.name} from favorites` : `Add ${board.name} to favorites`} aria-pressed={favorite} className="relative z-10 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-amber-200"><Star className={clsx("size-4", favorite && "fill-amber-300 text-amber-300")} /></button>
+        <button type="button" onClick={() => onFavorite(board.id)} aria-label={favorite ? `Remove ${board.name} from favorites` : `Add ${board.name} to favorites`} aria-pressed={favorite} className="relative z-10 grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-amber-200"><Star className={clsx("size-4", favorite && "fill-amber-300 text-amber-300")} /></button>
       </div>
       <p className="mt-3 line-clamp-2 text-sm leading-6 text-zinc-400">{board.description}</p>
       <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
@@ -563,7 +563,7 @@ function BoardCard({
       </dl>
       <div className="relative z-10 mt-3 flex items-center justify-between gap-3 border-t border-white/8 pt-3">
         <span className={clsx("inline-flex items-center gap-1.5 text-xs", board.warningCount ? "text-orange-200" : "text-zinc-500")}><ShieldAlert className="size-3.5" />{board.warningCount} wiring cautions</span>
-        <button type="button" onClick={() => onCompare(board.id)} disabled={compareFull && !comparing} aria-pressed={comparing} className={clsx("inline-flex h-9 items-center gap-1.5 rounded-md border px-2.5 text-xs font-medium transition", comparing ? "border-cyan-300/60 bg-cyan-300/12 text-cyan-50" : "border-white/10 bg-white/[0.03] text-zinc-300 hover:border-cyan-300/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-35")}><GitCompareArrows className="size-3.5" />{comparing ? "Selected" : "Compare"}</button>
+        <button type="button" onClick={() => onCompare(board.id)} disabled={compareFull && !comparing} aria-pressed={comparing} className={clsx("inline-flex h-10 items-center gap-1.5 rounded-md border px-3 text-xs font-medium transition", comparing ? "border-cyan-300/60 bg-cyan-300/12 text-cyan-50" : "border-white/10 bg-white/[0.03] text-zinc-300 hover:border-cyan-300/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-35")}><GitCompareArrows className="size-3.5" />{comparing ? "Selected" : "Compare"}</button>
       </div>
     </article>
   );

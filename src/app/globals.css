@@ -320,52 +320,36 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Pinout sheet
-   The pinout is drawn as a fabrication drawing rather than a picture of a
-   board: hairline outlines, a grid whose spacing is the connector's real pin
-   pitch, dimension rails, a title block, and plated-through-hole pads. Nothing
-   on the sheet is invented — if the catalog does not know where a part sits, it
-   is not drawn.
+   Board diagram
+   The pinout is drawn as the board: soldermask in the vendor's colour, copper
+   routed to the connector, recognizable connector shells, and a colored pad per
+   pin. The illustration exists so a reader can line the diagram up with the
+   board in their hand; the pins on it are the catalog's, and the panel says in
+   as many words which parts of the picture are which.
 
-   Contrast is the scarce resource here. Every role hue is held at the same
-   lightness (see components/board-visual/roles.ts), which leaves brightness
-   free to carry one meaning only: --pin-probe marks what is live.
+   A role is identified by hue (see components/board-visual/roles.ts) and cyan
+   belongs to the probe alone, so "what am I touching" never competes with
+   "what is this pin".
 
    Motion is purely an enhancement: the diagram is fully usable, and identical
    in information, without it. Animations touch transform / opacity / stroke
    only so they stay cheap.
    --------------------------------------------------------------------------- */
-:root {
-  --pin-sheet: #080b10;
-  --pin-frame: rgba(151, 178, 199, 0.26);
-  --pin-ink: #7d92a5;
-  --pin-ink-strong: #b3c5d4;
-  --pin-rail: #d9e6f0;
-  --pin-probe: #eaf6ff;
-}
 
 /* Annotation type: squared mono, tabular figures so pin numbers in a column
-   line up, and a touch of tracking to hold up at drawing-label sizes. */
+   line up, and a touch of tracking to hold up at label sizes. Used by the
+   static pin map. */
 .pin-tech {
   font-family: var(--font-technical);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
 }
 
-/* Title-block and rail captions. */
-.pin-eyebrow {
-  font-family: var(--font-technical);
-  font-size: 0.625rem;
-  font-weight: 500;
-  line-height: 1.2;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--pin-ink);
-}
-
-.pin-sheet {
-  background-color: var(--pin-sheet);
-  border: 1px solid var(--pin-frame);
+/* The dark well the board illustration sits on, so the PCB reads as an object
+   on a bench rather than as a shape floating on the panel. */
+.bv-stage-wrap {
+  background-color: #0a0c11;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .bv-stage {
@@ -402,9 +386,12 @@ button {
   outline: none;
 }
 
+/* Keyboard focus lands on a pad, so it gets the same cyan the probe uses —
+   heavier, and lit, so it is unmistakable against a colored board. */
 .bv-pad:focus-visible .bv-pad-body {
-  stroke: var(--pin-probe);
+  stroke: #67e8f9;
   stroke-width: 3.5;
+  filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.9));
 }
 
 @keyframes bv-ring-in {
@@ -556,19 +543,18 @@ button {
     border-color: #d1d5db !important;
     box-shadow: none !important;
   }
-  /* A pinout is a thing people print and take to the bench. The drawing sheet
-     is built for a dark screen — its hairlines and label inks are baked into the
-     SVG and would come out as pale marks on a black rectangle — so print drops
-     the drawing and keeps the parts that read on paper: the title block, the
-     notes, and the full pin schedule, which is opened for the occasion. */
-  .pin-sheet {
+  /* A pinout is a thing people print and take to the bench. The board diagram
+     is built for a dark screen — its soldermask and label inks are baked into
+     the SVG and would come out as a dark slab on white paper — so print drops
+     the illustration and keeps what reads on paper: the notes and the full pin
+     table, which is opened for the occasion. */
+  .bv-stage-wrap {
     display: none !important;
   }
   details > *:not(summary) {
     display: block !important;
   }
-  .pin-tech,
-  .pin-eyebrow {
+  .pin-tech {
     color: #111827 !important;
   }
   table,

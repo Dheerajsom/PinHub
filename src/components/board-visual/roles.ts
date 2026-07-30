@@ -22,77 +22,62 @@ export const roleLabels: Record<PinRole, string> = {
 /**
  * One palette for every surface — SVG pads, HTML chips, table badges.
  *
- * The thirteen role hues are sampled from OKLCH at a *fixed lightness and
- * chroma per ramp*, varying only in hue angle, then baked to sRGB hex (with
- * chroma reduced per-hue where sRGB could not hold it). Uniform lightness is
- * the point: with the old full-saturation Tailwind hues, yellow and cyan
- * shouted while violet receded, so a connector read as confetti and no role
- * carried more weight than any other by accident. Here every role is equally
- * loud, which leaves contrast free to mean something — the live probe is the
- * only thing on the sheet allowed to be brighter than a role.
+ * A role is identified by hue, and the hues are the ones this audience already
+ * reads off a breakout board: power red, ground grey, GPIO green, I2C cyan,
+ * SPI amber, UART blue. Each role gets four steps at the same relative
+ * position on its ramp, so thirteen roles read as one system rather than
+ * thirteen unrelated colors:
  *
- * Hue angles keep the conventions this audience already reads: power is red,
- * ground is deliberately chromaless, GPIO is green.
+ *   ink   text on a dark ground — the pad number, the chip label
+ *   edge  the pad ring and chip border, the role's identity at a glance
+ *   fill  the pad body
+ *   wash  the chip background
  *
- *   ink   L 0.865  label text on the drawing sheet
- *   edge  L 0.735  pad ring, chip border
- *   fill  L 0.335  pad body
- *   wash  L 0.265  chip background
+ * Interaction is deliberately *not* in this palette: the probe is cyan and
+ * nothing else on the board is, so "what am I touching" never competes with
+ * "what is this pin".
  */
 export const roleColors: Record<
   PinRole,
   { ink: string; edge: string; fill: string; wash: string }
 > = {
-  power: { ink: "#fec1bb", edge: "#f98078", fill: "#572522", wash: "#391b19" },
-  ground: { ink: "#b8c2cc", edge: "#a4aab1", fill: "#34373a", wash: "#242527" },
-  gpio: { ink: "#8eeca3", edge: "#58c375", fill: "#134121", wash: "#122c18" },
-  i2c: { ink: "#40ecfd", edge: "#0ebfce", fill: "#003f45", wash: "#002b30" },
-  spi: { ink: "#fbcb61", edge: "#d4a004", fill: "#473300", wash: "#302305" },
-  uart: { ink: "#acd8ff", edge: "#4cb1fe", fill: "#0c3a5a", wash: "#0f273b" },
-  adc: { ink: "#cdcdff", edge: "#a19bfe", fill: "#33305b", wash: "#23223c" },
-  dac: { ink: "#febdd8", edge: "#ef7eb3", fill: "#53243b", wash: "#371b28" },
-  pwm: { ink: "#f2bcff", edge: "#d288e3", fill: "#47294e", wash: "#2f1d34" },
-  debug: { ink: "#bee27c", edge: "#94b944", fill: "#2e3d0a", wash: "#20290d" },
-  system: { ink: "#fec59f", edge: "#f08d40", fill: "#532a08", wash: "#371e0c" },
-  special: { ink: "#56efd3", edge: "#0bc4a9", fill: "#014137", wash: "#012d25" },
-  reserved: { ink: "#d9d1c7", edge: "#b0a89d", fill: "#393632", wash: "#272522" },
+  power: { ink: "#fecaca", edge: "#f87171", fill: "#7f1d2b", wash: "#2a1216" },
+  ground: { ink: "#e4e4e7", edge: "#a1a1aa", fill: "#3f3f46", wash: "#232327" },
+  gpio: { ink: "#a7f3d0", edge: "#34d399", fill: "#0f5132", wash: "#0d2a20" },
+  i2c: { ink: "#a5f3fc", edge: "#22d3ee", fill: "#0e5566", wash: "#0a2b33" },
+  spi: { ink: "#fde68a", edge: "#fbbf24", fill: "#6b4709", wash: "#2c2109" },
+  uart: { ink: "#bae6fd", edge: "#38bdf8", fill: "#0c4a6e", wash: "#0b2436" },
+  adc: { ink: "#ddd6fe", edge: "#a78bfa", fill: "#4c1d95", wash: "#211a3c" },
+  dac: { ink: "#fecdd3", edge: "#fb7185", fill: "#7a1733", wash: "#2c111c" },
+  pwm: { ink: "#f5d0fe", edge: "#e879f9", fill: "#6b1f5e", wash: "#2b1230" },
+  debug: { ink: "#d9f99d", edge: "#a3e635", fill: "#3f4d09", wash: "#1d260a" },
+  system: { ink: "#fed7aa", edge: "#fb923c", fill: "#7c2d12", wash: "#2c1509" },
+  special: { ink: "#99f6e4", edge: "#2dd4bf", fill: "#115e59", wash: "#0a2b2a" },
+  reserved: { ink: "#e7e5e4", edge: "#a8a29e", fill: "#44403c", wash: "#26241f" },
 };
 
-// Reserved pins are drawn with a diagonal hatch rather than a solid fill. Hatch
-// is the drafting convention for a restricted region, and it separates reserved
-// from ground by *shape* — both are intentionally chromaless, so hue alone could
-// not tell them apart.
-export const hatchedRoles = new Set<PinRole>(["reserved"]);
+/** The one interaction color on the board: probe ring, leader line, live label. */
+export const PROBE_COLOR = "#22d3ee";
 
+// Legend order: rails first, then the digital and bus roles in the order they
+// appear on a datasheet's pin table, then the ones that mean "read the note".
 export const roleOrder: PinRole[] = [
   "power",
   "ground",
   "gpio",
-  "pwm",
   "i2c",
   "spi",
   "uart",
   "adc",
   "dac",
+  "pwm",
   "debug",
   "system",
   "special",
   "reserved",
 ];
 
-// Legend grouping. The families are how an engineer already thinks about a
-// header — what powers it, what switches, what talks, what measures, what to
-// leave alone — so grouping the chips this way turns a thirteen-swatch row into
-// five short scannable runs.
-export const roleFamilies: Array<{ label: string; roles: PinRole[] }> = [
-  { label: "Rails", roles: ["power", "ground"] },
-  { label: "Digital", roles: ["gpio", "pwm"] },
-  { label: "Buses", roles: ["i2c", "spi", "uart"] },
-  { label: "Analog", roles: ["adc", "dac"] },
-  { label: "Flagged", roles: ["debug", "system", "special", "reserved"] },
-];
-
-/** How many pins carry each role, for the legend's per-chip counts. */
+/** How many pins carry each role, for the legend's accessible descriptions. */
 export function countRoles(pins: Array<{ role: PinRole }>): Map<PinRole, number> {
   const counts = new Map<PinRole, number>();
   for (const pin of pins) {

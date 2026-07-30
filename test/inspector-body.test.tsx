@@ -25,13 +25,13 @@ beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
     configurable: true,
     get() {
-      return this.className?.includes?.("pin-sheet") ? 900 : 0;
+      return this.className?.includes?.("bv-stage-wrap") ? 900 : 0;
     },
   });
   Object.defineProperty(HTMLElement.prototype, "clientWidth", {
     configurable: true,
     get() {
-      return this.className?.includes?.("pin-sheet") ? 360 : 0;
+      return this.className?.includes?.("bv-stage-wrap") ? 360 : 0;
     },
   });
 });
@@ -61,7 +61,7 @@ describe("InspectorBody sheet", () => {
     renderSheet();
 
     const drawing = screen.getByRole("group", {
-      name: "Raspberry Pi 5 connector drawing",
+      name: "Raspberry Pi 5 connector diagram",
     });
     expect(drawing.getAttribute("tabindex")).toBe("0");
 
@@ -81,18 +81,18 @@ describe("InspectorBody sheet", () => {
 
     expect(fit.getAttribute("aria-pressed")).toBe("true");
     expect(
-      screen.getByText("Whole connector shown — labels are reduced"),
+      screen.getByText("Whole board shown — labels are reduced"),
     ).toBeTruthy();
     expect(
       screen.queryByText("Swipe horizontally to view the full connector"),
     ).toBeNull();
   });
 
-  it("keeps the pin schedule available whichever mode is on", () => {
+  it("keeps the full pin table available whichever mode is on", () => {
     renderSheet();
 
-    expect(screen.getByText(/Pin schedule/)).toBeTruthy();
+    expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Fit width" }));
-    expect(screen.getByText(/Pin schedule/)).toBeTruthy();
+    expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
   });
 });

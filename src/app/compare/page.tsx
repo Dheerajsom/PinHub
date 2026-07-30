@@ -49,7 +49,7 @@ export default async function ComparePage({
   return (
     <main className="relative isolate min-h-screen pb-10">
       <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#0a0d12] px-4 py-3 sm:px-6 lg:px-8">
+      <header className="relative border-b border-white/10 bg-[#0a0d12] px-4 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4">
           <Link
             href="/compare"
