@@ -67,7 +67,72 @@ export function CompareTable({ boards }: { boards: Board[] }) {
           </button>
         </div>
       </div>
-      <div className="comparison-scroll overflow-x-auto rounded-xl border border-white/10 bg-[#11141a] shadow-2xl">
+      <div className="space-y-3 md:hidden" aria-label="Board comparison">
+        <p className="rounded-lg border border-cyan-300/20 bg-cyan-300/[0.05] px-3 py-2 text-xs leading-5 text-cyan-50/80">
+          Each board is stacked below with the same attribute order for quick
+          vertical comparison.
+        </p>
+        {boards.map((board, boardIndex) => (
+          <section
+            key={board.id}
+            aria-labelledby={`comparison-board-${board.id}`}
+            className="overflow-hidden rounded-xl border border-white/10 bg-[#11141a] shadow-xl"
+          >
+            <header className="border-b border-white/10 bg-[#0c0f14] p-4">
+              <div className="flex items-start justify-between gap-3">
+                <Link
+                  id={`comparison-board-${board.id}`}
+                  href={`/boards/${board.id}`}
+                  className="flex min-w-0 items-center gap-2 font-semibold text-white hover:text-cyan-100"
+                >
+                  <VendorLogo vendor={board.vendor} size={24} />
+                  <span className="min-w-0">{board.name}</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => removeBoard(board.id)}
+                  aria-label={`Remove ${board.name} from comparison`}
+                  className="grid size-10 shrink-0 place-items-center rounded-md text-zinc-500 hover:bg-white/[0.06] hover:text-white"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+              <div className="mt-2 flex gap-3">
+                <Link href={`/boards/${board.id}`} className="text-xs text-cyan-200 hover:text-white">
+                  Overview
+                </Link>
+                {board.pinout ? (
+                  <Link href={`/pinout/${board.id}`} className="text-xs text-emerald-200 hover:text-white">
+                    Pinout
+                  </Link>
+                ) : null}
+              </div>
+            </header>
+            <dl>
+              {visibleRows.map((row) => {
+                const differs = uniqueValues(row.values) > 1;
+                return (
+                  <div
+                    key={row.label}
+                    className={clsx(
+                      "grid grid-cols-[7.25rem_minmax(0,1fr)] gap-3 border-b border-white/[0.07] px-4 py-3 last:border-0",
+                      differs && "bg-cyan-300/[0.025]",
+                    )}
+                  >
+                    <dt className="text-[11px] font-medium uppercase tracking-[0.1em] text-zinc-500">
+                      {row.label}
+                    </dt>
+                    <dd className="min-w-0 text-sm leading-5 text-zinc-200">
+                      {row.values[boardIndex] || "Not documented"}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </section>
+        ))}
+      </div>
+      <div className="comparison-scroll hidden overflow-x-auto rounded-xl border border-white/10 bg-[#11141a] shadow-2xl md:block">
         <table className="w-full min-w-[760px] border-collapse text-left">
           <thead>
             <tr className="border-b border-white/10 bg-[#0c0f14]">

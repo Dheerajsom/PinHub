@@ -10,6 +10,7 @@ import {
   Database,
   GitCompareArrows,
   Layers3,
+  LoaderCircle,
   Search,
   ShieldAlert,
   SlidersHorizontal,
@@ -26,12 +27,13 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from "react";
 import type { BoardSummary } from "@/lib/board-summary";
 import {
   createBoardSearchIndex,
-  scoreBoardSearchEntry,
-  tokenizeQuery,
+  getBoardSearchMatch,
+  type BoardSearchMatchReason,
 } from "@/lib/board-search";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
@@ -148,6 +150,7 @@ export function DiscoveryApp({
     initialCompareIds.slice(0, 3),
   );
   const [visible, setVisible] = useState(24);
+  const [isShowingMore, startShowingMore] = useTransition();
   const urlReady = useRef(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const storedFavorites = useFavorites();
@@ -205,13 +208,16 @@ export function DiscoveryApp({
   );
   const searchIndex = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
   const filtered = useMemo(() => {
-    const tokens = tokenizeQuery(state.query);
-    const scored: { board: BoardSummary; score: number }[] = [];
+    const scored: {
+      board: BoardSummary;
+      score: number;
+      matchedBy: BoardSearchMatchReason | null;
+    }[] = [];
     for (const entry of searchIndex) {
-      const score = scoreBoardSearchEntry(entry, tokens);
+      const { score, matchedBy } = getBoardSearchMatch(entry, state.query);
       if (score === 0) continue;
       if (!matchesFilters(entry.board, state, favorites)) continue;
-      scored.push({ board: entry.board, score });
+      scored.push({ board: entry.board, score, matchedBy });
     }
     scored.sort((a, b) => {
       if (state.sort === "relevance") {
@@ -225,7 +231,7 @@ export function DiscoveryApp({
       }
       return a.board.name.localeCompare(b.board.name);
     });
-    return scored.map(({ board }) => board);
+    return scored;
   }, [favorites, searchIndex, state]);
   const activeCount =
     state.category.length +
@@ -391,19 +397,59 @@ export function DiscoveryApp({
             <p className="max-w-md text-sm leading-6 text-zinc-400">Use factual filters, shortlist up to three boards, and inspect the differences that matter.</p>
           </div>
           <div className="grid gap-3 xl:grid-cols-2">
-            {filtered.slice(0, visible).map((board, index) => (
-              <BoardCard key={board.id} board={board} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === 3} onFavorite={toggleFavorite} onCompare={toggleCompare} index={index} />
+            {filtered.slice(0, visible).map(({ board, matchedBy }, index) => (
+              <BoardCard key={board.id} board={board} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === 3} onFavorite={toggleFavorite} onCompare={toggleCompare} index={index} matchedBy={state.query.trim() ? matchedBy : null} />
             ))}
           </div>
           {visible < filtered.length ? (
-            <button type="button" onClick={() => setVisible((current) => current + 24)} className="mt-4 h-11 w-full rounded-lg border border-white/10 bg-[#14161d] text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">Show {Math.min(24, filtered.length - visible)} more</button>
+            <button
+              type="button"
+              disabled={isShowingMore}
+              aria-busy={isShowingMore}
+              onClick={() => {
+                if (isShowingMore) return;
+                startShowingMore(() =>
+                  setVisible((current) =>
+                    Math.min(current + 24, filtered.length),
+                  ),
+                );
+              }}
+              className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#14161d] text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white disabled:cursor-wait disabled:opacity-65"
+            >
+              {isShowingMore ? (
+                <>
+                  <LoaderCircle className="size-4 motion-safe:animate-spin" aria-hidden="true" />
+                  Loading boards…
+                </>
+              ) : (
+                <>Show {Math.min(24, filtered.length - visible)} more</>
+              )}
+            </button>
           ) : null}
           {!filtered.length ? (
             <div className="rounded-xl border border-dashed border-white/15 bg-[#101319] p-10 text-center">
-              <Database className="mx-auto size-8 text-zinc-500" />
-              <h2 className="mt-4 text-lg font-semibold text-white">No boards match this stack</h2>
-              <p className="mt-2 text-sm text-zinc-400">Remove one constraint or clear the complete filter set.</p>
-              <button type="button" onClick={() => setState(defaultState)} className="mt-4 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
+              {state.favoritesOnly && favorites.size === 0 ? (
+                <Star className="mx-auto size-8 text-amber-300" aria-hidden="true" />
+              ) : (
+                <Database className="mx-auto size-8 text-zinc-500" aria-hidden="true" />
+              )}
+              <h2 className="mt-4 text-lg font-semibold text-white">
+                {state.favoritesOnly && favorites.size === 0
+                  ? "No saved boards yet"
+                  : "No boards match this stack"}
+              </h2>
+              <p className="mt-2 text-sm text-zinc-400">
+                {state.favoritesOnly && favorites.size === 0
+                  ? "Save boards from the catalog to keep a short list for comparison."
+                  : "Remove one constraint or clear the complete filter set."}
+              </p>
+              {state.favoritesOnly && favorites.size === 0 ? (
+                <Link href="/" className="mt-4 inline-flex rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">
+                  Return to catalog
+                </Link>
+              ) : (
+                <button type="button" onClick={() => setState(defaultState)} className="mt-4 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
+              )}
             </div>
           ) : null}
         </section>
@@ -473,6 +519,7 @@ function BoardCard({
   onFavorite,
   onCompare,
   index,
+  matchedBy,
 }: {
   board: BoardSummary;
   favorite: boolean;
@@ -481,6 +528,7 @@ function BoardCard({
   onFavorite: (id: string) => void;
   onCompare: (id: string) => void;
   index: number;
+  matchedBy: BoardSearchMatchReason | null;
 }) {
   return (
     <article className="discovery-card group relative overflow-hidden rounded-xl border border-white/10 bg-[#14161d] p-4 shadow-[0_14px_34px_-24px_rgba(0,0,0,0.9)] transition duration-300 hover:-translate-y-0.5 hover:border-cyan-300/35 hover:bg-[#171b22]" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}>
@@ -497,6 +545,11 @@ function BoardCard({
         <button type="button" onClick={() => onFavorite(board.id)} aria-label={favorite ? `Remove ${board.name} from favorites` : `Add ${board.name} to favorites`} aria-pressed={favorite} className="relative z-10 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-amber-200"><Star className={clsx("size-4", favorite && "fill-amber-300 text-amber-300")} /></button>
       </div>
       <p className="mt-3 line-clamp-2 text-sm leading-6 text-zinc-400">{board.description}</p>
+      {matchedBy ? (
+        <span className="mt-2 inline-flex rounded border border-cyan-300/25 bg-cyan-300/[0.06] px-1.5 py-0.5 text-[11px] text-cyan-100/80">
+          Matched by {matchedBy}
+        </span>
+      ) : null}
       <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
         <CardSpec label="Processor" value={board.processor} />
         <CardSpec label="Logic" value={board.discovery.logicProfile} />

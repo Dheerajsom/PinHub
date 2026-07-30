@@ -1,5 +1,8 @@
 "use client";
 
+import { MoveHorizontal, Shrink } from "lucide-react";
+import { clsx } from "clsx";
+import { useState, type CSSProperties } from "react";
 import type { Board, PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
@@ -38,6 +41,12 @@ export function InspectorBody({
   // those rely on hover + the adjacent table for labels. Physical-layout boards
   // have short pin names and read better fully annotated.
   const showAllLabels = geometry.kind !== "group-strips";
+  const [fitToWidth, setFitToWidth] = useState(true);
+  const stageStyle = {
+    aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
+    "--stage-width": `${geometry.vbw}px`,
+    "--stage-min-width": `${Math.min(geometry.vbw, 720)}px`,
+  } as CSSProperties;
 
   return (
     <div className="grid min-h-0 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
@@ -47,14 +56,50 @@ export function InspectorBody({
           activeRole={activeRole}
           onToggle={onToggleRole}
         />
-        <div className="mt-3 w-full overflow-auto rounded-md bg-[#0a0c11] p-2">
+        <div className="mt-3 flex items-center justify-between gap-3 sm:hidden">
+          <p
+            id="mobile-pinout-guidance"
+            className="flex min-w-0 items-center gap-2 text-xs leading-5 text-zinc-400"
+          >
+            <MoveHorizontal
+              className="size-4 shrink-0 text-cyan-200"
+              aria-hidden="true"
+            />
+            {fitToWidth
+              ? "Fit to screen. Tap a pad or use the pin list for full labels."
+              : "Swipe horizontally to view the full connector."}
+          </p>
+          <button
+            type="button"
+            onClick={() => setFitToWidth((value) => !value)}
+            aria-label={
+              fitToWidth
+                ? "Show pinout at actual size"
+                : "Fit pinout to screen"
+            }
+            className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-md border border-white/10 bg-[#15181f] px-2.5 text-xs font-medium text-zinc-200 transition hover:border-cyan-300/40 hover:text-white"
+          >
+            {fitToWidth ? (
+              <MoveHorizontal className="size-3.5" aria-hidden="true" />
+            ) : (
+              <Shrink className="size-3.5" aria-hidden="true" />
+            )}
+            {fitToWidth ? "Actual size" : "Fit screen"}
+          </button>
+        </div>
+        <div
+          className="mt-3 w-full overflow-auto rounded-md bg-[#0a0c11] p-2"
+          aria-describedby="mobile-pinout-guidance"
+        >
           <div
-            className="mx-auto"
-            style={{
-              aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-              minWidth: Math.min(geometry.vbw, 720),
-              maxWidth: geometry.vbw,
-            }}
+            className={clsx(
+              "mx-auto",
+              fitToWidth
+                ? "w-full"
+                : "w-[var(--stage-width)] min-w-[var(--stage-min-width)]",
+              "sm:w-full sm:min-w-[var(--stage-min-width)] sm:max-w-[var(--stage-width)]",
+            )}
+            style={stageStyle}
           >
             <BoardStage
               geometry={geometry}

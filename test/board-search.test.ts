@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   createBoardSearchIndex,
+  getBoardSearchMatch,
   scoreBoardSearchEntry,
   tokenizeQuery,
 } from "@/lib/board-search";
@@ -62,9 +63,8 @@ describe("scoreBoardSearchEntry", () => {
       processor: "RP2040",
     });
 
-    expect(scoreOf(board, "pico")).toBe(100); // word prefix in the name
-    expect(scoreOf(board, "ico")).toBe(60); // substring of the name only
-    expect(scoreOf(board, "rp2040")).toBe(20); // supporting field only
+    expect(scoreOf(board, "pico")).toBeGreaterThan(scoreOf(board, "ico"));
+    expect(scoreOf(board, "ico")).toBeGreaterThan(scoreOf(board, "rp2040"));
   });
 
   it("excludes a board when any token is missing", () => {
@@ -77,8 +77,9 @@ describe("scoreBoardSearchEntry", () => {
   it("sums the per-token scores so more matches rank higher", () => {
     const board = summary({ name: "Arduino Uno R3" });
 
-    expect(scoreOf(board, "arduino")).toBe(100);
-    expect(scoreOf(board, "arduino uno")).toBe(200);
+    expect(scoreOf(board, "arduino uno")).toBeGreaterThan(
+      scoreOf(board, "arduino"),
+    );
   });
 
   it("matches warnings, tags, interfaces, and connector ecosystems", () => {
@@ -92,10 +93,10 @@ describe("scoreBoardSearchEntry", () => {
       },
     });
 
-    expect(scoreOf(board, "tolerant")).toBe(20);
-    expect(scoreOf(board, "lora")).toBe(20);
-    expect(scoreOf(board, "can")).toBe(20);
-    expect(scoreOf(board, "feather")).toBe(20);
+    expect(scoreOf(board, "tolerant")).toBe(40);
+    expect(scoreOf(board, "lora")).toBe(25);
+    expect(scoreOf(board, "can")).toBe(55);
+    expect(scoreOf(board, "feather")).toBe(25);
   });
 
   it("builds one reusable entry per board", () => {
@@ -107,5 +108,46 @@ describe("scoreBoardSearchEntry", () => {
     expect(index.map((entry) => entry.board.id)).toEqual(["a", "b"]);
     expect(index[0].nameWords).toEqual(["board", "a"]);
     expect(index[0].text).toContain("board a");
+  });
+
+  it("prioritizes an exact board name above a family prefix or field match", () => {
+    const boards = [
+      summary({ id: "exact", name: "Raspberry Pi 5" }),
+      summary({ id: "prefix", name: "Raspberry Pi 500" }),
+      summary({
+        id: "supporting",
+        name: "Compute Module",
+        description: "A Raspberry Pi 5 class compute module",
+      }),
+    ];
+    const index = createBoardSearchIndex(boards);
+    const ranked = index
+      .map((entry) => ({
+        id: entry.board.id,
+        score: scoreBoardSearchEntry(entry, tokenizeQuery("Raspberry Pi 5")),
+      }))
+      .sort((a, b) => b.score - a.score);
+
+    expect(ranked.map(({ id }) => id)).toEqual([
+      "exact",
+      "prefix",
+      "supporting",
+    ]);
+  });
+
+  it("reports the field that best explains a match", () => {
+    const [entry] = createBoardSearchIndex([
+      summary({
+        name: "Signal Board",
+        vendor: "Acme Labs",
+        interfaces: ["CAN"],
+        warningSearchText: "Boot strap pin must remain high.",
+      }),
+    ]);
+
+    expect(getBoardSearchMatch(entry, "signal").matchedBy).toBe("name");
+    expect(getBoardSearchMatch(entry, "acme").matchedBy).toBe("vendor");
+    expect(getBoardSearchMatch(entry, "can").matchedBy).toBe("interface");
+    expect(getBoardSearchMatch(entry, "strap").matchedBy).toBe("warning");
   });
 });

@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  useTransition,
   type ReactNode,
 } from "react";
 import {
@@ -40,6 +41,11 @@ import {
 } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import { createBoardDetailLoader } from "@/lib/board-detail-loader";
+import {
+  createBoardSearchIndex,
+  getBoardSearchMatch,
+  type BoardSearchMatchReason,
+} from "@/lib/board-search";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { PinoutTabs } from "@/components/PinoutTabs";
@@ -54,35 +60,6 @@ const allInterface = "All";
 const initialResultLimit = 16;
 const resultPageSize = 32;
 const desktopMediaQuery = "(min-width: 1024px)";
-
-type BoardSearchEntry = {
-  board: BoardSummary;
-  name: string;
-  nameWords: string[];
-  primary: string;
-  secondary: string;
-  body: string;
-};
-
-function createBoardSearchEntries(catalog: BoardSummary[]): BoardSearchEntry[] {
-  return catalog.map((board) => {
-    const name = board.name.toLowerCase();
-    return {
-      board,
-      name,
-      nameWords: name.split(/[^a-z0-9+]+/),
-      primary: [board.vendor, board.family, board.processor]
-        .join(" ")
-        .toLowerCase(),
-      secondary: [board.category, ...board.tags, ...board.interfaces]
-        .join(" ")
-        .toLowerCase(),
-      body: [board.description, board.warningSearchText]
-        .join(" ")
-        .toLowerCase(),
-    };
-  });
-}
 
 type DetailState =
   | { status: "ready"; board: Board }
@@ -101,37 +78,6 @@ function scrollBehavior(): ScrollBehavior {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ? "auto"
     : "smooth";
-}
-
-// Scores how well a board matches a single search token. Word-boundary hits
-// on the name rank above substring hits, which rank above matches in
-// secondary fields, so "pi" surfaces Raspberry Pi boards before boards that
-// only mention SPI in their interface list.
-function scoreBoardEntryForToken(
-  entry: BoardSearchEntry,
-  token: string,
-): number {
-  if (entry.nameWords.some((word) => word.startsWith(token))) {
-    return 100;
-  }
-  if (entry.name.includes(token)) return 60;
-  if (entry.primary.includes(token)) return 40;
-  if (entry.secondary.includes(token)) return 20;
-  if (entry.body.includes(token)) return 10;
-
-  return 0;
-}
-
-// Every whitespace-separated token must match somewhere; the board's score
-// is the sum of its per-token scores, used to rank results by relevance.
-function scoreBoardEntry(entry: BoardSearchEntry, tokens: string[]): number {
-  let total = 0;
-  for (const token of tokens) {
-    const score = scoreBoardEntryForToken(entry, token);
-    if (score === 0) return 0;
-    total += score;
-  }
-  return total;
 }
 
 function subscribeToDesktopLayout(listener: () => void): () => void {
@@ -163,6 +109,7 @@ export function PinHubApp({
   const [selectedId, setSelectedId] = useState(initialBoard.id);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [visibleLimit, setVisibleLimit] = useState(initialResultLimit);
+  const [isShowingMore, startShowingMore] = useTransition();
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
   const [detailRetry, setDetailRetry] = useState(0);
   const [detailState, setDetailState] = useState<DetailState>({
@@ -196,7 +143,7 @@ export function PinHubApp({
     [catalogIds, storedFavorites],
   );
   const boardSearchEntries = useMemo(
-    () => createBoardSearchEntries(catalog),
+    () => createBoardSearchIndex(catalog),
     [catalog],
   );
   const categoryItems = useMemo(
@@ -216,14 +163,9 @@ export function PinHubApp({
   }, [catalog]);
   const interfaceCount = interfaceItems.length - 1;
 
-  const filteredBoards = useMemo(() => {
-    const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-
+  const filteredResults = useMemo(() => {
     const scored = boardSearchEntries
-      .map((entry) => ({
-        entry,
-        score: tokens.length === 0 ? 1 : scoreBoardEntry(entry, tokens),
-      }))
+      .map((entry) => ({ entry, ...getBoardSearchMatch(entry, query) }))
       .filter(({ entry, score }) => {
         const { board } = entry;
         if (score === 0) return false;
@@ -240,10 +182,13 @@ export function PinHubApp({
         return true;
       });
 
-    if (tokens.length > 0) {
+    if (query.trim()) {
       scored.sort((a, b) => b.score - a.score);
     }
-    return scored.map(({ entry }) => entry.board);
+    return scored.map(({ entry, matchedBy }) => ({
+      board: entry.board,
+      matchedBy,
+    }));
   }, [
     activeCategory,
     activeInterface,
@@ -252,6 +197,17 @@ export function PinHubApp({
     favorites,
     showFavoritesOnly,
   ]);
+  const filteredBoards = useMemo(
+    () => filteredResults.map(({ board }) => board),
+    [filteredResults],
+  );
+  const matchReasonById = useMemo(
+    () =>
+      new Map(
+        filteredResults.map(({ board, matchedBy }) => [board.id, matchedBy]),
+      ),
+    [filteredResults],
+  );
 
   const selectedBoard =
     filteredBoards.find((board) => board.id === selectedId) ??
@@ -680,10 +636,17 @@ export function PinHubApp({
                 <BoardResult
                   board={board}
                   selected={board.id === selectedBoard.id}
+                  mobileDisclosure={!isDesktop}
+                  mobileExpanded={
+                    !isDesktop &&
+                    mobileDetailOpen &&
+                    board.id === selectedBoard.id
+                  }
                   favorite={favorites.has(board.id)}
                   onSelect={selectBoard}
                   onPrefetch={prefetchBoard}
                   onToggleFavorite={toggleFavorite}
+                  matchedBy={query.trim() ? matchReasonById.get(board.id) : null}
                 />
                 {!isDesktop &&
                   mobileDetailOpen &&
@@ -726,40 +689,77 @@ export function PinHubApp({
           {visibleBoards.length < filteredBoards.length ? (
             <button
               type="button"
-              onClick={() =>
-                setVisibleLimit((limit) =>
-                  Math.min(limit + resultPageSize, filteredBoards.length),
-                )
-              }
-              className="mt-3 flex min-h-10 w-full items-center justify-center rounded-lg border border-white/10 bg-[#14161d] px-4 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/40 hover:bg-[#191c24] hover:text-white"
+              disabled={isShowingMore}
+              aria-busy={isShowingMore}
+              onClick={() => {
+                if (isShowingMore) return;
+                startShowingMore(() => {
+                  setVisibleLimit((limit) =>
+                    Math.min(limit + resultPageSize, filteredBoards.length),
+                  );
+                });
+              }}
+              className="mt-3 flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#14161d] px-4 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/40 hover:bg-[#191c24] hover:text-white disabled:cursor-wait disabled:opacity-65"
             >
-              Show{" "}
-              {Math.min(
-                resultPageSize,
-                filteredBoards.length - visibleBoards.length,
-              )}{" "}
-              more
+              {isShowingMore ? (
+                <>
+                  <LoaderCircle
+                    className="size-4 motion-safe:animate-spin"
+                    aria-hidden="true"
+                  />
+                  Loading boards…
+                </>
+              ) : (
+                <>
+                  Show{" "}
+                  {Math.min(
+                    resultPageSize,
+                    filteredBoards.length - visibleBoards.length,
+                  )}{" "}
+                  more
+                </>
+              )}
             </button>
           ) : null}
 
           {filteredBoards.length === 0 ? (
             <div className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-8 text-center">
-              <Database
-                className="mx-auto size-8 text-zinc-500"
-                aria-hidden="true"
-              />
+              {showFavoritesOnly && favorites.size === 0 ? (
+                <Star
+                  className="mx-auto size-8 text-amber-300"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Database
+                  className="mx-auto size-8 text-zinc-500"
+                  aria-hidden="true"
+                />
+              )}
               <h2 className="mt-4 text-lg font-semibold text-white">
-                No boards match that filter
+                {showFavoritesOnly && favorites.size === 0
+                  ? "No saved boards yet"
+                  : "No boards match that filter"}
               </h2>
               <p className="mt-2 text-sm text-zinc-400">
-                Try a broader search term or clear one of the filters.
+                {showFavoritesOnly && favorites.size === 0
+                  ? "Save boards from the catalog to keep a short list of pin maps and wiring references."
+                  : "Try a broader search term or clear one of the filters."}
               </p>
               <button
                 type="button"
-                onClick={resetFilters}
+                onClick={
+                  showFavoritesOnly && favorites.size === 0
+                    ? () => {
+                        setShowFavoritesOnly(false);
+                        resetResultView();
+                      }
+                    : resetFilters
+                }
                 className="mt-4 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50 transition hover:bg-cyan-300/20"
               >
-                Reset filters
+                {showFavoritesOnly && favorites.size === 0
+                  ? "Return to catalog"
+                  : "Reset filters"}
               </button>
             </div>
           ) : null}
@@ -911,7 +911,10 @@ function FilterPanel({
 type BoardResultProps = {
   board: BoardSummary;
   selected: boolean;
+  mobileDisclosure: boolean;
+  mobileExpanded: boolean;
   favorite: boolean;
+  matchedBy?: BoardSearchMatchReason | null;
   onSelect: (id: string) => void;
   onPrefetch: (id: string) => void;
   onToggleFavorite: (id: string) => void;
@@ -924,7 +927,10 @@ type BoardResultProps = {
 const BoardResult = memo(function BoardResult({
   board,
   selected,
+  mobileDisclosure,
+  mobileExpanded,
   favorite,
+  matchedBy,
   onSelect,
   onPrefetch,
   onToggleFavorite,
@@ -946,6 +952,8 @@ const BoardResult = memo(function BoardResult({
         onFocus={() => onPrefetch(board.id)}
         aria-label={`Select ${board.name}`}
         aria-pressed={selected}
+        aria-expanded={mobileDisclosure ? mobileExpanded : undefined}
+        aria-controls={mobileExpanded ? "mobile-board-detail" : undefined}
         className="absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
       />
       <div className="pointer-events-none relative z-10 p-4">
@@ -981,7 +989,12 @@ const BoardResult = memo(function BoardResult({
           {board.description}
         </p>
 
-        <div className="mt-2.5 flex flex-wrap gap-1.5">
+        <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+          {matchedBy ? (
+            <span className="rounded border border-cyan-300/25 bg-cyan-300/[0.06] px-1.5 py-0.5 text-[11px] text-cyan-100/80">
+              Matched by {matchedBy}
+            </span>
+          ) : null}
           {board.interfaces.slice(0, 7).map((item) => (
             <span
               key={item}

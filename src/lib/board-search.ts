@@ -6,50 +6,76 @@ import type { BoardSummary } from "@/lib/board-summary";
 
 export type BoardSearchEntry = {
   board: BoardSummary;
-  /** Lowercased board name, for substring hits. */
+  /** Lowercased and whitespace-normalized board name. */
   name: string;
   /** Lowercased name split on non-alphanumerics, for word-prefix hits. */
   nameWords: string[];
-  /** Everything else worth matching, lowercased and joined. */
+  vendor: string;
+  interfaces: string;
+  warnings: string;
+  supporting: string;
+  /** Everything worth matching, lowercased and joined. */
   text: string;
 };
+
+export type BoardSearchMatchReason =
+  | "name"
+  | "vendor"
+  | "interface"
+  | "warning"
+  | "details";
+
+export type BoardSearchMatch = {
+  score: number;
+  matchedBy: BoardSearchMatchReason | null;
+};
+
+function normalizeSearchText(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
 
 export function createBoardSearchIndex(
   catalog: readonly BoardSummary[],
 ): BoardSearchEntry[] {
   return catalog.map((board) => {
-    const name = board.name.toLowerCase();
-    return {
-      board,
-      name,
-      nameWords: name.split(/[^a-z0-9]+/),
-      text: [
-        board.name,
-        board.vendor,
+    const name = normalizeSearchText(board.name);
+    const vendor = normalizeSearchText(board.vendor);
+    const interfaces = normalizeSearchText(board.interfaces.join(" "));
+    const warnings = normalizeSearchText(board.warningSearchText);
+    const supporting = normalizeSearchText(
+      [
         board.family,
         board.processor,
         board.description,
-        board.warningSearchText,
         board.formFactor,
+        board.category,
         ...board.tags,
-        ...board.interfaces,
         ...board.discovery.connectorEcosystems,
-      ]
-        .join(" ")
-        .toLowerCase(),
+      ].join(" "),
+    );
+    return {
+      board,
+      name,
+      nameWords: name.split(" "),
+      vendor,
+      interfaces,
+      warnings,
+      supporting,
+      text: [name, vendor, interfaces, warnings, supporting].join(" "),
     };
   });
 }
 
 export function tokenizeQuery(query: string): string[] {
-  return query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return normalizeSearchText(query).split(/\s+/).filter(Boolean);
 }
 
 /**
  * Scores one board against pre-tokenized query terms. Every token must appear
- * somewhere or the board is excluded (score 0); a name word-prefix hit ranks
- * above a name substring hit, which ranks above a supporting-field hit. An
- * empty query scores every board equally so ordering falls to the sort key.
+ * somewhere or the board is excluded (score 0). Whole-name and phrase-prefix
+ * matches receive a large bonus, then name word-prefix hits rank above vendor,
+ * interface, warning, and supporting-field hits. Substring matching is kept so
+ * partial/fuzzy lookups such as "pico" or "rp204" still work.
  */
 export function scoreBoardSearchEntry(
   entry: BoardSearchEntry,
@@ -61,10 +87,54 @@ export function scoreBoardSearchEntry(
   for (const token of tokens) {
     if (!entry.text.includes(token)) return 0;
     total += entry.nameWords.some((word) => word.startsWith(token))
-      ? 100
+      ? 160
       : entry.name.includes(token)
-        ? 60
-        : 20;
+        ? 120
+        : entry.vendor.includes(token)
+          ? 70
+          : entry.interfaces.includes(token)
+            ? 55
+            : entry.warnings.includes(token)
+              ? 40
+              : 25;
   }
+
+  const phrase = tokens.join(" ");
+  if (entry.name === phrase) return total + 10_000;
+  if (entry.name.startsWith(phrase)) return total + 5_000;
+  if (entry.name.includes(phrase)) return total + 1_000;
+
   return total;
+}
+
+export function getBoardSearchMatch(
+  entry: BoardSearchEntry,
+  query: string,
+): BoardSearchMatch {
+  const tokens = tokenizeQuery(query);
+  const score = scoreBoardSearchEntry(entry, tokens);
+  if (!tokens.length || score === 0) return { score, matchedBy: null };
+
+  const everyTokenMatches = (value: string) =>
+    tokens.every((token) => value.includes(token));
+
+  const matchedBy: BoardSearchMatchReason = everyTokenMatches(entry.name)
+    ? "name"
+    : everyTokenMatches(entry.vendor)
+      ? "vendor"
+      : everyTokenMatches(entry.interfaces)
+        ? "interface"
+        : everyTokenMatches(entry.warnings)
+          ? "warning"
+          : tokens.some((token) => entry.name.includes(token))
+            ? "name"
+            : tokens.some((token) => entry.vendor.includes(token))
+              ? "vendor"
+              : tokens.some((token) => entry.interfaces.includes(token))
+                ? "interface"
+                : tokens.some((token) => entry.warnings.includes(token))
+                  ? "warning"
+                  : "details";
+
+  return { score, matchedBy };
 }
