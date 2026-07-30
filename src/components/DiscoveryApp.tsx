@@ -10,6 +10,7 @@ import {
   Database,
   GitCompareArrows,
   Layers3,
+  LoaderCircle,
   Search,
   ShieldAlert,
   SlidersHorizontal,
@@ -26,12 +27,15 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from "react";
 import type { BoardSummary } from "@/lib/board-summary";
 import {
   createBoardSearchIndex,
-  scoreBoardSearchEntry,
+  matchBoardSearchEntry,
+  matchFieldLabels,
   tokenizeQuery,
+  type BoardMatchField,
 } from "@/lib/board-search";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
@@ -148,6 +152,10 @@ export function DiscoveryApp({
     initialCompareIds.slice(0, 3),
   );
   const [visible, setVisible] = useState(24);
+  // Rendering another 24 cards is the slow part on a phone, so the page-in runs
+  // as a transition: the button reports it is working and refuses further
+  // clicks until the new rows are on screen.
+  const [paging, startPaging] = useTransition();
   const urlReady = useRef(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const storedFavorites = useFavorites();
@@ -206,12 +214,16 @@ export function DiscoveryApp({
   const searchIndex = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
   const filtered = useMemo(() => {
     const tokens = tokenizeQuery(state.query);
-    const scored: { board: BoardSummary; score: number }[] = [];
+    const scored: {
+      board: BoardSummary;
+      score: number;
+      matchedBy: BoardMatchField | null;
+    }[] = [];
     for (const entry of searchIndex) {
-      const score = scoreBoardSearchEntry(entry, tokens);
-      if (score === 0) continue;
+      const match = matchBoardSearchEntry(entry, tokens);
+      if (!match) continue;
       if (!matchesFilters(entry.board, state, favorites)) continue;
-      scored.push({ board: entry.board, score });
+      scored.push({ board: entry.board, ...match });
     }
     scored.sort((a, b) => {
       if (state.sort === "relevance") {
@@ -225,8 +237,10 @@ export function DiscoveryApp({
       }
       return a.board.name.localeCompare(b.board.name);
     });
-    return scored.map(({ board }) => board);
+    return scored;
   }, [favorites, searchIndex, state]);
+  // Favorites-only with nothing starred is its own state, not a failed filter.
+  const favoritesEmpty = state.favoritesOnly && favorites.size === 0;
   const activeCount =
     state.category.length +
     state.platform.length +
@@ -391,20 +405,54 @@ export function DiscoveryApp({
             <p className="max-w-md text-sm leading-6 text-zinc-400">Use factual filters, shortlist up to three boards, and inspect the differences that matter.</p>
           </div>
           <div className="grid gap-3 xl:grid-cols-2">
-            {filtered.slice(0, visible).map((board, index) => (
-              <BoardCard key={board.id} board={board} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === 3} onFavorite={toggleFavorite} onCompare={toggleCompare} index={index} />
+            {filtered.slice(0, visible).map(({ board, matchedBy }, index) => (
+              <BoardCard key={board.id} board={board} matchedBy={matchedBy} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === 3} onFavorite={toggleFavorite} onCompare={toggleCompare} index={index} />
             ))}
           </div>
           {visible < filtered.length ? (
-            <button type="button" onClick={() => setVisible((current) => current + 24)} className="mt-4 h-11 w-full rounded-lg border border-white/10 bg-[#14161d] text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">Show {Math.min(24, filtered.length - visible)} more</button>
+            <button
+              type="button"
+              onClick={() =>
+                startPaging(() =>
+                  setVisible((current) =>
+                    Math.min(current + 24, filtered.length),
+                  ),
+                )
+              }
+              disabled={paging}
+              aria-disabled={paging}
+              className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#14161d] text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white disabled:cursor-progress disabled:text-zinc-500"
+            >
+              {paging ? (
+                <>
+                  <LoaderCircle className="size-4 motion-safe:animate-spin" aria-hidden="true" />
+                  Loading boards…
+                </>
+              ) : (
+                `Show ${Math.min(24, filtered.length - visible)} more`
+              )}
+            </button>
           ) : null}
           {!filtered.length ? (
-            <div className="rounded-xl border border-dashed border-white/15 bg-[#101319] p-10 text-center">
-              <Database className="mx-auto size-8 text-zinc-500" />
-              <h2 className="mt-4 text-lg font-semibold text-white">No boards match this stack</h2>
-              <p className="mt-2 text-sm text-zinc-400">Remove one constraint or clear the complete filter set.</p>
-              <button type="button" onClick={() => setState(defaultState)} className="mt-4 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
-            </div>
+            favoritesEmpty ? (
+              <div className="rounded-xl border border-dashed border-amber-300/25 bg-[#15120c] p-10 text-center">
+                <Star className="mx-auto size-8 text-amber-300/80" aria-hidden="true" />
+                <h2 className="mt-4 text-lg font-semibold text-white">No saved boards yet</h2>
+                <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-400">
+                  Tap the star on any board to keep it here. Favorites stay on this device, so your shortlist survives a reload.
+                </p>
+                <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: false }))} className="mt-4 rounded-lg border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm text-amber-50 transition hover:bg-amber-300/20">
+                  Browse the catalog
+                </button>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-white/15 bg-[#101319] p-10 text-center">
+                <Database className="mx-auto size-8 text-zinc-500" />
+                <h2 className="mt-4 text-lg font-semibold text-white">No boards match this stack</h2>
+                <p className="mt-2 text-sm text-zinc-400">Remove one constraint or clear the complete filter set.</p>
+                <button type="button" onClick={() => setState(defaultState)} className="mt-4 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
+              </div>
+            )
           ) : null}
         </section>
       </div>
@@ -467,6 +515,7 @@ function Facet({
 
 function BoardCard({
   board,
+  matchedBy,
   favorite,
   comparing,
   compareFull,
@@ -475,6 +524,7 @@ function BoardCard({
   index,
 }: {
   board: BoardSummary;
+  matchedBy: BoardMatchField | null;
   favorite: boolean;
   comparing: boolean;
   compareFull: boolean;
@@ -492,7 +542,15 @@ function BoardCard({
             <Link href={`/boards/${board.id}`} className="text-base font-semibold text-white outline-none before:absolute before:inset-0 before:z-0 focus-visible:before:ring-2 focus-visible:before:ring-cyan-300">{board.name}</Link>
             {board.hasPinout ? <span className="rounded border border-emerald-400/35 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] text-emerald-100">Pin map</span> : null}
           </div>
-          <p className="mt-1 font-mono text-xs text-zinc-500">{board.vendor} · {board.discovery.computeClass}</p>
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs text-zinc-500">
+            <span>{board.vendor} · {board.discovery.computeClass}</span>
+            {matchedBy ? (
+              <span className="rounded border border-cyan-300/25 bg-cyan-300/[0.07] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] text-cyan-200/90">
+                <span className="sr-only">Matched by {matchFieldLabels[matchedBy]}</span>
+                <span aria-hidden="true">{matchFieldLabels[matchedBy]} match</span>
+              </span>
+            ) : null}
+          </p>
         </div>
         <button type="button" onClick={() => onFavorite(board.id)} aria-label={favorite ? `Remove ${board.name} from favorites` : `Add ${board.name} to favorites`} aria-pressed={favorite} className="relative z-10 grid size-9 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-amber-200"><Star className={clsx("size-4", favorite && "fill-amber-300 text-amber-300")} /></button>
       </div>

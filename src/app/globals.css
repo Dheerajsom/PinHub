@@ -534,14 +534,6 @@ button {
   animation: board-hero-scan 7s ease-in-out infinite;
 }
 
-@media (max-width: 639px) {
-  .comparison-scroll {
-    margin-inline: -1rem;
-    border-radius: 0;
-    border-inline: 0;
-  }
-}
-
 @media print {
   :root {
     color-scheme: light;

@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { clsx } from "clsx";
+import { Scan } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
@@ -41,6 +43,38 @@ export function InspectorBody({
     () => countRoles(geometry.anchors.map((anchor) => anchor.pin)),
     [geometry.anchors],
   );
+  const hintId = `${useId()}-sheet-hint`;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [fitToWidth, setFitToWidth] = useState(false);
+  const [scroll, setScroll] = useState({
+    scrollable: false,
+    atStart: true,
+    atEnd: true,
+  });
+  const { scrollable, atStart, atEnd } = scroll;
+
+  // Whether the sheet overflows, and which way it can still go. Read from the
+  // element rather than assumed from the geometry, because the same drawing
+  // overflows in a phone panel and does not on a desktop sheet.
+  const updateScrollState = useCallback(() => {
+    const node = scrollRef.current;
+    if (!node) return;
+    const slack = node.scrollWidth - node.clientWidth;
+    setScroll({
+      scrollable: slack > 1,
+      atStart: node.scrollLeft <= 1,
+      atEnd: node.scrollLeft >= slack - 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    updateScrollState();
+    const node = scrollRef.current;
+    if (!node) return;
+    const observer = new ResizeObserver(updateScrollState);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [fitToWidth, geometry, updateScrollState]);
 
   return (
     <div className="@container grid min-h-0 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
@@ -52,38 +86,95 @@ export function InspectorBody({
         />
 
         <div className="mt-3">
-          <div className="pin-sheet w-full overflow-auto rounded-t-[3px] p-2">
-            <div
-              className="mx-auto"
-              style={{
-                aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-                minWidth: Math.min(geometry.vbw, 720),
-                maxWidth: geometry.vbw,
-              }}
-            >
-              <BoardStage
-                geometry={geometry}
-                title={`${board.name} — ${board.pinout?.connector ?? "pinout"}`}
-                sheetLabel={board.name}
-                selectedKey={selectedKey}
-                activeKey={activeKey}
-                activeRole={activeRole}
-                netKeys={probe.keys}
-                onSelect={onSelect}
-                onActiveKey={onActiveKey}
-              />
+          {/* On a phone the sheet is wider than the screen. Scrolling it at
+              working size keeps the signal names legible, so that stays the
+              default and the scroll is announced and shown rather than left to
+              be discovered; fit-to-width is one tap away when the question is
+              "which end is pin 1" rather than "what is pin 12". */}
+          {scrollable || fitToWidth ? (
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <p id={hintId} className="pin-eyebrow min-w-0">
+                {fitToWidth
+                  ? "Whole connector shown — labels are reduced"
+                  : "Swipe horizontally to view the full connector"}
+              </p>
+              <button
+                type="button"
+                onClick={() => setFitToWidth((value) => !value)}
+                aria-pressed={fitToWidth}
+                className={clsx(
+                  "pin-tech touch-target inline-flex shrink-0 items-center gap-1.5 rounded-[3px] border px-2.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] transition",
+                  fitToWidth
+                    ? "border-[var(--pin-probe)]/60 bg-[var(--pin-probe)]/10 text-white"
+                    : "border-[var(--pin-frame)] bg-[#0e141b] text-[var(--pin-rail)] hover:border-[var(--pin-probe)] hover:text-white",
+                )}
+              >
+                <Scan className="size-3.5" aria-hidden="true" />
+                Fit width
+              </button>
             </div>
+          ) : null}
+          <div className="relative">
+            <div
+              ref={scrollRef}
+              onScroll={updateScrollState}
+              // Focusable so the drawing can be panned from the keyboard, and
+              // labelled so its instructions reach a screen reader rather than
+              // sitting in a caption nobody is pointed at.
+              tabIndex={0}
+              role="group"
+              aria-label={`${board.name} connector drawing`}
+              aria-describedby={scrollable || fitToWidth ? hintId : undefined}
+              className="pin-sheet w-full overflow-auto rounded-t-[3px] p-2"
+            >
+              <div
+                className="mx-auto"
+                style={{
+                  aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
+                  minWidth: fitToWidth
+                    ? undefined
+                    : Math.min(geometry.vbw, 720),
+                  maxWidth: geometry.vbw,
+                }}
+              >
+                <BoardStage
+                  geometry={geometry}
+                  title={`${board.name} — ${board.pinout?.connector ?? "pinout"}`}
+                  sheetLabel={board.name}
+                  selectedKey={selectedKey}
+                  activeKey={activeKey}
+                  activeRole={activeRole}
+                  netKeys={probe.keys}
+                  onSelect={onSelect}
+                  onActiveKey={onActiveKey}
+                />
+              </div>
+            </div>
+            {/* The drawing runs under a fade at the edge it continues past, so
+                "there is more sheet this way" is visible, not just stated. */}
+            {scrollable ? (
+              <>
+                <div
+                  aria-hidden="true"
+                  className={clsx(
+                    "pointer-events-none absolute inset-y-px left-px w-8 rounded-l-[3px] bg-gradient-to-r from-[var(--pin-sheet)] to-transparent transition-opacity",
+                    atStart ? "opacity-0" : "opacity-100",
+                  )}
+                />
+                <div
+                  aria-hidden="true"
+                  className={clsx(
+                    "pointer-events-none absolute inset-y-px right-px w-8 rounded-r-[3px] bg-gradient-to-l from-[var(--pin-sheet)] to-transparent transition-opacity",
+                    atEnd ? "opacity-0" : "opacity-100",
+                  )}
+                />
+              </>
+            ) : null}
           </div>
           <TitleBlock
             geometry={geometry}
             connector={board.pinout?.connector ?? "Connector"}
           />
-          {/* On a phone the sheet is wider than the screen and scrolls, which
-              looks like a cropped drawing unless we say so. Shrinking it to fit
-              instead would put the signal names below five pixels. */}
-          <p className="pin-eyebrow mt-2 sm:hidden">
-            Drag the sheet sideways to reach the rest of the connector
-          </p>
         </div>
 
         <div className="mt-3">
