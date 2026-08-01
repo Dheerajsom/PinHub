@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Audiowide, Geist, Geist_Mono } from "next/font/google";
+import { Audiowide, Chivo_Mono, Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { siteDescription, siteName, siteUrl } from "@/lib/site";
 import { Footer } from "@/components/Footer";
@@ -19,6 +19,15 @@ const audiowide = Audiowide({
   variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
+});
+
+// The pinout drawing's annotation face. Chivo Mono's squared terminals and
+// tabular figures read like CAD callouts, which is exactly the register the
+// pinout sheet is written in; Geist Mono stays the general-purpose code face.
+const chivoMono = Chivo_Mono({
+  variable: "--font-technical",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -83,7 +92,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${audiowide.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${audiowide.variable} ${chivoMono.variable}`}
     >
       <body>
         {children}

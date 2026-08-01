@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { clsx } from "clsx";
-import { Expand, ExternalLink, Maximize2, X } from "lucide-react";
+import { Expand, ExternalLink, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import {
   buildBoardGeometry,
@@ -15,6 +15,8 @@ import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
+import { countRoles } from "@/components/board-visual/roles";
+import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 
 export function BoardPinoutVisualization({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
@@ -33,11 +35,13 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
     return map;
   }, [geometry]);
 
-  const presentRoles = useMemo(() => {
-    const set = new Set<PinRole>();
-    geometry?.anchors.forEach((a) => set.add(a.pin.role));
-    return set;
-  }, [geometry]);
+  const roleCounts = useMemo(
+    () => countRoles((geometry?.anchors ?? []).map((anchor) => anchor.pin)),
+    [geometry],
+  );
+  const nets = useBoardNets(geometry?.anchors);
+  const liveKey = activeKey ?? selectedKey;
+  const probe = probedNet(nets, liveKey);
 
   if (!board.pinout || !geometry) {
     return (
@@ -51,15 +55,15 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
     );
   }
 
-  const liveAnchor = anchorsByKey.get(activeKey ?? selectedKey ?? "") ?? null;
+  const liveAnchor = anchorsByKey.get(liveKey ?? "") ?? null;
   const stageTitle = `${board.name} — ${board.pinout.connector}`;
   // Dense schematic headers (FPGA expansion landings, 50+ pads) are cramped in
   // the narrow detail column, so we steer users to the roomy standalone view.
   const isComplex =
     geometry.kind === "group-strips" || geometry.anchors.length > 48;
-  // Very tall schematic diagrams letterbox down to an unreadable sliver if we
-  // force the whole thing into the panel height. For those we render at full
-  // panel width and scroll vertically; flatter boards keep the fit-to-view look.
+  // Very tall drawings letterbox down to an unreadable sliver if we force the
+  // whole thing into the panel height. For those we render at full panel width
+  // and scroll vertically; flatter boards keep the fit-to-view look.
   const tall = geometry.vbh / geometry.vbw > 1.4;
 
   function handleEscape() {
@@ -88,7 +92,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           <h3 className="mt-1 text-base font-semibold text-white">
             {board.pinout.connector}
           </h3>
-          <p className="mt-0.5 text-[11px] text-zinc-500">
+          <p className="mt-0.5 text-[11px] leading-4 text-zinc-500">
             {geometry.orientation}
           </p>
         </div>
@@ -123,17 +127,17 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
 
       <div className="mt-3">
         <PinRoleLegend
-          present={presentRoles}
+          counts={roleCounts}
           activeRole={activeRole}
           onToggle={setActiveRole}
         />
       </div>
 
-      {/* Tall schematic boards render at full panel width and scroll vertically
-          so pads stay legible; flatter boards letterbox to fit the panel. */}
+      {/* Tall boards render at full panel width and scroll vertically so pads
+          stay legible; flatter ones letterbox to fit the panel. */}
       <div
         className={clsx(
-          "bv-stage-wrap mt-3 w-full rounded-md bg-[#0a0c11]",
+          "bv-stage-wrap mt-3 w-full rounded-md",
           tall ? "overflow-y-auto overflow-x-hidden" : "overflow-hidden",
         )}
         style={tall ? { maxHeight: 460 } : undefined}
@@ -148,10 +152,12 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           <BoardStage
             geometry={geometry}
             title={stageTitle}
+            sheetLabel={board.name}
             selectedKey={selectedKey}
-            activeKey={activeKey ?? selectedKey}
+            activeKey={liveKey}
             activeRole={activeRole}
             showAllLabels={false}
+            netKeys={probe.keys}
             onSelect={(key) => {
               setSelectedKey(key);
               setActiveKey(key);
@@ -177,20 +183,19 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         </p>
       ) : null}
 
-      {geometry.notToScale ? (
-        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-          Simplified diagram, grouped by function — not to physical scale. Pin
-          data is source-backed; verify against the linked documentation.
-        </p>
-      ) : (
-        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-          Simplified technical illustration. Pin data is source-backed; verify
-          against the linked documentation before wiring.
-        </p>
-      )}
+      <p className="mt-2 text-[11px] leading-5 text-zinc-500">
+        {geometry.notToScale
+          ? "Simplified diagram, grouped by function — not to physical scale. Pin data is source-backed; verify against the linked documentation."
+          : "Simplified technical illustration. Pin data is source-backed; verify against the linked documentation before wiring."}
+      </p>
 
       <div className="mt-3">
-        <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} />
+        <PinDetails
+          anchor={liveAnchor}
+          pinned={selectedKey !== null}
+          net={probe.net}
+          netSize={probe.keys.size}
+        />
       </div>
 
       {/* Connector caveats from the source-backed pinout notes. */}
@@ -213,9 +218,11 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         <div className="mt-2 max-h-80 overflow-y-auto pr-1">
           <PinoutTable
             anchors={geometry.anchors}
-            activeKey={activeKey ?? selectedKey}
+            activeKey={liveKey}
             selectedKey={selectedKey}
             activeRole={activeRole}
+            netKeys={probe.keys}
+            netByKey={nets.netByKey}
             onSelect={(key) => {
               setSelectedKey(key);
               setActiveKey(key);
@@ -230,10 +237,9 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           board={board}
           geometry={geometry}
           selectedKey={selectedKey}
-          activeKey={activeKey ?? selectedKey}
+          activeKey={liveKey}
           activeRole={activeRole}
           liveAnchor={liveAnchor}
-          presentRoles={presentRoles}
           onSelect={(key) => {
             setSelectedKey(key);
             setActiveKey(key);
@@ -257,7 +263,6 @@ function ExpandedInspector({
   activeKey,
   activeRole,
   liveAnchor,
-  presentRoles,
   onSelect,
   onActiveKey,
   onToggleRole,
@@ -269,7 +274,6 @@ function ExpandedInspector({
   activeKey: string | null;
   activeRole: PinRole | null;
   liveAnchor: PinAnchor | null;
-  presentRoles: Set<PinRole>;
   onSelect: (key: string | null) => void;
   onActiveKey: (key: string | null) => void;
   onToggleRole: (role: PinRole | null) => void;
@@ -331,13 +335,12 @@ function ExpandedInspector({
       >
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
           <div className="min-w-0">
-            <div className="flex items-center gap-2 text-sm font-semibold text-white">
-              <Maximize2 className="size-4 text-cyan-200" aria-hidden="true" />
-              {board.name}
+            <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+              Connector
             </div>
-            <p className="truncate text-xs text-zinc-400">
-              {board.pinout?.connector} · {geometry.orientation}
-            </p>
+            <div className="mt-1 truncate text-sm font-semibold text-white">
+              {board.name} · {board.pinout?.connector}
+            </div>
           </div>
           <button
             ref={closeRef}
@@ -358,7 +361,6 @@ function ExpandedInspector({
             activeKey={activeKey}
             activeRole={activeRole}
             liveAnchor={liveAnchor}
-            presentRoles={presentRoles}
             onSelect={onSelect}
             onActiveKey={onActiveKey}
             onToggleRole={onToggleRole}

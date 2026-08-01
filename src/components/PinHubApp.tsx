@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  useTransition,
   type ReactNode,
 } from "react";
 import {
@@ -39,6 +40,13 @@ import {
   type BoardInterface,
 } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
+import {
+  createBoardSearchIndex,
+  matchBoardSearchEntry,
+  matchFieldLabels,
+  tokenizeQuery,
+  type BoardMatchField,
+} from "@/lib/board-search";
 import { createBoardDetailLoader } from "@/lib/board-detail-loader";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
@@ -54,35 +62,6 @@ const allInterface = "All";
 const initialResultLimit = 16;
 const resultPageSize = 32;
 const desktopMediaQuery = "(min-width: 1024px)";
-
-type BoardSearchEntry = {
-  board: BoardSummary;
-  name: string;
-  nameWords: string[];
-  primary: string;
-  secondary: string;
-  body: string;
-};
-
-function createBoardSearchEntries(catalog: BoardSummary[]): BoardSearchEntry[] {
-  return catalog.map((board) => {
-    const name = board.name.toLowerCase();
-    return {
-      board,
-      name,
-      nameWords: name.split(/[^a-z0-9+]+/),
-      primary: [board.vendor, board.family, board.processor]
-        .join(" ")
-        .toLowerCase(),
-      secondary: [board.category, ...board.tags, ...board.interfaces]
-        .join(" ")
-        .toLowerCase(),
-      body: [board.description, board.warningSearchText]
-        .join(" ")
-        .toLowerCase(),
-    };
-  });
-}
 
 type DetailState =
   | { status: "ready"; board: Board }
@@ -101,37 +80,6 @@ function scrollBehavior(): ScrollBehavior {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ? "auto"
     : "smooth";
-}
-
-// Scores how well a board matches a single search token. Word-boundary hits
-// on the name rank above substring hits, which rank above matches in
-// secondary fields, so "pi" surfaces Raspberry Pi boards before boards that
-// only mention SPI in their interface list.
-function scoreBoardEntryForToken(
-  entry: BoardSearchEntry,
-  token: string,
-): number {
-  if (entry.nameWords.some((word) => word.startsWith(token))) {
-    return 100;
-  }
-  if (entry.name.includes(token)) return 60;
-  if (entry.primary.includes(token)) return 40;
-  if (entry.secondary.includes(token)) return 20;
-  if (entry.body.includes(token)) return 10;
-
-  return 0;
-}
-
-// Every whitespace-separated token must match somewhere; the board's score
-// is the sum of its per-token scores, used to rank results by relevance.
-function scoreBoardEntry(entry: BoardSearchEntry, tokens: string[]): number {
-  let total = 0;
-  for (const token of tokens) {
-    const score = scoreBoardEntryForToken(entry, token);
-    if (score === 0) return 0;
-    total += score;
-  }
-  return total;
 }
 
 function subscribeToDesktopLayout(listener: () => void): () => void {
@@ -172,6 +120,10 @@ export function PinHubApp({
   // On phones the filter sidebar is collapsed into a toggle so the catalog
   // stays first; on lg+ it is always shown as a sticky column.
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  // Paging in 32 more result rows is the one interaction here that can take
+  // long enough to look broken, so it runs as a transition: the button says it
+  // is working and stops accepting clicks until the rows are committed.
+  const [paging, startPaging] = useTransition();
   const storedFavorites = useFavorites();
   const isDesktop = useSyncExternalStore(
     subscribeToDesktopLayout,
@@ -196,7 +148,7 @@ export function PinHubApp({
     [catalogIds, storedFavorites],
   );
   const boardSearchEntries = useMemo(
-    () => createBoardSearchEntries(catalog),
+    () => createBoardSearchIndex(catalog),
     [catalog],
   );
   const categoryItems = useMemo(
@@ -216,34 +168,37 @@ export function PinHubApp({
   }, [catalog]);
   const interfaceCount = interfaceItems.length - 1;
 
-  const filteredBoards = useMemo(() => {
-    const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const results = useMemo(() => {
+    const tokens = tokenizeQuery(query);
 
-    const scored = boardSearchEntries
-      .map((entry) => ({
-        entry,
-        score: tokens.length === 0 ? 1 : scoreBoardEntry(entry, tokens),
-      }))
-      .filter(({ entry, score }) => {
-        const { board } = entry;
-        if (score === 0) return false;
-        if (showFavoritesOnly && !favorites.has(board.id)) return false;
-        if (activeCategory !== allCategory && board.category !== activeCategory) {
-          return false;
-        }
-        if (
-          activeInterface !== allInterface &&
-          !board.interfaces.includes(activeInterface)
-        ) {
-          return false;
-        }
-        return true;
-      });
+    const scored: {
+      board: BoardSummary;
+      score: number;
+      matchedBy: BoardMatchField | null;
+    }[] = [];
+    for (const entry of boardSearchEntries) {
+      const board = entry.board;
+      if (showFavoritesOnly && !favorites.has(board.id)) continue;
+      if (activeCategory !== allCategory && board.category !== activeCategory) {
+        continue;
+      }
+      if (
+        activeInterface !== allInterface &&
+        !board.interfaces.includes(activeInterface)
+      ) {
+        continue;
+      }
+      const match = matchBoardSearchEntry(entry, tokens);
+      if (!match) continue;
+      scored.push({ board, score: match.score, matchedBy: match.matchedBy });
+    }
 
+    // Ties keep the catalog's own order, so an equal-scoring set never
+    // reshuffles between keystrokes.
     if (tokens.length > 0) {
       scored.sort((a, b) => b.score - a.score);
     }
-    return scored.map(({ entry }) => entry.board);
+    return scored;
   }, [
     activeCategory,
     activeInterface,
@@ -252,12 +207,27 @@ export function PinHubApp({
     favorites,
     showFavoritesOnly,
   ]);
+  const filteredBoards = useMemo(
+    () => results.map((result) => result.board),
+    [results],
+  );
+  const matchReasons = useMemo(
+    () =>
+      new Map(results.map((result) => [result.board.id, result.matchedBy])),
+    [results],
+  );
 
   const selectedBoard =
     filteredBoards.find((board) => board.id === selectedId) ??
     filteredBoards[0] ??
     catalog[0];
   const visibleBoards = filteredBoards.slice(0, visibleLimit);
+  // Read by the stable `selectBoard` callback, which must not close over the
+  // selection without re-rendering every memoized row.
+  const selectedIdRef = useRef(selectedBoard.id);
+  useEffect(() => {
+    selectedIdRef.current = selectedBoard.id;
+  }, [selectedBoard.id]);
 
   const loadBoardDetail = detailLoader.load;
 
@@ -270,6 +240,19 @@ export function PinHubApp({
     },
     [loadBoardDetail],
   );
+
+  // Favorites-only with an empty shortlist is a different situation from a
+  // search that found nothing, and it gets its own copy.
+  const favoritesEmpty = showFavoritesOnly && favorites.size === 0;
+
+  const showMore = useCallback(() => {
+    if (paging) return;
+    startPaging(() => {
+      setVisibleLimit((limit) =>
+        Math.min(limit + resultPageSize, filteredBoards.length),
+      );
+    });
+  }, [filteredBoards.length, paging]);
 
   const hasActiveFilters =
     query.trim().length > 0 ||
@@ -366,15 +349,19 @@ export function PinHubApp({
   }
 
   // Stable identity so the memoized result rows don't re-render when only the
-  // query or an unrelated row's state changes — which is why the layout is
-  // read at click time instead of closing over `isDesktop`. It must use the
-  // same query the layout does: a separate `(max-width: 1023px)` query
-  // disagrees at fractional widths, where neither matches and the detail would
-  // then render in neither column.
+  // query or an unrelated row's state changes — which is why the layout and the
+  // current selection are read at click time instead of being closed over. The
+  // layout check must use the same query the layout does: a separate
+  // `(max-width: 1023px)` query disagrees at fractional widths, where neither
+  // matches and the detail would then render in neither column.
   const selectBoard = useCallback((id: string) => {
+    const reselected = selectedIdRef.current === id;
     setSelectedId(id);
     if (!getDesktopLayoutSnapshot()) {
-      setMobileDetailOpen(true);
+      // On phones the row is a disclosure for the inline detail below it, so
+      // tapping the open board closes it again — which is what `aria-expanded`
+      // on that row promises.
+      setMobileDetailOpen((open) => !(open && reselected));
     }
   }, []);
 
@@ -585,6 +572,7 @@ export function PinHubApp({
               Showing {visibleBoards.length} of {filteredBoards.length}{" "}
               {hasActiveFilters ? "matches" : "boards"}
               {hasActiveFilters ? ` · ${catalog.length} total` : ""}
+              {paging ? " · loading more" : ""}
             </span>
             {activeCategory !== allCategory ? (
               <ActiveFilterChip
@@ -680,6 +668,12 @@ export function PinHubApp({
                 <BoardResult
                   board={board}
                   selected={board.id === selectedBoard.id}
+                  detailOpen={
+                    isDesktop
+                      ? null
+                      : mobileDetailOpen && board.id === selectedBoard.id
+                  }
+                  matchedBy={matchReasons.get(board.id) ?? null}
                   favorite={favorites.has(board.id)}
                   onSelect={selectBoard}
                   onPrefetch={prefetchBoard}
@@ -726,42 +720,80 @@ export function PinHubApp({
           {visibleBoards.length < filteredBoards.length ? (
             <button
               type="button"
-              onClick={() =>
-                setVisibleLimit((limit) =>
-                  Math.min(limit + resultPageSize, filteredBoards.length),
-                )
-              }
-              className="mt-3 flex min-h-10 w-full items-center justify-center rounded-lg border border-white/10 bg-[#14161d] px-4 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/40 hover:bg-[#191c24] hover:text-white"
+              onClick={showMore}
+              disabled={paging}
+              aria-disabled={paging}
+              aria-controls="board-results"
+              className="mt-3 flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#14161d] px-4 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/40 hover:bg-[#191c24] hover:text-white disabled:cursor-progress disabled:border-white/10 disabled:bg-[#14161d] disabled:text-zinc-500"
             >
-              Show{" "}
-              {Math.min(
-                resultPageSize,
-                filteredBoards.length - visibleBoards.length,
-              )}{" "}
-              more
+              {paging ? (
+                <>
+                  <LoaderCircle
+                    className="size-4 motion-safe:animate-spin"
+                    aria-hidden="true"
+                  />
+                  Loading boards…
+                </>
+              ) : (
+                <>
+                  Show{" "}
+                  {Math.min(
+                    resultPageSize,
+                    filteredBoards.length - visibleBoards.length,
+                  )}{" "}
+                  more
+                </>
+              )}
             </button>
           ) : null}
 
           {filteredBoards.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-8 text-center">
-              <Database
-                className="mx-auto size-8 text-zinc-500"
-                aria-hidden="true"
-              />
-              <h2 className="mt-4 text-lg font-semibold text-white">
-                No boards match that filter
-              </h2>
-              <p className="mt-2 text-sm text-zinc-400">
-                Try a broader search term or clear one of the filters.
-              </p>
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="mt-4 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50 transition hover:bg-cyan-300/20"
-              >
-                Reset filters
-              </button>
-            </div>
+            favoritesEmpty ? (
+              <div className="rounded-lg border border-dashed border-amber-300/25 bg-[#15120c] p-8 text-center">
+                <Star
+                  className="mx-auto size-8 fill-amber-300/20 text-amber-300/80"
+                  aria-hidden="true"
+                />
+                <h2 className="mt-4 text-lg font-semibold text-white">
+                  No saved boards yet
+                </h2>
+                <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-400">
+                  Star a board from the catalog to pin it here. Favorites are
+                  kept on this device, so your shortlist is waiting the next
+                  time you open PinHub.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowFavoritesOnly(false);
+                    resetResultView();
+                  }}
+                  className="mt-4 min-h-10 rounded-md border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-medium text-amber-50 transition hover:bg-amber-300/20"
+                >
+                  Browse the catalog
+                </button>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-8 text-center">
+                <Database
+                  className="mx-auto size-8 text-zinc-500"
+                  aria-hidden="true"
+                />
+                <h2 className="mt-4 text-lg font-semibold text-white">
+                  No boards match that filter
+                </h2>
+                <p className="mt-2 text-sm text-zinc-400">
+                  Try a broader search term or clear one of the filters.
+                </p>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="mt-4 min-h-10 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50 transition hover:bg-cyan-300/20"
+                >
+                  Reset filters
+                </button>
+              </div>
+            )
           ) : null}
         </section>
 
@@ -911,6 +943,14 @@ function FilterPanel({
 type BoardResultProps = {
   board: BoardSummary;
   selected: boolean;
+  /**
+   * Whether this row's inline detail is open. Null on the desktop layout,
+   * where the row selects a board for the side column instead of disclosing
+   * anything.
+   */
+  detailOpen: boolean | null;
+  /** Field that put this board in the results; null when nothing is typed. */
+  matchedBy: BoardMatchField | null;
   favorite: boolean;
   onSelect: (id: string) => void;
   onPrefetch: (id: string) => void;
@@ -924,6 +964,8 @@ type BoardResultProps = {
 const BoardResult = memo(function BoardResult({
   board,
   selected,
+  detailOpen,
+  matchedBy,
   favorite,
   onSelect,
   onPrefetch,
@@ -944,8 +986,22 @@ const BoardResult = memo(function BoardResult({
         onClick={() => onSelect(board.id)}
         onPointerEnter={() => onPrefetch(board.id)}
         onFocus={() => onPrefetch(board.id)}
-        aria-label={`Select ${board.name}`}
-        aria-pressed={selected}
+        aria-label={
+          detailOpen === null
+            ? `Select ${board.name}`
+            : detailOpen
+              ? `Hide ${board.name} details`
+              : `Show ${board.name} details`
+        }
+        // Two layouts, two roles for the same control: on lg+ it selects the
+        // board for the persistent detail column; below that it discloses the
+        // detail inline underneath the row.
+        {...(detailOpen === null
+          ? { "aria-pressed": selected }
+          : {
+              "aria-expanded": detailOpen,
+              "aria-controls": detailOpen ? "mobile-board-detail" : undefined,
+            })}
         className="absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
       />
       <div className="pointer-events-none relative z-10 p-4">
@@ -972,8 +1028,20 @@ const BoardResult = memo(function BoardResult({
               </span>
             ) : null}
           </div>
-          <span className="min-w-0 break-words font-mono text-xs text-zinc-500 sm:text-right">
-            {board.vendor} · {board.logicLevel}
+          <span className="flex min-w-0 items-center gap-2">
+            {matchedBy ? (
+              <span className="shrink-0 rounded border border-cyan-300/25 bg-cyan-300/[0.07] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-cyan-200/90">
+                <span className="sr-only">
+                  Matched by {matchFieldLabels[matchedBy]}
+                </span>
+                <span aria-hidden="true">
+                  {matchFieldLabels[matchedBy]} match
+                </span>
+              </span>
+            ) : null}
+            <span className="min-w-0 break-words font-mono text-xs text-zinc-500 sm:text-right">
+              {board.vendor} · {board.logicLevel}
+            </span>
           </span>
         </div>
 

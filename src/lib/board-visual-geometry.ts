@@ -1,7 +1,16 @@
 // Geometry engine: turns a board's source-backed `pinout` plus its visual
-// template (board-visuals.ts) into concrete coordinates for the artwork and an
+// template (board-visuals.ts) into concrete coordinates for the drawing and an
 // anchor per electrical pin. No pin labels live here — pins are read straight
 // from the board data, so this file never becomes a second source of truth.
+//
+// The drawing is a fabrication drawing, not a picture of a board, and that
+// constrains what this file is allowed to emit. Only three things about a board
+// are actually known: the connector rows and their pin data (source-backed),
+// the board's rough proportions, and which edge the USB port is on (both
+// curated per form factor). Component positions, port positions, and mounting
+// hole positions are not known for any board in the catalog, so no coordinates
+// are produced for them — a drawing that invents where the regulator sits
+// teaches the reader to distrust the pins too.
 
 import type { Board, Pin } from "@/lib/boards";
 import {
@@ -25,13 +34,20 @@ export type PinAnchor = {
   /** Rail point just outside the board edge where an expanded label sits. */
   labelX: number;
   labelY: number;
+  /**
+   * Where the label sits relative to its rail point. Rotated labels are all
+   * drawn with the same -90° rotation so the whole sheet reads bottom-to-top
+   * (tilt your head once, not twice), which means the anchor is what steers a
+   * label away from the board: "start" grows up out of the rail point, "end"
+   * grows down from it. Getting this wrong runs the label back across the pads.
+   */
   labelAnchor: "start" | "middle" | "end";
   /** Render the label rotated (dense top/bottom headers). */
   rotateLabel: boolean;
 };
 
 export type Rect = { x: number; y: number; w: number; h: number; rx?: number };
-export type PortMark = Rect & { kind: PortKind };
+export type PortMark = Rect & { kind: PortKind; side: Side };
 export type Hole = { x: number; y: number; r: number };
 
 export type BoardGeometry = {
@@ -41,11 +57,16 @@ export type BoardGeometry = {
   body: Rect;
   accent: string;
   headerZones: Rect[];
+  /** Curated connectors, placed on the edges the visual template records. */
   ports: PortMark[];
-  chip?: Rect;
+  /** Mounting holes, drawn as plated corner holes on boards that have them. */
   holes: Hole[];
   anchors: PinAnchor[];
   padR: number;
+  /** Drawn centre-to-centre pin spacing; sets the step of the header. */
+  pitch: number;
+  /** How the pins are arranged — e.g. "2 × 20". */
+  arrangement: string;
   notToScale: boolean;
   orientation: string;
   revisionNote?: string;
@@ -55,9 +76,27 @@ export type BoardGeometry = {
 const PAD_R = 13;
 const EDGE_PITCH = 46; // edge-dual / shield row spacing
 const COL_PITCH = 44; // header2x column spacing
-const LABEL_SIDE = 250; // room reserved for side labels (expanded)
-const LABEL_BAND = 220; // room reserved for top/bottom rotated labels
 const SIDE_MARGIN = 28;
+const MIN_LABEL_SIDE = 175; // edge-dual side rails
+const MIN_LABEL_BAND = 120; // rotated top/bottom rails
+
+// Advance width of one label character at the drawing's label size. Label rails
+// are sized from the longest label they have to hold rather than a fixed band,
+// so a board with long signal names gets the room instead of clipping.
+const LABEL_CHAR_W = 10.4;
+
+function clamp(v: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, v));
+}
+
+function longestLabel(pins: Pin[]): number {
+  return pins.reduce((n, pin) => Math.max(n, pin.label.length), 0);
+}
+
+/** Rail depth needed to hold the longest label in `pins`, within bounds. */
+function railFor(pins: Pin[], min: number, max = 460): number {
+  return clamp(longestLabel(pins) * LABEL_CHAR_W + 34, min, max);
+}
 
 function clampPitch(pitch: number, count: number, max: number): number {
   // Keep very dense headers from exploding the viewBox.
@@ -85,12 +124,15 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   const bodyH = headerLen + padPad * 2;
   const bodyW = Math.max(bodyH * visual.aspect, 220);
 
+  const leftRail = railFor(left, MIN_LABEL_SIDE);
+  const rightRail = railFor(right, MIN_LABEL_SIDE);
+
   const topMargin = 60;
   const bottomMargin = 60;
-  const vbw = LABEL_SIDE + bodyW + LABEL_SIDE;
+  const vbw = leftRail + bodyW + rightRail;
   const vbh = topMargin + bodyH + bottomMargin;
 
-  const bodyX = LABEL_SIDE;
+  const bodyX = leftRail;
   const bodyY = topMargin;
   const body: Rect = { x: bodyX, y: bodyY, w: bodyW, h: bodyH, rx: 22 };
 
@@ -108,7 +150,7 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
       cx: leftX,
       cy,
       side: "left",
-      labelX: bodyX - 16,
+      labelX: bodyX - 18,
       labelY: cy,
       labelAnchor: "end",
       rotateLabel: false,
@@ -122,17 +164,27 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
       cx: rightX,
       cy,
       side: "right",
-      labelX: bodyX + bodyW + 16,
+      labelX: bodyX + bodyW + 18,
       labelY: cy,
       labelAnchor: "start",
       rotateLabel: false,
     });
   });
 
+  // Each strip is drawn to its own row's length. Sizing both to the longer row
+  // would draw contacts that are not there — on a 7+7 module that is a lie the
+  // reader could act on.
+  const strip = (count: number, x: number): Rect => ({
+    x: x - PAD_R - 6,
+    y: startY - PAD_R - 6,
+    w: (PAD_R + 6) * 2,
+    h: Math.max(count - 1, 0) * pitch + (PAD_R + 6) * 2,
+    rx: 8,
+  });
   const headerZones: Rect[] = [
-    { x: leftX - PAD_R - 6, y: startY - PAD_R - 6, w: (PAD_R + 6) * 2, h: headerLen + (PAD_R + 6) * 2, rx: 8 },
-    { x: rightX - PAD_R - 6, y: startY - PAD_R - 6, w: (PAD_R + 6) * 2, h: headerLen + (PAD_R + 6) * 2, rx: 8 },
-  ];
+    strip(left.length, leftX),
+    strip(right.length, rightX),
+  ].filter((zone) => zone.h > 0);
 
   return {
     vbw,
@@ -140,67 +192,83 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: edgePorts(visual, body),
-    chip: { x: bodyX + bodyW * 0.32, y: bodyY + bodyH * 0.4, w: bodyW * 0.36, h: bodyH * 0.18, rx: 6 },
+    // Both long edges are castellated pads on these modules, so every curated
+    // connector lives on the end the template records.
+    ports: boardPorts(visual, body, visual.usb === "bottom" ? "bottom" : "top"),
     holes: [],
     anchors,
     padR: PAD_R,
+    pitch,
+    arrangement: `2 × ${n}`,
     notToScale: Boolean(visual.notToScale),
     orientation: visual.orientation,
     revisionNote: visual.revisionNote,
   };
 }
 
+// A 2xN header board is drawn as the whole board: the outline in its curated
+// proportions, the connector inset from the top edge where these boards carry
+// it, and the labels taken out to rails clear of the outline — the odd row up
+// out of the top edge, the even row down past the bottom of the board, so no
+// signal name is ever drawn back across a pad it does not belong to.
 function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = board.pinout;
-  const top = p?.pins?.left ?? []; // odd positions
-  const bottom = p?.pins?.right ?? []; // even positions
-  const n = Math.max(top.length, bottom.length, 1);
+  const odd = p?.pins?.left ?? []; // odd positions, 1 3 5 …
+  const even = p?.pins?.right ?? []; // even positions, 2 4 6 …
+  const n = Math.max(odd.length, even.length, 1);
   const pitch = clampPitch(COL_PITCH, n, 1100);
   const headerLen = (n - 1) * pitch;
-  const hpad = 80;
+  const hpad = 78;
   const bodyW = headerLen + hpad * 2;
-  const bodyH = Math.max(bodyW / visual.aspect, 360);
 
-  const topMargin = LABEL_BAND;
+  // A little more room than the text strictly needs, so a name never reads as
+  // if it were about to run off the sheet.
+  const topRail = railFor(odd, MIN_LABEL_BAND) + 12;
+  const bottomRail = railFor(even, MIN_LABEL_BAND) + 12;
+
+  const rowGap = 46;
+  const edgeToRow = 52; // board top edge down to the odd row
+  // The board's own proportions, floored so the connector never fills the
+  // outline it is supposed to sit on.
+  const bodyH = clamp(bodyW / visual.aspect, edgeToRow + rowGap + 150, 900);
+
   const vbw = SIDE_MARGIN + bodyW + SIDE_MARGIN;
-  const vbh = topMargin + bodyH + 20;
+  const vbh = topRail + bodyH + bottomRail;
 
   const bodyX = SIDE_MARGIN;
-  const bodyY = topMargin;
+  const bodyY = topRail;
   const body: Rect = { x: bodyX, y: bodyY, w: bodyW, h: bodyH, rx: 18 };
 
   const startX = bodyX + hpad;
-  const topRowY = bodyY + 64;
-  const rowGap = 46;
-  const bottomRowY = topRowY + rowGap;
+  const oddRowY = bodyY + edgeToRow;
+  const evenRowY = oddRowY + rowGap;
 
   const anchors: PinAnchor[] = [];
-  top.forEach((pin, i) => {
+  odd.forEach((pin, i) => {
     const cx = startX + i * pitch;
     anchors.push({
       key: `pL:${i}`,
       pin,
       cx,
-      cy: topRowY,
+      cy: oddRowY,
       side: "top",
       labelX: cx,
-      labelY: bodyY - 16,
-      labelAnchor: "start",
+      labelY: bodyY - 20,
+      labelAnchor: "start", // grows up, out of the sheet's top rail
       rotateLabel: true,
     });
   });
-  bottom.forEach((pin, i) => {
+  even.forEach((pin, i) => {
     const cx = startX + i * pitch;
     anchors.push({
       key: `pR:${i}`,
       pin,
       cx,
-      cy: bottomRowY,
+      cy: evenRowY,
       side: "bottom",
       labelX: cx,
-      labelY: bottomRowY + 30,
-      labelAnchor: "start",
+      labelY: bodyY + bodyH + 20,
+      labelAnchor: "end", // grows down, away from the pads
       rotateLabel: true,
     });
   });
@@ -208,7 +276,7 @@ function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   const headerZones: Rect[] = [
     {
       x: startX - PAD_R - 8,
-      y: topRowY - PAD_R - 8,
+      y: oddRowY - PAD_R - 8,
       w: headerLen + (PAD_R + 8) * 2,
       h: rowGap + (PAD_R + 8) * 2,
       rx: 8,
@@ -221,11 +289,12 @@ function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: sbcPorts(visual, body),
-    chip: { x: bodyX + bodyW * 0.34, y: bodyY + bodyH * 0.52, w: bodyW * 0.3, h: bodyH * 0.26, rx: 8 },
-    holes: corners(body, 26),
+    ports: boardPorts(visual, body, "bottom"),
+    holes: corners(body, 30),
     anchors,
     padR: PAD_R,
+    pitch,
+    arrangement: `2 × ${n}`,
     notToScale: Boolean(visual.notToScale),
     orientation: visual.orientation,
     revisionNote: visual.revisionNote,
@@ -247,15 +316,18 @@ function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry
   const headerLen = (n - 1) * pitch;
   const hpad = 80;
   const bodyW = headerLen + hpad * 2;
-  const bodyH = Math.max(bodyW / visual.aspect, 380);
+  // Capped: at the board's true proportions a long shield leaves a large empty
+  // field between the two header rows, and there is nothing truthful to put in
+  // it. The outline is declared representative, so it is drawn compactly.
+  const bodyH = clamp(bodyW / visual.aspect, 380, 520);
 
-  const topMargin = LABEL_BAND;
-  const bottomMargin = LABEL_BAND;
+  const topRail = railFor(topRow, MIN_LABEL_BAND);
+  const bottomRail = railFor(bottomRow, MIN_LABEL_BAND);
   const vbw = SIDE_MARGIN + bodyW + SIDE_MARGIN;
-  const vbh = topMargin + bodyH + bottomMargin;
+  const vbh = topRail + bodyH + bottomRail;
 
   const bodyX = SIDE_MARGIN;
-  const bodyY = topMargin;
+  const bodyY = topRail;
   const body: Rect = { x: bodyX, y: bodyY, w: bodyW, h: bodyH, rx: 16 };
 
   const startX = bodyX + hpad;
@@ -273,7 +345,7 @@ function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry
       cy: topRowY,
       side: "top",
       labelX: cx,
-      labelY: bodyY - 16,
+      labelY: bodyY - 20,
       labelAnchor: "start",
       rotateLabel: true,
     });
@@ -288,15 +360,25 @@ function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry
       cy: bottomRowY,
       side: "bottom",
       labelX: cx,
-      labelY: bodyY + bodyH + 16,
-      labelAnchor: "start",
+      labelY: bodyY + bodyH + 20,
+      labelAnchor: "end",
       rotateLabel: true,
     });
   });
 
+  // Per-row widths: the two shield headers rarely hold the same number of pins,
+  // and a footprint drawn to the longer row would show contacts that are not
+  // on the board.
+  const shieldRow = (count: number, y: number): Rect => ({
+    x: startX - PAD_R - 6,
+    y: y - PAD_R - 6,
+    w: Math.max(count - 1, 0) * pitch + (PAD_R + 6) * 2,
+    h: (PAD_R + 6) * 2,
+    rx: 6,
+  });
   const headerZones: Rect[] = [
-    { x: startX - PAD_R - 6, y: topRowY - PAD_R - 6, w: headerLen + (PAD_R + 6) * 2, h: (PAD_R + 6) * 2, rx: 6 },
-    { x: startX - PAD_R - 6, y: bottomRowY - PAD_R - 6, w: headerLen + (PAD_R + 6) * 2, h: (PAD_R + 6) * 2, rx: 6 },
+    shieldRow(topRow.length, topRowY),
+    shieldRow(bottomRow.length, bottomRowY),
   ];
 
   return {
@@ -305,11 +387,14 @@ function buildShieldSplit(board: Board, visual: BoardVisual): Omit<BoardGeometry
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: sbcPorts(visual, body),
-    chip: { x: bodyX + bodyW * 0.36, y: bodyY + bodyH * 0.42, w: bodyW * 0.26, h: bodyH * 0.2, rx: 8 },
-    holes: corners(body, 24),
+    // Shield headers run the length of both long edges, so the connectors go
+    // on an end — which is where the Arduino-footprint boards carry them.
+    ports: boardPorts(visual, body, "left"),
+    holes: corners(body, 28),
     anchors,
     padR: PAD_R,
+    pitch,
+    arrangement: `${topRow.length} + ${bottomRow.length}`,
     notToScale: Boolean(visual.notToScale),
     orientation: visual.orientation,
     revisionNote: visual.revisionNote,
@@ -327,19 +412,26 @@ function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeomet
   const headerLen = (n - 1) * pitch;
   const hpad = 60;
   const bodyW = headerLen + hpad * 2;
-  const bodyH = Math.max(bodyW / visual.aspect, 340);
+  // Capped for the same reason as shield-split: only the bottom edge carries
+  // contacts, so the board's full height would be mostly empty field.
+  const bodyH = clamp(bodyW / visual.aspect, 300, 430);
 
-  const bottomMargin = LABEL_BAND;
-  const topMargin = 40;
+  const bottomRail = railFor(
+    flat.map((entry) => entry.pin),
+    MIN_LABEL_BAND,
+  );
+  const topMargin = 44;
   const vbw = SIDE_MARGIN + bodyW + SIDE_MARGIN;
-  const vbh = topMargin + bodyH + bottomMargin;
+  const vbh = topMargin + bodyH + bottomRail;
 
   const bodyX = SIDE_MARGIN;
   const bodyY = topMargin;
   const body: Rect = { x: bodyX, y: bodyY, w: bodyW, h: bodyH, rx: 18 };
 
   const startX = bodyX + hpad;
-  const rowY = bodyY + bodyH - 34;
+  // The contact row sits on the board's bottom edge — these are edge fingers,
+  // so the pads straddle the outline rather than sitting inside it.
+  const rowY = bodyY + bodyH - 26;
 
   const anchors: PinAnchor[] = flat.map((entry, i) => {
     const cx = startX + i * pitch;
@@ -351,14 +443,14 @@ function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeomet
       cy: rowY,
       side: "bottom",
       labelX: cx,
-      labelY: bodyY + bodyH + 16,
-      labelAnchor: "start",
+      labelY: bodyY + bodyH + 20,
+      labelAnchor: "end",
       rotateLabel: true,
     };
   });
 
   const headerZones: Rect[] = [
-    { x: startX - PAD_R - 6, y: rowY - PAD_R - 6, w: headerLen + (PAD_R + 6) * 2, h: (PAD_R + 6) * 2 + 18, rx: 4 },
+    { x: startX - PAD_R - 6, y: rowY - PAD_R - 10, w: headerLen + (PAD_R + 6) * 2, h: (PAD_R + 10) * 2, rx: 4 },
   ];
 
   return {
@@ -367,45 +459,60 @@ function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeomet
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: [
-      { kind: "usb-micro", x: bodyX + bodyW / 2 - 34, y: bodyY - 14, w: 68, h: 26, rx: 6 },
-    ],
-    chip: { x: bodyX + bodyW * 0.38, y: bodyY + bodyH * 0.28, w: bodyW * 0.24, h: bodyH * 0.2, rx: 10 },
+    // The bottom edge is the gold connector itself, so anything else the
+    // template records goes on the top edge.
+    ports: boardPorts(visual, body, "top"),
     holes: [],
     anchors,
     padR: PAD_R,
+    pitch,
+    arrangement: `1 × ${n}`,
     notToScale: Boolean(visual.notToScale),
     orientation: visual.orientation,
     revisionNote: visual.revisionNote,
   };
 }
 
+// Function-grouped boards have no resolvable physical coordinates, so their
+// sheet is openly schematic: one labelled strip per function block. Column
+// spacing follows the longest signal name in the board so every pad can carry
+// its label on the drawing — a field of numbered dots you have to hover to
+// identify is not a pin map.
 function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
   const p = board.pinout;
   const groups = p?.groups ?? [];
-  const perRow = 11;
-  const colPitch = 78;
-  const rowPitch = 92; // includes label space under each pad
+  const allPins = groups.flatMap((group) => group.pins);
+
+  // Labels are split on "/" and stacked, so a column only has to be as wide as
+  // the longest *segment* ("18 / A4" needs room for "18", not for both).
+  const longestSegment = allPins.reduce((n, pin) => {
+    for (const segment of pin.label.split("/")) {
+      n = Math.max(n, segment.trim().length);
+    }
+    return n;
+  }, 0);
+  const colPitch = clamp(longestSegment * 8.6 + 26, 78, 190);
+  const perRow = clamp(Math.round(880 / colPitch), 5, 11);
+  const rowPitch = 96; // pad + up to two stacked label lines
   const stripGap = 30;
-  const stripTitleH = 34;
+  const stripTitleH = 36;
 
   const contentW = perRow * colPitch;
-  const artH = 200; // schematic board block at the top
   const vbw = SIDE_MARGIN * 2 + contentW;
   const bodyX = SIDE_MARGIN;
 
-  let cursorY = artH + 40;
+  let cursorY = 30;
   const anchors: PinAnchor[] = [];
   const headerZones: Rect[] = [];
 
   groups.forEach((group, gi) => {
     cursorY += stripTitleH;
     const rows = Math.ceil(group.pins.length / perRow);
-    const zoneTop = cursorY - stripTitleH + 6;
+    const zoneTop = cursorY - stripTitleH + 8;
     group.pins.forEach((pin, i) => {
       const r = Math.floor(i / perRow);
       const c = i % perRow;
-      const cx = bodyX + 40 + c * colPitch;
+      const cx = bodyX + colPitch / 2 + c * colPitch;
       const cy = cursorY + r * rowPitch + 18;
       anchors.push({
         key: `g${gi}:${i}`,
@@ -415,30 +522,29 @@ function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry
         cy,
         side: "bottom",
         labelX: cx,
-        labelY: cy + PAD_R + 14,
+        labelY: cy + PAD_R + 16,
         labelAnchor: "middle",
         rotateLabel: false,
       });
     });
-    const zoneBottom = cursorY + (rows - 1) * rowPitch + 18 + rowPitch * 0.7;
+    const zoneBottom = cursorY + (rows - 1) * rowPitch + 18 + rowPitch * 0.72;
+    // Each block is only as wide as it needs to be. A four-pin power block
+    // framed across eleven columns reads as seven missing pins.
+    const occupied = Math.min(group.pins.length, perRow);
     headerZones.push({
-      x: bodyX + 8,
+      x: bodyX,
       y: zoneTop,
-      w: contentW - 16,
+      w: occupied * colPitch,
       h: zoneBottom - zoneTop,
-      rx: 12,
+      rx: 10,
     });
     cursorY = zoneBottom + stripGap;
   });
 
   const vbh = cursorY + 10;
-  const body: Rect = {
-    x: bodyX + contentW * 0.18,
-    y: 24,
-    w: contentW * 0.64,
-    h: artH - 36,
-    rx: 16,
-  };
+  // No board outline: this sheet makes no claim about the board's shape. The
+  // body is recorded as the full sheet so downstream code has a sane frame.
+  const body: Rect = { x: bodyX, y: 0, w: contentW, h: vbh, rx: 0 };
 
   return {
     vbw,
@@ -446,52 +552,113 @@ function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry
     body,
     accent: accentForBoard(board.id, board.vendor),
     headerZones,
-    ports: [
-      { kind: visual.ports?.[0] ?? "usb-c", x: body.x + body.w / 2 - 34, y: body.y - 12, w: 68, h: 24, rx: 6 },
-    ],
-    chip: { x: body.x + body.w * 0.3, y: body.y + body.h * 0.3, w: body.w * 0.4, h: body.h * 0.4, rx: 8 },
+    ports: [],
     holes: [],
     anchors,
     padR: PAD_R,
+    pitch: colPitch,
+    arrangement: `${groups.length} function blocks`,
     notToScale: true,
     orientation: visual.orientation,
     revisionNote: visual.revisionNote,
   };
 }
 
-// --- decorative helpers ----------------------------------------------------
-function corners(body: Rect, inset: number): Hole[] {
-  return [
-    { x: body.x + inset, y: body.y + inset, r: 9 },
-    { x: body.x + body.w - inset, y: body.y + inset, r: 9 },
-    { x: body.x + inset, y: body.y + body.h - inset, r: 9 },
-    { x: body.x + body.w - inset, y: body.y + body.h - inset, r: 9 },
-  ];
+// --- connectors and mounting holes -----------------------------------------
+
+// Relative size of each connector, as a fraction of the edge it sits on. These
+// are the proportions that make a connector recognizable at a glance — an
+// Ethernet jack is the widest thing on an SBC, a JST battery lead is a nub —
+// which is the whole job of drawing them: orienting the reader, not specifying
+// the board.
+const portSpan: Record<PortKind, number> = {
+  ethernet: 0.155,
+  "usb-a": 0.135,
+  hdmi: 0.11,
+  "usb-c": 0.085,
+  "usb-mini": 0.085,
+  "usb-micro": 0.075,
+  barrel: 0.075,
+  jst: 0.06,
+  camera: 0.055,
+  audio: 0.05,
+};
+
+const portDepth: Record<PortKind, number> = {
+  ethernet: 40,
+  "usb-a": 36,
+  hdmi: 28,
+  "usb-c": 22,
+  "usb-mini": 24,
+  "usb-micro": 22,
+  barrel: 30,
+  jst: 20,
+  camera: 18,
+  audio: 24,
+};
+
+/** A connector straddling one edge of the board, centred `at` along that edge. */
+function edgeMark(kind: PortKind, side: Side, body: Rect, at: number): PortMark {
+  const along = side === "left" || side === "right" ? body.h : body.w;
+  const across = clamp(along * portSpan[kind], 26, 180);
+  const depth = portDepth[kind];
+
+  if (side === "top" || side === "bottom") {
+    const y = side === "top" ? body.y - depth * 0.55 : body.y + body.h - depth * 0.45;
+    return { kind, side, x: body.x + along * at - across / 2, y, w: across, h: depth, rx: 4 };
+  }
+  const x = side === "left" ? body.x - depth * 0.55 : body.x + body.w - depth * 0.45;
+  return { kind, side, x, y: body.y + along * at - across / 2, w: depth, h: across, rx: 4 };
 }
 
-function sbcPorts(visual: BoardVisual, body: Rect): PortMark[] {
-  const ports: PortMark[] = [];
+/**
+ * Places the curated connectors: the first one on the board's recorded USB
+ * edge, the rest spread along `spread` — the edge the header does not occupy.
+ * Boards whose template records no ports get none; nothing is invented here.
+ */
+function boardPorts(
+  visual: BoardVisual,
+  body: Rect,
+  spread: Side,
+): PortMark[] {
   const list = visual.ports ?? [];
-  // Spread the recognizable big connectors along the bottom edge.
-  list.forEach((kind, i) => {
-    const w = kind === "ethernet" ? body.w * 0.16 : body.w * 0.12;
-    const x = body.x + body.w * (0.14 + i * 0.22);
-    // Sit the metal shell on the bottom edge, protruding only slightly so it
-    // stays inside the viewBox.
-    ports.push({ kind, x, y: body.y + body.h - 30, w, h: 36, rx: 4 });
+  if (!list.length) return [];
+
+  const usbEdge = visual.usb ?? "none";
+  const marks: PortMark[] = [];
+  let rest = list;
+
+  if (usbEdge !== "none") {
+    // Down the same edge when the USB shares it with the other connectors.
+    const stacked = usbEdge === spread ? list : [list[0]];
+    stacked.forEach((kind, index) => {
+      marks.push(edgeMark(kind, usbEdge, body, spot(index, stacked.length)));
+    });
+    rest = usbEdge === spread ? [] : list.slice(1);
+  }
+
+  rest.forEach((kind, index) => {
+    marks.push(edgeMark(kind, spread, body, spot(index, rest.length)));
   });
-  return ports;
+
+  return marks;
 }
 
-function edgePorts(visual: BoardVisual, body: Rect): PortMark[] {
-  const usb = visual.usb ?? "top";
-  const w = body.w * 0.4;
-  const cx = body.x + body.w / 2 - w / 2;
-  const kind = visual.ports?.[0] ?? "usb-micro";
-  if (usb === "top") return [{ kind, x: cx, y: body.y - 12, w, h: 26, rx: 6 }];
-  if (usb === "bottom")
-    return [{ kind, x: cx, y: body.y + body.h - 14, w, h: 26, rx: 6 }];
-  return [];
+// Even spacing across the usable middle of an edge, leaving the corners for
+// mounting holes.
+function spot(index: number, count: number): number {
+  if (count <= 1) return 0.5;
+  return 0.17 + (index * 0.66) / (count - 1);
+}
+
+function corners(body: Rect, inset: number): Hole[] {
+  const r = 9;
+  return [
+    { x: body.x + inset, y: body.y + inset, r },
+    { x: body.x + body.w - inset, y: body.y + inset, r },
+    { x: body.x + inset, y: body.y + body.h - inset, r },
+    { x: body.x + body.w - inset, y: body.y + body.h - inset, r },
+  ];
 }
 
 const builders: Record<

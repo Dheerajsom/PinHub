@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { PinRole } from "@/lib/boards";
 
 // Human-readable role names. Kept in one place so the legend, pads, popovers,
@@ -18,45 +19,48 @@ export const roleLabels: Record<PinRole, string> = {
   reserved: "Reserved",
 };
 
-// Tailwind class strings for HTML chips/badges (legend, popover, table).
-export const roleChipStyles: Record<PinRole, string> = {
-  power: "border-red-400/50 bg-red-500/15 text-red-100",
-  ground: "border-zinc-400/40 bg-zinc-500/20 text-zinc-100",
-  gpio: "border-emerald-400/50 bg-emerald-500/15 text-emerald-100",
-  i2c: "border-cyan-400/50 bg-cyan-500/15 text-cyan-100",
-  spi: "border-amber-400/50 bg-amber-500/15 text-amber-100",
-  uart: "border-sky-400/50 bg-sky-500/15 text-sky-100",
-  adc: "border-violet-400/50 bg-violet-500/15 text-violet-100",
-  dac: "border-rose-400/50 bg-rose-500/15 text-rose-100",
-  pwm: "border-fuchsia-400/50 bg-fuchsia-500/15 text-fuchsia-100",
-  debug: "border-lime-400/50 bg-lime-500/15 text-lime-100",
-  system: "border-orange-400/50 bg-orange-500/15 text-orange-100",
-  special: "border-teal-400/50 bg-teal-500/15 text-teal-100",
-  reserved: "border-stone-400/50 bg-stone-500/15 text-stone-100",
-};
-
-// Solid SVG fill/stroke colors for the pads drawn on the board. These echo the
-// chip palette above but as concrete hex so they render identically regardless
-// of Tailwind's runtime. `text` is the on-pad number color.
-export const roleSvgColors: Record<
+/**
+ * One palette for every surface — SVG pads, HTML chips, table badges.
+ *
+ * A role is identified by hue, and the hues are the ones this audience already
+ * reads off a breakout board: power red, ground grey, GPIO green, I2C cyan,
+ * SPI amber, UART blue. Each role gets four steps at the same relative
+ * position on its ramp, so thirteen roles read as one system rather than
+ * thirteen unrelated colors:
+ *
+ *   ink   text on a dark ground — the pad number, the chip label
+ *   edge  the pad ring and chip border, the role's identity at a glance
+ *   fill  the pad body
+ *   wash  the chip background
+ *
+ * Interaction is deliberately *not* in this palette: the probe is cyan and
+ * nothing else on the board is, so "what am I touching" never competes with
+ * "what is this pin".
+ */
+export const roleColors: Record<
   PinRole,
-  { fill: string; stroke: string; text: string }
+  { ink: string; edge: string; fill: string; wash: string }
 > = {
-  power: { fill: "#7f1d2b", stroke: "#fb7185", text: "#fee2e2" },
-  ground: { fill: "#3f3f46", stroke: "#a1a1aa", text: "#f4f4f5" },
-  gpio: { fill: "#0f5132", stroke: "#34d399", text: "#d1fae5" },
-  i2c: { fill: "#0e5566", stroke: "#22d3ee", text: "#cffafe" },
-  spi: { fill: "#6b4709", stroke: "#fbbf24", text: "#fef3c7" },
-  uart: { fill: "#0c4a6e", stroke: "#38bdf8", text: "#e0f2fe" },
-  adc: { fill: "#4c1d95", stroke: "#a78bfa", text: "#ede9fe" },
-  dac: { fill: "#7a1733", stroke: "#fb7185", text: "#ffe4e6" },
-  pwm: { fill: "#6b1f5e", stroke: "#e879f9", text: "#fae8ff" },
-  debug: { fill: "#3f4d09", stroke: "#a3e635", text: "#ecfccb" },
-  system: { fill: "#7c2d12", stroke: "#fb923c", text: "#ffedd5" },
-  special: { fill: "#115e59", stroke: "#2dd4bf", text: "#ccfbf1" },
-  reserved: { fill: "#44403c", stroke: "#a8a29e", text: "#f5f5f4" },
+  power: { ink: "#fecaca", edge: "#f87171", fill: "#7f1d2b", wash: "#2a1216" },
+  ground: { ink: "#e4e4e7", edge: "#a1a1aa", fill: "#3f3f46", wash: "#232327" },
+  gpio: { ink: "#a7f3d0", edge: "#34d399", fill: "#0f5132", wash: "#0d2a20" },
+  i2c: { ink: "#a5f3fc", edge: "#22d3ee", fill: "#0e5566", wash: "#0a2b33" },
+  spi: { ink: "#fde68a", edge: "#fbbf24", fill: "#6b4709", wash: "#2c2109" },
+  uart: { ink: "#bae6fd", edge: "#38bdf8", fill: "#0c4a6e", wash: "#0b2436" },
+  adc: { ink: "#ddd6fe", edge: "#a78bfa", fill: "#4c1d95", wash: "#211a3c" },
+  dac: { ink: "#fecdd3", edge: "#fb7185", fill: "#7a1733", wash: "#2c111c" },
+  pwm: { ink: "#f5d0fe", edge: "#e879f9", fill: "#6b1f5e", wash: "#2b1230" },
+  debug: { ink: "#d9f99d", edge: "#a3e635", fill: "#3f4d09", wash: "#1d260a" },
+  system: { ink: "#fed7aa", edge: "#fb923c", fill: "#7c2d12", wash: "#2c1509" },
+  special: { ink: "#99f6e4", edge: "#2dd4bf", fill: "#115e59", wash: "#0a2b2a" },
+  reserved: { ink: "#e7e5e4", edge: "#a8a29e", fill: "#44403c", wash: "#26241f" },
 };
 
+/** The one interaction color on the board: probe ring, leader line, live label. */
+export const PROBE_COLOR = "#22d3ee";
+
+// Legend order: rails first, then the digital and bus roles in the order they
+// appear on a datasheet's pin table, then the ones that mean "read the note".
 export const roleOrder: PinRole[] = [
   "power",
   "ground",
@@ -72,6 +76,25 @@ export const roleOrder: PinRole[] = [
   "special",
   "reserved",
 ];
+
+/** How many pins carry each role, for the legend's accessible descriptions. */
+export function countRoles(pins: Array<{ role: PinRole }>): Map<PinRole, number> {
+  const counts = new Map<PinRole, number>();
+  for (const pin of pins) {
+    counts.set(pin.role, (counts.get(pin.role) ?? 0) + 1);
+  }
+  return counts;
+}
+
+/** Inline style for an HTML role chip, driven by the same palette as the pads. */
+export function roleChipStyle(role: PinRole): CSSProperties {
+  const color = roleColors[role];
+  return {
+    color: color.ink,
+    backgroundColor: color.wash,
+    borderColor: color.edge,
+  };
+}
 
 // Builds the spoken/AT label for a pin, e.g.
 // "Pin 3, GPIO2, I2C, aliases SDA1" (the pin's note, when present, is appended).
