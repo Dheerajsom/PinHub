@@ -537,7 +537,6 @@ function BoardCard({
 }) {
   return (
     <article className="discovery-card group relative overflow-hidden rounded-xl border border-white/10 bg-[#14161d] p-4 shadow-[0_14px_34px_-24px_rgba(0,0,0,0.9)] transition duration-300 hover:-translate-y-0.5 hover:border-cyan-300/35 hover:bg-[#171b22]" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}>
-      <div className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-cyan-300 via-emerald-300 to-transparent transition-transform duration-500 group-hover:scale-x-100" />
       <div className="flex items-start gap-3">
         <VendorLogo vendor={board.vendor} size={30} />
         <div className="min-w-0 flex-1">

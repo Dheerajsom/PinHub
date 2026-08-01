@@ -378,12 +378,6 @@ export function PinHubApp({
     <main className="relative isolate min-h-screen">
       <CircuitBackground />
       <header className="relative border-b border-white/10 bg-[#0a0d12] shadow-[0_1px_0_rgba(255,255,255,0.05)_inset,0_12px_30px_-24px_rgba(0,0,0,0.9)] pt-[env(safe-area-inset-top)]">
-        <div
-          className="pointer-events-none absolute inset-0"
-          aria-hidden="true"
-        >
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
-        </div>
         <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <div className="relative size-12 shrink-0 sm:size-14">
@@ -970,17 +964,19 @@ const BoardResult = memo(function BoardResult({
     <article
       id={`board-result-${board.id}`}
       className={clsx(
-        // Selection is marked by the left rail sharpening to near-white; the
-        // lighter surface behind it is the supporting cue, not the primary one.
+        // The selected row powers on rather than wearing a marker. On a bench
+        // the instrument in use is the one that is lit, so selection raises
+        // this row out of the board — lighter surface, light caught on the top
+        // edge, deeper shadow — and brings its contents up to full contrast
+        // (see `selected` below on the description, chips, and meta). No rail,
+        // no badge, no added element: the border stays a uniform hairline on
+        // all four sides in both states, which is also why nothing reflows.
         // Contrast ratios compress badly this close to black, so the surface
-        // step is sized in perceptual lightness (~7 L*) rather than by ratio —
-        // enough to read on a dim phone without going grey. Cyan is reserved for
-        // focus and for the diagram's probe, so a passively selected row never
-        // competes with the thing the user is actually doing.
-        "relative rounded-lg border-y border-r border-l-2 [contain-intrinsic-block-size:9rem] [content-visibility:auto] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
+        // step is sized in perceptual lightness (~11 L*) rather than by ratio.
+        "relative rounded-lg border [contain-intrinsic-block-size:9rem] [content-visibility:auto] transition",
         selected
-          ? "border-y-white/20 border-r-white/20 border-l-white/75 bg-[#242a37]"
-          : "border-y-white/10 border-r-white/10 border-l-white/15 bg-[#14161d] hover:border-y-white/20 hover:border-r-white/20 hover:border-l-white/30 hover:bg-[#191c24]",
+          ? "border-white/25 bg-[#262c3a] shadow-[inset_0_1px_0_rgba(255,255,255,0.11),0_2px_4px_rgba(0,0,0,0.5),0_18px_40px_-18px_rgba(0,0,0,0.95)]"
+          : "border-white/10 bg-[#14161d] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] hover:border-white/20 hover:bg-[#191c24]",
       )}
     >
       <button
@@ -1011,7 +1007,14 @@ const BoardResult = memo(function BoardResult({
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <VendorLogo vendor={board.vendor} />
             <h2 className="text-base font-semibold text-white">{board.name}</h2>
-            <span className="rounded border border-white/10 bg-[#0a0c11] px-1.5 py-0.5 text-[11px] text-zinc-300">
+            <span
+              className={clsx(
+                "rounded border bg-[#0a0c11] px-1.5 py-0.5 text-[11px] transition",
+                selected
+                  ? "border-white/20 text-zinc-100"
+                  : "border-white/10 text-zinc-300",
+              )}
+            >
               {board.category}
             </span>
             {board.hasPinout ? (
@@ -1041,13 +1044,23 @@ const BoardResult = memo(function BoardResult({
                 </span>
               </span>
             ) : null}
-            <span className="min-w-0 break-words font-mono text-xs text-zinc-500 sm:text-right">
+            <span
+              className={clsx(
+                "min-w-0 break-words font-mono text-xs transition sm:text-right",
+                selected ? "text-zinc-300" : "text-zinc-500",
+              )}
+            >
               {board.vendor} · {board.logicLevel}
             </span>
           </span>
         </div>
 
-        <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-zinc-400">
+        <p
+          className={clsx(
+            "mt-1.5 line-clamp-2 text-sm leading-6 transition",
+            selected ? "text-zinc-200" : "text-zinc-400",
+          )}
+        >
           {board.description}
         </p>
 
@@ -1055,13 +1068,25 @@ const BoardResult = memo(function BoardResult({
           {board.interfaces.slice(0, 7).map((item) => (
             <span
               key={item}
-              className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-300"
+              className={clsx(
+                "rounded border px-1.5 py-0.5 text-[11px] transition",
+                selected
+                  ? "border-white/20 bg-[#0f1218] text-zinc-100"
+                  : "border-white/10 bg-zinc-950 text-zinc-300",
+              )}
             >
               {item}
             </span>
           ))}
           {board.interfaces.length > 7 ? (
-            <span className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-500">
+            <span
+              className={clsx(
+                "rounded border px-1.5 py-0.5 text-[11px] transition",
+                selected
+                  ? "border-white/20 bg-[#0f1218] text-zinc-300"
+                  : "border-white/10 bg-zinc-950 text-zinc-500",
+              )}
+            >
               +{board.interfaces.length - 7}
             </span>
           ) : null}
