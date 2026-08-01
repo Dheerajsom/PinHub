@@ -213,110 +213,27 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Favorites filter button — a deliberately loud, golden control that breaks
-   out of the otherwise cool/monochrome catalog chrome. A soft amber glow that
-   slowly breathes at rest; on hover it brightens, lifts, and the star does a
-   quick celebratory spin-pop.
+   Favorites filter button — the one warm control in an otherwise cool catalog.
+   Amber carries the meaning on its own, so the button states itself once: a
+   steady ring at rest that firms up on hover. No resting animation, no sheen,
+   no spin — an always-on effect stops reading as emphasis and starts reading
+   as noise, and it competes with the row the user is actually scanning.
    --------------------------------------------------------------------------- */
-@keyframes fav-breathe {
-  0%,
-  100% {
-    box-shadow:
-      inset 0 0 0 1px rgba(251, 191, 36, 0.35),
-      0 0 12px -3px rgba(250, 204, 21, 0.3);
-  }
-  50% {
-    box-shadow:
-      inset 0 0 0 1px rgba(251, 191, 36, 0.5),
-      0 0 20px -1px rgba(250, 204, 21, 0.5);
-  }
-}
-
-@keyframes fav-star-pop {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  55% {
-    transform: rotate(216deg) scale(1.35);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
-}
-
-@keyframes fav-sheen {
-  0% {
-    transform: translateX(-150%) skewX(-20deg);
-  }
-  60%,
-  100% {
-    transform: translateX(260%) skewX(-20deg);
-  }
-}
-
 .fav-button {
   position: relative;
-  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(251, 191, 36, 0.45),
+    0 1px 2px rgba(0, 0, 0, 0.4);
   transition:
-    transform 0.18s ease,
     background-color 0.18s ease,
     color 0.18s ease,
     box-shadow 0.18s ease;
 }
 
-.fav-button:not(:hover) {
-  animation: fav-breathe 3.6s ease-in-out infinite;
-}
-
-/* Touch devices get a static resting glow instead of the infinite breathe:
-   an always-running box-shadow animation repaints every frame, which costs
-   battery on phones for an effect designed around a mouse hovering nearby. */
-@media (hover: none) {
-  .fav-button:not(:hover) {
-    animation: none;
-    box-shadow:
-      inset 0 0 0 1px rgba(251, 191, 36, 0.4),
-      0 0 14px -2px rgba(250, 204, 21, 0.35);
-  }
-}
-
-/* A diagonal light sweep that streaks across the button on hover. */
-.fav-button::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 35%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.55),
-    transparent
-  );
-  transform: translateX(-150%) skewX(-20deg);
-  pointer-events: none;
-  opacity: 0;
-}
-
 .fav-button:hover {
-  transform: translateY(-1px);
   box-shadow:
-    inset 0 0 0 1px rgba(252, 211, 77, 0.95),
-    0 6px 22px -6px rgba(250, 204, 21, 0.7);
-}
-
-.fav-button:active {
-  transform: translateY(0);
-}
-
-.fav-button:hover::after {
-  opacity: 1;
-  animation: fav-sheen 0.9s ease-out;
-}
-
-.fav-button:hover .fav-star {
-  animation: fav-star-pop 0.6s ease-in-out;
+    inset 0 0 0 1px rgba(252, 211, 77, 0.9),
+    0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 /* ---------------------------------------------------------------------------
@@ -445,14 +362,6 @@ button {
   html {
     scroll-behavior: auto;
   }
-  .fav-button,
-  .fav-button:hover .fav-star {
-    animation: none;
-  }
-  .fav-button:hover::after {
-    animation: none;
-    opacity: 0;
-  }
   .bv-pad,
   .bv-pad-ring,
   .bv-leader,
@@ -493,32 +402,12 @@ button {
   }
 }
 
-@keyframes board-hero-scan {
-  0%,
-  65% {
-    transform: translateX(-130%);
-  }
-  100% {
-    transform: translateX(160%);
-  }
-}
-
 .discovery-card {
   animation: discovery-card-in 420ms both cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .compare-tray {
   animation: compare-tray-in 260ms both cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.board-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: 35%;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent, rgba(103, 232, 249, 0.035), transparent);
-  animation: board-hero-scan 7s ease-in-out infinite;
 }
 
 @media print {
@@ -575,8 +464,7 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
   .discovery-card,
-  .compare-tray,
-  .board-hero::after {
+  .compare-tray {
     animation: none;
     transition: none;
   }

@@ -87,7 +87,7 @@ export default async function BoardPage({
       </header>
 
       <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8">
-        <section className="board-hero relative overflow-hidden rounded-2xl border border-white/10 bg-[#12161d] p-5 shadow-2xl sm:p-7">
+        <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#12161d] p-5 shadow-2xl sm:p-7">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/80 to-transparent" />
           <div className="pointer-events-none absolute -right-16 -top-20 size-72 rounded-full bg-cyan-300/[0.07] blur-3xl" />
           <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-start">

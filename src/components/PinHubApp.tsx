@@ -382,8 +382,7 @@ export function PinHubApp({
           className="pointer-events-none absolute inset-0"
           aria-hidden="true"
         >
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
-          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(34,211,238,0.08),rgba(7,10,13,0)_38%)]" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
         </div>
         <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
@@ -831,13 +830,9 @@ function GitHubButton() {
       title="View source on GitHub"
       className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-lg border border-white/15 bg-[#15181f] px-2.5 text-sm font-medium text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/60 hover:bg-[#1c2029] hover:text-white active:scale-[0.97] sm:px-3"
     >
-      <span
-        className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(110deg,transparent,rgba(34,211,238,0.18),transparent)] transition-transform duration-500 group-hover:translate-x-full"
-        aria-hidden="true"
-      />
       <svg
         viewBox="0 0 24 24"
-        className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-110"
+        className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-105"
         fill="currentColor"
         aria-hidden="true"
       >
@@ -975,9 +970,16 @@ const BoardResult = memo(function BoardResult({
     <article
       id={`board-result-${board.id}`}
       className={clsx(
+        // Selection is marked by the left rail sharpening to near-white; the
+        // lighter surface behind it is the supporting cue, not the primary one.
+        // Contrast ratios compress badly this close to black, so the surface
+        // step is sized in perceptual lightness (~7 L*) rather than by ratio —
+        // enough to read on a dim phone without going grey. Cyan is reserved for
+        // focus and for the diagram's probe, so a passively selected row never
+        // competes with the thing the user is actually doing.
         "relative rounded-lg border-y border-r border-l-2 [contain-intrinsic-block-size:9rem] [content-visibility:auto] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] transition",
         selected
-          ? "border-y-cyan-300/40 border-r-cyan-300/40 border-l-cyan-300 bg-[#0e1c23] shadow-[0_0_0_1px_rgba(34,211,238,0.14),0_12px_34px_-14px_rgba(34,211,238,0.32)]"
+          ? "border-y-white/20 border-r-white/20 border-l-white/75 bg-[#242a37]"
           : "border-y-white/10 border-r-white/10 border-l-white/15 bg-[#14161d] hover:border-y-white/20 hover:border-r-white/20 hover:border-l-white/30 hover:bg-[#191c24]",
       )}
     >

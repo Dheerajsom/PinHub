@@ -457,8 +457,11 @@ export function DiscoveryApp({
         </section>
       </div>
 
+      {/* The tray floats over the results, so it has to own an edge. A colored
+          glow used to do that job; a raised neutral surface plus a lit top edge
+          does it without spending the accent on a container. */}
       {compareIds.length ? (
-        <div className="compare-tray fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-xl border border-cyan-300/35 bg-[#0d151b] p-3 shadow-[0_20px_70px_rgba(0,0,0,0.7),0_0_35px_-15px_rgba(34,211,238,0.8)] sm:bottom-5">
+        <div className="compare-tray fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-xl border border-white/20 bg-[#212734] p-3 shadow-[0_20px_70px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.09)] sm:bottom-5">
           <div className="flex items-center gap-3">
             <GitCompareArrows className="hidden size-5 shrink-0 text-cyan-200 sm:block" />
             <div className="min-w-0 flex-1">
