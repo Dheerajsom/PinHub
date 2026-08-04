@@ -10917,6 +10917,520 @@ const riscvFrontierBoards: Board[] = [
   },
 ];
 
+// boardId: arduino-nicla-sense-me | sources: Arduino ABX00050 datasheet connector
+// tables and official full-pinout PDF | confidence: HIGH
+//
+// J1, J2, and the eight debug fins are tabulated explicitly in the current
+// Arduino datasheet. The older full-pinout drawing independently supplies the
+// Arduino-number and nRF52832-port aliases used below. Battery pads are not
+// represented here because Arduino's current J3 table and the drawing's prose
+// disagree about their physical order; the unambiguous J1/J2 power pins remain
+// fully represented.
+const arduinoNiclaSenseMePinout: Pinout = {
+  connector: "Nicla J1/J2 expansion headers and J2 debug fins (SKU ABX00050)",
+  layout: "grouped",
+  notes: [
+    "J1 and J2 are transcribed from the current Arduino ABX00050 connector tables; aliases come from Arduino's full-pinout drawing.",
+    "All J1/J2 signals except the debug fins are referenced to VDDIO_EXT, which is software-selectable between 1.8 V and 3.3 V.",
+    "The eight 1.27 mm debug fins expose separate SWD interfaces for the BHI260, ANNA-B112/nRF52832, and SAMD11 USB bridge.",
+    "J3/J4 battery and J5 ESLOV connectors are outside this represented expansion pinmap; use the current datasheet before wiring them.",
+  ],
+  groups: [
+    {
+      label: "J1 Nicla header A",
+      pins: [
+        { position: 1, label: "LPIO0_EXT", role: "gpio", aliases: ["D5", "P0.24", "PWM"] },
+        { position: 2, label: "NC", role: "reserved", note: "No connection." },
+        { position: 3, label: "CS", role: "spi", aliases: ["D6", "P0.29", "PWM"] },
+        { position: 4, label: "COPI", role: "spi", aliases: ["D8", "P0.27", "MOSI", "PWM"] },
+        { position: 5, label: "CIPO", role: "spi", aliases: ["D7", "P0.28", "MISO", "PWM"] },
+        { position: 6, label: "SCLK", role: "spi", aliases: ["D9", "P0.11", "PWM"] },
+        {
+          position: 7,
+          label: "ADC2",
+          role: "adc",
+          aliases: ["A1", "D11", "P0.30", "PWM"],
+          note: "ADC input; fixed 1.8 V logic domain rather than VDDIO_EXT.",
+        },
+        {
+          position: 8,
+          label: "ADC1",
+          role: "adc",
+          aliases: ["A0", "D10", "P0.02", "PWM"],
+          note: "ADC input; fixed 1.8 V logic domain rather than VDDIO_EXT.",
+        },
+      ],
+    },
+    {
+      label: "J2 Nicla header B",
+      pins: [
+        { position: 1, label: "SDA", role: "i2c", aliases: ["D4", "SDA1", "P0.22", "PWM"] },
+        { position: 2, label: "SCL", role: "i2c", aliases: ["D3", "SCL1", "P0.23", "PWM"] },
+        { position: 3, label: "LPIO1_EXT / TX", role: "uart", aliases: ["D2", "P0.20", "PWM"] },
+        { position: 4, label: "LPIO2_EXT / RX", role: "uart", aliases: ["D1", "P0.09", "PWM"] },
+        { position: 5, label: "LPIO3_EXT", role: "gpio", aliases: ["D0", "P0.10", "PWM"] },
+        { position: 6, label: "GND", role: "ground" },
+        {
+          position: 7,
+          label: "VDDIO_EXT",
+          role: "power",
+          note: "Logic-level reference; internally software-selectable from 1.8 V to 3.3 V, or externally supplied only after disabling the internal rail.",
+        },
+        { position: 8, label: "NC", role: "reserved", note: "No connection." },
+        { position: 9, label: "VIN", role: "power", note: "3.5-5.5 V input." },
+      ],
+    },
+    {
+      label: "J2 1.27 mm debug fins",
+      pins: [
+        { position: 1, label: "BHI_SWDIO", role: "debug", note: "BHI260 SWD data; 1.8 V only." },
+        { position: 2, label: "BHI_SWDCLK", role: "debug", note: "BHI260 SWD clock; 1.8 V only." },
+        { position: 3, label: "ANNA_SWDIO", role: "debug", note: "ANNA-B112/nRF52832 SWD data; 1.8 V only." },
+        { position: 4, label: "ANNA_SWDCLK", role: "debug", note: "ANNA-B112/nRF52832 SWD clock; 1.8 V only." },
+        { position: 5, label: "RESET", role: "system" },
+        { position: 6, label: "SAMD11_SWDIO", role: "debug", note: "SAMD11 USB-bridge SWD data; 3.3 V." },
+        { position: 7, label: "+1V8", role: "power", note: "1.8 V debug reference rail." },
+        { position: 8, label: "SAMD11_SWDCLK", role: "debug", note: "SAMD11 USB-bridge SWD clock; 3.3 V." },
+      ],
+    },
+  ],
+};
+
+// boardId: milkv-duo-s-v12 | sources: Milk-V Duo S guide and pinmux tables
+// | confidence: HIGH
+//
+// Milk-V publishes complete, text-based tables for J3, J4, both CSI FPCs, and
+// the PoE header. The J3/J4 signal names are independently repeated in the
+// vendor's pinmux guide. This entry is revision-scoped because J3 pin 9 changed
+// from a low-level GPIO on V1.1 to ground on V1.2 and later.
+const milkvDuoSV12Pinout: Pinout = {
+  connector: "Duo S expansion headers, camera FPCs, and PoE header (hardware V1.2+)",
+  layout: "grouped",
+  notes: [
+    "J3 uses 3.3 V logic; J4 uses 1.8 V logic even though J4 also exposes separate 3.3 V and 5 V power rails.",
+    "J4 physical positions are numbered 52/51 down to 28/27 in the Milk-V table; those published numbers are preserved here.",
+    "J1 camera control and I2C signals are 1.8 V, while J2 camera control and I2C signals are 3.3 V.",
+    "This map is hardware V1.2 and later: J3 pin 9 is GND. Hardware V1.1 used a low-level GPIO at that position.",
+    "Aliases list the SG2000 pad, Linux GPIO number, and documented pinmux functions in that order.",
+  ],
+  groups: [
+    {
+      label: "J3 26-pin 3.3 V header",
+      pins: [
+        { position: 1, label: "3V3", role: "power" },
+        { position: 2, label: "VSYS (5V)", role: "power" },
+        { position: 3, label: "B20", role: "i2c", aliases: ["XGPIOB[20]", "GPIO 468", "I2C4_SCL", "PWM3"] },
+        { position: 4, label: "VSYS (5V)", role: "power" },
+        { position: 5, label: "B21", role: "i2c", aliases: ["XGPIOB[21]", "GPIO 469", "I2C4_SDA"] },
+        { position: 6, label: "GND", role: "ground" },
+        { position: 7, label: "B18", role: "i2c", aliases: ["XGPIOB[18]", "GPIO 466", "I2C1_SCL"] },
+        {
+          position: 8,
+          label: "A16 / UART0_TX",
+          role: "uart",
+          aliases: ["XGPIOA[16]", "GPIO 496", "UART1_TX", "PWM4"],
+          note: "Default 3.3 V debug-console TX.",
+        },
+        {
+          position: 9,
+          label: "GND",
+          role: "ground",
+          note: "Hardware V1.2+ only; this position is a low-level GPIO on V1.1.",
+        },
+        {
+          position: 10,
+          label: "A17 / UART0_RX",
+          role: "uart",
+          aliases: ["XGPIOA[17]", "GPIO 497", "UART1_RX", "PWM5"],
+          note: "Default 3.3 V debug-console RX.",
+        },
+        { position: 11, label: "B11", role: "uart", aliases: ["XGPIOB[11]", "GPIO 459", "UART2_TX", "I2C1_SDA", "PWM1"] },
+        { position: 12, label: "B19", role: "uart", aliases: ["XGPIOB[19]", "GPIO 467", "UART2_TX", "PWM2"] },
+        { position: 13, label: "B12", role: "uart", aliases: ["XGPIOB[12]", "GPIO 460", "UART2_RX", "I2C1_SCL", "PWM2"] },
+        { position: 14, label: "GND", role: "ground" },
+        { position: 15, label: "B22", role: "uart", aliases: ["XGPIOB[22]", "GPIO 470", "UART2_RX"] },
+        { position: 16, label: "A20 / JTAG_TRST", role: "debug", aliases: ["XGPIOA[20]", "GPIO 500"] },
+        { position: 17, label: "3V3", role: "power" },
+        { position: 18, label: "A19 / JTAG_TMS", role: "debug", aliases: ["XGPIOA[19]", "GPIO 499", "UART1_TX", "UART1_RTS", "PWM7"] },
+        { position: 19, label: "B13 / SPI3_SDO", role: "spi", aliases: ["XGPIOB[13]", "GPIO 461", "I2C2_SCL", "PWM3"] },
+        { position: 20, label: "GND", role: "ground" },
+        { position: 21, label: "B14 / SPI3_SDI", role: "spi", aliases: ["XGPIOB[14]", "GPIO 462", "I2C2_SDA"] },
+        { position: 22, label: "A18 / JTAG_TCK", role: "debug", aliases: ["XGPIOA[18]", "GPIO 498", "UART1_RX", "UART1_CTS", "PWM6"] },
+        { position: 23, label: "B15 / SPI3_SCK", role: "spi", aliases: ["XGPIOB[15]", "GPIO 463", "UART2_TX"] },
+        { position: 24, label: "B16 / SPI3_CS", role: "spi", aliases: ["XGPIOB[16]", "GPIO 464", "UART2_RX"] },
+        { position: 25, label: "GND", role: "ground" },
+        { position: 26, label: "A28", role: "uart", aliases: ["XGPIOA[28]", "GPIO 508", "UART2_TX", "UART1_TX"] },
+      ],
+    },
+    {
+      label: "J4 26-pin 1.8 V display/audio header",
+      pins: [
+        { position: 52, label: "VSYS (5V)", role: "power" },
+        { position: 51, label: "AUDIO_OUT_R", role: "special", note: "Analog audio output; not GPIO." },
+        { position: 50, label: "B1", role: "uart", aliases: ["XGPIOB[1]", "GPIO 449", "UART3_TX", "I2C4_SCL", "PWM12"] },
+        { position: 49, label: "AUDIO_OUT_L", role: "special", note: "Analog audio output; not GPIO." },
+        { position: 48, label: "B2", role: "uart", aliases: ["XGPIOB[2]", "GPIO 450", "UART3_RX", "I2C4_SDA", "PWM13"] },
+        { position: 47, label: "AUDIO_IN_R", role: "special", note: "Analog audio input; not GPIO." },
+        { position: 46, label: "B3", role: "gpio", aliases: ["XGPIOB[3]", "GPIO 451"] },
+        { position: 45, label: "AUDIO_IN_L", role: "special", note: "Analog audio input; not GPIO." },
+        { position: 44, label: "E2 / LCD_RST", role: "system", aliases: ["PWR_GPIO[2]", "GPIO 354", "I2C2_SDA", "PWM10"] },
+        { position: 43, label: "3V3", role: "power" },
+        { position: 42, label: "E1 / LCD_PWR_CT", role: "system", aliases: ["PWR_GPIO[1]", "GPIO 353", "I2C2_SCL", "UART2_RX", "PWM9"] },
+        { position: 41, label: "C18 / MIPI_TX_3N", role: "special", aliases: ["XGPIOC[18]", "GPIO 434"] },
+        { position: 40, label: "E0 / LCD_PWM", role: "pwm", aliases: ["PWR_GPIO[0]", "GPIO 352", "UART2_TX", "PWM8"] },
+        { position: 39, label: "C19 / MIPI_TX_3P", role: "special", aliases: ["XGPIOC[19]", "GPIO 435"] },
+        { position: 38, label: "GND", role: "ground" },
+        { position: 37, label: "GND", role: "ground" },
+        { position: 36, label: "C20 / MIPI_TX_2N", role: "special", aliases: ["XGPIOC[20]", "GPIO 436"] },
+        { position: 35, label: "C16 / MIPI_TX_CN", role: "special", aliases: ["XGPIOC[16]", "GPIO 432"] },
+        { position: 34, label: "C21 / MIPI_TX_2P", role: "special", aliases: ["XGPIOC[21]", "GPIO 437"] },
+        { position: 33, label: "C17 / MIPI_TX_CP", role: "special", aliases: ["XGPIOC[17]", "GPIO 433"] },
+        { position: 32, label: "GND", role: "ground" },
+        { position: 31, label: "GND", role: "ground" },
+        { position: 30, label: "C14 / MIPI_TX_1N", role: "special", aliases: ["XGPIOC[14]", "GPIO 430"] },
+        { position: 29, label: "C12 / MIPI_TX_0N", role: "special", aliases: ["XGPIOC[12]", "GPIO 428"] },
+        { position: 28, label: "C15 / MIPI_TX_1P", role: "special", aliases: ["XGPIOC[15]", "GPIO 431"] },
+        { position: 27, label: "C13 / MIPI_TX_0P", role: "special", aliases: ["XGPIOC[13]", "GPIO 429"] },
+      ],
+    },
+    {
+      label: "J1 16-pin camera FPC",
+      pins: [
+        { position: 1, label: "GND", role: "ground" },
+        { position: 2, label: "MIPI0_DN0", role: "special" },
+        { position: 3, label: "MIPI0_DP0", role: "special" },
+        { position: 4, label: "GND", role: "ground" },
+        { position: 5, label: "MIPI0_DN1", role: "special" },
+        { position: 6, label: "MIPI0_DP1", role: "special" },
+        { position: 7, label: "GND", role: "ground" },
+        { position: 8, label: "MIPI0_CKN", role: "special" },
+        { position: 9, label: "MIPI0_CKP", role: "special" },
+        { position: 10, label: "GND", role: "ground" },
+        { position: 11, label: "SENSOR_RSTN0", role: "system", note: "1.8 V camera reset." },
+        { position: 12, label: "SENSOR_CLK0", role: "special", note: "1.8 V camera clock." },
+        { position: 13, label: "I2C3_SCL", role: "i2c", note: "1.8 V camera control." },
+        { position: 14, label: "I2C3_SDA", role: "i2c", note: "1.8 V camera control." },
+        { position: 15, label: "NC", role: "reserved", note: "No connection." },
+        { position: 16, label: "3V3", role: "power" },
+      ],
+    },
+    {
+      label: "J2 15-pin Raspberry Pi-style camera FPC",
+      pins: [
+        { position: 1, label: "3V3", role: "power" },
+        { position: 2, label: "I2C2_SDA", role: "i2c", note: "3.3 V; shared with J3 pin 21." },
+        { position: 3, label: "I2C2_SCL", role: "i2c", note: "3.3 V; shared with J3 pin 19." },
+        { position: 4, label: "SENSOR_CLK1", role: "special", note: "3.3 V camera clock." },
+        { position: 5, label: "SENSOR_RSTN1", role: "system", note: "3.3 V camera reset." },
+        { position: 6, label: "GND", role: "ground" },
+        { position: 7, label: "MIPI0_DP5 / CAM1_CP", role: "special" },
+        { position: 8, label: "MIPI0_DN5 / CAM1_CN", role: "special" },
+        { position: 9, label: "GND", role: "ground" },
+        { position: 10, label: "MIPI0_DP4 / CAM1_DP1", role: "special" },
+        { position: 11, label: "MIPI0_DN4 / CAM1_DN1", role: "special" },
+        { position: 12, label: "GND", role: "ground" },
+        { position: 13, label: "MIPI0_DP3 / CAM1_DP0", role: "special" },
+        { position: 14, label: "MIPI0_DN3 / CAM1_DN0", role: "special" },
+        { position: 15, label: "GND", role: "ground" },
+      ],
+    },
+    {
+      label: "PoE header",
+      pins: [
+        { position: 1, label: "VB-", role: "special", note: "PoE power-domain pair; not logic I/O." },
+        { position: 2, label: "VB+", role: "special", note: "PoE power-domain pair; not logic I/O." },
+        { position: 3, label: "VA-", role: "special", note: "PoE power-domain pair; not logic I/O." },
+        { position: 4, label: "VA+", role: "special", note: "PoE power-domain pair; not logic I/O." },
+      ],
+    },
+  ],
+};
+
+// boardId: esp32-c5-devkitc-1 | sources: Espressif v1.2 user-guide header
+// tables, schematic v1.2, module datasheet, and ESP32-C5 datasheet
+// | confidence: HIGH
+const esp32C5DevKitC1V12Pinout: Pinout = {
+  connector: "ESP32-C5-DevKitC-1 v1.2 J1/J3 headers",
+  layout: "grouped",
+  notes: [
+    "J1 and J3 use Espressif's official v1.2 numbering, which the user guide explicitly ties to schematic v1.2.",
+    "This map applies to v1.2 boards associated with PW-2025-04-0446 and later, not the initial v1.1 header arrangement.",
+    "GPIO-matrix peripherals such as general SPI, I2C, UART, CAN FD, and PWM can be routed to multiple pins; aliases emphasize fixed IO-mux and low-power functions in Espressif's header table.",
+    "The six exposed ADC channels are GPIO1 through GPIO6; ESP32-C5 has no DAC.",
+  ],
+  groups: [
+    {
+      label: "J1",
+      pins: [
+        { position: 1, label: "3V3", role: "power" },
+        {
+          position: 2,
+          label: "RST",
+          role: "system",
+          aliases: ["CHIP_PU"],
+          note: "Active-low chip disable/reset; high enables the chip.",
+        },
+        {
+          position: 3,
+          label: "GPIO2",
+          role: "debug",
+          aliases: ["MTMS", "LP_GPIO2", "LP_UART_RTSN", "LP_I2C_SDA", "ADC1_CH1", "FSPIQ"],
+          note: "MTMS strapping pin; external loading is sampled at reset.",
+        },
+        {
+          position: 4,
+          label: "GPIO3",
+          role: "debug",
+          aliases: ["MTDI", "LP_GPIO3", "LP_UART_CTSN", "LP_I2C_SCL", "ADC1_CH2"],
+          note: "MTDI strapping pin; external loading is sampled at reset.",
+        },
+        { position: 5, label: "GPIO0", role: "gpio", aliases: ["XTAL_32K_P", "LP_GPIO0", "LP_UART_DTRN"] },
+        { position: 6, label: "GPIO1", role: "adc", aliases: ["XTAL_32K_N", "LP_GPIO1", "LP_UART_DSRN", "ADC1_CH0"] },
+        { position: 7, label: "GPIO6", role: "adc", aliases: ["LP_GPIO6", "ADC1_CH5", "FSPICLK"] },
+        {
+          position: 8,
+          label: "GPIO7",
+          role: "system",
+          aliases: ["FSPID", "SDIO_DATA1"],
+          note: "Strapping pin controlling the early-boot JTAG signal source.",
+        },
+        { position: 9, label: "GPIO8", role: "special", aliases: ["PAD_COMP0", "SDIO_DATA0"] },
+        { position: 10, label: "GPIO9", role: "special", aliases: ["PAD_COMP1", "SDIO_CLK"] },
+        { position: 11, label: "GPIO10", role: "spi", aliases: ["FSPICS0", "SDIO_CMD"] },
+        { position: 12, label: "GPIO26", role: "system", note: "Boot-mode strapping pin; sampled at reset." },
+        {
+          position: 13,
+          label: "GPIO25",
+          role: "system",
+          note: "Strapping pin used for SDIO sampling/driving clock-edge configuration.",
+        },
+        { position: 14, label: "5V", role: "power" },
+        { position: 15, label: "GND", role: "ground" },
+        { position: 16, label: "NC", role: "reserved", note: "No connection on board revision v1.2." },
+      ],
+    },
+    {
+      label: "J3",
+      pins: [
+        { position: 1, label: "GND", role: "ground" },
+        {
+          position: 2,
+          label: "TX",
+          role: "uart",
+          aliases: ["GPIO11", "U0TXD"],
+          note: "Connected to the onboard USB-to-UART bridge.",
+        },
+        {
+          position: 3,
+          label: "RX",
+          role: "uart",
+          aliases: ["GPIO12", "U0RXD"],
+          note: "Connected to the onboard USB-to-UART bridge.",
+        },
+        { position: 4, label: "GPIO24", role: "gpio" },
+        { position: 5, label: "GPIO23", role: "gpio" },
+        {
+          position: 6,
+          label: "NC / GPIO15",
+          role: "reserved",
+          aliases: ["SPICS1"],
+          note: "Unavailable with SPI PSRAM; usable as GPIO15 only on a fitted module without PSRAM.",
+        },
+        {
+          position: 7,
+          label: "GPIO27",
+          role: "system",
+          aliases: ["RGB LED"],
+          note: "Boot/ROM-print strapping pin shared with the onboard addressable RGB LED.",
+        },
+        { position: 8, label: "GPIO4", role: "adc", aliases: ["MTCK", "LP_GPIO4", "LP_UART_RXD", "ADC1_CH3", "FSPIHD"] },
+        { position: 9, label: "GPIO5", role: "adc", aliases: ["MTDO", "LP_GPIO5", "LP_UART_TXD", "ADC1_CH4", "FSPIWP"] },
+        { position: 10, label: "NC", role: "reserved", note: "No connection on board revision v1.2." },
+        {
+          position: 11,
+          label: "GPIO28",
+          role: "system",
+          aliases: ["BOOT"],
+          note: "Boot-mode strapping pin shared with the Boot button and automatic-download circuit.",
+        },
+        { position: 12, label: "GND", role: "ground" },
+        {
+          position: 13,
+          label: "GPIO14",
+          role: "special",
+          aliases: ["USB_D+", "SDIO_DATA2"],
+          note: "Shared with the ESP32-C5 native USB Serial/JTAG port.",
+        },
+        {
+          position: 14,
+          label: "GPIO13",
+          role: "special",
+          aliases: ["USB_D-", "SDIO_DATA3"],
+          note: "Shared with the ESP32-C5 native USB Serial/JTAG port.",
+        },
+        { position: 15, label: "GND", role: "ground" },
+        { position: 16, label: "NC", role: "reserved", note: "No connection on board revision v1.2." },
+      ],
+    },
+  ],
+};
+
+const august2026ResearchBoards: Board[] = [
+  {
+    id: "arduino-nicla-sense-me",
+    name: "Arduino Nicla Sense ME",
+    vendor: "Arduino",
+    category: "Development Board",
+    family: "Nicla",
+    processor: "u-blox ANNA-B112 module with Nordic nRF52832 Arm Cortex-M4F @ 64 MHz, plus Bosch BHI260AP sensor hub",
+    logicLevel: "VDDIO_EXT-selectable 1.8 V or 3.3 V on J1/J2; mixed fixed voltages on ADC and debug pins",
+    power: "3.5-5.5 V VIN, 5 V micro-USB/ESLOV, or one 3.7 V LiPo/Li-ion cell",
+    formFactor: "Compact Nicla-format wireless sensor board with two edge headers and 1.27 mm debug fins",
+    description:
+      "Arduino's compact industrial sensor node combining an nRF52832 Bluetooth controller with a programmable BHI260AP sensor hub, 6-axis IMU, magnetometer, barometer, and BME688 environmental sensor.",
+    tags: ["nicla", "nrf52832", "bluetooth-le", "sensor-fusion", "imu", "environmental-sensing", "edge-ai"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "SWD", "JTAG"],
+    highlights: [
+      "BHI260AP sensor hub runs programmable recognition and fusion workloads beside the nRF52832 application MCU.",
+      "Onboard BME688, BMP390, BMM150, and 6-axis IMU cover gas, temperature, humidity, pressure, motion, and magnetic sensing.",
+      "J1/J2 expose SPI, I2C, UART, ADC, low-power GPIO, VIN, ground, and a programmable external-I/O voltage reference.",
+      "Dedicated debug fins expose independent SWD paths for the sensor hub, application module, and USB bridge.",
+    ],
+    warnings: [
+      "J1/J2 are not 5 V GPIO. VDDIO_EXT is software-selectable from 1.8 V to 3.3 V; verify its configured voltage before connecting a peripheral or driving a signal.",
+      "ADC1 and ADC2 remain in the 1.8 V domain instead of following VDDIO_EXT. Arduino says the ADC inputs can accept up to 3.3 V, but their maximum conversion value follows the ANNA-B112 operating voltage.",
+      "The BHI260 and ANNA SWD fins are 1.8 V only. Only the SAMD11 SWDIO/SWDCLK fins are 3.3 V; a 3.3 V debug probe can damage the 1.8 V targets without level adaptation.",
+      "LPIO0-LPIO3 pass through low-power bidirectional translators with very limited drive current; use a buffer for loads rather than treating them as power GPIO.",
+      "Do not connect batteries to both battery interfaces at once. Arduino marks simultaneous battery connections as unsafe.",
+      "This entry is scoped to SKU ABX00050 and the current Arduino connector tables. The J3 battery pads are intentionally outside the represented pinmap because Arduino artifacts disagree on their numbering; verify J3 directly against the board revision before use.",
+    ],
+    sourceLinks: [
+      {
+        label: "Nicla Sense ME datasheet - connector tables and electrical limits (Arduino, ABX00050)",
+        url: "https://docs.arduino.cc/resources/datasheets/ABX00050-datasheet.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "Nicla Sense ME full pinout - Arduino and MCU aliases (Arduino, ABX00050)",
+        url: "https://docs.arduino.cc/resources/pinouts/ABX00050-full-pinout.pdf",
+        type: "Pinout",
+      },
+      {
+        label: "Nicla Sense ME hardware documentation (Arduino)",
+        url: "https://docs.arduino.cc/hardware/nicla-sense-me",
+        type: "Docs",
+      },
+    ],
+    pinout: arduinoNiclaSenseMePinout,
+  },
+  {
+    id: "milkv-duo-s-v12",
+    name: "Milk-V Duo S (hardware V1.2+)",
+    vendor: "Milk-V",
+    category: "SBC",
+    family: "Duo",
+    processor: "SOPHGO SG2000 - selectable 1 GHz C906 RISC-V or Cortex-A53 application core, 700 MHz C906 RTOS core, 8051 core, and 0.5 TOPS INT8 TPU",
+    logicLevel: "3.3 V on J3, 1.8 V on J4; camera-control levels depend on connector",
+    power: "5 V / 1 A via USB-C or J3 VSYS; optional PoE HAT through the dedicated header",
+    formFactor: "43 x 43 mm compact SBC with two 26-pin headers and dual camera FPCs",
+    description:
+      "A compact heterogeneous Linux/RTOS edge-AI board with selectable RISC-V or Arm application core, 512 MB memory, a 0.5 TOPS TPU, Ethernet, wireless, dual CSI, and MIPI DSI.",
+    tags: ["risc-v", "arm", "sg2000", "tpu", "edge-ai", "linux", "rtos", "milk-v", "dual-camera"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth", "CSI", "JTAG", "Ethernet"],
+    highlights: [
+      "Hardware switch selects the 1 GHz C906 RISC-V or Cortex-A53 application core; a second 700 MHz C906 can run RTOS workloads.",
+      "512 MB SIP DRAM and an integrated 0.5 TOPS INT8 TPU support compact edge-AI deployments.",
+      "J3 exposes 3.3 V GPIO, serial buses, PWM, and JTAG while J4 carries 1.8 V display, audio, and control signals.",
+      "Two separately documented CSI connectors support Milk-V and Raspberry Pi-style camera cables.",
+    ],
+    warnings: [
+      "Revision-critical: this map targets hardware V1.2 and later. J3 pin 9 is GND on V1.2+, but it is a low-level GPIO on hardware V1.1.",
+      "J3 logic is 3.3 V. J4 logic is 1.8 V even though J4 also contains 3.3 V and 5 V supply pins; do not infer a signal level from a nearby rail.",
+      "Most J4 pins are dedicated MIPI DSI, display-control, or analog-audio signals. Milk-V recommends against repurposing them as GPIO except for a specific validated design.",
+      "J3 pins 8 and 10 are the default 3.3 V UART debug console at 115200 baud. External use can disrupt boot logs and console access.",
+      "J3 pins 16, 18, and 22 are JTAG_TRST, JTAG_TMS, and JTAG_TCK alternates; driving them can interfere with debugging.",
+      "I2C2 on J3 pins 19/21 is shared with camera connector J2 and is unavailable on J3 while that camera-control bus is active.",
+      "J1 camera reset, clock, and I2C signals are 1.8 V; J2 camera-control signals are 3.3 V. The connectors are not electrically interchangeable.",
+      "The RISC-V/Arm selector switch must match the installed firmware or the board may not boot.",
+      "USB Type-A host and USB-C data/network functions share one controller and cannot operate simultaneously in the documented default setup.",
+      "VSYS and the PoE header are power-domain connections, not logic I/O.",
+    ],
+    sourceLinks: [
+      {
+        label: "Duo S user guide - J3/J4, camera, PoE, voltage, and revision tables (Milk-V)",
+        url: "https://milkv.io/docs/duo/getting-started/duos",
+        type: "Pinout",
+      },
+      {
+        label: "Duo family pinmux reference - independent J3/J4 signal cross-check (Milk-V)",
+        url: "https://milkv.io/docs/duo/application-development/pinmux",
+        type: "Docs",
+      },
+      {
+        label: "Duo family overview and SG2000 specifications (Milk-V)",
+        url: "https://milkv.io/docs/duo/overview",
+        type: "Docs",
+      },
+    ],
+    pinout: milkvDuoSV12Pinout,
+  },
+  {
+    id: "esp32-c5-devkitc-1",
+    name: "ESP32-C5-DevKitC-1 v1.2",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-C5",
+    processor: "ESP32-C5 - 32-bit RISC-V high-performance core up to 240 MHz plus low-power RISC-V core up to 48 MHz",
+    logicLevel: "3.3 V GPIO; not 5 V tolerant",
+    power: "Either USB-C path, 5 V/GND headers, or regulated 3V3/GND headers; header and USB/external sources must not be combined",
+    formFactor: "Breadboard development board with two 1x16 headers and dual USB-C",
+    description:
+      "Espressif's dual-band Wi-Fi 6 and 802.15.4 reference board, exposing all available non-flash GPIO through revision-specific J1/J3 headers.",
+    tags: ["espressif", "esp32-c5", "risc-v", "dual-band-wifi-6", "bluetooth-le", "zigbee", "thread", "802.15.4"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "Wi-Fi", "Bluetooth", "Zigbee", "Thread", "JTAG"],
+    highlights: [
+      "2.4 GHz and 5 GHz dual-band Wi-Fi 6 alongside Bluetooth LE, Zigbee, and Thread.",
+      "240 MHz high-performance RISC-V core plus a 48 MHz low-power RISC-V core.",
+      "Two programming paths: native USB Serial/JTAG and an onboard USB-to-UART bridge.",
+      "Six exposed 12-bit ADC channels and GPIO-matrix routing for general serial buses, CAN FD, and PWM.",
+    ],
+    warnings: [
+      "Revision-critical: this is the v1.2 map for boards associated with PW-2025-04-0446 and later. The v1.1 J1/J3 positions differ substantially; do not reuse this map on an initial-release board.",
+      "GPIO high-level input is specified only up to VDD + 0.3 V, approximately 3.6 V on a 3.3 V rail. Do not apply 5 V logic.",
+      "GPIO2/MTMS, GPIO3/MTDI, GPIO7, GPIO25, GPIO26, GPIO27, and GPIO28 are strapping pins. External pulls or actively driven peripherals can alter boot, SDIO, ROM-print, or JTAG behavior.",
+      "GPIO28 is also the Boot-button/automatic-download signal, while GPIO27 drives the onboard RGB LED.",
+      "GPIO13 and GPIO14 are native USB D-/D+. Using them as ordinary GPIO disables or interferes with the ESP32-C5 USB Serial/JTAG connection.",
+      "GPIO11/TX and GPIO12/RX are tied to the onboard USB-to-UART bridge; attached peripherals can contend with flashing and serial-console traffic.",
+      "J3 pin 6 is module-dependent: it is GPIO15 only without SPI PSRAM and otherwise belongs to PSRAM as SPICS1.",
+      "J1 pin 16, J3 pin 10, and J3 pin 16 are hard no-connects in v1.2.",
+      "Espressif calls the USB-port option, 5 V header input, and 3.3 V header input mutually exclusive. The 3V3 header directly feeds the module and bypasses normal board power isolation.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-C5-DevKitC-1 v1.2 header tables and revision details (Espressif)",
+        url: "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c5/esp32-c5-devkitc-1/user_guide.html",
+        type: "Pinout",
+      },
+      {
+        label: "ESP32-C5-DevKitC-1 schematic v1.2 (Espressif)",
+        url: "https://dl.espressif.com/dl/schematics/SCH_ESP32-C5-DevkitC-1_V1.2_20250211.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "ESP32-C5 series datasheet (Espressif)",
+        url: "https://www.espressif.com/sites/default/files/documentation/esp32-c5_datasheet_en.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "ESP32-C5-WROOM-1/1U module datasheet (Espressif)",
+        url: "https://www.espressif.com/sites/default/files/documentation/esp32-c5-wroom-1_wroom-1u_datasheet_en.pdf",
+        type: "Datasheet",
+      },
+    ],
+    pinout: esp32C5DevKitC1V12Pinout,
+  },
+];
+
 export const boards: Board[] = [
   ...baseBoards,
   ...additionalBoards,
@@ -10924,4 +11438,5 @@ export const boards: Board[] = [
   ...latticeBoards,
   ...industryEducationBoards,
   ...riscvFrontierBoards,
+  ...august2026ResearchBoards,
 ];

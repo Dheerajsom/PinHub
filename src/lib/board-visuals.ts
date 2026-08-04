@@ -516,6 +516,26 @@ export const boardVisuals: Record<string, BoardVisual> = {
     revisionNote:
       "Hardware V1.3/V1.31 header; V1.2 differs on pins 7, 16, 17, 22, 27, 28, and 37.",
   }),
+
+  // --- Officially documented boards (August 2026 research batch) ---------
+  "arduino-nicla-sense-me": preset("grouped", {
+    accent: "#0e7c86",
+    ports: ["usb-micro", "jst"],
+    revisionNote:
+      "SKU ABX00050; J1, J2, and the mixed-voltage debug fins are grouped by connector.",
+  }),
+  "milkv-duo-s-v12": preset("grouped", {
+    accent: "#3f4654",
+    ports: ["usb-c", "usb-a", "ethernet", "camera"],
+    revisionNote:
+      "Hardware V1.2+; J3 pin 9 is GND. Connectors are grouped and not drawn to scale.",
+  }),
+  "esp32-c5-devkitc-1": preset("grouped", {
+    accent: "#334155",
+    ports: ["usb-c"],
+    revisionNote:
+      "Header map is for board v1.2, production order PW-2025-04-0446 and later.",
+  }),
 };
 
 // Default PCB accent by vendor, used when a visual does not specify one.

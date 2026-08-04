@@ -122,6 +122,9 @@ describe("board catalog integrity", () => {
       // Single-connector boards whose vendor docs publish one flat pin list.
       "flipper-zero": [18],
       "esp32-p4-function-ev-board": [40],
+      "arduino-nicla-sense-me": [8, 9, 8],
+      "milkv-duo-s-v12": [26, 26, 16, 15, 4],
+      "esp32-c5-devkitc-1": [16, 16],
     };
 
     for (const [id, counts] of Object.entries(expectedGroupCounts)) {

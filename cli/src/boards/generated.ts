@@ -59189,5 +59189,2144 @@ export const generatedBoards: Board[] = [
         ]
       }
     ]
+  },
+  {
+    "id": "arduino-nicla-sense-me",
+    "name": "Arduino Nicla Sense ME",
+    "manufacturer": "Arduino",
+    "aliases": [],
+    "description": "Arduino's compact industrial sensor node combining an nRF52832 Bluetooth controller with a programmable BHI260AP sensor hub, 6-axis IMU, magnetometer, barometer, and BME688 environmental sensor.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "J1/J2 are not 5 V GPIO. VDDIO_EXT is software-selectable from 1.8 V to 3.3 V; verify its configured voltage before connecting a peripheral or driving a signal."
+      },
+      {
+        "severity": "warning",
+        "text": "ADC1 and ADC2 remain in the 1.8 V domain instead of following VDDIO_EXT. Arduino says the ADC inputs can accept up to 3.3 V, but their maximum conversion value follows the ANNA-B112 operating voltage."
+      },
+      {
+        "severity": "warning",
+        "text": "The BHI260 and ANNA SWD fins are 1.8 V only. Only the SAMD11 SWDIO/SWDCLK fins are 3.3 V; a 3.3 V debug probe can damage the 1.8 V targets without level adaptation."
+      },
+      {
+        "severity": "warning",
+        "text": "LPIO0-LPIO3 pass through low-power bidirectional translators with very limited drive current; use a buffer for loads rather than treating them as power GPIO."
+      },
+      {
+        "severity": "warning",
+        "text": "Do not connect batteries to both battery interfaces at once. Arduino marks simultaneous battery connections as unsafe."
+      },
+      {
+        "severity": "warning",
+        "text": "This entry is scoped to SKU ABX00050 and the current Arduino connector tables. The J3 battery pads are intentionally outside the represented pinmap because Arduino artifacts disagree on their numbering; verify J3 directly against the board revision before use."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: VDDIO_EXT-selectable 1.8 V or 3.3 V on J1/J2; mixed fixed voltages on ADC and debug pins. Power: 3.5-5.5 V VIN, 5 V micro-USB/ESLOV, or one 3.7 V LiPo/Li-ion cell."
+      },
+      {
+        "severity": "info",
+        "text": "J1 and J2 are transcribed from the current Arduino ABX00050 connector tables; aliases come from Arduino's full-pinout drawing."
+      },
+      {
+        "severity": "info",
+        "text": "All J1/J2 signals except the debug fins are referenced to VDDIO_EXT, which is software-selectable between 1.8 V and 3.3 V."
+      },
+      {
+        "severity": "info",
+        "text": "The eight 1.27 mm debug fins expose separate SWD interfaces for the BHI260, ANNA-B112/nRF52832, and SAMD11 USB bridge."
+      },
+      {
+        "severity": "info",
+        "text": "J3/J4 battery and J5 ESLOV connectors are outside this represented expansion pinmap; use the current datasheet before wiring them."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Nicla Sense ME datasheet - connector tables and electrical limits (Arduino, ABX00050)",
+        "url": "https://docs.arduino.cc/resources/datasheets/ABX00050-datasheet.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "Nicla Sense ME full pinout - Arduino and MCU aliases (Arduino, ABX00050)",
+        "url": "https://docs.arduino.cc/resources/pinouts/ABX00050-full-pinout.pdf",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Nicla Sense ME hardware documentation (Arduino)",
+        "url": "https://docs.arduino.cc/hardware/nicla-sense-me",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1-nicla-header-a",
+        "name": "J1 Nicla header A",
+        "description": "Nicla J1/J2 expansion headers and J2 debug fins (SKU ABX00050)",
+        "layout": {
+          "rows": 8,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "LPIO0_EXT",
+            "category": "gpio",
+            "functions": [
+              "D5",
+              "P0.24",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "CS",
+            "category": "communication",
+            "functions": [
+              "D6",
+              "P0.29",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "COPI",
+            "category": "communication",
+            "functions": [
+              "D8",
+              "P0.27",
+              "MOSI",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "CIPO",
+            "category": "communication",
+            "functions": [
+              "D7",
+              "P0.28",
+              "MISO",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "SCLK",
+            "category": "communication",
+            "functions": [
+              "D9",
+              "P0.11",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "ADC2",
+            "category": "analog",
+            "functions": [
+              "A1",
+              "D11",
+              "P0.30",
+              "PWM"
+            ],
+            "notes": [
+              "ADC input; fixed 1.8 V logic domain rather than VDDIO_EXT."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "ADC1",
+            "category": "analog",
+            "functions": [
+              "A0",
+              "D10",
+              "P0.02",
+              "PWM"
+            ],
+            "notes": [
+              "ADC input; fixed 1.8 V logic domain rather than VDDIO_EXT."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j2-nicla-header-b",
+        "name": "J2 Nicla header B",
+        "layout": {
+          "rows": 9,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "D4",
+              "SDA1",
+              "P0.22",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "D3",
+              "SCL1",
+              "P0.23",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "LPIO1_EXT / TX",
+            "category": "communication",
+            "functions": [
+              "D2",
+              "P0.20",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "LPIO2_EXT / RX",
+            "category": "communication",
+            "functions": [
+              "D1",
+              "P0.09",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "LPIO3_EXT",
+            "category": "gpio",
+            "functions": [
+              "D0",
+              "P0.10",
+              "PWM"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "VDDIO_EXT",
+            "category": "power",
+            "notes": [
+              "Logic-level reference; internally software-selectable from 1.8 V to 3.3 V, or externally supplied only after disabling the internal rail."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "3.5-5.5 V input."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j2-1-27-mm-debug-fins",
+        "name": "J2 1.27 mm debug fins",
+        "layout": {
+          "rows": 8,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "BHI_SWDIO",
+            "category": "communication",
+            "notes": [
+              "BHI260 SWD data; 1.8 V only."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "BHI_SWDCLK",
+            "category": "communication",
+            "notes": [
+              "BHI260 SWD clock; 1.8 V only."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "ANNA_SWDIO",
+            "category": "communication",
+            "notes": [
+              "ANNA-B112/nRF52832 SWD data; 1.8 V only."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "ANNA_SWDCLK",
+            "category": "communication",
+            "notes": [
+              "ANNA-B112/nRF52832 SWD clock; 1.8 V only."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "SAMD11_SWDIO",
+            "category": "communication",
+            "notes": [
+              "SAMD11 USB-bridge SWD data; 3.3 V."
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "+1V8",
+            "category": "power",
+            "notes": [
+              "1.8 V debug reference rail."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "SAMD11_SWDCLK",
+            "category": "communication",
+            "notes": [
+              "SAMD11 USB-bridge SWD clock; 3.3 V."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "milkv-duo-s-v12",
+    "name": "Milk-V Duo S (hardware V1.2+)",
+    "manufacturer": "Milk-V",
+    "aliases": [],
+    "description": "A compact heterogeneous Linux/RTOS edge-AI board with selectable RISC-V or Arm application core, 512 MB memory, a 0.5 TOPS TPU, Ethernet, wireless, dual CSI, and MIPI DSI.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Revision-critical: this map targets hardware V1.2 and later. J3 pin 9 is GND on V1.2+, but it is a low-level GPIO on hardware V1.1."
+      },
+      {
+        "severity": "warning",
+        "text": "J3 logic is 3.3 V. J4 logic is 1.8 V even though J4 also contains 3.3 V and 5 V supply pins; do not infer a signal level from a nearby rail."
+      },
+      {
+        "severity": "warning",
+        "text": "Most J4 pins are dedicated MIPI DSI, display-control, or analog-audio signals. Milk-V recommends against repurposing them as GPIO except for a specific validated design."
+      },
+      {
+        "severity": "warning",
+        "text": "J3 pins 8 and 10 are the default 3.3 V UART debug console at 115200 baud. External use can disrupt boot logs and console access."
+      },
+      {
+        "severity": "warning",
+        "text": "J3 pins 16, 18, and 22 are JTAG_TRST, JTAG_TMS, and JTAG_TCK alternates; driving them can interfere with debugging."
+      },
+      {
+        "severity": "warning",
+        "text": "I2C2 on J3 pins 19/21 is shared with camera connector J2 and is unavailable on J3 while that camera-control bus is active."
+      },
+      {
+        "severity": "warning",
+        "text": "J1 camera reset, clock, and I2C signals are 1.8 V; J2 camera-control signals are 3.3 V. The connectors are not electrically interchangeable."
+      },
+      {
+        "severity": "warning",
+        "text": "The RISC-V/Arm selector switch must match the installed firmware or the board may not boot."
+      },
+      {
+        "severity": "warning",
+        "text": "USB Type-A host and USB-C data/network functions share one controller and cannot operate simultaneously in the documented default setup."
+      },
+      {
+        "severity": "warning",
+        "text": "VSYS and the PoE header are power-domain connections, not logic I/O."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V on J3, 1.8 V on J4; camera-control levels depend on connector. Power: 5 V / 1 A via USB-C or J3 VSYS; optional PoE HAT through the dedicated header."
+      },
+      {
+        "severity": "info",
+        "text": "J3 uses 3.3 V logic; J4 uses 1.8 V logic even though J4 also exposes separate 3.3 V and 5 V power rails."
+      },
+      {
+        "severity": "info",
+        "text": "J4 physical positions are numbered 52/51 down to 28/27 in the Milk-V table; those published numbers are preserved here."
+      },
+      {
+        "severity": "info",
+        "text": "J1 camera control and I2C signals are 1.8 V, while J2 camera control and I2C signals are 3.3 V."
+      },
+      {
+        "severity": "info",
+        "text": "This map is hardware V1.2 and later: J3 pin 9 is GND. Hardware V1.1 used a low-level GPIO at that position."
+      },
+      {
+        "severity": "info",
+        "text": "Aliases list the SG2000 pad, Linux GPIO number, and documented pinmux functions in that order."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Duo S user guide - J3/J4, camera, PoE, voltage, and revision tables (Milk-V)",
+        "url": "https://milkv.io/docs/duo/getting-started/duos",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Duo family pinmux reference - independent J3/J4 signal cross-check (Milk-V)",
+        "url": "https://milkv.io/docs/duo/application-development/pinmux",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "Duo family overview and SG2000 specifications (Milk-V)",
+        "url": "https://milkv.io/docs/duo/overview",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j3-26-pin-3-3-v-header",
+        "name": "J3 26-pin 3.3 V header",
+        "description": "Duo S expansion headers, camera FPCs, and PoE header (hardware V1.2+)",
+        "layout": {
+          "rows": 26,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "VSYS (5V)",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "B20",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[20]",
+              "GPIO 468",
+              "I2C4_SCL",
+              "PWM3"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "VSYS (5V)",
+            "category": "power"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "B21",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[21]",
+              "GPIO 469",
+              "I2C4_SDA"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "B18",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[18]",
+              "GPIO 466",
+              "I2C1_SCL"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A16 / UART0_TX",
+            "category": "communication",
+            "functions": [
+              "XGPIOA[16]",
+              "GPIO 496",
+              "UART1_TX",
+              "PWM4"
+            ],
+            "notes": [
+              "Default 3.3 V debug-console TX."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground",
+            "notes": [
+              "Hardware V1.2+ only; this position is a low-level GPIO on V1.1."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A17 / UART0_RX",
+            "category": "communication",
+            "functions": [
+              "XGPIOA[17]",
+              "GPIO 497",
+              "UART1_RX",
+              "PWM5"
+            ],
+            "notes": [
+              "Default 3.3 V debug-console RX."
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "B11",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[11]",
+              "GPIO 459",
+              "UART2_TX",
+              "I2C1_SDA",
+              "PWM1"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "B19",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[19]",
+              "GPIO 467",
+              "UART2_TX",
+              "PWM2"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "B12",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[12]",
+              "GPIO 460",
+              "UART2_RX",
+              "I2C1_SCL",
+              "PWM2"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "B22",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[22]",
+              "GPIO 470",
+              "UART2_RX"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "A20 / JTAG_TRST",
+            "category": "communication",
+            "functions": [
+              "XGPIOA[20]",
+              "GPIO 500"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "A19 / JTAG_TMS",
+            "category": "communication",
+            "functions": [
+              "XGPIOA[19]",
+              "GPIO 499",
+              "UART1_TX",
+              "UART1_RTS",
+              "PWM7"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "B13 / SPI3_SDO",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[13]",
+              "GPIO 461",
+              "I2C2_SCL",
+              "PWM3"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "B14 / SPI3_SDI",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[14]",
+              "GPIO 462",
+              "I2C2_SDA"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "A18 / JTAG_TCK",
+            "category": "communication",
+            "functions": [
+              "XGPIOA[18]",
+              "GPIO 498",
+              "UART1_RX",
+              "UART1_CTS",
+              "PWM6"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "B15 / SPI3_SCK",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[15]",
+              "GPIO 463",
+              "UART2_TX"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "B16 / SPI3_CS",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[16]",
+              "GPIO 464",
+              "UART2_RX"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 25,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 26,
+              "column": 1
+            },
+            "label": "A28",
+            "category": "communication",
+            "functions": [
+              "XGPIOA[28]",
+              "GPIO 508",
+              "UART2_TX",
+              "UART1_TX"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j4-26-pin-1-8-v-display-audio-header",
+        "name": "J4 26-pin 1.8 V display/audio header",
+        "layout": {
+          "rows": 26,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 52,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "VSYS (5V)",
+            "category": "power"
+          },
+          {
+            "physical": 51,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "AUDIO_OUT_R",
+            "category": "gpio",
+            "notes": [
+              "Analog audio output; not GPIO."
+            ]
+          },
+          {
+            "physical": 50,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "B1",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[1]",
+              "GPIO 449",
+              "UART3_TX",
+              "I2C4_SCL",
+              "PWM12"
+            ]
+          },
+          {
+            "physical": 49,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "AUDIO_OUT_L",
+            "category": "gpio",
+            "notes": [
+              "Analog audio output; not GPIO."
+            ]
+          },
+          {
+            "physical": 48,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "B2",
+            "category": "communication",
+            "functions": [
+              "XGPIOB[2]",
+              "GPIO 450",
+              "UART3_RX",
+              "I2C4_SDA",
+              "PWM13"
+            ]
+          },
+          {
+            "physical": 47,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "AUDIO_IN_R",
+            "category": "gpio",
+            "notes": [
+              "Analog audio input; not GPIO."
+            ]
+          },
+          {
+            "physical": 46,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "B3",
+            "category": "gpio",
+            "functions": [
+              "XGPIOB[3]",
+              "GPIO 451"
+            ]
+          },
+          {
+            "physical": 45,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "AUDIO_IN_L",
+            "category": "gpio",
+            "notes": [
+              "Analog audio input; not GPIO."
+            ]
+          },
+          {
+            "physical": 44,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "E2 / LCD_RST",
+            "category": "reserved",
+            "functions": [
+              "PWR_GPIO[2]",
+              "GPIO 354",
+              "I2C2_SDA",
+              "PWM10"
+            ]
+          },
+          {
+            "physical": 43,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 42,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "E1 / LCD_PWR_CT",
+            "category": "reserved",
+            "functions": [
+              "PWR_GPIO[1]",
+              "GPIO 353",
+              "I2C2_SCL",
+              "UART2_RX",
+              "PWM9"
+            ]
+          },
+          {
+            "physical": 41,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "C18 / MIPI_TX_3N",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[18]",
+              "GPIO 434"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "E0 / LCD_PWM",
+            "category": "gpio",
+            "functions": [
+              "PWR_GPIO[0]",
+              "GPIO 352",
+              "UART2_TX",
+              "PWM8"
+            ]
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "C19 / MIPI_TX_3P",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[19]",
+              "GPIO 435"
+            ]
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "C20 / MIPI_TX_2N",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[20]",
+              "GPIO 436"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "C16 / MIPI_TX_CN",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[16]",
+              "GPIO 432"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "C21 / MIPI_TX_2P",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[21]",
+              "GPIO 437"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "C17 / MIPI_TX_CP",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[17]",
+              "GPIO 433"
+            ]
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "C14 / MIPI_TX_1N",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[14]",
+              "GPIO 430"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "C12 / MIPI_TX_0N",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[12]",
+              "GPIO 428"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 25,
+              "column": 1
+            },
+            "label": "C15 / MIPI_TX_1P",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[15]",
+              "GPIO 431"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 26,
+              "column": 1
+            },
+            "label": "C13 / MIPI_TX_0P",
+            "category": "gpio",
+            "functions": [
+              "XGPIOC[13]",
+              "GPIO 429"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j1-16-pin-camera-fpc",
+        "name": "J1 16-pin camera FPC",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "MIPI0_DN0",
+            "category": "gpio"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "MIPI0_DP0",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "MIPI0_DN1",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "MIPI0_DP1",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "MIPI0_CKN",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "MIPI0_CKP",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SENSOR_RSTN0",
+            "category": "reserved",
+            "notes": [
+              "1.8 V camera reset."
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "SENSOR_CLK0",
+            "category": "gpio",
+            "notes": [
+              "1.8 V camera clock."
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "I2C3_SCL",
+            "category": "communication",
+            "notes": [
+              "1.8 V camera control."
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "I2C3_SDA",
+            "category": "communication",
+            "notes": [
+              "1.8 V camera control."
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "j2-15-pin-raspberry-pi-style-camera-fpc",
+        "name": "J2 15-pin Raspberry Pi-style camera FPC",
+        "layout": {
+          "rows": 15,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "I2C2_SDA",
+            "category": "communication",
+            "notes": [
+              "3.3 V; shared with J3 pin 21."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "I2C2_SCL",
+            "category": "communication",
+            "notes": [
+              "3.3 V; shared with J3 pin 19."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "SENSOR_CLK1",
+            "category": "gpio",
+            "notes": [
+              "3.3 V camera clock."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "SENSOR_RSTN1",
+            "category": "reserved",
+            "notes": [
+              "3.3 V camera reset."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "MIPI0_DP5 / CAM1_CP",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "MIPI0_DN5 / CAM1_CN",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "MIPI0_DP4 / CAM1_DP1",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "MIPI0_DN4 / CAM1_DN1",
+            "category": "gpio"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "MIPI0_DP3 / CAM1_DP0",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "MIPI0_DN3 / CAM1_DN0",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      },
+      {
+        "id": "poe-header",
+        "name": "PoE header",
+        "layout": {
+          "rows": 4,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "VB-",
+            "category": "gpio",
+            "notes": [
+              "PoE power-domain pair; not logic I/O."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "VB+",
+            "category": "gpio",
+            "notes": [
+              "PoE power-domain pair; not logic I/O."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "VA-",
+            "category": "gpio",
+            "notes": [
+              "PoE power-domain pair; not logic I/O."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "VA+",
+            "category": "gpio",
+            "notes": [
+              "PoE power-domain pair; not logic I/O."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esp32-c5-devkitc-1",
+    "name": "ESP32-C5-DevKitC-1 v1.2",
+    "manufacturer": "Espressif",
+    "aliases": [],
+    "description": "Espressif's dual-band Wi-Fi 6 and 802.15.4 reference board, exposing all available non-flash GPIO through revision-specific J1/J3 headers.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Revision-critical: this is the v1.2 map for boards associated with PW-2025-04-0446 and later. The v1.1 J1/J3 positions differ substantially; do not reuse this map on an initial-release board."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO high-level input is specified only up to VDD + 0.3 V, approximately 3.6 V on a 3.3 V rail. Do not apply 5 V logic."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO2/MTMS, GPIO3/MTDI, GPIO7, GPIO25, GPIO26, GPIO27, and GPIO28 are strapping pins. External pulls or actively driven peripherals can alter boot, SDIO, ROM-print, or JTAG behavior."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO28 is also the Boot-button/automatic-download signal, while GPIO27 drives the onboard RGB LED."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO13 and GPIO14 are native USB D-/D+. Using them as ordinary GPIO disables or interferes with the ESP32-C5 USB Serial/JTAG connection."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO11/TX and GPIO12/RX are tied to the onboard USB-to-UART bridge; attached peripherals can contend with flashing and serial-console traffic."
+      },
+      {
+        "severity": "warning",
+        "text": "J3 pin 6 is module-dependent: it is GPIO15 only without SPI PSRAM and otherwise belongs to PSRAM as SPICS1."
+      },
+      {
+        "severity": "warning",
+        "text": "J1 pin 16, J3 pin 10, and J3 pin 16 are hard no-connects in v1.2."
+      },
+      {
+        "severity": "warning",
+        "text": "Espressif calls the USB-port option, 5 V header input, and 3.3 V header input mutually exclusive. The 3V3 header directly feeds the module and bypasses normal board power isolation."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO; not 5 V tolerant. Power: Either USB-C path, 5 V/GND headers, or regulated 3V3/GND headers; header and USB/external sources must not be combined."
+      },
+      {
+        "severity": "info",
+        "text": "J1 and J3 use Espressif's official v1.2 numbering, which the user guide explicitly ties to schematic v1.2."
+      },
+      {
+        "severity": "info",
+        "text": "This map applies to v1.2 boards associated with PW-2025-04-0446 and later, not the initial v1.1 header arrangement."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO-matrix peripherals such as general SPI, I2C, UART, CAN FD, and PWM can be routed to multiple pins; aliases emphasize fixed IO-mux and low-power functions in Espressif's header table."
+      },
+      {
+        "severity": "info",
+        "text": "The six exposed ADC channels are GPIO1 through GPIO6; ESP32-C5 has no DAC."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-C5-DevKitC-1 v1.2 header tables and revision details (Espressif)",
+        "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c5/esp32-c5-devkitc-1/user_guide.html",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "ESP32-C5-DevKitC-1 schematic v1.2 (Espressif)",
+        "url": "https://dl.espressif.com/dl/schematics/SCH_ESP32-C5-DevkitC-1_V1.2_20250211.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "ESP32-C5 series datasheet (Espressif)",
+        "url": "https://www.espressif.com/sites/default/files/documentation/esp32-c5_datasheet_en.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "ESP32-C5-WROOM-1/1U module datasheet (Espressif)",
+        "url": "https://www.espressif.com/sites/default/files/documentation/esp32-c5-wroom-1_wroom-1u_datasheet_en.pdf",
+        "official": true,
+        "type": "Datasheet"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1",
+        "name": "J1",
+        "description": "ESP32-C5-DevKitC-1 v1.2 J1/J3 headers",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved",
+            "functions": [
+              "CHIP_PU"
+            ],
+            "notes": [
+              "Active-low chip disable/reset; high enables the chip."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "communication",
+            "functions": [
+              "MTMS",
+              "LP_GPIO2",
+              "LP_UART_RTSN",
+              "LP_I2C_SDA",
+              "ADC1_CH1",
+              "FSPIQ"
+            ],
+            "notes": [
+              "MTMS strapping pin; external loading is sampled at reset."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "communication",
+            "functions": [
+              "MTDI",
+              "LP_GPIO3",
+              "LP_UART_CTSN",
+              "LP_I2C_SCL",
+              "ADC1_CH2"
+            ],
+            "notes": [
+              "MTDI strapping pin; external loading is sampled at reset."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "gpio",
+            "functions": [
+              "XTAL_32K_P",
+              "LP_GPIO0",
+              "LP_UART_DTRN"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO1",
+            "category": "analog",
+            "functions": [
+              "XTAL_32K_N",
+              "LP_GPIO1",
+              "LP_UART_DSRN",
+              "ADC1_CH0"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "analog",
+            "functions": [
+              "LP_GPIO6",
+              "ADC1_CH5",
+              "FSPICLK"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "reserved",
+            "functions": [
+              "FSPID",
+              "SDIO_DATA1"
+            ],
+            "notes": [
+              "Strapping pin controlling the early-boot JTAG signal source."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "gpio",
+            "functions": [
+              "PAD_COMP0",
+              "SDIO_DATA0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "gpio",
+            "functions": [
+              "PAD_COMP1",
+              "SDIO_CLK"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "functions": [
+              "FSPICS0",
+              "SDIO_CMD"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO26",
+            "category": "reserved",
+            "notes": [
+              "Boot-mode strapping pin; sampled at reset."
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO25",
+            "category": "reserved",
+            "notes": [
+              "Strapping pin used for SDIO sampling/driving clock-edge configuration."
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection on board revision v1.2."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j3",
+        "name": "J3",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "TX",
+            "category": "communication",
+            "functions": [
+              "GPIO11",
+              "U0TXD"
+            ],
+            "notes": [
+              "Connected to the onboard USB-to-UART bridge."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RX",
+            "category": "communication",
+            "functions": [
+              "GPIO12",
+              "U0RXD"
+            ],
+            "notes": [
+              "Connected to the onboard USB-to-UART bridge."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO24",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO23",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "NC / GPIO15",
+            "category": "reserved",
+            "functions": [
+              "SPICS1"
+            ],
+            "notes": [
+              "Unavailable with SPI PSRAM; usable as GPIO15 only on a fitted module without PSRAM."
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO27",
+            "category": "reserved",
+            "functions": [
+              "RGB LED"
+            ],
+            "notes": [
+              "Boot/ROM-print strapping pin shared with the onboard addressable RGB LED."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "analog",
+            "functions": [
+              "MTCK",
+              "LP_GPIO4",
+              "LP_UART_RXD",
+              "ADC1_CH3",
+              "FSPIHD"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "analog",
+            "functions": [
+              "MTDO",
+              "LP_GPIO5",
+              "LP_UART_TXD",
+              "ADC1_CH4",
+              "FSPIWP"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection on board revision v1.2."
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO28",
+            "category": "reserved",
+            "functions": [
+              "BOOT"
+            ],
+            "notes": [
+              "Boot-mode strapping pin shared with the Boot button and automatic-download circuit."
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO14",
+            "category": "gpio",
+            "functions": [
+              "USB_D+",
+              "SDIO_DATA2"
+            ],
+            "notes": [
+              "Shared with the ESP32-C5 native USB Serial/JTAG port."
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "gpio",
+            "functions": [
+              "USB_D-",
+              "SDIO_DATA3"
+            ],
+            "notes": [
+              "Shared with the ESP32-C5 native USB Serial/JTAG port."
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection on board revision v1.2."
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
