@@ -516,6 +516,57 @@ export const boardVisuals: Record<string, BoardVisual> = {
     revisionNote:
       "Hardware V1.3/V1.31 header; V1.2 differs on pins 7, 16, 17, 22, 27, 28, and 37.",
   }),
+
+  // --- Professional FPGA / carrier dev kits (August 2026 research batch) ---
+  "digilent-zybo-z7-20": preset("grouped", {
+    accent: "#b45309",
+    revisionNote:
+      "Z7-20 six-Pmod layout, grouped by connector. The Z7-10 variant has no JB.",
+  }),
+  "digilent-arty-s7-50": preset("grouped", {
+    accent: "#b45309",
+    revisionNote:
+      "Rev. E: four Pmods plus the Arduino/chipKIT shield header, grouped by connector.",
+  }),
+  // Breadboardable 48-pin DIP module: rows run down the two long edges.
+  "digilent-cmod-a7-35t": preset("moduleDip", {
+    accent: "#b45309",
+    revisionNote:
+      "Identical DIP map on the Cmod A7-15T and A7-35T; only the FPGA differs.",
+  }),
+  // Full-size carrier with the 40-pin header along the top edge.
+  "nvidia-jetson-agx-orin-devkit": preset("jetson", {
+    accent: "#3f6212",
+    ports: ["ethernet", "usb-a", "usb-c"],
+    revisionNote:
+      "J30 header per carrier spec SP-10900-001 rev 1.0; NVIDIA now serves rev 1.2.",
+  }),
+
+  // --- Espressif module dev kits (August 2026 research batch) --------------
+  // Two-header modules: J1 and J3 run down the two long edges, so the rows
+  // come from the pinout's groups rather than a left/right pin split.
+  "esp32-c61-devkitc-1": preset("esp32Devkit", {
+    source: "groups",
+    ports: ["usb-c"],
+    revisionNote:
+      "J1/J3 map for v2.0 (PW-2025-05-0781 and later); earlier v1.0 boards differ.",
+  }),
+  "esp8684-devkitm-1": preset("esp32Devkit", {
+    source: "groups",
+    ports: ["usb-micro"],
+    revisionNote:
+      "v1.1 header; v1.1 moved the RGB LED from GPIO8 alone to GPIO0/GPIO1/GPIO8.",
+  }),
+  "esp32-s3-devkitm-1": preset("esp32Devkit", {
+    source: "groups",
+    revisionNote:
+      "MINI-module header — not interchangeable with the WROOM ESP32-S3-DevKitC-1.",
+  }),
+  "esp32-c6-devkitm-1": preset("esp32Devkit", {
+    source: "groups",
+    revisionNote:
+      "MINI-module 30-pin header; the ESP32-C6-DevKitC-1 has 32 in a different order.",
+  }),
 };
 
 // Default PCB accent by vendor, used when a visual does not specify one.

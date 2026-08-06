@@ -122,6 +122,16 @@ describe("board catalog integrity", () => {
       // Single-connector boards whose vendor docs publish one flat pin list.
       "flipper-zero": [18],
       "esp32-p4-function-ev-board": [40],
+      // Six 12-pin Pmod ports (JA-JF). JF is the PS/MIO-connected port.
+      "digilent-zybo-z7-20": [12, 12, 12, 12, 12, 12],
+      // Four 12-pin Pmods, then the shield header split by row function.
+      "digilent-arty-s7-50": [12, 12, 12, 12, 10, 4, 6, 6],
+      // Espressif module kits: J1/J3. Counts differ from their DevKitC
+      // siblings, which is the whole reason these are separate entries.
+      "esp32-c61-devkitc-1": [16, 16],
+      "esp8684-devkitm-1": [15, 15],
+      "esp32-s3-devkitm-1": [22, 22],
+      "esp32-c6-devkitm-1": [15, 15],
     };
 
     for (const [id, counts] of Object.entries(expectedGroupCounts)) {

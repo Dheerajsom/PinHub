@@ -59189,5 +59189,5077 @@ export const generatedBoards: Board[] = [
         ]
       }
     ]
+  },
+  {
+    "id": "digilent-zybo-z7-20",
+    "name": "Digilent Zybo Z7-20",
+    "manufacturer": "Digilent",
+    "aliases": [],
+    "description": "A Zynq-7000 development board that pairs a dual Cortex-A9 processing system with Artix-7-class programmable logic, aimed at embedded vision work via its HDMI in/out and Pcam MIPI CSI-2 connector. The Zybo Z7-20 is the larger-FPGA variant of the Zybo Z7 family.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Zybo Z7-10 vs Z7-20 are electrically different: the Z7-10 has NO Pmod JB (unpopulated), one fewer RGB LED, no fan connector, and TX-only HDMI CEC. This pinout is scoped to the Z7-20."
+      },
+      {
+        "severity": "warning",
+        "text": "JF (MIO Pmod) is wired to the Zynq PS, not the PL — it can only be driven by the processing system's hard peripheral controllers (GPIO/UART/I2C/SPI over MIO), never by your FPGA fabric logic. Its UART/I2C signal order also does not match the usual Pmod pin convention, so off-the-shelf UART/I2C Pmods may need rewiring."
+      },
+      {
+        "severity": "warning",
+        "text": "JB, JC, and JD are 'High-Speed' Pmods shipped with 0-ohm shunts instead of the 200-ohm series protection resistors used on JA and JE — a pin mis-driven as an output on both ends of the connector can short with no series resistance to limit current."
+      },
+      {
+        "severity": "warning",
+        "text": "All Pmod I/O is fixed 3.3 V; Digilent does not document 5 V tolerance anywhere in the reference manual. Treat every Pmod pin as 3.3 V-only."
+      },
+      {
+        "severity": "warning",
+        "text": "PS MIO pins live in two hard-wired-voltage banks: MIO Bank 500 (MIO 0-15, includes JF) is 3.3 V; MIO Bank 501 (MIO 16-53, Ethernet/USB/SDIO/UART1) is 1.8 V. This is set by the board's power supply design, not a jumper — you cannot change it."
+      },
+      {
+        "severity": "warning",
+        "text": "The Zybo Z7-20's larger FPGA needs its bundled heat sink; running dense, fast-switching designs without it risks thermal throttling or damage that the Z7-10 (no heat sink shipped) does not need to worry about at the same level."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V fixed on all Pmods (PL fabric pins and PS MIO pins alike) — no VADJ-style bank voltage jumper; 5 V tolerance is not documented by Digilent. Power: USB (micro-USB) or any 5 V external supply, selected by jumper JP6."
+      },
+      {
+        "severity": "info",
+        "text": "Zybo Z7-20 has six Pmod ports; the Zybo Z7-10 has five and lacks JB entirely (JB pins are unpopulated on that variant)."
+      },
+      {
+        "severity": "info",
+        "text": "JA, JB, JC, JD, and JE connect to the Zynq PL fabric (3.3 V LVCMOS, fixed — there is no VADJ-style bank voltage jumper on this board). JF connects only to the Zynq PS via MIO pins in MIO Bank 500, which is also fixed 3.3 V."
+      },
+      {
+        "severity": "info",
+        "text": "JC, JD, and JB are 'High-Speed' Pmods: their series protection resistors are populated as 0-ohm shunts, so driving a pin configured as an output on both ends can create a short. JA (XADC) and JE (Standard) keep 200-ohm series resistors for short protection."
+      },
+      {
+        "severity": "info",
+        "text": "JF is wired to Zynq PS MIO pins, not PL fabric pins — it can only be driven by the PS's hard peripheral controllers (GPIO/UART/I2C/SPI), never by programmable logic, and its UART/I2C pin order does not match the usual Pmod convention for those interfaces."
+      },
+      {
+        "severity": "info",
+        "text": "JA doubles as the XADC Pmod: its 4 signal pairs (pins 1/7, 2/8, 3/9, 4/10) can be used as differential analog inputs (max 1 Vpp) to the Zynq's XADC block, or as ordinary 3.3 V digital I/O."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Zybo Z7 Reference Manual (Digilent, PDF)",
+        "url": "https://digilent.com/reference/_media/reference/programmable-logic/zybo-z7/zybo-z7_rm.pdf",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "Zybo-Z7-Master.xdc — official pin constraints (Digilent/digilent-xdc, GitHub)",
+        "url": "https://github.com/Digilent/digilent-xdc/blob/master/Zybo-Z7-Master.xdc",
+        "official": true,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "pmod-ja-xadc-capable",
+        "name": "Pmod JA (XADC-capable)",
+        "description": "Pmod ports JA-JF (6x, 2x6 right-angle headers)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JA1",
+            "category": "analog",
+            "functions": [
+              "N15",
+              "VAUX pair 1 P"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JA2",
+            "category": "analog",
+            "functions": [
+              "L14",
+              "VAUX pair 2 P"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JA3",
+            "category": "analog",
+            "functions": [
+              "K16",
+              "VAUX pair 3 P"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JA4",
+            "category": "analog",
+            "functions": [
+              "K14",
+              "VAUX pair 4 P"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JA7",
+            "category": "analog",
+            "functions": [
+              "N16",
+              "VAUX pair 1 N"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JA8",
+            "category": "analog",
+            "functions": [
+              "L15",
+              "VAUX pair 2 N"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JA9",
+            "category": "analog",
+            "functions": [
+              "J16",
+              "VAUX pair 3 N"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JA10",
+            "category": "analog",
+            "functions": [
+              "J14",
+              "VAUX pair 4 N"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jb-zybo-z7-20-only-pl-high-speed",
+        "name": "Pmod JB (Zybo Z7-20 only, PL, high-speed)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JB1",
+            "category": "gpio",
+            "functions": [
+              "V8"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JB2",
+            "category": "gpio",
+            "functions": [
+              "W8"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JB3",
+            "category": "gpio",
+            "functions": [
+              "U7"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JB4",
+            "category": "gpio",
+            "functions": [
+              "V7"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JB7",
+            "category": "gpio",
+            "functions": [
+              "Y7"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JB8",
+            "category": "gpio",
+            "functions": [
+              "Y6"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JB9",
+            "category": "gpio",
+            "functions": [
+              "V6"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JB10",
+            "category": "gpio",
+            "functions": [
+              "W6"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jc-pl-high-speed",
+        "name": "Pmod JC (PL, high-speed)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JC1",
+            "category": "gpio",
+            "functions": [
+              "V15"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JC2",
+            "category": "gpio",
+            "functions": [
+              "W15"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JC3",
+            "category": "gpio",
+            "functions": [
+              "T11"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JC4",
+            "category": "gpio",
+            "functions": [
+              "T10"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JC7",
+            "category": "gpio",
+            "functions": [
+              "W14"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JC8",
+            "category": "gpio",
+            "functions": [
+              "Y14"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JC9",
+            "category": "gpio",
+            "functions": [
+              "T12"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JC10",
+            "category": "gpio",
+            "functions": [
+              "U12"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jd-pl-high-speed",
+        "name": "Pmod JD (PL, high-speed)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JD1",
+            "category": "gpio",
+            "functions": [
+              "T14"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JD2",
+            "category": "gpio",
+            "functions": [
+              "T15"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JD3",
+            "category": "gpio",
+            "functions": [
+              "P14"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JD4",
+            "category": "gpio",
+            "functions": [
+              "R14"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JD7",
+            "category": "gpio",
+            "functions": [
+              "U14"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JD8",
+            "category": "gpio",
+            "functions": [
+              "U15"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JD9",
+            "category": "gpio",
+            "functions": [
+              "V17"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JD10",
+            "category": "gpio",
+            "functions": [
+              "V18"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-je-pl-standard",
+        "name": "Pmod JE (PL, standard)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JE1",
+            "category": "gpio",
+            "functions": [
+              "V12"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JE2",
+            "category": "gpio",
+            "functions": [
+              "W16"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JE3",
+            "category": "gpio",
+            "functions": [
+              "J15"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JE4",
+            "category": "gpio",
+            "functions": [
+              "H15"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JE7",
+            "category": "gpio",
+            "functions": [
+              "V13"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JE8",
+            "category": "gpio",
+            "functions": [
+              "U17"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JE9",
+            "category": "gpio",
+            "functions": [
+              "T17"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JE10",
+            "category": "gpio",
+            "functions": [
+              "Y17"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jf-ps-mio-not-pl",
+        "name": "Pmod JF (PS MIO, not PL)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "MIO13",
+            "category": "gpio",
+            "notes": [
+              "Zynq PS MIO pin, MIO Bank 500 (3.3 V). Accessible only via PS peripheral cores (GPIO/UART/I2C/SPI), never from programmable logic."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "MIO10",
+            "category": "gpio",
+            "notes": [
+              "PS MIO, MIO Bank 500 (3.3 V)."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "MIO11",
+            "category": "gpio",
+            "notes": [
+              "PS MIO, MIO Bank 500 (3.3 V)."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "MIO12",
+            "category": "gpio",
+            "notes": [
+              "PS MIO, MIO Bank 500 (3.3 V)."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "MIO0",
+            "category": "gpio",
+            "notes": [
+              "PS MIO, MIO Bank 500 (3.3 V)."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "MIO9",
+            "category": "gpio",
+            "notes": [
+              "PS MIO, MIO Bank 500 (3.3 V)."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "MIO14",
+            "category": "gpio",
+            "notes": [
+              "PS MIO, MIO Bank 500 (3.3 V)."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "MIO15",
+            "category": "gpio",
+            "notes": [
+              "PS MIO, MIO Bank 500 (3.3 V)."
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "digilent-arty-s7-50",
+    "name": "Digilent Arty S7-50",
+    "manufacturer": "Digilent",
+    "aliases": [],
+    "description": "A Spartan-7 FPGA board in the Arty form factor, built to mount standard Arduino/chipKIT shields as well as Digilent Pmods, with on-chip XADC exposed through both connector families. Aimed at MicroBlaze soft-core and general Spartan-7 FPGA development.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "The manual explicitly states the Arty S7 is NOT compatible with shields that output 5 V digital or analog signals — driving shield pins above ~3.4 V (absolute max 3.75 V per the manual's own voltage table) risks FPGA damage."
+      },
+      {
+        "severity": "warning",
+        "text": "Pmod JC and JD physically share FPGA package pins with shield digital I/O IO34-IO41 and IO26-IO33. Using a Pmod device and the corresponding shield pins simultaneously will contend for the same pin."
+      },
+      {
+        "severity": "warning",
+        "text": "Shield IO10-IO13 share package pins with the dedicated SPI header (SS/MOSI/MISO/SCK) — the reference manual warns against driving both connectors' constraints at once."
+      },
+      {
+        "severity": "warning",
+        "text": "Shield A0-A5 have two mutually exclusive constraint sets targeting DIFFERENT FPGA package pins: analog (B13/A13, B15/A15, E12/D12, B17/A17, C17/B18, E16/E17, via a resistor divider into the XADC) versus digital (G13, B16, A16, C13, C14, D18, wired directly). Constraining a digital design to the analog balls drives the divider instead of the intended pin. Digilent's own master XDC states: \"Do not use both sets of constraints at the same time!\" Note the inner header A6-A9 behaves differently — there both modes share the same ball."
+      },
+      {
+        "severity": "warning",
+        "text": "Shield A10/A11 (ck_a10/ck_a11) are digital-only despite sitting in the 'analog header' rows — the manual notes they cannot be used as analog inputs, unlike A0-A9."
+      },
+      {
+        "severity": "warning",
+        "text": "All I/O is fixed 3.3 V LVCMOS with no bank-voltage jumper; there is no way to run this board's Pmods or shield at 2.5 V or 1.8 V."
+      },
+      {
+        "severity": "warning",
+        "text": "This map is scoped to the Arty S7-50 (XC7S50) Rev. E. The Arty S7-25 (XC7S25) variant shares the identical connector pinout but has a smaller FPGA — verify your board's silkscreen before assuming resource counts."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V fixed on all Pmod and shield pins — no VADJ-style bank voltage jumper; Digilent states the board is not compatible with 5 V shields. Power: USB (micro-USB) or 7-15 V external supply via barrel jack, selected by jumper."
+      },
+      {
+        "severity": "info",
+        "text": "This map is scoped to the Arty S7-50 Rev. E (XC7S50). The smaller Arty S7-25 (XC7S25) uses the same connector pinout but a smaller FPGA — check your silkscreen if targeting placement/timing."
+      },
+      {
+        "severity": "info",
+        "text": "All Pmod and shield digital pins are fixed 3.3 V LVCMOS — there is no VADJ-style bank voltage jumper on this board. Digilent's manual states the Arty S7 is not compatible with shields that output 5 V digital or analog signals."
+      },
+      {
+        "severity": "info",
+        "text": "Pmod JC and JD share package pins with shield digital I/O IO34-IO41 and IO26-IO33 respectively — do not drive both a Pmod device and the corresponding shield pins at the same time."
+      },
+      {
+        "severity": "info",
+        "text": "Shield IO10-IO13 (SPI: SS/MOSI/MISO/SCK) share FPGA pins with the dedicated SPI header; the manual explicitly warns not to use both at once."
+      },
+      {
+        "severity": "info",
+        "text": "Shield A0-A5 are single-ended XADC inputs (0-3.3 V); A6-A9 are differential XADC pairs (0-1.0 V) and share pins with digital ck_a6-ck_a9. A10/A11 (ck_a10/ck_a11) are digital-only and cannot be used as analog inputs."
+      },
+      {
+        "severity": "info",
+        "text": "A0-A5 route to TWO different FPGA balls depending on mode: through a resistor divider to the XADC (vaux0/1/9/2/10/11 at B13/A13, B15/A15, E12/D12, B17/A17, C17/B18, E16/E17) for analog, or directly to G13, B16, A16, C13, C14, D18 for digital I/O. The inner header A6-A9 is different — there, analog and digital modes share the SAME ball. Digilent's master XDC warns: do not apply both constraint sets at once."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Arty S7 Reference Manual (Digilent, PDF, \"410-352 Arty S7-50_eng_man.pdf\")",
+        "url": "https://digilent.com/reference/_media/reference/programmable-logic/arty-s7/arty-s7_rm.pdf",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "Arty-S7-50-Master.xdc — official pin constraints (Digilent/digilent-xdc, GitHub)",
+        "url": "https://github.com/Digilent/digilent-xdc/blob/master/Arty-S7-50-Master.xdc",
+        "official": true,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "pmod-ja",
+        "name": "Pmod JA",
+        "description": "Pmod JA-JD + Arduino/chipKIT shield header",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JA1",
+            "category": "gpio",
+            "functions": [
+              "L17"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JA2",
+            "category": "gpio",
+            "functions": [
+              "L18"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JA3",
+            "category": "gpio",
+            "functions": [
+              "M14"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JA4",
+            "category": "gpio",
+            "functions": [
+              "N14"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JA7",
+            "category": "gpio",
+            "functions": [
+              "M16"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JA8",
+            "category": "gpio",
+            "functions": [
+              "M17"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JA9",
+            "category": "gpio",
+            "functions": [
+              "M18"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JA10",
+            "category": "gpio",
+            "functions": [
+              "N18"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jb",
+        "name": "Pmod JB",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JB1",
+            "category": "gpio",
+            "functions": [
+              "P17"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JB2",
+            "category": "gpio",
+            "functions": [
+              "P18"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JB3",
+            "category": "gpio",
+            "functions": [
+              "R18"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JB4",
+            "category": "gpio",
+            "functions": [
+              "T18"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JB7",
+            "category": "gpio",
+            "functions": [
+              "P14"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JB8",
+            "category": "gpio",
+            "functions": [
+              "P15"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JB9",
+            "category": "gpio",
+            "functions": [
+              "N15"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JB10",
+            "category": "gpio",
+            "functions": [
+              "P16"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jc-shared-with-shield-io34-io41",
+        "name": "Pmod JC (shared with shield IO34-IO41)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JC1",
+            "category": "gpio",
+            "functions": [
+              "U15",
+              "ck_io41"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JC2",
+            "category": "gpio",
+            "functions": [
+              "V16",
+              "ck_io40"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JC3",
+            "category": "gpio",
+            "functions": [
+              "U17",
+              "ck_io39"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JC4",
+            "category": "gpio",
+            "functions": [
+              "U18",
+              "ck_io38"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JC7",
+            "category": "gpio",
+            "functions": [
+              "U16",
+              "ck_io37"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JC8",
+            "category": "gpio",
+            "functions": [
+              "P13",
+              "ck_io36"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JC9",
+            "category": "gpio",
+            "functions": [
+              "R13",
+              "ck_io35"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JC10",
+            "category": "gpio",
+            "functions": [
+              "V14",
+              "ck_io34"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "pmod-jd-shared-with-shield-io26-io33",
+        "name": "Pmod JD (shared with shield IO26-IO33)",
+        "layout": {
+          "rows": 12,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "JD1",
+            "category": "gpio",
+            "functions": [
+              "V15",
+              "ck_io33"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "JD2",
+            "category": "gpio",
+            "functions": [
+              "U12",
+              "ck_io32"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "JD3",
+            "category": "gpio",
+            "functions": [
+              "V13",
+              "ck_io31"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "JD4",
+            "category": "gpio",
+            "functions": [
+              "T12",
+              "ck_io30"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "JD7",
+            "category": "gpio",
+            "functions": [
+              "T13",
+              "ck_io29"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "JD8",
+            "category": "gpio",
+            "functions": [
+              "R11",
+              "ck_io28"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "JD9",
+            "category": "gpio",
+            "functions": [
+              "T11",
+              "ck_io27"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "JD10",
+            "category": "gpio",
+            "functions": [
+              "U11",
+              "ck_io26"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "VCC (3.3V)",
+            "category": "power"
+          }
+        ]
+      },
+      {
+        "id": "shield-outer-digital-io0-io9",
+        "name": "Shield outer digital (IO0-IO9)",
+        "layout": {
+          "rows": 10,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "IO0",
+            "category": "gpio",
+            "functions": [
+              "L13"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IO1",
+            "category": "gpio",
+            "functions": [
+              "N13"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "IO2",
+            "category": "gpio",
+            "functions": [
+              "L16"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "IO3",
+            "category": "gpio",
+            "functions": [
+              "R14"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "IO4",
+            "category": "gpio",
+            "functions": [
+              "T14"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "IO5",
+            "category": "gpio",
+            "functions": [
+              "R16"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "IO6",
+            "category": "gpio",
+            "functions": [
+              "R17"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "IO7",
+            "category": "gpio",
+            "functions": [
+              "V17"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "IO8",
+            "category": "gpio",
+            "functions": [
+              "R15"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "IO9",
+            "category": "gpio",
+            "functions": [
+              "T15"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "shield-spi-header-io10-io13",
+        "name": "Shield SPI header (IO10-IO13)",
+        "layout": {
+          "rows": 4,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "IO10 / SS",
+            "category": "communication",
+            "functions": [
+              "H16"
+            ],
+            "notes": [
+              "Shares an FPGA pin with the dedicated SPI header's SS; do not use both simultaneously."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IO11 / MOSI",
+            "category": "communication",
+            "functions": [
+              "H17"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "IO12 / MISO",
+            "category": "communication",
+            "functions": [
+              "K14"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "IO13 / SCK",
+            "category": "communication",
+            "functions": [
+              "G16"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "shield-outer-analog-a0-a5-single-ended",
+        "name": "Shield outer analog (A0-A5, single-ended)",
+        "layout": {
+          "rows": 6,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "B13/A13 (analog vaux0_p/n)",
+              "G13 (digital ck_a0)"
+            ],
+            "notes": [
+              "Analog and digital modes land on DIFFERENT FPGA balls. Constrain to B13/A13 for XADC analog input, or to G13 for digital I/O — never both."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "B15/A15 (analog vaux1_p/n)",
+              "B16 (digital ck_a1)"
+            ],
+            "notes": [
+              "Analog B15/A15, digital B16 — different balls; use one constraint set only."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "E12/D12 (analog vaux9_p/n)",
+              "A16 (digital ck_a2)"
+            ],
+            "notes": [
+              "Analog E12/D12, digital A16 — different balls; use one constraint set only."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "B17/A17 (analog vaux2_p/n)",
+              "C13 (digital ck_a3)"
+            ],
+            "notes": [
+              "Analog B17/A17, digital C13 — different balls; use one constraint set only."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog",
+            "functions": [
+              "C17/B18 (analog vaux10_p/n)",
+              "C14 (digital ck_a4)"
+            ],
+            "notes": [
+              "Analog C17/B18, digital C14 — different balls; use one constraint set only."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog",
+            "functions": [
+              "E16/E17 (analog vaux11_p/n)",
+              "D18 (digital ck_a5)"
+            ],
+            "notes": [
+              "Analog E16/E17, digital D18 — different balls; use one constraint set only."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "shield-inner-analog-a6-a9-differential-a10-a11-digital-only",
+        "name": "Shield inner analog (A6-A9, differential) + A10/A11 (digital-only)",
+        "layout": {
+          "rows": 6,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "A6",
+            "category": "analog",
+            "functions": [
+              "B14",
+              "vaux8_p"
+            ],
+            "notes": [
+              "Differential pair with A7 (0-1.0 V)."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "A7",
+            "category": "analog",
+            "functions": [
+              "A14",
+              "vaux8_n"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "A8",
+            "category": "analog",
+            "functions": [
+              "D16",
+              "vaux3_p"
+            ],
+            "notes": [
+              "Differential pair with A9 (0-1.0 V)."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A9",
+            "category": "analog",
+            "functions": [
+              "D17",
+              "vaux3_n"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A10 / ck_a10",
+            "category": "gpio",
+            "functions": [
+              "D14"
+            ],
+            "notes": [
+              "Digital I/O only — cannot be used as an analog input."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A11 / ck_a11",
+            "category": "gpio",
+            "functions": [
+              "D15"
+            ],
+            "notes": [
+              "Digital I/O only — cannot be used as an analog input."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "digilent-cmod-a7-35t",
+    "name": "Digilent Cmod A7-35T",
+    "manufacturer": "Digilent",
+    "aliases": [],
+    "description": "A breadboardable Artix-7 FPGA module in a 48-pin DIP form factor, exposing 44 digital I/O and 2 analog inputs directly to 100-mil through-hole pins for solderless-breadboard FPGA and MicroBlaze work.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "DIP pin 24 (VU) is bidirectional and dangerous: when USB is connected, VU is driven to the USB host's 5 V rail. If you have an external supply wired to pin 24, Digilent's manual warns you must disconnect it before plugging in USB, or risk damaging the supply."
+      },
+      {
+        "severity": "warning",
+        "text": "The 44 general-purpose DIP pins have NO series protection resistors (unlike the Pmod, which has 200-ohm resistors) — a wiring mistake here shorts or over-drives the FPGA directly. Absolute max is 3.75 V; recommended max is 3.4 V."
+      },
+      {
+        "severity": "warning",
+        "text": "DIP pins 15 and 16 are analog-only (voltage-divided into XADC vaux4/vaux12) — they are not usable as general-purpose digital I/O the way the other 44 pins are."
+      },
+      {
+        "severity": "warning",
+        "text": "5 V tolerance is not documented anywhere in the reference manual; treat all 44 digital pins as 3.3 V-only."
+      },
+      {
+        "severity": "warning",
+        "text": "This map is identical for the Cmod A7-15T and Cmod A7-35T — only the FPGA behind the pins differs. Do not confuse either with the similarly-named Cmod S7 (Spartan-7), which has a different pinout."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V fixed LVCMOS on every DIP and Pmod pin — no VADJ-style bank voltage jumper. Power: USB (micro-USB) or an external 3.32-5.5 V supply wired to DIP pin 24 (VU)."
+      },
+      {
+        "severity": "info",
+        "text": "This map applies identically to the Cmod A7-15T and Cmod A7-35T — the only difference between the two variants is the FPGA (XC7A15T vs XC7A35T) behind the same pin-out."
+      },
+      {
+        "severity": "info",
+        "text": "Standard DIP numbering: pin 1 and pin 48 sit at the same end of the module; pin 24 (VU) and pin 25 (GND) are the adjacent pair at the far end, intended as the external-power connection point."
+      },
+      {
+        "severity": "info",
+        "text": "All 44 GPIO pins are fixed 3.3 V LVCMOS with NO series protection resistors on the DIP header (unlike the Pmod, which has 200-ohm series resistors) — shorts or over-voltage here go straight to the FPGA."
+      },
+      {
+        "severity": "info",
+        "text": "Pins 15 and 16 are hard-wired through an on-board resistor divider into the FPGA's XADC auxiliary channels (vaux4 and vaux12) and are analog-input-only, not general-purpose digital I/O."
+      },
+      {
+        "severity": "info",
+        "text": "Pin 24 (VU) is bidirectional: when a USB host is attached, VU is driven to the USB 5 V rail. If you also have an external supply wired to pin 24, disconnect it before plugging in USB or you risk damaging that supply."
+      },
+      {
+        "severity": "info",
+        "text": "The single Pmod connector (JA) is a separate 12-pin 2x6 header, not part of the 48-pin DIP numbering."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Cmod A7 Reference Manual (Digilent, PDF, revised 2016-06-24)",
+        "url": "https://digilent.com/reference/_media/reference/programmable-logic/cmod-a7/cmod_a7_rm.pdf",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "Cmod-A7-Master.xdc — official pin constraints (Digilent/digilent-xdc, GitHub)",
+        "url": "https://github.com/Digilent/digilent-xdc/blob/master/Cmod-A7-Master.xdc",
+        "official": true,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "48-pin breadboard-compatible DIP header",
+        "layout": {
+          "rows": 24,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "IO1",
+            "category": "gpio",
+            "functions": [
+              "M3"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IO2",
+            "category": "gpio",
+            "functions": [
+              "L3"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "IO3",
+            "category": "gpio",
+            "functions": [
+              "A16"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "IO4",
+            "category": "gpio",
+            "functions": [
+              "K3"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "IO5",
+            "category": "gpio",
+            "functions": [
+              "C15"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "IO6",
+            "category": "gpio",
+            "functions": [
+              "H1"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "IO7",
+            "category": "gpio",
+            "functions": [
+              "A15"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "IO8",
+            "category": "gpio",
+            "functions": [
+              "B15"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "IO9",
+            "category": "gpio",
+            "functions": [
+              "A14"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "IO10",
+            "category": "gpio",
+            "functions": [
+              "J3"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "IO11",
+            "category": "gpio",
+            "functions": [
+              "J1"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "IO12",
+            "category": "gpio",
+            "functions": [
+              "K2"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "IO13",
+            "category": "gpio",
+            "functions": [
+              "L1"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "IO14",
+            "category": "gpio",
+            "functions": [
+              "L2"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "IO15 / VAUX4",
+            "category": "analog",
+            "functions": [
+              "G2/G3"
+            ],
+            "notes": [
+              "Analog input only (voltage-divided into the XADC), not digital GPIO."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "IO16 / VAUX12",
+            "category": "analog",
+            "functions": [
+              "J2/H2"
+            ],
+            "notes": [
+              "Analog input only (voltage-divided into the XADC), not digital GPIO."
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "IO17",
+            "category": "gpio",
+            "functions": [
+              "M1"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "IO18",
+            "category": "gpio",
+            "functions": [
+              "N3"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "IO19",
+            "category": "gpio",
+            "functions": [
+              "P3"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "IO20",
+            "category": "gpio",
+            "functions": [
+              "M2"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "IO21",
+            "category": "gpio",
+            "functions": [
+              "N1"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "IO22",
+            "category": "gpio",
+            "functions": [
+              "N2"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "IO23",
+            "category": "gpio",
+            "functions": [
+              "P1"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "VU",
+            "category": "power",
+            "notes": [
+              "Power input (3.32-5.5 V) or, when USB is attached, driven to ~5 V by the USB host. Disconnect any external supply before plugging in USB."
+            ]
+          },
+          {
+            "physical": 48,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "IO48",
+            "category": "gpio",
+            "functions": [
+              "V8"
+            ]
+          },
+          {
+            "physical": 47,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "IO47",
+            "category": "gpio",
+            "functions": [
+              "U8"
+            ]
+          },
+          {
+            "physical": 46,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "IO46",
+            "category": "gpio",
+            "functions": [
+              "W7"
+            ]
+          },
+          {
+            "physical": 45,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "IO45",
+            "category": "gpio",
+            "functions": [
+              "U7"
+            ]
+          },
+          {
+            "physical": 44,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "IO44",
+            "category": "gpio",
+            "functions": [
+              "U3"
+            ]
+          },
+          {
+            "physical": 43,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "IO43",
+            "category": "gpio",
+            "functions": [
+              "W6"
+            ]
+          },
+          {
+            "physical": 42,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "IO42",
+            "category": "gpio",
+            "functions": [
+              "U2"
+            ]
+          },
+          {
+            "physical": 41,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "IO41",
+            "category": "gpio",
+            "functions": [
+              "U5"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "IO40",
+            "category": "gpio",
+            "functions": [
+              "W4"
+            ]
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "IO39",
+            "category": "gpio",
+            "functions": [
+              "V5"
+            ]
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "IO38",
+            "category": "gpio",
+            "functions": [
+              "U4"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "IO37",
+            "category": "gpio",
+            "functions": [
+              "V4"
+            ]
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "IO36",
+            "category": "gpio",
+            "functions": [
+              "W5"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "IO35",
+            "category": "gpio",
+            "functions": [
+              "V3"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "IO34",
+            "category": "gpio",
+            "functions": [
+              "W3"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "IO33",
+            "category": "gpio",
+            "functions": [
+              "V2"
+            ]
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "IO32",
+            "category": "gpio",
+            "functions": [
+              "W2"
+            ]
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "IO31",
+            "category": "gpio",
+            "functions": [
+              "U1"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "IO30",
+            "category": "gpio",
+            "functions": [
+              "T2"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "IO29",
+            "category": "gpio",
+            "functions": [
+              "T1"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 21,
+              "column": 2
+            },
+            "label": "IO28",
+            "category": "gpio",
+            "functions": [
+              "R2"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 22,
+              "column": 2
+            },
+            "label": "IO27",
+            "category": "gpio",
+            "functions": [
+              "T3"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 23,
+              "column": 2
+            },
+            "label": "IO26",
+            "category": "gpio",
+            "functions": [
+              "R3"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 24,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "nvidia-jetson-agx-orin-devkit",
+    "name": "NVIDIA Jetson AGX Orin Developer Kit",
+    "manufacturer": "NVIDIA",
+    "aliases": [],
+    "description": "NVIDIA's flagship Jetson developer kit, carrying the Jetson AGX Orin module (up to 275 TOPS) on a full-featured carrier board with PCIe x16, dual CSI camera headers, and a 40-pin expansion header for I2C/SPI/UART/CAN/I2S peripherals.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "The 40-pin header is Raspberry-Pi-compatible in mechanical footprint ONLY — do not reuse a Raspberry Pi HAT's pin functions or BCM numbering; several pins default to different signals (e.g. dual CAN buses in place of RPi's single SPI1)."
+      },
+      {
+        "severity": "warning",
+        "text": "Every pin's function is statically baked into the flashed device tree. Reassigning a pin's mux function requires NVIDIA's Jetson-IO tool (/opt/nvidia/jetson-io/jetson-io.py) or a custom device-tree overlay and a reflash — you cannot switch a pin's mode from user space the way you would on a microcontroller."
+      },
+      {
+        "severity": "warning",
+        "text": "All signal pins are fixed 3.3 V; NVIDIA's spec does not document 5 V tolerance anywhere on this header."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIOxx labels (e.g. GPIO32, GPIO09) are Tegra GPIO-port names, not Linux gpiochip line numbers — the actual sysfs/libgpiod line depends on your JetPack/L4T release and must be looked up per-release, not assumed from the silkscreen number."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins 29/31/33/37 (CAN0/CAN1) and 35/38/40 (I2S2) are dedicated to those functions by default — repurposing them as plain GPIO is possible via Jetson-IO but is not the out-of-box behavior."
+      },
+      {
+        "severity": "warning",
+        "text": "This pinout is specific to the full-size Jetson AGX Orin Developer Kit carrier board — it does NOT apply to Jetson Orin Nano/NX carrier boards, which use a different 40-pin map, or to custom AGX Orin carrier designs."
+      },
+      {
+        "severity": "warning",
+        "text": "Source-drift risk: this map was taken from revision 1.0 of carrier board specification SP-10900-001, but NVIDIA's download URL is a signed redirect that now serves a newer revision (1.2). The citation therefore points at a moving target — re-check the header table against whichever revision you download before relying on it for a build."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V fixed on the 40-pin expansion header (NVIDIA's own spec: \"All the signal pins are 3.3V level\"). Power: 19 V power adapter via USB-C (included), 7-20 V via DC jack as an alternative."
+      },
+      {
+        "severity": "info",
+        "text": "This header is Raspberry-Pi-compatible in mechanical footprint ONLY. Default signal functions differ from a Raspberry Pi 40-pin header — do not reuse RPi HAT pinouts or BCM numbering."
+      },
+      {
+        "severity": "info",
+        "text": "All signal pins are fixed 3.3 V (NVIDIA's own spec: 'All the signal pins are 3.3V level')."
+      },
+      {
+        "severity": "info",
+        "text": "Every pinmux-capable pin on this header is statically defined by the flashed device tree. Changing a pin's function requires NVIDIA's Jetson-IO tool (/opt/nvidia/jetson-io/jetson-io.py) or a custom device-tree overlay/flash — you cannot simply reconfigure a pin from userspace like a microcontroller GPIO."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO numbers (e.g. GPIO32, GPIO09) are NVIDIA's Tegra GPIO-port names, not physical pin numbers or Linux gpiochip line numbers — the actual sysfs/libgpiod line number depends on the L4T/JetPack release."
+      },
+      {
+        "severity": "info",
+        "text": "The 5.0V pins (2, 4) and 3.3V pins (1, 17) are supply rails, not switched outputs — treat them as fixed power, not controllable I/O."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Jetson AGX Orin Developer Kit Carrier Board Specification SP-10900-001, Table 3-4 / Figure 3-5 (NVIDIA, PDF download)",
+        "url": "https://developer.nvidia.com/assets/embedded/secure/jetson/agx_orin/jetson_agx_orin_devkit_carrier_board_specification_sp",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Hardware Layout — Jetson AGX Orin Developer Kit User Guide (NVIDIA Docs)",
+        "url": "https://docs.nvidia.com/jetson/agx-orin-devkit/user-guide/latest/hardware_layout.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "Configuring the Jetson Expansion Headers — Jetson Linux Developer Guide (NVIDIA Docs)",
+        "url": "https://docs.nvidia.com/jetson/archives/r36.4.3/DeveloperGuide/HR/ConfiguringTheJetsonExpansionHeaders.html",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "J30 — 40-pin (2x20, 2.54 mm) expansion header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3.3V",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "I2C5_DAT",
+            "category": "communication"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "I2C5_CLK",
+            "category": "communication"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "MCLK05",
+            "category": "gpio",
+            "notes": [
+              "Audio master clock output."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "UART1_RTS",
+            "category": "communication"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO32",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO27",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3.3V",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "SPI1_MOSI",
+            "category": "communication"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SPI1_MISO",
+            "category": "communication"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "SPI1_SCK",
+            "category": "communication"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "I2C2_DAT",
+            "category": "communication"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "CAN0_DIN",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "CAN0_DOUT",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "CAN1_DOUT",
+            "category": "gpio"
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "I2S2_FS",
+            "category": "gpio"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "CAN1_DIN",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5.0V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5.0V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "UART1_TX",
+            "category": "communication"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "UART1_RX",
+            "category": "communication"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "I2S2_CLK",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO08",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO35",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO17",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SPI1_CS0_N",
+            "category": "communication"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "SPI1_CS1_N",
+            "category": "communication"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "I2C2_CLK",
+            "category": "communication"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO09",
+            "category": "gpio"
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "UART1_CTS",
+            "category": "communication"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "I2S2_DIN",
+            "category": "gpio"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "I2S2_DOUT",
+            "category": "gpio"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esp32-c61-devkitc-1",
+    "name": "ESP32-C61-DevKitC-1",
+    "manufacturer": "Espressif",
+    "aliases": [],
+    "description": "Espressif's reference board for the ESP32-C61, a low-cost single-core RISC-V part with Wi-Fi 6 and Bluetooth LE 5. Both 16-pin headers are documented pin-by-pin in the official user guide.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Revision risk: Espressif states that for boards with PW number PW-2025-05-0781 and later, \"J1 and J3 functions are updated\". This map is scoped to v2.0 — check the PW number printed on your board before wiring anything against it."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO7, GPIO8, and GPIO9 are strapping pins; their level at reset selects boot mode. Driving them at power-up can prevent the board from booting."
+      },
+      {
+        "severity": "warning",
+        "text": "J1 pin 11 is NOT a dependable GPIO. On modules with integrated SPI PSRAM the pad is already used as SPICS1 and cannot be repurposed; only modules without PSRAM expose it as GPIO14."
+      },
+      {
+        "severity": "warning",
+        "text": "J1 pin 16 and J3 pin 16 are NC (no connection) — they are not grounds and not spare I/O."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO3-GPIO7 double as the JTAG/flash lines (MTMS, MTDI, MTCK, MTDO, FSPI*). Avoid driving them externally while flashing or debugging."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB Type-C, or the 5 V or 3.3 V header pins (use only one source at a time)."
+      },
+      {
+        "severity": "info",
+        "text": "Scoped to hardware revision v2.0 (PW number PW-2025-05-0781 and later); Espressif states that J1 and J3 functions were updated at that PW number, so earlier v1.0 boards differ."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO7, GPIO8, and GPIO9 are strapping pins."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO13/GPIO12 carry native USB D+/D-."
+      },
+      {
+        "severity": "info",
+        "text": "J1 pin 11 is NC on modules without integrated SPI PSRAM, and GPIO14/SPICS1 (unavailable for user I/O) on modules with it."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-C61-DevKitC-1 v2.0 User Guide (Espressif)",
+        "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c61/esp32-c61-devkitc-1/user_guide.html",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1",
+        "name": "J1",
+        "description": "ESP32-C61-DevKitC-1 v2.0 J1/J3 headers",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved",
+            "notes": [
+              "High enables the chip, low disables it."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "communication",
+            "functions": [
+              "MTDI"
+            ],
+            "notes": [
+              "LP_GPIO4, ADC1_CH2, FSPIWP"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "communication",
+            "functions": [
+              "MTCK"
+            ],
+            "notes": [
+              "LP_GPIO5, ADC1_CH3"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "communication",
+            "functions": [
+              "MTDO"
+            ],
+            "notes": [
+              "LP_GPIO6, FSPICLK"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "FSPID"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "gpio",
+            "notes": [
+              "XTAL_32K_P, LP_GPIO0"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO1",
+            "category": "analog",
+            "notes": [
+              "XTAL_32K_N, LP_GPIO1, ADC1_CH0"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "ZCD0, FSPICS0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO29",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "NC / GPIO14",
+            "category": "reserved",
+            "notes": [
+              "No connection on modules with integrated SPI PSRAM (the pad is consumed as SPICS1); usable as GPIO14 only on modules without PSRAM."
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "gpio",
+            "notes": [
+              "LP_GPIO2, FSPIQ"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "communication",
+            "functions": [
+              "MTMS"
+            ],
+            "notes": [
+              "LP_GPIO3, ADC1_CH1, FSPIHD"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "j3",
+        "name": "J3",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "TX / GPIO11",
+            "category": "communication",
+            "functions": [
+              "U0TXD"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RX / GPIO10",
+            "category": "communication",
+            "functions": [
+              "U0RXD"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO24",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO23",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA3"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO22",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA2"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO28",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA1"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO27",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA0"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO26",
+            "category": "gpio",
+            "notes": [
+              "SDIO_CLK"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO25",
+            "category": "gpio",
+            "notes": [
+              "SDIO_CMD"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "ZCD1"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "gpio",
+            "functions": [
+              "USB_D+"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO12",
+            "category": "gpio",
+            "functions": [
+              "USB_D-"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved",
+            "notes": [
+              "No connection."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esp8684-devkitm-1",
+    "name": "ESP8684-DevKitM-1",
+    "manufacturer": "Espressif",
+    "aliases": [],
+    "description": "Espressif's entry-level RISC-V Wi-Fi and Bluetooth LE reference board, built on the cost-optimised ESP32-C2 (ESP8684) for high-volume IoT designs.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO8 and GPIO9 are strapping pins; their level at reset selects boot mode. Hold them at the wrong level and the board will not boot normally."
+      },
+      {
+        "severity": "warning",
+        "text": "Revision risk: v1.1 replaced the previous board's single addressable RGB LED (GPIO8 only) with a discrete-input RGB LED spanning GPIO0, GPIO1, and GPIO8. Code and wiring written for the older board will not drive the LED correctly, and GPIO0/GPIO1 are no longer fully free."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO4-GPIO7 double as the JTAG pins MTMS/MTDI/MTCK/MTDO and the FSPI bus — avoid driving them externally during debug or flashing."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO19/GPIO20 are the default UART0 console and flashing pins."
+      },
+      {
+        "severity": "warning",
+        "text": "ESP32-C2 modules ship in 1 MB, 2 MB, and 4 MB flash variants; check the module label rather than assuming capacity."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, or the 5 V or 3.3 V header pins (use only one source at a time)."
+      },
+      {
+        "severity": "info",
+        "text": "Scoped to hardware revision v1.1."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO8 and GPIO9 are strapping pins."
+      },
+      {
+        "severity": "info",
+        "text": "On v1.1 the addressable RGB LED of the previous board was replaced by an RGB LED with discrete inputs, driven by GPIO0 (red), GPIO1 (green), and GPIO8 (blue). The earlier version drove a single addressable LED from GPIO8 alone."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO4-GPIO7 double as the JTAG pins MTMS/MTDI/MTCK/MTDO."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP8684-DevKitM-1 v1.1 User Guide (Espressif)",
+        "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c2/esp8684-devkitm-1/user_guide.html",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1",
+        "name": "J1",
+        "description": "ESP8684-DevKitM-1 v1.1 J1/J3 headers",
+        "layout": {
+          "rows": 15,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "analog",
+            "notes": [
+              "ADC1_CH2, FSPIQ"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "analog",
+            "notes": [
+              "ADC1_CH3"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved",
+            "notes": [
+              "High enables the chip, low powers it off."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "analog",
+            "notes": [
+              "ADC1_CH0; also drives the red channel of the onboard LED on v1.1."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO1",
+            "category": "analog",
+            "notes": [
+              "ADC1_CH1; also drives the green channel of the onboard LED on v1.1."
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "notes": [
+              "FSPICS0"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      },
+      {
+        "id": "j3",
+        "name": "J3",
+        "layout": {
+          "rows": 15,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "TX / GPIO20",
+            "category": "communication",
+            "functions": [
+              "U0TXD"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RX / GPIO19",
+            "category": "communication",
+            "functions": [
+              "U0RXD"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "Also drives the blue channel of the onboard LED on v1.1."
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "communication",
+            "functions": [
+              "MTDO"
+            ],
+            "notes": [
+              "FSPID"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "communication",
+            "functions": [
+              "MTCK"
+            ],
+            "notes": [
+              "FSPICLK"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "communication",
+            "functions": [
+              "MTDI"
+            ],
+            "notes": [
+              "ADC2_CH0, FSPIWP"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "communication",
+            "functions": [
+              "MTMS"
+            ],
+            "notes": [
+              "ADC1_CH4, FSPIHD"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO18",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esp32-s3-devkitm-1",
+    "name": "ESP32-S3-DevKitM-1",
+    "manufacturer": "Espressif",
+    "aliases": [],
+    "description": "The MINI-module counterpart to the ESP32-S3-DevKitC-1. It exposes the same 44 header positions but in a different order — GPIO0-GPIO18 run sequentially down J1, while the flash/PSRAM bus and JTAG pins sit on J3.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Do NOT reuse ESP32-S3-DevKitC-1 wiring or overlays on this board. Both have 44 header pins, but the position-to-signal mapping diverges from J1 pin 2 onward — for example J1 pin 4 is GPIO2 here and GPIO4 on the DevKitC-1."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO0, GPIO3, GPIO45, and GPIO46 are ESP32-S3 boot strapping pins. Espressif's header table for this board does not flag them, so the risk is easy to miss — cross-check the ESP32-S3 datasheet before driving them at reset."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO33-GPIO37 and GPIO26 are consumed by the module's SPI flash/PSRAM bus on octal-PSRAM variants (SPIIO4-SPIIO7, SPIDQS, SPICS1). Using them as general I/O on those modules will corrupt memory access."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO43/GPIO44 are the default UART0 console and flashing pins."
+      },
+      {
+        "severity": "warning",
+        "text": "Espressif documents this as the first released revision of the board, so no alternative header revision exists — but confirm you have a MINI board and not a WROOM DevKitC-1 before wiring."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB, or the 5 V or 3.3 V header pins (use only one source at a time)."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif's user guide states this is the first revision of the board released, so there are no revision-to-revision header differences to reconcile."
+      },
+      {
+        "severity": "info",
+        "text": "This header map is NOT interchangeable with the ESP32-S3-DevKitC-1 (WROOM) map. Both expose 44 pins, but the position-to-signal assignment differs from J1 pin 2 onward."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO0, GPIO3, GPIO45, and GPIO46 are ESP32-S3 boot strapping pins. This board's own header table does not mark them as such — the strapping behaviour comes from the ESP32-S3 datasheet."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO33-GPIO37 carry the octal SPI flash/PSRAM bus (SPIIO4-SPIIO7, SPIDQS) on octal-PSRAM module variants and are not free for user I/O there."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO19/GPIO20 double as native USB D-/D+."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-S3-DevKitM-1 User Guide (Espressif)",
+        "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitm-1/user_guide.html",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1",
+        "name": "J1",
+        "description": "ESP32-S3-DevKitM-1 J1/J3 headers",
+        "layout": {
+          "rows": 22,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "RTC_GPIO0. Boot strapping pin per the ESP32-S3 datasheet."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO1",
+            "category": "analog",
+            "notes": [
+              "RTC_GPIO1, TOUCH1, ADC1_CH0"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "analog",
+            "notes": [
+              "RTC_GPIO2, TOUCH2, ADC1_CH1"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "RTC_GPIO3, TOUCH3, ADC1_CH2. Boot strapping pin per the ESP32-S3 datasheet."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "analog",
+            "notes": [
+              "RTC_GPIO4, TOUCH4, ADC1_CH3"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "analog",
+            "notes": [
+              "RTC_GPIO5, TOUCH5, ADC1_CH4"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "analog",
+            "notes": [
+              "RTC_GPIO6, TOUCH6, ADC1_CH5"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "analog",
+            "notes": [
+              "RTC_GPIO7, TOUCH7, ADC1_CH6"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "analog",
+            "notes": [
+              "RTC_GPIO8, TOUCH8, ADC1_CH7, SUBSPICS1"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO9, TOUCH9, ADC1_CH8, FSPIHD, SUBSPIHD"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO10, TOUCH10, ADC1_CH9, FSPICS0, FSPIIO4, SUBSPICS0"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO11",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO11, TOUCH11, ADC2_CH0, FSPID, FSPIIO5, SUBSPID"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO12",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO12, TOUCH12, ADC2_CH1, FSPICLK, FSPIIO6, SUBSPICLK"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO13, TOUCH13, ADC2_CH2, FSPIQ, FSPIIO7, SUBSPIQ"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO14",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO14, TOUCH14, ADC2_CH3, FSPIWP, FSPIDQS, SUBSPIWP"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO15",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO15, U0RTS, ADC2_CH4, XTAL_32K_P"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO16",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO16, U0CTS, ADC2_CH5, XTAL_32K_N"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO17",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO17, U1TXD, ADC2_CH6"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GPIO18",
+            "category": "communication",
+            "notes": [
+              "RTC_GPIO18, U1RXD, ADC2_CH7, CLK_OUT3"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      },
+      {
+        "id": "j3",
+        "name": "J3",
+        "layout": {
+          "rows": 22,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved",
+            "functions": [
+              "EN"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO46",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "Boot strapping pin per the ESP32-S3 datasheet."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO45",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "Boot strapping pin per the ESP32-S3 datasheet."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "RX / GPIO44",
+            "category": "communication",
+            "functions": [
+              "U0RXD"
+            ],
+            "notes": [
+              "CLK_OUT2. Default console/flashing UART."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "TX / GPIO43",
+            "category": "communication",
+            "functions": [
+              "U0TXD"
+            ],
+            "notes": [
+              "CLK_OUT1. Default console/flashing UART."
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO42",
+            "category": "communication",
+            "functions": [
+              "MTMS"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO41",
+            "category": "communication",
+            "functions": [
+              "MTDI"
+            ],
+            "notes": [
+              "CLK_OUT1"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO40",
+            "category": "communication",
+            "functions": [
+              "MTDO"
+            ],
+            "notes": [
+              "CLK_OUT2"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO39",
+            "category": "communication",
+            "functions": [
+              "MTCK"
+            ],
+            "notes": [
+              "CLK_OUT3, SUBSPICS1"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO38",
+            "category": "communication",
+            "notes": [
+              "FSPIWP, SUBSPIWP"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO37",
+            "category": "reserved",
+            "functions": [
+              "SPIDQS"
+            ],
+            "notes": [
+              "FSPIQ, SUBSPIQ. Consumed by the octal PSRAM/flash bus on octal module variants."
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO36",
+            "category": "reserved",
+            "functions": [
+              "SPIIO7"
+            ],
+            "notes": [
+              "FSPICLK, SUBSPICLK. Consumed by the octal PSRAM/flash bus on octal module variants."
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO35",
+            "category": "reserved",
+            "functions": [
+              "SPIIO6"
+            ],
+            "notes": [
+              "FSPID, SUBSPID. Consumed by the octal PSRAM/flash bus on octal module variants."
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO34",
+            "category": "reserved",
+            "functions": [
+              "SPIIO5"
+            ],
+            "notes": [
+              "FSPICS0, SUBSPICS0. Consumed by the octal PSRAM/flash bus on octal module variants."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO33",
+            "category": "reserved",
+            "functions": [
+              "SPIIO4"
+            ],
+            "notes": [
+              "FSPIHD, SUBSPIHD. Consumed by the octal PSRAM/flash bus on octal module variants."
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO26",
+            "category": "reserved",
+            "functions": [
+              "SPICS1"
+            ],
+            "notes": [
+              "Tied to the module's SPI flash/PSRAM chip select."
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO21",
+            "category": "gpio",
+            "notes": [
+              "RTC_GPIO21"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO20",
+            "category": "gpio",
+            "functions": [
+              "USB_D+"
+            ],
+            "notes": [
+              "RTC_GPIO20, U1CTS, ADC2_CH9, CLK_OUT1"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GPIO19",
+            "category": "gpio",
+            "functions": [
+              "USB_D-"
+            ],
+            "notes": [
+              "RTC_GPIO19, U1RTS, ADC2_CH8, CLK_OUT2"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "GPIO48",
+            "category": "gpio",
+            "notes": [
+              "SPICLK_N, SUBSPICLK_N_DIFF. Drives the onboard addressable RGB LED."
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "GPIO47",
+            "category": "gpio",
+            "notes": [
+              "SPICLK_P, SUBSPICLK_P_DIFF"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esp32-c6-devkitm-1",
+    "name": "ESP32-C6-DevKitM-1",
+    "manufacturer": "Espressif",
+    "aliases": [],
+    "description": "The MINI-module counterpart to the ESP32-C6-DevKitC-1, in a smaller footprint with a 30-pin header instead of 32. Supports Wi-Fi 6, Bluetooth LE 5, and 802.15.4 for Thread and Zigbee.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Do NOT reuse ESP32-C6-DevKitC-1 wiring on this board. It has 30 header pins against the DevKitC-1's 32, and the order differs — J1 pin 3 is GPIO2 here but GPIO4 on the DevKitC-1."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO10 and GPIO11 are not brought out at all on this board; they are consumed inside the MINI module. Any design assuming DevKitC-1 parity will find them missing."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO4 (MTMS), GPIO5 (MTDI), GPIO8, GPIO9, and GPIO15 are strapping pins; their level at reset selects boot mode."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO16/GPIO17 are the default UART0 console and flashing pins."
+      },
+      {
+        "severity": "warning",
+        "text": "Espressif publishes no hardware revision number for this board. A documented ADC calibration change (two-point to multi-point) applies to boards with PW number PW-2023-06 and later, but does not alter pin assignment."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB, or the 5 V or 3.3 V header pins (use only one source at a time)."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif publishes no distinct hardware revision number for this board; this map is scoped to the current production revision documented in the linked user guide."
+      },
+      {
+        "severity": "info",
+        "text": "This header map is NOT interchangeable with the ESP32-C6-DevKitC-1 map: this board exposes 30 header pins against the DevKitC-1's 32, and the position-to-signal order differs."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO4 (MTMS), GPIO5 (MTDI), GPIO8, GPIO9, and GPIO15 are strapping pins."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO10 and GPIO11 are not brought out on this board at all — they are consumed inside the MINI module."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO12/GPIO13 carry native USB D-/D+."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-C6-DevKitM-1 User Guide (Espressif)",
+        "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitm-1/user_guide.html",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "j1",
+        "name": "J1",
+        "description": "ESP32-C6-DevKitM-1 J1/J3 headers",
+        "layout": {
+          "rows": 15,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "analog",
+            "notes": [
+              "LP_UART_RTSN, ADC1_CH2, FSPIQ"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "analog",
+            "notes": [
+              "LP_UART_CTSN, ADC1_CH3"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "reserved",
+            "functions": [
+              "MTMS",
+              "Strapping"
+            ],
+            "notes": [
+              "LP_UART_RXD, ADC1_CH4, FSPIHD"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "reserved",
+            "functions": [
+              "MTDI",
+              "Strapping"
+            ],
+            "notes": [
+              "LP_UART_TXD, ADC1_CH5, FSPIWP"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "analog",
+            "notes": [
+              "XTAL_32K_P, LP_UART_DTRN, ADC1_CH0"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO1",
+            "category": "analog",
+            "notes": [
+              "XTAL_32K_N, LP_UART_DSRN, ADC1_CH1"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "Drives the onboard addressable RGB LED."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "communication",
+            "functions": [
+              "MTCK"
+            ],
+            "notes": [
+              "LP_I2C_SDA, ADC1_CH6, FSPICLK"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "communication",
+            "functions": [
+              "MTDO"
+            ],
+            "notes": [
+              "LP_I2C_SCL, FSPID"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO14",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      },
+      {
+        "id": "j3",
+        "name": "J3",
+        "layout": {
+          "rows": 15,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "TX / GPIO16",
+            "category": "communication",
+            "functions": [
+              "U0TXD"
+            ],
+            "notes": [
+              "FSPICS0. Default console/flashing UART."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RX / GPIO17",
+            "category": "communication",
+            "functions": [
+              "U0RXD"
+            ],
+            "notes": [
+              "FSPICS1. Default console/flashing UART."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO23",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA3"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO22",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA2"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO21",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA1, FSPICS5"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO20",
+            "category": "gpio",
+            "notes": [
+              "SDIO_DATA0, FSPICS4"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO19",
+            "category": "gpio",
+            "notes": [
+              "SDIO_CLK, FSPICS3"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO18",
+            "category": "gpio",
+            "notes": [
+              "SDIO_CMD, FSPICS2"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO15",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "gpio",
+            "functions": [
+              "USB_D+"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO12",
+            "category": "gpio",
+            "functions": [
+              "USB_D-"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      }
+    ]
   }
 ];
