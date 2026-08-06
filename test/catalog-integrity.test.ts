@@ -125,13 +125,17 @@ describe("board catalog integrity", () => {
       // Six 12-pin Pmod ports (JA-JF). JF is the PS/MIO-connected port.
       "digilent-zybo-z7-20": [12, 12, 12, 12, 12, 12],
       // Four 12-pin Pmods, then the shield header split by row function.
-      "digilent-arty-s7-50": [12, 12, 12, 12, 10, 4, 6, 6],
+      "digilent-arty-s7-50": [12, 12, 12, 12, 10, 4, 6, 6, 16, 3, 4, 8],
+      "digilent-cmod-a7-35t": [24, 24, 12],
       // Espressif module kits: J1/J3. Counts differ from their DevKitC
       // siblings, which is the whole reason these are separate entries.
       "esp32-c61-devkitc-1": [16, 16],
       "esp8684-devkitm-1": [15, 15],
       "esp32-s3-devkitm-1": [22, 22],
       "esp32-c6-devkitm-1": [15, 15],
+      "arduino-nicla-sense-me": [8, 9, 8],
+      "milkv-duo-s-v12": [26, 26, 16, 15, 4],
+      "esp32-c5-devkitc-1": [16, 16],
     };
 
     for (const [id, counts] of Object.entries(expectedGroupCounts)) {

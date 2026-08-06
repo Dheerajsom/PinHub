@@ -462,18 +462,18 @@ export function DiscoveryApp({
           does it without spending the accent on a container. */}
       {compareIds.length ? (
         <div className="compare-tray fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-xl border border-white/20 bg-[#212734] p-3 shadow-[0_20px_70px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.09)] sm:bottom-5">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <GitCompareArrows className="hidden size-5 shrink-0 text-cyan-200 sm:block" />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap gap-1.5">
                 {compareIds.map((id) => {
                   const board = catalog.find((item) => item.id === id);
-                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200">{board.name}<X className="size-3" /></button> : null;
+                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} className="inline-flex max-w-full items-center gap-1 rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" /></button> : null;
                 })}
               </div>
               <p className="mt-1 text-[11px] text-zinc-500">{compareIds.length < 2 ? "Choose one more board." : compareIds.length === 3 ? "Comparison set is full." : "Ready to compare."}</p>
             </div>
-            <Link href={compareIds.length > 1 ? `/compare?boards=${compareIds.join(",")}` : "#board-results"} aria-disabled={compareIds.length < 2} className={clsx("inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
+            <Link href={compareIds.length > 1 ? `/compare?boards=${compareIds.join(",")}` : "#board-results"} aria-disabled={compareIds.length < 2} className={clsx("inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition sm:w-auto", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
           </div>
         </div>
       ) : null}

@@ -528,18 +528,17 @@ export const boardVisuals: Record<string, BoardVisual> = {
     revisionNote:
       "Rev. E: four Pmods plus the Arduino/chipKIT shield header, grouped by connector.",
   }),
-  // Breadboardable 48-pin DIP module: rows run down the two long edges.
-  "digilent-cmod-a7-35t": preset("moduleDip", {
+  "digilent-cmod-a7-35t": preset("grouped", {
     accent: "#b45309",
     revisionNote:
-      "Identical DIP map on the Cmod A7-15T and A7-35T; only the FPGA differs.",
+      "DIP rows and Pmod JA are grouped; the A7-15T and A7-35T connector maps are identical.",
   }),
   // Full-size carrier with the 40-pin header along the top edge.
   "nvidia-jetson-agx-orin-devkit": preset("jetson", {
     accent: "#3f6212",
     ports: ["ethernet", "usb-a", "usb-c"],
     revisionNote:
-      "J30 header per carrier spec SP-10900-001 rev 1.0; NVIDIA now serves rev 1.2.",
+      "J30 header verified against carrier specification SP-10900-001 rev 1.2.",
   }),
 
   // --- Espressif module dev kits (August 2026 research batch) --------------
@@ -566,6 +565,26 @@ export const boardVisuals: Record<string, BoardVisual> = {
     source: "groups",
     revisionNote:
       "MINI-module 30-pin header; the ESP32-C6-DevKitC-1 has 32 in a different order.",
+  }),
+
+  // --- Officially documented boards (August 2026 research batch) ---------
+  "arduino-nicla-sense-me": preset("grouped", {
+    accent: "#0e7c86",
+    ports: ["usb-micro", "jst"],
+    revisionNote:
+      "SKU ABX00050; J1, J2, and the mixed-voltage debug fins are grouped by connector.",
+  }),
+  "milkv-duo-s-v12": preset("grouped", {
+    accent: "#3f4654",
+    ports: ["usb-c", "usb-a", "ethernet", "camera"],
+    revisionNote:
+      "Hardware V1.2+; J3 pin 9 is GND. Connectors are grouped and not drawn to scale.",
+  }),
+  "esp32-c5-devkitc-1": preset("grouped", {
+    accent: "#334155",
+    ports: ["usb-c"],
+    revisionNote:
+      "Header map is for board v1.2, production order PW-2025-04-0446 and later.",
   }),
 };
 
