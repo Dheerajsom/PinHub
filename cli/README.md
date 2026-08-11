@@ -311,5 +311,5 @@ npm publish --access public
 The `prepublishOnly` hook checks generated board data, lint, tests, and build.
 The package allowlist ships only compiled output and this README.
 
-More links: [PinHub website](https://pinhub.vercel.app) ·
+More links: [PinHub website](https://pinhub-mauve.vercel.app) ·
 [source and issues](https://github.com/Dheerajsom/PinHub)

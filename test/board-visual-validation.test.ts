@@ -10,6 +10,7 @@ import {
   type PinAnchor,
 } from "@/lib/board-visual-geometry";
 import { boards } from "@/lib/boards";
+import { wrapStackedLabel } from "@/components/board-visual/label-layout";
 
 function geometryFor(id: string): BoardGeometry {
   const board = boards.find((entry) => entry.id === id);
@@ -27,6 +28,16 @@ describe("validateBoardVisuals", () => {
 });
 
 describe("labelPlacementErrors", () => {
+  it("keeps every character of long schematic labels", () => {
+    const label = "VCCIO3/4/5 (TQ144 pins 30, 16, 7)";
+    const lines = wrapStackedLabel(label, 190, 14);
+
+    expect(lines).toHaveLength(4);
+    expect(lines.join("").replace(/\s/g, "")).toBe(
+      label.replace(/[\s/]/g, ""),
+    );
+  });
+
   it("accepts the real layouts", () => {
     for (const id of [
       "raspberry-pi-5", // header2x

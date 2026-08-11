@@ -49,7 +49,11 @@ export function getBoardDiscoveryProfile(board: Board): BoardDiscoveryProfile {
   const logic = board.logicLevel.toLowerCase();
   const has18 = /1[.]8\s*v/.test(logic);
   const has33 = /3[.]3\s*v/.test(logic);
-  const has5 = /(^|[^0-9])5\s*v/.test(logic);
+  // A mention of 5 V tolerance or an analog-input limit is not evidence that
+  // the board has a 5 V logic rail. Require language that describes operation.
+  const has5 =
+    /(^|[,;/]\s*)5\s*v\s+(?:gpio|logic|operating\b)/.test(logic) ||
+    /(^|[,;/]\s*)5\s*v\s*\/\s*\d+\s*mhz/.test(logic);
   const logicProfile: LogicProfile =
     [has18, has33, has5].filter(Boolean).length > 1
       ? "Mixed"
@@ -61,12 +65,15 @@ export function getBoardDiscoveryProfile(board: Board): BoardDiscoveryProfile {
             ? "5 V"
             : "Unknown";
 
-  const fiveVoltTolerance: FiveVoltTolerance = logic.includes("not 5 v tolerant")
-    ? "No"
-    : logic.includes("5 v tolerant") &&
-        (logic.includes("some") || logic.includes("input") || logic.includes("mixed"))
-      ? "Mixed"
-      : logic.includes("5 v tolerant") || logicProfile === "5 V"
+  const documentsFiveVoltTolerance = logic.includes("5 v tolerant");
+  const partialTolerance =
+    documentsFiveVoltTolerance &&
+    /\b(some|many|most|input|inputs|only|mixed)\b/.test(logic);
+  const fiveVoltTolerance: FiveVoltTolerance = partialTolerance
+    ? "Mixed"
+    : logic.includes("not 5 v tolerant")
+      ? "No"
+      : documentsFiveVoltTolerance || logicProfile === "5 V"
         ? "Yes"
         : "Unknown";
 

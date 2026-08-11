@@ -53,7 +53,8 @@ export type Suggestion = {
  */
 export function suggestBoards(query: string, max = 3): Suggestion[] {
   const q = normalizeQuery(query);
-  if (!q) return [];
+  const limit = Number.isFinite(max) ? Math.max(0, Math.floor(max)) : 0;
+  if (!q || limit === 0) return [];
   const scored = boards.map((board) => {
     let best: Suggestion = { board, alias: board.id, distance: Number.POSITIVE_INFINITY };
     for (const name of candidateNames(board)) {
@@ -66,7 +67,7 @@ export function suggestBoards(query: string, max = 3): Suggestion[] {
   return scored
     .filter((s) => s.distance <= threshold)
     .sort((a, b) => a.distance - b.distance)
-    .slice(0, max);
+    .slice(0, limit);
 }
 
 export function searchBoards(query: string): Board[] {

@@ -38,6 +38,33 @@ describe("board discovery profiles", () => {
     expect(profile("google-coral-dev-board")).toBe("AI accelerator");
   });
 
+  it("does not mistake a 5 V tolerance warning for a 5 V logic rail", () => {
+    for (const id of [
+      "particle-photon-2",
+      "lattice-icestick",
+      "nxp-frdm-kl25z",
+      "digilent-nexys-a7-100t",
+      "digilent-arty-a7",
+      "esp32-c5-devkitc-1",
+    ]) {
+      const board = boards.find((entry) => entry.id === id)!;
+      expect(getBoardDiscoveryProfile(board), id).toMatchObject({
+        logicProfile: "3.3 V",
+        fiveVoltTolerance: "No",
+      });
+    }
+  });
+
+  it("classifies partially 5 V-tolerant GPIO as mixed", () => {
+    for (const id of ["stm32f103-blue-pill", "weact-black-pill-stm32f411"]) {
+      const board = boards.find((entry) => entry.id === id)!;
+      expect(getBoardDiscoveryProfile(board), id).toMatchObject({
+        logicProfile: "3.3 V",
+        fiveVoltTolerance: "Mixed",
+      });
+    }
+  });
+
   it("keeps pin arrays out of homepage summaries", () => {
     const summary = summarizeBoard(boards[0]!);
     expect(summary).not.toHaveProperty("pinout");

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Board } from "@/lib/boards";
 import { CompareTable } from "@/components/CompareTable";
 
@@ -33,7 +33,10 @@ const boards = [
   board({ id: "b", name: "Board B", processor: "ATmega328P", logicLevel: "5 V" }),
 ];
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 describe("CompareTable", () => {
   it("deals every board's value into stacked cards for narrow screens", () => {
@@ -76,5 +79,17 @@ describe("CompareTable", () => {
 
     expect(screen.getByRole("heading", { name: "Power" })).toBeTruthy();
     expect(screen.getAllByText("Same").length).toBeGreaterThan(0);
+  });
+
+  it("reports clipboard failures instead of silently ignoring them", async () => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: vi.fn().mockRejectedValue(new Error("denied")) },
+    });
+    render(<CompareTable boards={boards} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Share" }));
+
+    expect(await screen.findByText("Share failed")).toBeTruthy();
   });
 });

@@ -8,13 +8,25 @@ import { roleLabels } from "@/components/board-visual/roles";
 
 // Serializes a connector map to a Markdown table so engineers can paste the
 // pinout into notes, issues, or firmware docs without retyping it.
-function pinRow(pin: Pin): string {
-  return `| ${pin.position} | ${pin.label} | ${roleLabels[pin.role]} | ${
-    pin.aliases?.join(" / ") ?? ""
-  } | ${pin.note ?? ""} |`;
+function markdownCell(value: string): string {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/\|/g, "\\|")
+    .replace(/\r?\n/g, "<br>");
 }
 
-function pinoutToMarkdown(pinout: Pinout): string {
+function pinRow(pin: Pin): string {
+  const cells = [
+    String(pin.position),
+    pin.label,
+    roleLabels[pin.role],
+    pin.aliases?.join(" / ") ?? "",
+    pin.note ?? "",
+  ].map(markdownCell);
+  return `| ${cells.join(" | ")} |`;
+}
+
+export function pinoutToMarkdown(pinout: Pinout): string {
   const header = [
     `### ${pinout.connector}`,
     "",
@@ -31,7 +43,7 @@ function pinoutToMarkdown(pinout: Pinout): string {
     );
   }
   for (const group of pinout.groups ?? []) {
-    rows.push(`| — | **${group.label}** | | | |`);
+    rows.push(`| — | **${markdownCell(group.label)}** | | | |`);
     rows.push(...group.pins.map(pinRow));
   }
 

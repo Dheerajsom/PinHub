@@ -14,6 +14,11 @@
 
 import type { Board, Pin } from "@/lib/boards";
 import {
+  stackedFontSize,
+  stackedLabelExtent,
+  wrapStackedLabel,
+} from "@/components/board-visual/label-layout";
+import {
   accentForBoard,
   boardVisuals,
   type BoardVisual,
@@ -493,7 +498,17 @@ function buildGroupStrips(board: Board, visual: BoardVisual): Omit<BoardGeometry
   }, 0);
   const colPitch = clamp(longestSegment * 8.6 + 26, 78, 190);
   const perRow = clamp(Math.round(880 / colPitch), 5, 11);
-  const rowPitch = 96; // pad + up to two stacked label lines
+  const stackedFont = stackedFontSize(colPitch);
+  const tallestLabel = allPins.reduce((height, pin) => {
+    const lines = wrapStackedLabel(pin.label, colPitch, stackedFont);
+    return Math.max(height, stackedLabelExtent(lines, stackedFont).height);
+  }, 0);
+  // Leave a full pad radius plus a small visual gutter below the tallest
+  // losslessly wrapped label before the next row begins.
+  const rowPitch = Math.max(
+    96,
+    Math.ceil(PAD_R * 2 + 16 + tallestLabel - stackedFont / 2 + 8),
+  );
   const stripGap = 30;
   const stripTitleH = 36;
 
