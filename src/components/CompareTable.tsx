@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Check, Copy, Eye, EyeOff, X } from "lucide-react";
 import { clsx } from "clsx";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Board } from "@/lib/boards";
 import { getBoardDiscoveryProfile } from "@/lib/board-discovery";
 import { VendorLogo } from "@/components/VendorLogo";
@@ -16,7 +16,16 @@ function uniqueValues(values: string[]) {
 
 export function CompareTable({ boards }: { boards: Board[] }) {
   const [differencesOnly, setDifferencesOnly] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
+    "idle",
+  );
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+    };
+  }, []);
   const rows = useMemo<Row[]>(() => {
     const profiles = boards.map(getBoardDiscoveryProfile);
     return [
@@ -46,10 +55,16 @@ export function CompareTable({ boards }: { boards: Board[] }) {
   async function copyLink() {
     try {
       await navigator.clipboard.writeText(location.href);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {}
+      setCopyState("copied");
+    } catch {
+      setCopyState("failed");
+    }
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+    resetTimer.current = setTimeout(() => setCopyState("idle"), 1800);
   }
+
+  const copied = copyState === "copied";
+  const copyFailed = copyState === "failed";
 
   return (
     <>
@@ -63,7 +78,8 @@ export function CompareTable({ boards }: { boards: Board[] }) {
             {differencesOnly ? "Show identical" : "Differences only"}
           </button>
           <button type="button" onClick={copyLink} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
-            {copied ? <Check className="size-4 text-emerald-300" /> : <Copy className="size-4" />}{copied ? "Copied" : "Share"}
+            {copied ? <Check className="size-4 text-emerald-300" /> : copyFailed ? <X className="size-4 text-red-300" /> : <Copy className="size-4" />}
+            <span aria-live="polite">{copied ? "Copied" : copyFailed ? "Share failed" : "Share"}</span>
           </button>
         </div>
       </div>

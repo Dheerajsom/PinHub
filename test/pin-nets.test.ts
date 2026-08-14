@@ -58,6 +58,8 @@ describe("netForPin", () => {
   it("keeps analog ground off the digital ground net", () => {
     expect(netId({ label: "GND", role: "ground" })).toBe("GND");
     expect(netId({ label: "AGND", role: "ground" })).toBe("AGND");
+    expect(netId({ label: "P9.34 / GND_ADC", role: "ground" })).toBe("GND_ADC");
+    expect(netId({ label: "XGND", role: "ground", aliases: ["VREFN"] })).toBe("XGND");
   });
 
   it("folds equivalent rail spellings onto one net", () => {
@@ -65,6 +67,8 @@ describe("netForPin", () => {
     expect(netId({ label: "3.3V", role: "power" })).toBe("3V3");
     expect(netId({ label: "+5V", role: "power" })).toBe("5V");
     expect(netId({ label: "5V", role: "power" })).toBe("5V");
+    expect(netId({ label: "P9.03 / 3V3", role: "power" })).toBe("3V3");
+    expect(netId({ label: "P9.05 / VIN", role: "power" })).toBe("VIN");
   });
 
   it("keeps distinct rails distinct", () => {
@@ -77,6 +81,11 @@ describe("netForPin", () => {
     expect(netId({ label: "SWDIO", role: "debug" })).toBe("SWD");
     expect(netId({ label: "SWCLK", role: "debug" })).toBe("SWD");
     expect(netId({ label: "TCK", role: "debug" })).toBe("JTAG");
+    expect(netId({ label: "GPIO39", role: "debug", aliases: ["MTCK"] })).toBe("JTAG");
+    expect(netId({ label: "BHI_SWDIO", role: "debug" })).toBe("BHI_SWD");
+    expect(netId({ label: "ANNA_SWDCLK", role: "debug" })).toBe("ANNA_SWD");
+    expect(netId({ label: "SAMD11_SWDIO", role: "debug" })).toBe("SAMD11_SWD");
+    expect(netId({ label: "UNKNOWN", role: "debug" })).toBeNull();
   });
 
   it("falls back to the family when the data does not name an instance", () => {
@@ -102,6 +111,30 @@ describe("netForPin", () => {
     expect(netMembers("raspberry-pi-5", "I2C1")).toEqual(["GPIO2", "GPIO3"]);
     expect(netMembers("raspberry-pi-5", "GND")).toHaveLength(8);
     expect(netMembers("raspberry-pi-5", "3V3")).toEqual(["3V3", "3V3"]);
+
+    // Composite BeagleBone labels still identify the shared rail, while the
+    // dedicated ADC reference ground stays off digital GND.
+    expect(netMembers("beaglebone-ai-64", "3V3")).toEqual([
+      "P9.03 / 3V3",
+      "P9.04 / 3V3",
+    ]);
+    expect(netMembers("beaglebone-ai-64", "GND_ADC")).toEqual([
+      "P9.34 / GND_ADC",
+    ]);
+
+    // Nicla exposes three independent SWD targets on the same connector.
+    expect(netMembers("arduino-nicla-sense-me", "BHI_SWD")).toEqual([
+      "BHI_SWDIO",
+      "BHI_SWDCLK",
+    ]);
+    expect(netMembers("arduino-nicla-sense-me", "ANNA_SWD")).toEqual([
+      "ANNA_SWDIO",
+      "ANNA_SWDCLK",
+    ]);
+    expect(netMembers("arduino-nicla-sense-me", "SAMD11_SWD")).toEqual([
+      "SAMD11_SWDIO",
+      "SAMD11_SWDCLK",
+    ]);
 
     // Pico exposes two independent SPI blocks; they must not merge.
     expect(netMembers("raspberry-pi-pico", "SPI0")).toHaveLength(4);

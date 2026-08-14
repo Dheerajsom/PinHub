@@ -70,9 +70,18 @@ const FOREIGN_PROTOCOLS = /\b(TDM|PCM|PDM|SAI|DVP|LCD|CAM|MIPI|SDIO|EMMC)/;
 
 // Debug interfaces. Grouping SWD and JTAG pins is genuinely useful — those pins
 // are only ever used together.
-const DEBUG_SIGNALS: Array<{ names: string[]; family: string }> = [
-  { names: ["SWDIO", "SWCLK", "SWO", "SWDCLK", "SWDIO_TMS"], family: "SWD" },
-  { names: ["TCK", "TMS", "TDI", "TDO", "TRST", "NTRST"], family: "JTAG" },
+const SWD_SIGNALS = ["SWDIO", "SWCLK", "SWO", "SWDCLK", "SWDIOTMS"];
+const JTAG_SIGNALS = [
+  "TCK",
+  "TMS",
+  "TDI",
+  "TDO",
+  "TRST",
+  "NTRST",
+  "MTCK",
+  "MTMS",
+  "MTDI",
+  "MTDO",
 ];
 
 /** Explicit "I2C0 SDA" / "SPI0 MOSI" / "UART1 TX" style aliases. */
@@ -82,12 +91,42 @@ const EXPLICIT_BUS = /\b(I2C|SPI|UART|USART|SERCOM|QSPI|I2S|CAN)\s*(\d+)?\b/;
 // labelled 5V are on different nets even though both have role "power", so the
 // rail net is taken from the (normalized) label rather than the role.
 function normalizeRail(label: string): string {
-  const clean = label.toUpperCase().replace(/[\s_-]+/g, "");
+  const clean = label.toUpperCase().replace(/\s+/g, "").replace(/-/g, "_");
+  const compact = clean.replace(/_/g, "");
   // Common spellings of the same rail so 3.3V / 3V3 / +3V3 all ring out together.
-  if (/^\+?3(\.)?3V?$|^3V3$/.test(clean)) return "3V3";
-  if (/^\+?5V?$|^5V0$/.test(clean)) return "5V";
-  if (/^\+?1(\.)?8V?$|^1V8$/.test(clean)) return "1V8";
+  if (/^\+?3(\.)?3V?$|^3V3$/.test(compact)) return "3V3";
+  if (/^\+?5V?$|^5V0$/.test(compact)) return "5V";
+  if (/^\+?1(\.)?8V?$|^1V8$/.test(compact)) return "1V8";
   return clean;
+}
+
+const CONNECTOR_POSITION = /^(?:P|J)\d+[._]\d+$/;
+const CANONICAL_VOLTAGE_RAILS = new Set(["1V8", "3V3", "5V"]);
+
+function labelParts(tokens: string[]): string[] {
+  return tokens.flatMap((token) =>
+    token
+      .split(/\s+\/\s+/)
+      .map((part) => part.trim())
+      .filter(Boolean),
+  );
+}
+
+function railFromTokens(tokens: string[]): string {
+  const parts = labelParts(tokens);
+  const normalized = parts.map(normalizeRail);
+  const voltage = normalized.find((part) => CANONICAL_VOLTAGE_RAILS.has(part));
+  if (voltage) return voltage;
+
+  const namedRail = normalized.find((part) => !CONNECTOR_POSITION.test(part));
+  return namedRail ?? normalizeRail(tokens[0]);
+}
+
+function groundFromTokens(tokens: string[]): string {
+  const grounds = labelParts(tokens)
+    .map(normalizeRail)
+    .filter((part) => part.includes("GND"));
+  return grounds.find((part) => part !== "GND") ?? grounds[0] ?? "GND";
 }
 
 function matchBusSignal(token: string): { family: string; index: string } | null {
@@ -131,10 +170,19 @@ function busFromTokens(tokens: string[], role: PinRole): PinNet | null {
 }
 
 function debugFromTokens(tokens: string[]): PinNet | null {
-  for (const token of tokens) {
-    const clean = token.toUpperCase().replace(/[\s_-]+/g, "");
-    for (const { names, family } of DEBUG_SIGNALS) {
-      if (names.includes(clean)) return net(family, "debug");
+  for (const token of tokens.flatMap((value) => value.split(/[\s/,]+/))) {
+    const clean = token.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (!clean) continue;
+
+    if (JTAG_SIGNALS.includes(clean) || /^JTAG(?:TCK|TMS|TDI|TDO|TRST|NTRST)$/.test(clean)) {
+      return net("JTAG", "debug");
+    }
+    if (clean === "SBWTCK" || clean === "SBWTDIO") return net("SBW", "debug");
+
+    const swdSignal = SWD_SIGNALS.find((signal) => clean.endsWith(signal));
+    if (swdSignal) {
+      const target = clean.slice(0, -swdSignal.length);
+      return net(target ? `${target}_SWD` : "SWD", "debug");
     }
   }
   return null;
@@ -153,18 +201,19 @@ export function netForPin(pin: Pin): PinNet | null {
   const tokens = [pin.label, ...(pin.aliases ?? [])];
 
   if (pin.role === "ground") {
-    // Analog ground is a separate net from digital ground on every board that
-    // bothers to break it out, so it is not folded into GND.
-    const rail = normalizeRail(pin.label);
-    return net(rail.includes("AGND") ? "AGND" : "GND", "ground");
+    // Named analog/reference grounds are separate from digital ground on every
+    // board that bothers to break them out, so they are kept distinct.
+    return net(groundFromTokens(tokens), "ground");
   }
 
   if (pin.role === "power") {
-    return net(normalizeRail(pin.label), "rail");
+    return net(railFromTokens(tokens), "rail");
   }
 
   if (pin.role === "debug") {
-    return debugFromTokens(tokens) ?? net("DEBUG", "debug");
+    // Different devices on one board can expose independent debug ports. If a
+    // target/interface cannot be named, do not claim those pins are connected.
+    return debugFromTokens(tokens);
   }
 
   if (pin.role === "i2c" || pin.role === "spi" || pin.role === "uart") {

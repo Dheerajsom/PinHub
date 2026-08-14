@@ -696,10 +696,8 @@ export function PinHubApp({
                             behavior: scrollBehavior(),
                             block: "center",
                           });
-                          row
-                            ?.querySelector<HTMLButtonElement>(
-                              'button[aria-label^="Select"]',
-                            )
+                          document
+                            .getElementById(`board-result-action-${board.id}`)
                             ?.focus({ preventScroll: true });
                         });
                       }}
@@ -980,6 +978,7 @@ const BoardResult = memo(function BoardResult({
       )}
     >
       <button
+        id={`board-result-action-${board.id}`}
         type="button"
         onClick={() => onSelect(board.id)}
         onPointerEnter={() => onPrefetch(board.id)}

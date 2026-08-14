@@ -78,6 +78,10 @@ beforeEach(() => {
     vi.fn(async () => new Response(JSON.stringify(pi5))),
   );
   window.HTMLElement.prototype.scrollIntoView = () => {};
+  vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+    callback(0);
+    return 1;
+  });
 });
 
 afterEach(() => {
@@ -107,6 +111,22 @@ describe("PinHubApp result list", () => {
       screen.getByRole("button", { name: "Show Sensor HAT details" }).getAttribute("aria-expanded"),
     ).toBe("false");
     expect(screen.queryByRole("region", { name: "Sensor HAT details" })).toBeNull();
+  });
+
+  it("returns focus to the mobile result after closing its details", () => {
+    setViewport(false);
+    renderApp();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show Sensor HAT details" }),
+    );
+    const back = screen.getByRole("button", { name: "Back to results" });
+    back.focus();
+    fireEvent.click(back);
+
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "Show Sensor HAT details" }),
+    );
   });
 
   it("keeps the desktop layout selecting a board rather than disclosing one", () => {

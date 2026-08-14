@@ -19,6 +19,13 @@ describe("unknown board handling", () => {
     expect(suggestions[0].board.id).toContain("raspberry");
   });
 
+  it("treats invalid or non-positive suggestion limits as empty", () => {
+    expect(suggestBoards("rasp", 0)).toEqual([]);
+    expect(suggestBoards("rasp", -1)).toEqual([]);
+    expect(suggestBoards("rasp", Number.NaN)).toEqual([]);
+    expect(suggestBoards("rasp", Number.POSITIVE_INFINITY)).toEqual([]);
+  });
+
   it("exits non-zero for unmatched search", async () => {
     const result = await runCli(["search", "zzzz"], { env: {} });
     expect(result.code).toBe(1);

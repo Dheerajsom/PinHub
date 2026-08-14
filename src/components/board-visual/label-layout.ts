@@ -11,8 +11,6 @@ export const LABEL_CHAR_RATIO = 0.62;
 /** Baseline-to-baseline step for stacked label lines, as a font-size multiple. */
 export const LABEL_LINE_STEP = 1.15;
 
-const MAX_LINES = 3;
-
 export function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));
 }
@@ -44,15 +42,14 @@ export function wrapStackedLabel(
 
   const push = (line: string) => {
     let rest = line;
-    while (rest.length > maxChars && lines.length < MAX_LINES) {
+    while (rest.length > maxChars) {
       lines.push(rest.slice(0, maxChars));
       rest = rest.slice(maxChars);
     }
-    if (rest && lines.length < MAX_LINES) lines.push(rest);
+    if (rest) lines.push(rest);
   };
 
   for (const chunk of label.split("/").map((part) => part.trim()).filter(Boolean)) {
-    if (lines.length >= MAX_LINES) break;
     let current = "";
     for (const word of chunk.split(/\s+/).filter(Boolean)) {
       const next = current ? `${current} ${word}` : word;
@@ -62,12 +59,11 @@ export function wrapStackedLabel(
       }
       if (current) push(current);
       current = word;
-      if (lines.length >= MAX_LINES) break;
     }
     if (current) push(current);
   }
 
-  return lines.slice(0, MAX_LINES);
+  return lines;
 }
 
 /** Drawn size of a wrapped stacked label. */
