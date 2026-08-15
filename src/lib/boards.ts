@@ -583,6 +583,338 @@ const esp32C3DevKitMHeaders: Pinout = {
   },
 };
 
+// Transcribed row for row from the "Header Block" tables in Espressif's
+// official ESP32-C3-DevKitC-02 user guide (ESP-IDF v5.2 and v5.0 pages agree).
+// Positions 1-15 are J1 pins 1-15; positions 16-30 are J3 pins 1-15. The board
+// uses the ESP32-C3-WROOM-02 module, so its header order differs from the
+// MINI-1-based ESP32-C3-DevKitM-1 — the two are not interchangeable.
+const esp32C3DevKitC02Headers: Pinout = {
+  connector: "ESP32-C3-DevKitC-02 J1/J3 headers",
+  layout: "dual-row",
+  notes: [
+    "Positions 1-15 are J1 pins 1-15; positions 16-30 are J3 pins 1-15.",
+    "Espressif: \"GPIO2, GPIO8 and GPIO9 are strapping pins\" — external pulls on these at reset change boot mode.",
+    "Espressif: \"GPIO 18 and 19 are used by USB-JTAG by default. In order to use them as GPIOs, USB-JTAG will be disabled by the drivers.\"",
+    "The Micro-USB port reaches the chip through a USB-to-UART bridge, so it is not wired to GPIO18/GPIO19.",
+    "3V3, 5V, and the Micro-USB port are mutually exclusive supplies; do not feed two at once.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "GND", role: "ground" },
+      { position: 2, label: "3V3", role: "power" },
+      { position: 3, label: "3V3", role: "power" },
+      { position: 4, label: "RST", role: "system", aliases: ["CHIP_PU"] },
+      { position: 5, label: "GND", role: "ground" },
+      {
+        position: 6,
+        label: "GPIO4",
+        role: "adc",
+        aliases: ["ADC1_CH4", "FSPIHD", "MTMS"],
+      },
+      {
+        position: 7,
+        label: "GPIO5",
+        role: "adc",
+        aliases: ["ADC2_CH0", "FSPIWP", "MTDI"],
+      },
+      { position: 8, label: "GPIO6", role: "spi", aliases: ["FSPICLK", "MTCK"] },
+      { position: 9, label: "GPIO7", role: "spi", aliases: ["FSPID", "MTDO"] },
+      { position: 10, label: "GND", role: "ground" },
+      {
+        position: 11,
+        label: "GPIO8",
+        role: "system",
+        aliases: ["Strapping", "RGB LED"],
+        note: "Strapping pin; also drives the on-board addressable RGB LED.",
+      },
+      {
+        position: 12,
+        label: "GPIO9",
+        role: "system",
+        aliases: ["Strapping", "BOOT"],
+        note: "Strapping pin; held low at reset by the Boot button.",
+      },
+      { position: 13, label: "5V", role: "power" },
+      { position: 14, label: "5V", role: "power" },
+      { position: 15, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 16, label: "GND", role: "ground" },
+      {
+        position: 17,
+        label: "GPIO0",
+        role: "adc",
+        aliases: ["ADC1_CH0", "XTAL_32K_P"],
+      },
+      {
+        position: 18,
+        label: "GPIO1",
+        role: "adc",
+        aliases: ["ADC1_CH1", "XTAL_32K_N"],
+      },
+      {
+        position: 19,
+        label: "GPIO2",
+        role: "system",
+        aliases: ["Strapping", "ADC1_CH2", "FSPIQ"],
+        note: "Strapping pin; also ADC1_CH2.",
+      },
+      { position: 20, label: "GPIO3", role: "adc", aliases: ["ADC1_CH3"] },
+      { position: 21, label: "GND", role: "ground" },
+      { position: 22, label: "GPIO10", role: "spi", aliases: ["FSPICS0"] },
+      { position: 23, label: "GND", role: "ground" },
+      { position: 24, label: "RX / GPIO20", role: "uart", aliases: ["U0RXD"] },
+      { position: 25, label: "TX / GPIO21", role: "uart", aliases: ["U0TXD"] },
+      { position: 26, label: "GND", role: "ground" },
+      {
+        position: 27,
+        label: "GPIO18",
+        role: "special",
+        aliases: ["USB Serial/JTAG"],
+        note: "Used by USB-JTAG by default; drivers disable USB-JTAG to free it.",
+      },
+      {
+        position: 28,
+        label: "GPIO19",
+        role: "special",
+        aliases: ["USB Serial/JTAG"],
+        note: "Used by USB-JTAG by default; drivers disable USB-JTAG to free it.",
+      },
+      { position: 29, label: "GND", role: "ground" },
+      { position: 30, label: "GND", role: "ground" },
+    ],
+  },
+};
+
+// Transcribed row for row from the "Header Block" tables in Espressif's
+// official ESP32-S2-DevKitM-1 user guide (ESP-IDF v5.2 and v5.3 pages agree).
+// Positions 1-21 are J1 pins 1-21; positions 22-42 are J3 pins 1-21.
+const esp32S2DevKitM1Headers: Pinout = {
+  connector: "ESP32-S2-DevKitM-1 J1/J3 headers",
+  layout: "dual-row",
+  notes: [
+    "Positions 1-21 are J1 pins 1-21; positions 22-42 are J3 pins 1-21.",
+    "Espressif: \"GPIO26-32 are usually used for SPI flash and PSRAM and not recommended for other uses.\" GPIO26 is broken out here — treat it as unavailable on ESP32-S2-MINI-2/2U boards, which carry 2 MB PSRAM.",
+    "Espressif: \"GPIO0, GPIO45, and GPIO46 are strapping pins.\" GPIO0 and GPIO46 together select boot mode at reset.",
+    "Espressif: \"GPIO46 is fixed to pull-down and is input only.\" It cannot drive anything.",
+    "GPIO19 and GPIO20 are the chip's USB D-/D+ pads, but the Micro-USB port reaches the chip through a USB-to-UART bridge, so they are free on the header.",
+    "3V3, 5V, and the Micro-USB port are mutually exclusive supplies; do not feed two at once.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "3V3", role: "power" },
+      {
+        position: 2,
+        label: "GPIO0",
+        role: "system",
+        aliases: ["Strapping", "BOOT", "RTC_GPIO0"],
+        note: "Strapping pin; held low at reset by the Boot button.",
+      },
+      {
+        position: 3,
+        label: "GPIO1",
+        role: "adc",
+        aliases: ["ADC1_CH0", "TOUCH1", "RTC_GPIO1"],
+      },
+      {
+        position: 4,
+        label: "GPIO2",
+        role: "adc",
+        aliases: ["ADC1_CH1", "TOUCH2", "RTC_GPIO2"],
+      },
+      {
+        position: 5,
+        label: "GPIO3",
+        role: "adc",
+        aliases: ["ADC1_CH2", "TOUCH3", "RTC_GPIO3"],
+      },
+      {
+        position: 6,
+        label: "GPIO4",
+        role: "adc",
+        aliases: ["ADC1_CH3", "TOUCH4", "RTC_GPIO4"],
+      },
+      {
+        position: 7,
+        label: "GPIO5",
+        role: "adc",
+        aliases: ["ADC1_CH4", "TOUCH5", "RTC_GPIO5"],
+      },
+      {
+        position: 8,
+        label: "GPIO6",
+        role: "adc",
+        aliases: ["ADC1_CH5", "TOUCH6", "RTC_GPIO6"],
+      },
+      {
+        position: 9,
+        label: "GPIO7",
+        role: "adc",
+        aliases: ["ADC1_CH6", "TOUCH7", "RTC_GPIO7"],
+      },
+      {
+        position: 10,
+        label: "GPIO8",
+        role: "adc",
+        aliases: ["ADC1_CH7", "TOUCH8", "RTC_GPIO8"],
+      },
+      {
+        position: 11,
+        label: "GPIO9",
+        role: "adc",
+        aliases: ["ADC1_CH8", "TOUCH9", "FSPIHD"],
+      },
+      {
+        position: 12,
+        label: "GPIO10",
+        role: "spi",
+        aliases: ["FSPICS0", "FSPIIO4", "ADC1_CH9", "TOUCH10"],
+      },
+      {
+        position: 13,
+        label: "GPIO11",
+        role: "spi",
+        aliases: ["FSPID", "FSPIIO5", "ADC2_CH0", "TOUCH11"],
+      },
+      {
+        position: 14,
+        label: "GPIO12",
+        role: "spi",
+        aliases: ["FSPICLK", "FSPIIO6", "ADC2_CH1", "TOUCH12"],
+      },
+      {
+        position: 15,
+        label: "GPIO13",
+        role: "spi",
+        aliases: ["FSPIQ", "FSPIIO7", "ADC2_CH2", "TOUCH13"],
+      },
+      {
+        position: 16,
+        label: "GPIO14",
+        role: "spi",
+        aliases: ["FSPIWP", "FSPIDQS", "ADC2_CH3", "TOUCH14"],
+      },
+      {
+        position: 17,
+        label: "GPIO15",
+        role: "adc",
+        aliases: ["ADC2_CH4", "U0RTS", "XTAL_32K_P"],
+      },
+      {
+        position: 18,
+        label: "GPIO16",
+        role: "adc",
+        aliases: ["ADC2_CH5", "U0CTS", "XTAL_32K_N"],
+      },
+      {
+        position: 19,
+        label: "GPIO17",
+        role: "dac",
+        aliases: ["DAC_1", "ADC2_CH6", "U1TXD"],
+      },
+      { position: 20, label: "5V", role: "power" },
+      { position: 21, label: "GND", role: "ground" },
+    ],
+    right: [
+      { position: 22, label: "GND", role: "ground" },
+      { position: 23, label: "RST", role: "system", aliases: ["CHIP_PU"] },
+      {
+        position: 24,
+        label: "GPIO46",
+        role: "system",
+        aliases: ["Strapping"],
+        note: "Input only and fixed pull-down; with GPIO0 it selects boot mode.",
+      },
+      {
+        position: 25,
+        label: "GPIO45",
+        role: "system",
+        aliases: ["Strapping"],
+        note: "Strapping pin, pulled down at reset.",
+      },
+      {
+        position: 26,
+        label: "RX / GPIO44",
+        role: "uart",
+        aliases: ["U0RXD", "CLK_OUT2"],
+      },
+      {
+        position: 27,
+        label: "TX / GPIO43",
+        role: "uart",
+        aliases: ["U0TXD", "CLK_OUT1"],
+      },
+      { position: 28, label: "GPIO42", role: "debug", aliases: ["MTMS"] },
+      {
+        position: 29,
+        label: "GPIO41",
+        role: "debug",
+        aliases: ["MTDI", "CLK_OUT1"],
+      },
+      {
+        position: 30,
+        label: "GPIO40",
+        role: "debug",
+        aliases: ["MTDO", "CLK_OUT2"],
+      },
+      {
+        position: 31,
+        label: "GPIO39",
+        role: "debug",
+        aliases: ["MTCK", "CLK_OUT3"],
+      },
+      { position: 32, label: "GPIO38", role: "spi", aliases: ["FSPIWP"] },
+      {
+        position: 33,
+        label: "GPIO37",
+        role: "spi",
+        aliases: ["FSPIQ", "SPIDQS"],
+      },
+      {
+        position: 34,
+        label: "GPIO36",
+        role: "spi",
+        aliases: ["FSPICLK", "SPIIO7"],
+      },
+      { position: 35, label: "GPIO35", role: "spi", aliases: ["FSPID", "SPIIO6"] },
+      {
+        position: 36,
+        label: "GPIO34",
+        role: "spi",
+        aliases: ["FSPICS0", "SPIIO5"],
+      },
+      { position: 37, label: "GPIO33", role: "spi", aliases: ["FSPIHD", "SPIIO4"] },
+      {
+        position: 38,
+        label: "GPIO26",
+        role: "reserved",
+        aliases: ["SPICS1"],
+        note: "In the GPIO26-32 flash/PSRAM range; unusable on PSRAM modules.",
+      },
+      { position: 39, label: "GPIO21", role: "gpio", aliases: ["RTC_GPIO21"] },
+      {
+        position: 40,
+        label: "GPIO20",
+        role: "special",
+        aliases: ["USB_D+", "ADC2_CH9", "U1CTS"],
+      },
+      {
+        position: 41,
+        label: "GPIO19",
+        role: "special",
+        aliases: ["USB_D-", "ADC2_CH8", "U1RTS"],
+      },
+      {
+        position: 42,
+        label: "GPIO18",
+        role: "dac",
+        aliases: ["DAC_2", "ADC2_CH7", "U1RXD", "RGB LED"],
+        note: "Also drives the on-board addressable RGB LED.",
+      },
+    ],
+  },
+};
+
 const esp32C6DevKitCHeaders: Pinout = {
   connector: "ESP32-C6-DevKitC-1 J1/J3 headers",
   layout: "dual-row",
@@ -5629,7 +5961,9 @@ const additionalBoards: Board[] = [
     description:
       "An entry-level Espressif RISC-V dev board with Wi-Fi and BLE for low-cost connected devices and firmware courses.",
     tags: ["ESP32-C3", "Espressif", "RISC-V", "Wi-Fi", "BLE"],
-    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "Zigbee", "Thread", "JTAG"],
+    // The ESP32-C3 has no 802.15.4 radio — Espressif's SoC page lists Wi-Fi
+    // and Bluetooth 5 (LE) only, so Zigbee and Thread do not belong here.
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
       "Official documentation includes pin-header tables.",
       "Good inexpensive board for RISC-V microcontroller labs.",
@@ -5647,6 +5981,115 @@ const additionalBoards: Board[] = [
       },
     ],
     pinout: esp32C3DevKitMHeaders,
+  },
+  {
+    id: "esp32-c3-devkitc-02",
+    name: "ESP32-C3-DevKitC-02",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-C3",
+    processor: "ESP32-C3-WROOM-02 RISC-V, 4 MB flash",
+    logicLevel: "3.3 V GPIO",
+    power: "Micro-USB, 5 V header, or 3.3 V header (mutually exclusive)",
+    formFactor: "Breadboard dev kit, 15-pin headers",
+    description:
+      "Espressif's WROOM-02 ESP32-C3 board — the PCB-antenna sibling of the DevKitM-1, with a different J1/J3 order that is easy to mix up.",
+    tags: ["ESP32-C3", "Espressif", "RISC-V", "Wi-Fi", "BLE", "WROOM-02"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
+    highlights: [
+      "Official Espressif header tables give every J1/J3 pin and function.",
+      "PCB-antenna WROOM-02 module with 4 MB flash and no PSRAM to work around.",
+      "USB Serial/JTAG is reachable on GPIO18/GPIO19 for debugging without a probe.",
+    ],
+    warnings: [
+      "The header order is not the DevKitM-1's: J1 pin 4 is RST here, IO2 there. Re-check a harness moved between the two boards.",
+      "GPIO2, GPIO8, and GPIO9 are strapping pins; a pull-up or pull-down at reset changes the boot mode.",
+      "GPIO8 also drives the addressable RGB LED, so anything wired to it fights the LED driver.",
+      "GPIO18 and GPIO19 carry USB-JTAG by default and only become GPIOs once the driver disables it.",
+      "3V3, 5V, and the Micro-USB port are mutually exclusive supplies.",
+      "IO pins are 3.3 V logic — do not drive them from a 5 V source.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-C3-DevKitC-02 user guide",
+        url: "https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/hw-reference/esp32c3/user-guide-devkitc-02.html",
+        type: "Docs",
+      },
+      {
+        label: "ESP32-C3-DevKitC-02 schematic (V1.1)",
+        url: "https://dl.espressif.com/dl/schematics/SCH_ESP32-C3-DEVKITC-02_V1_1_20210126A.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "ESP32-C3 datasheet",
+        url: "https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "ESP-IDF ESP32-C3 GPIO notes (strapping, flash, USB-JTAG)",
+        url: "https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/api-reference/peripherals/gpio.html",
+        type: "Docs",
+      },
+    ],
+    pinout: esp32C3DevKitC02Headers,
+  },
+  {
+    id: "esp32-s2-devkitm-1",
+    name: "ESP32-S2-DevKitM-1",
+    vendor: "Espressif",
+    category: "Development Board",
+    family: "ESP32-S2",
+    processor: "ESP32-S2-MINI-1/1U or MINI-2/2U",
+    logicLevel: "3.3 V GPIO",
+    power: "Micro-USB, 5 V header, or 3.3 V header (mutually exclusive)",
+    formFactor: "Breadboard dev kit, 21-pin headers",
+    description:
+      "Espressif's MINI-module ESP32-S2 board: 42 broken-out pins with 14 touch channels, two DACs, and the widest analog coverage of the S2 kits.",
+    tags: ["ESP32-S2", "Espressif", "Wi-Fi", "Touch", "DAC", "MINI-1"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "JTAG"],
+    highlights: [
+      "Official Espressif header tables give every J1/J3 pin and function.",
+      "GPIO1-GPIO14 are capacitive touch channels TOUCH1-TOUCH14 as well as ADC inputs.",
+      "Two true DAC outputs, DAC_1 on GPIO17 and DAC_2 on GPIO18.",
+    ],
+    warnings: [
+      "GPIO26 sits in the GPIO26-32 flash/PSRAM range. On ESP32-S2-MINI-2/2U boards, which carry 2 MB PSRAM, treat it as unusable — the module variant is not printed on the header.",
+      "GPIO46 is input only and fixed pull-down; it cannot drive a load.",
+      "GPIO0, GPIO45, and GPIO46 are strapping pins; GPIO0 and GPIO46 together select boot mode at reset.",
+      "The Micro-USB port goes through a USB-to-UART bridge, so GPIO19/GPIO20 (USB D-/D+) are free on the header rather than wired to that connector.",
+      "GPIO18 also drives the addressable RGB LED, so anything wired to it fights the LED driver.",
+      "3V3, 5V, and the Micro-USB port are mutually exclusive supplies.",
+      "The ESP32-S2 has no Bluetooth radio — Wi-Fi only.",
+      "IO pins are 3.3 V logic — do not drive them from a 5 V source.",
+    ],
+    sourceLinks: [
+      {
+        label: "ESP32-S2-DevKitM-1 user guide",
+        url: "https://docs.espressif.com/projects/esp-idf/en/v5.3/esp32s2/hw-reference/esp32s2/user-guide-devkitm-1-v1.html",
+        type: "Docs",
+      },
+      {
+        label: "ESP32-S2-DevKitM-1 schematic (V1)",
+        url: "https://dl.espressif.com/dl/schematics/ESP32-S2-DevKitM-1_V1_Schematics.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "ESP32-S2-MINI-1 / MINI-1U module datasheet",
+        url: "https://www.espressif.com/sites/default/files/documentation/esp32-s2-mini-1_esp32-s2-mini-1u_datasheet_en.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "ESP-IDF ESP32-S2 GPIO notes (flash/PSRAM range, input-only pin)",
+        url: "https://docs.espressif.com/projects/esp-idf/en/v5.3/esp32s2/api-reference/peripherals/gpio.html",
+        type: "Docs",
+      },
+      {
+        label: "ESP32-S2 schematic checklist (strapping pins)",
+        url: "https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32s2/schematic-checklist.html",
+        type: "Docs",
+      },
+    ],
+    pinout: esp32S2DevKitM1Headers,
   },
   {
     id: "esp32-c6-devkitc-1",

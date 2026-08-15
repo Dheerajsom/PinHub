@@ -316,6 +316,12 @@ export const boardVisuals: Record<string, BoardVisual> = {
   }),
   "esp32-s3-devkitc-1": preset("esp32Devkit"),
   "esp32-c3-devkitm-1": preset("esp32Devkit", { aspect: 0.36 }),
+  "esp32-c3-devkitc-02": preset("esp32Devkit", {
+    aspect: 0.48,
+    revisionNote:
+      "J1 and J3 follow the official ESP32-C3-DevKitC-02 header numbering, which is not the DevKitM-1 order.",
+  }),
+  "esp32-s2-devkitm-1": preset("esp32Devkit", { aspect: 0.4 }),
   "esp32-c6-devkitc-1": preset("esp32Devkit"),
   "esp32-h2-devkitm-1": preset("esp32Devkit", { ports: ["usb-c"] }),
   "esp32-s2-saola-1": preset("esp32Devkit", { aspect: 0.36 }),

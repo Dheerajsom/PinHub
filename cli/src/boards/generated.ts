@@ -9410,6 +9410,1124 @@ export const generatedBoards: Board[] = [
     ]
   },
   {
+    "id": "esp32-c3-devkitc-02",
+    "name": "ESP32-C3-DevKitC-02",
+    "manufacturer": "Espressif",
+    "aliases": [],
+    "description": "Espressif's WROOM-02 ESP32-C3 board — the PCB-antenna sibling of the DevKitM-1, with a different J1/J3 order that is easy to mix up.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "The header order is not the DevKitM-1's: J1 pin 4 is RST here, IO2 there. Re-check a harness moved between the two boards."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO2, GPIO8, and GPIO9 are strapping pins; a pull-up or pull-down at reset changes the boot mode."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO8 also drives the addressable RGB LED, so anything wired to it fights the LED driver."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO18 and GPIO19 carry USB-JTAG by default and only become GPIOs once the driver disables it."
+      },
+      {
+        "severity": "warning",
+        "text": "3V3, 5V, and the Micro-USB port are mutually exclusive supplies."
+      },
+      {
+        "severity": "warning",
+        "text": "IO pins are 3.3 V logic — do not drive them from a 5 V source."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, 5 V header, or 3.3 V header (mutually exclusive)."
+      },
+      {
+        "severity": "info",
+        "text": "Positions 1-15 are J1 pins 1-15; positions 16-30 are J3 pins 1-15."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif: \"GPIO2, GPIO8 and GPIO9 are strapping pins\" — external pulls on these at reset change boot mode."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif: \"GPIO 18 and 19 are used by USB-JTAG by default. In order to use them as GPIOs, USB-JTAG will be disabled by the drivers.\""
+      },
+      {
+        "severity": "info",
+        "text": "The Micro-USB port reaches the chip through a USB-to-UART bridge, so it is not wired to GPIO18/GPIO19."
+      },
+      {
+        "severity": "info",
+        "text": "3V3, 5V, and the Micro-USB port are mutually exclusive supplies; do not feed two at once."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-C3-DevKitC-02 user guide",
+        "url": "https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/hw-reference/esp32c3/user-guide-devkitc-02.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "ESP32-C3-DevKitC-02 schematic (V1.1)",
+        "url": "https://dl.espressif.com/dl/schematics/SCH_ESP32-C3-DEVKITC-02_V1_1_20210126A.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "ESP32-C3 datasheet",
+        "url": "https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "ESP-IDF ESP32-C3 GPIO notes (strapping, flash, USB-JTAG)",
+        "url": "https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/api-reference/peripherals/gpio.html",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "ESP32-C3-DevKitC-02 J1/J3 headers",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved",
+            "functions": [
+              "CHIP_PU"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH4",
+              "FSPIHD",
+              "MTMS"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "analog",
+            "functions": [
+              "ADC2_CH0",
+              "FSPIWP",
+              "MTDI"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "communication",
+            "functions": [
+              "FSPICLK",
+              "MTCK"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "communication",
+            "functions": [
+              "FSPID",
+              "MTDO"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "reserved",
+            "functions": [
+              "Strapping",
+              "RGB LED"
+            ],
+            "notes": [
+              "Strapping pin; also drives the on-board addressable RGB LED."
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "reserved",
+            "functions": [
+              "Strapping",
+              "BOOT"
+            ],
+            "notes": [
+              "Strapping pin; held low at reset by the Boot button."
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GPIO0",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH0",
+              "XTAL_32K_P"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GPIO1",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH1",
+              "XTAL_32K_N"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO2",
+            "category": "reserved",
+            "functions": [
+              "Strapping",
+              "ADC1_CH2",
+              "FSPIQ"
+            ],
+            "notes": [
+              "Strapping pin; also ADC1_CH2."
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIO3",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH3"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "functions": [
+              "FSPICS0"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "RX / GPIO20",
+            "category": "communication",
+            "functions": [
+              "U0RXD"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "TX / GPIO21",
+            "category": "communication",
+            "functions": [
+              "U0TXD"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIO18",
+            "category": "gpio",
+            "functions": [
+              "USB Serial/JTAG"
+            ],
+            "notes": [
+              "Used by USB-JTAG by default; drivers disable USB-JTAG to free it."
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO19",
+            "category": "gpio",
+            "functions": [
+              "USB Serial/JTAG"
+            ],
+            "notes": [
+              "Used by USB-JTAG by default; drivers disable USB-JTAG to free it."
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "esp32-s2-devkitm-1",
+    "name": "ESP32-S2-DevKitM-1",
+    "manufacturer": "Espressif",
+    "aliases": [],
+    "description": "Espressif's MINI-module ESP32-S2 board: 42 broken-out pins with 14 touch channels, two DACs, and the widest analog coverage of the S2 kits.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO26 sits in the GPIO26-32 flash/PSRAM range. On ESP32-S2-MINI-2/2U boards, which carry 2 MB PSRAM, treat it as unusable — the module variant is not printed on the header."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO46 is input only and fixed pull-down; it cannot drive a load."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO0, GPIO45, and GPIO46 are strapping pins; GPIO0 and GPIO46 together select boot mode at reset."
+      },
+      {
+        "severity": "warning",
+        "text": "The Micro-USB port goes through a USB-to-UART bridge, so GPIO19/GPIO20 (USB D-/D+) are free on the header rather than wired to that connector."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO18 also drives the addressable RGB LED, so anything wired to it fights the LED driver."
+      },
+      {
+        "severity": "warning",
+        "text": "3V3, 5V, and the Micro-USB port are mutually exclusive supplies."
+      },
+      {
+        "severity": "warning",
+        "text": "The ESP32-S2 has no Bluetooth radio — Wi-Fi only."
+      },
+      {
+        "severity": "warning",
+        "text": "IO pins are 3.3 V logic — do not drive them from a 5 V source."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, 5 V header, or 3.3 V header (mutually exclusive)."
+      },
+      {
+        "severity": "info",
+        "text": "Positions 1-21 are J1 pins 1-21; positions 22-42 are J3 pins 1-21."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif: \"GPIO26-32 are usually used for SPI flash and PSRAM and not recommended for other uses.\" GPIO26 is broken out here — treat it as unavailable on ESP32-S2-MINI-2/2U boards, which carry 2 MB PSRAM."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif: \"GPIO0, GPIO45, and GPIO46 are strapping pins.\" GPIO0 and GPIO46 together select boot mode at reset."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif: \"GPIO46 is fixed to pull-down and is input only.\" It cannot drive anything."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO19 and GPIO20 are the chip's USB D-/D+ pads, but the Micro-USB port reaches the chip through a USB-to-UART bridge, so they are free on the header."
+      },
+      {
+        "severity": "info",
+        "text": "3V3, 5V, and the Micro-USB port are mutually exclusive supplies; do not feed two at once."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ESP32-S2-DevKitM-1 user guide",
+        "url": "https://docs.espressif.com/projects/esp-idf/en/v5.3/esp32s2/hw-reference/esp32s2/user-guide-devkitm-1-v1.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "ESP32-S2-DevKitM-1 schematic (V1)",
+        "url": "https://dl.espressif.com/dl/schematics/ESP32-S2-DevKitM-1_V1_Schematics.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "ESP32-S2-MINI-1 / MINI-1U module datasheet",
+        "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s2-mini-1_esp32-s2-mini-1u_datasheet_en.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "ESP-IDF ESP32-S2 GPIO notes (flash/PSRAM range, input-only pin)",
+        "url": "https://docs.espressif.com/projects/esp-idf/en/v5.3/esp32s2/api-reference/peripherals/gpio.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "ESP32-S2 schematic checklist (strapping pins)",
+        "url": "https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32s2/schematic-checklist.html",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "ESP32-S2-DevKitM-1 J1/J3 headers",
+        "layout": {
+          "rows": 21,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "reserved",
+            "functions": [
+              "Strapping",
+              "BOOT",
+              "RTC_GPIO0"
+            ],
+            "notes": [
+              "Strapping pin; held low at reset by the Boot button."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO1",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH0",
+              "TOUCH1",
+              "RTC_GPIO1"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH1",
+              "TOUCH2",
+              "RTC_GPIO2"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH2",
+              "TOUCH3",
+              "RTC_GPIO3"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH3",
+              "TOUCH4",
+              "RTC_GPIO4"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH4",
+              "TOUCH5",
+              "RTC_GPIO5"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH5",
+              "TOUCH6",
+              "RTC_GPIO6"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GPIO7",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH6",
+              "TOUCH7",
+              "RTC_GPIO7"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO8",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH7",
+              "TOUCH8",
+              "RTC_GPIO8"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "analog",
+            "functions": [
+              "ADC1_CH8",
+              "TOUCH9",
+              "FSPIHD"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "functions": [
+              "FSPICS0",
+              "FSPIIO4",
+              "ADC1_CH9",
+              "TOUCH10"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GPIO11",
+            "category": "communication",
+            "functions": [
+              "FSPID",
+              "FSPIIO5",
+              "ADC2_CH0",
+              "TOUCH11"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO12",
+            "category": "communication",
+            "functions": [
+              "FSPICLK",
+              "FSPIIO6",
+              "ADC2_CH1",
+              "TOUCH12"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "communication",
+            "functions": [
+              "FSPIQ",
+              "FSPIIO7",
+              "ADC2_CH2",
+              "TOUCH13"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO14",
+            "category": "communication",
+            "functions": [
+              "FSPIWP",
+              "FSPIDQS",
+              "ADC2_CH3",
+              "TOUCH14"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO15",
+            "category": "analog",
+            "functions": [
+              "ADC2_CH4",
+              "U0RTS",
+              "XTAL_32K_P"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO16",
+            "category": "analog",
+            "functions": [
+              "ADC2_CH5",
+              "U0CTS",
+              "XTAL_32K_N"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO17",
+            "category": "analog",
+            "functions": [
+              "DAC_1",
+              "ADC2_CH6",
+              "U1TXD"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "RST",
+            "category": "reserved",
+            "functions": [
+              "CHIP_PU"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GPIO46",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "Input only and fixed pull-down; with GPIO0 it selects boot mode."
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO45",
+            "category": "reserved",
+            "functions": [
+              "Strapping"
+            ],
+            "notes": [
+              "Strapping pin, pulled down at reset."
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "RX / GPIO44",
+            "category": "communication",
+            "functions": [
+              "U0RXD",
+              "CLK_OUT2"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "TX / GPIO43",
+            "category": "communication",
+            "functions": [
+              "U0TXD",
+              "CLK_OUT1"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GPIO42",
+            "category": "communication",
+            "functions": [
+              "MTMS"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO41",
+            "category": "communication",
+            "functions": [
+              "MTDI",
+              "CLK_OUT1"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO40",
+            "category": "communication",
+            "functions": [
+              "MTDO",
+              "CLK_OUT2"
+            ]
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GPIO39",
+            "category": "communication",
+            "functions": [
+              "MTCK",
+              "CLK_OUT3"
+            ]
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO38",
+            "category": "communication",
+            "functions": [
+              "FSPIWP"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIO37",
+            "category": "communication",
+            "functions": [
+              "FSPIQ",
+              "SPIDQS"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO36",
+            "category": "communication",
+            "functions": [
+              "FSPICLK",
+              "SPIIO7"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIO35",
+            "category": "communication",
+            "functions": [
+              "FSPID",
+              "SPIIO6"
+            ]
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GPIO34",
+            "category": "communication",
+            "functions": [
+              "FSPICS0",
+              "SPIIO5"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO33",
+            "category": "communication",
+            "functions": [
+              "FSPIHD",
+              "SPIIO4"
+            ]
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GPIO26",
+            "category": "reserved",
+            "functions": [
+              "SPICS1"
+            ],
+            "notes": [
+              "In the GPIO26-32 flash/PSRAM range; unusable on PSRAM modules."
+            ]
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO21",
+            "category": "gpio",
+            "functions": [
+              "RTC_GPIO21"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO20",
+            "category": "gpio",
+            "functions": [
+              "USB_D+",
+              "ADC2_CH9",
+              "U1CTS"
+            ]
+          },
+          {
+            "physical": 41,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO19",
+            "category": "gpio",
+            "functions": [
+              "USB_D-",
+              "ADC2_CH8",
+              "U1RTS"
+            ]
+          },
+          {
+            "physical": 42,
+            "position": {
+              "row": 21,
+              "column": 2
+            },
+            "label": "GPIO18",
+            "category": "analog",
+            "functions": [
+              "DAC_2",
+              "ADC2_CH7",
+              "U1RXD",
+              "RGB LED"
+            ],
+            "notes": [
+              "Also drives the on-board addressable RGB LED."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "esp32-c6-devkitc-1",
     "name": "ESP32-C6-DevKitC-1",
     "manufacturer": "Espressif",
