@@ -24,10 +24,17 @@ const audiowide = Audiowide({
 // The pinout drawing's annotation face. Chivo Mono's squared terminals and
 // tabular figures read like CAD callouts, which is exactly the register the
 // pinout sheet is written in; Geist Mono stays the general-purpose code face.
+//
+// Not preloaded: the only rule that asks for it is `.pin-tech`, which lives in
+// the static pin map — the non-default tab. Preloading it put ~26 kB of font
+// at the head of the network queue on every page for type that is not on the
+// first screen; it now loads when the static map first renders (font-display
+// swap, so that view never blocks on it).
 const chivoMono = Chivo_Mono({
   variable: "--font-technical",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -61,10 +68,10 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: ["/pinhub-logo.png"],
   },
-  icons: {
-    icon: "/icon.png",
-    apple: "/apple-icon.png",
-  },
+  // Icons are intentionally left to the `app/icon.png` and `app/apple-icon.png`
+  // file conventions. Naming them here emits a bare href with no `sizes` or
+  // `type`; the generated links carry both plus a content hash, so a replaced
+  // icon actually reaches returning visitors.
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

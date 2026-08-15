@@ -121,8 +121,23 @@ export function createBoardSearchIndex(
   });
 }
 
+// Matching cost is linear in tokens × boards, and the query is re-scored on
+// every keystroke. A hand-typed lookup is a handful of words; a pasted wall of
+// text is not a lookup at all, and left unbounded it turns each keystroke into
+// a long task (measured: 2,000 matching tokens took ~14 ms per pass over the
+// catalog on a desktop, several times that on a phone). Both limits sit far
+// above any real query, so ranking for real input is unchanged.
+const maxQueryLength = 256;
+const maxQueryTokens = 32;
+
 export function tokenizeQuery(query: string): string[] {
-  return query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return query
+    .slice(0, maxQueryLength)
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, maxQueryTokens);
 }
 
 // True when the token starts a word in the haystack, without allocating a
