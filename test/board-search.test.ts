@@ -53,6 +53,26 @@ describe("tokenizeQuery", () => {
   it("returns no tokens for a blank query", () => {
     expect(tokenizeQuery("   ")).toEqual([]);
   });
+
+  it("leaves realistic queries untouched", () => {
+    // The longest catalog-shaped query anyone types is a few words; the caps
+    // must never reach down into that range.
+    const realistic = "raspberry pi 5 not 5 v tolerant gpio header";
+    expect(tokenizeQuery(realistic)).toEqual(realistic.split(" "));
+  });
+
+  it("bounds a pasted wall of text so scoring stays linear and small", () => {
+    const hostile = Array.from({ length: 5000 }, () => "gpio").join(" ");
+    const tokens = tokenizeQuery(hostile);
+    expect(tokens.length).toBeLessThanOrEqual(32);
+    expect(tokens.join(" ").length).toBeLessThanOrEqual(256);
+    // A bounded query still matches; it is truncated, not rejected.
+    expect(scoreOf(summary(), hostile)).toBeGreaterThan(0);
+  });
+
+  it("bounds a single unbroken run of characters", () => {
+    expect(tokenizeQuery("x".repeat(100_000))).toEqual(["x".repeat(256)]);
+  });
 });
 
 describe("matchBoardSearchEntry", () => {
