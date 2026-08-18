@@ -38,7 +38,7 @@ export function BoardArtwork({
   const uid = raw.replace(/[^a-zA-Z0-9]/g, "");
   const id = (name: string) => `${name}-${uid}`;
 
-  const { body, headerZones, ports, holes, anchors, padR, accent, kind } =
+  const { body, headerZones, ports, holes, anchors, padR, accent, kind, silk } =
     geometry;
 
   // The function-grouped sheet makes no claim about a board's shape, so it gets
@@ -203,6 +203,38 @@ export function BoardArtwork({
         strokeOpacity={0.14}
         strokeWidth={1.25}
       />
+      {/* Builder-derived silkscreen: connector designators and section rules
+          (e.g. the delimiter under a Nucleo's debugger section). */}
+      {silk?.lines.map((line, index) => (
+        <line
+          key={`silk-line-${index}`}
+          x1={line.x1}
+          y1={line.y1}
+          x2={line.x2}
+          y2={line.y2}
+          stroke={SILK}
+          strokeOpacity={0.2}
+          strokeWidth={1.5}
+          strokeDasharray={line.dashed ? "12 9" : undefined}
+        />
+      ))}
+      {silk?.texts.map((entry, index) => (
+        <text
+          key={`silk-text-${index}`}
+          x={entry.x}
+          y={entry.y}
+          textAnchor="middle"
+          fontSize={entry.size}
+          fontFamily="var(--font-mono, monospace)"
+          fontWeight={700}
+          letterSpacing="0.16em"
+          fill={SILK}
+          fillOpacity={0.28}
+        >
+          {entry.text}
+        </text>
+      ))}
+
       {label && field.w > 150 ? (
         <text
           x={field.x + field.w / 2}
@@ -808,7 +840,9 @@ function routeTraces(chip: Rect | null, zones: Rect[], body: Rect): string[] {
   const chipCy = chip.y + chip.h / 2;
   const count = 7;
 
-  for (const zone of zones.slice(0, 2)) {
+  // Up to four connector rows get copper: every kind draws at most two except
+  // the Nucleo-144's four stacked Zio headers, which each deserve their fan.
+  for (const zone of zones.slice(0, 4)) {
     const horizontal = zone.w >= zone.h;
     for (let index = 0; index < count; index += 1) {
       const t = (index + 1) / (count + 1);

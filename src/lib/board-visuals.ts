@@ -20,12 +20,15 @@ export type BoardForm = "horizontal" | "vertical";
 // - group-strips:    schematic, function-grouped strips (not to physical
 //                    scale) for boards whose data is grouped by function and
 //                    cannot be resolved to exact physical coordinates.
+// - zio-quad:        Nucleo-144-style tall board with four stacked dual-row
+//                    Zio headers, two down each long edge, debugger at top.
 export type HeaderKind =
   | "header2x"
   | "edge-dual"
   | "shield-split"
   | "edge-connector"
-  | "group-strips";
+  | "group-strips"
+  | "zio-quad";
 
 // Where the connector rows are read from. "pins" uses pinout.pins.left/right;
 // "groups" uses pinout.groups (group 0 / group 1 for edge-dual).
@@ -189,6 +192,17 @@ const PRESETS = {
     usb: "left",
     ports: ["usb-a", "barrel"],
     orientation: "Component side up, shield headers along the long edges",
+  },
+  nucleo144: {
+    template: "nucleo-144-zio",
+    form: "vertical",
+    headerKind: "zio-quad",
+    // 70 x 133.34 mm per the UM2407 mechanical drawing.
+    aspect: 0.525,
+    usb: "top",
+    ports: ["usb-micro", "usb-micro", "ethernet"],
+    orientation:
+      "ST-LINK at top, component side up — Zio CN8/CN9 down the left edge, CN7/CN10 down the right",
   },
   nucleo: {
     template: "nucleo-64",
@@ -390,6 +404,9 @@ export const boardVisuals: Record<string, BoardVisual> = {
   // --- Arduino Mega-footprint shields -------------------------------------
   "arduino-mega-2560-rev3": preset("arduinoMega"),
   "arduino-due": preset("arduinoMega", { ports: ["usb-micro", "barrel"] }),
+
+  // --- Nucleo-144 (Zio) ----------------------------------------------------
+  "stm32-nucleo-h753zi": preset("nucleo144", { accent: "#155e75" }),
 
   // --- Nucleo-64 -----------------------------------------------------------
   "stm32-nucleo-f401re": preset("nucleo", { accent: "#155e75" }),

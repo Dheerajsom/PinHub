@@ -267,6 +267,36 @@ export function artworkPlacementErrors(
     }
   }
 
+  // Silkscreen lettering is decorative, but a designator drawn across a pad
+  // would sit underneath it and smear the header — same class of failure as a
+  // connector shell over pin 1, so the same gate covers it.
+  for (const text of geometry.silk?.texts ?? []) {
+    const halfW = (text.text.length * text.size * LABEL_CHAR_RATIO) / 2;
+    const box = {
+      x0: text.x - halfW,
+      y0: text.y - text.size,
+      x1: text.x + halfW,
+      y1: text.y,
+    };
+    if (box.x0 < 0 || box.y0 < 0 || box.x1 > vbw || box.y1 > vbh) {
+      errors.push(
+        `Board "${boardId}": silkscreen text "${text.text}" runs off the sheet.`,
+      );
+    }
+    const clash = anchors.find(
+      (anchor) =>
+        box.x0 < anchor.cx + padR &&
+        box.x1 > anchor.cx - padR &&
+        box.y0 < anchor.cy + padR &&
+        box.y1 > anchor.cy - padR,
+    );
+    if (clash) {
+      errors.push(
+        `Board "${boardId}": silkscreen text "${text.text}" overlaps pad ${clash.pin.position}.`,
+      );
+    }
+  }
+
   return errors;
 }
 

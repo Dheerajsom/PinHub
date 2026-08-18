@@ -65,8 +65,9 @@ export function BoardStage({
   const labelled = showAllLabels || stacked;
 
   // Pin 1 gets a square pad — the silkscreen convention for the corner pin, and
-  // the one mark that tells a reader which way round the connector is.
-  const pinOne = anchors.find((anchor) => anchor.pin.position === 1) ?? null;
+  // the one mark that tells a reader which way round the connector is. A board
+  // with several physical connectors repeats position 1, so each connector
+  // carries its own square.
   const netPath = netKeys.size > 1 ? buildNetPath(anchors, netKeys) : null;
   // A 40-pin header shown at phone width leaves each pad about 16 physical
   // pixels across, so the invisible hit area is grown to tile the row: as much
@@ -188,7 +189,7 @@ export function BoardStage({
             anchor={anchor}
             padR={padR}
             hitR={hitR}
-            square={anchor.key === pinOne?.key}
+            square={anchor.pin.position === 1}
             selected={anchor.key === selectedKey}
             active={anchor.key === activeKey}
             onNet={netKeys.has(anchor.key)}

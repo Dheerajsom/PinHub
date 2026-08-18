@@ -55,6 +55,17 @@ export type Rect = { x: number; y: number; w: number; h: number; rx?: number };
 export type PortMark = Rect & { kind: PortKind; side: Side };
 export type Hole = { x: number; y: number; r: number };
 
+/** Silkscreen annotation lettered onto the board face (decorative, aria-hidden). */
+export type SilkText = { x: number; y: number; text: string; size: number };
+/** Silkscreen rule, e.g. the delimiter under a debugger section. */
+export type SilkLine = {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  dashed?: boolean;
+};
+
 export type BoardGeometry = {
   kind: BoardVisual["headerKind"];
   vbw: number;
@@ -70,6 +81,9 @@ export type BoardGeometry = {
   padR: number;
   /** Drawn centre-to-centre pin spacing; sets the step of the header. */
   pitch: number;
+  /** Silkscreen lettering and rules the builder derives from the board data
+   *  (connector designators, section delimiters). Purely decorative. */
+  silk?: { texts: SilkText[]; lines: SilkLine[] };
   /** How the pins are arranged — e.g. "2 × 20". */
   arrangement: string;
   notToScale: boolean;
@@ -478,6 +492,171 @@ function buildEdgeConnector(board: Board, visual: BoardVisual): Omit<BoardGeomet
   };
 }
 
+// --- Nucleo-144 Zio --------------------------------------------------------
+// A tall board with four stacked dual-row Zio headers, two down each long
+// edge, and the debugger section across the top. Groups arrive in connector
+// order (CN7, CN8, CN9, CN10 per ST UM2407 Figure 16) and are placed in the
+// connectors' true positions: CN8/CN9 down the left edge, CN7/CN10 down the
+// right, pin 1 at the top of every header, odd pins in the left sub-column.
+const ZIO_ROW_PITCH = 56; // centre-to-centre row spacing within a header
+const ZIO_COL_GAP = 36; // spacing between a header's two pin columns
+const ZIO_EDGE_INSET = 32; // outer pin column, in from the board edge
+const ZIO_STACK_GAP = 92; // last row of the upper header to first of the lower
+const ZIO_DEBUG_H = 170; // the delimited debugger section across the top
+const ZIO_LABEL_STAGGER = 12; // both pins of a row share a rail, offset apart
+
+const ZIO_SLOTS: Array<{ side: "left" | "right"; lower: boolean }> = [
+  { side: "right", lower: false }, // CN7
+  { side: "left", lower: false }, // CN8
+  { side: "left", lower: true }, // CN9
+  { side: "right", lower: true }, // CN10
+];
+
+function buildZioQuad(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> {
+  const groups = board.pinout?.groups ?? [];
+  const rowsOf = (index: number) =>
+    Math.ceil((groups[index]?.pins.length ?? 0) / 2);
+  const edgeSpan = (upper: number, lower: number) =>
+    Math.max(rowsOf(upper) - 1, 0) * ZIO_ROW_PITCH +
+    ZIO_STACK_GAP +
+    Math.max(rowsOf(lower) - 1, 0) * ZIO_ROW_PITCH;
+
+  const connSpan = Math.max(edgeSpan(1, 2), edgeSpan(0, 3));
+  const topPad = 54; // debugger delimiter down to the first pin row
+  const bottomPad = 84;
+  const bodyH = ZIO_DEBUG_H + topPad + connSpan + bottomPad;
+  const bodyW = Math.max(Math.round(bodyH * visual.aspect), 320);
+
+  const leftPins = [...(groups[1]?.pins ?? []), ...(groups[2]?.pins ?? [])];
+  const rightPins = [...(groups[0]?.pins ?? []), ...(groups[3]?.pins ?? [])];
+  const leftRail = railFor(leftPins, MIN_LABEL_SIDE);
+  const rightRail = railFor(rightPins, MIN_LABEL_SIDE);
+
+  const topMargin = 56;
+  const bottomMargin = 60;
+  const vbw = leftRail + bodyW + rightRail;
+  const vbh = topMargin + bodyH + bottomMargin;
+
+  const bodyX = leftRail;
+  const bodyY = topMargin;
+  const body: Rect = { x: bodyX, y: bodyY, w: bodyW, h: bodyH, rx: 20 };
+  const connTop = bodyY + ZIO_DEBUG_H + topPad;
+
+  const anchors: PinAnchor[] = [];
+  const headerZones: Rect[] = [];
+  const silkTexts: SilkText[] = [];
+
+  groups.forEach((group, gi) => {
+    const slot = ZIO_SLOTS[gi % ZIO_SLOTS.length];
+    const rows = rowsOf(gi);
+    const upperIndex = slot.side === "left" ? 1 : 0;
+    const firstY = slot.lower
+      ? connTop +
+        Math.max(rowsOf(upperIndex) - 1, 0) * ZIO_ROW_PITCH +
+        ZIO_STACK_GAP
+      : connTop;
+
+    const outerX =
+      slot.side === "left"
+        ? bodyX + ZIO_EDGE_INSET
+        : bodyX + bodyW - ZIO_EDGE_INSET;
+    const innerX =
+      slot.side === "left" ? outerX + ZIO_COL_GAP : outerX - ZIO_COL_GAP;
+    const labelX = slot.side === "left" ? bodyX - 18 : bodyX + bodyW + 18;
+
+    group.pins.forEach((pin, i) => {
+      const row = Math.floor(i / 2);
+      const cy = firstY + row * ZIO_ROW_PITCH;
+      // Odd pin numbers sit in the left sub-column of every Zio header, which
+      // is the outer column on the left edge and the inner one on the right.
+      const oddColumn = i % 2 === 0;
+      const outer = slot.side === "left" ? oddColumn : !oddColumn;
+      anchors.push({
+        key: `g${gi}:${i}`,
+        pin,
+        group: group.label,
+        cx: outer ? outerX : innerX,
+        cy,
+        side: slot.side,
+        labelX,
+        // The row pair shares one rail point, so the two labels straddle the
+        // row — the stagger ST's own Zio sheets use. The odd (lower-numbered)
+        // pin always takes the upper slot, so every pair reads in pin order.
+        labelY: cy + (oddColumn ? -ZIO_LABEL_STAGGER : ZIO_LABEL_STAGGER),
+        labelAnchor: slot.side === "left" ? "end" : "start",
+        rotateLabel: false,
+      });
+    });
+
+    const zone: Rect = {
+      x: Math.min(outerX, innerX) - (PAD_R + 6),
+      y: firstY - (PAD_R + 6),
+      w: ZIO_COL_GAP + (PAD_R + 6) * 2,
+      h: Math.max(rows - 1, 0) * ZIO_ROW_PITCH + (PAD_R + 6) * 2,
+      rx: 8,
+    };
+    headerZones.push(zone);
+
+    // The connector's designator, lettered above its strip the way the board's
+    // own silkscreen carries it ("CN7 Zio (upper right)" -> "CN7").
+    const designator = group.label.split(/\s+/)[0] ?? group.label;
+    silkTexts.push({
+      x: zone.x + zone.w / 2,
+      y: zone.y - 14,
+      text: designator,
+      size: 15,
+    });
+  });
+
+  // The debugger section: a dashed silkscreen delimiter with the part name,
+  // the one feature every Nucleo owner orients the board by.
+  silkTexts.push({
+    x: bodyX + bodyW / 2,
+    y: bodyY + ZIO_DEBUG_H * 0.5 + 8,
+    text: "STLINK-V3E",
+    size: 22,
+  });
+  const silkLines: SilkLine[] = [
+    {
+      x1: bodyX + 18,
+      y1: bodyY + ZIO_DEBUG_H,
+      x2: bodyX + bodyW - 18,
+      y2: bodyY + ZIO_DEBUG_H,
+      dashed: true,
+    },
+  ];
+
+  // Curated connectors: the debug USB on the recorded top edge, the user USB
+  // and Ethernet jack along the bottom — where the MB1364 carries them.
+  const portList = visual.ports ?? [];
+  const ports: PortMark[] = [];
+  if (portList.length && visual.usb && visual.usb !== "none") {
+    ports.push(edgeMark(portList[0], visual.usb, body, 0.5));
+  }
+  const rest = portList.slice(visual.usb && visual.usb !== "none" ? 1 : 0);
+  rest.forEach((kind, index) => {
+    ports.push(edgeMark(kind, "bottom", body, spot(index, rest.length)));
+  });
+
+  return {
+    vbw,
+    vbh,
+    body,
+    accent: accentForBoard(board.id, board.vendor),
+    headerZones,
+    ports,
+    holes: corners(body, 30),
+    anchors,
+    padR: PAD_R,
+    pitch: ZIO_COL_GAP,
+    silk: { texts: silkTexts, lines: silkLines },
+    arrangement: groups.map((_, gi) => `2×${rowsOf(gi)}`).join(" + "),
+    notToScale: Boolean(visual.notToScale),
+    orientation: visual.orientation,
+    revisionNote: visual.revisionNote,
+  };
+}
+
 // Function-grouped boards have no resolvable physical coordinates, so their
 // sheet is openly schematic: one labelled strip per function block. Column
 // spacing follows the longest signal name in the board so every pad can carry
@@ -685,6 +864,7 @@ const builders: Record<
   "shield-split": buildShieldSplit,
   "edge-connector": buildEdgeConnector,
   "group-strips": buildGroupStrips,
+  "zio-quad": buildZioQuad,
 };
 
 /** Build the full geometry for a board, or null if it has no pinout. */

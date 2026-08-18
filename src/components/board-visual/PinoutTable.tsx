@@ -46,7 +46,11 @@ export function PinoutTable({
           <th scope="col" className="w-[4.75rem] py-1.5 pr-2 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
             Role
           </th>
-          <th scope="col" className="w-[4.25rem] py-1.5 pr-2 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+          {/* On a phone-width container the Net column would starve the notes
+              column into single-character wraps; the probed net still reads
+              out through the pin details and the ring highlight, so the
+              column yields below 26rem. */}
+          <th scope="col" className="w-[4.25rem] py-1.5 pr-2 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500 @max-[26rem]:hidden">
             Net
           </th>
           <th scope="col" className="py-1.5 pr-1 text-left text-[10px] uppercase tracking-[0.14em] text-zinc-500">
@@ -122,7 +126,7 @@ export function PinoutTable({
                 </td>
                 <td
                   className={clsx(
-                    "truncate py-1 pr-2 font-mono text-[11px]",
+                    "truncate py-1 pr-2 font-mono text-[11px] @max-[26rem]:hidden",
                     onNet || isActive
                       ? "text-cyan-200"
                       : "text-zinc-500",
