@@ -46810,6 +46810,1364 @@ export const generatedBoards: Board[] = [
     ]
   },
   {
+    "id": "stm32-nucleo-h753zi",
+    "name": "STM32 Nucleo-H753ZI",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "ST's flagship Nucleo-144 for the 480 MHz STM32H753, exposing 100 Zio signals plus full ST morpho fan-out, onboard Ethernet, and the integrated STLINK-V3E debugger.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "I/Os are 3.3 V (1.8 V if JP5 is moved) — not 5 V tolerant like Arduino Uno V3 shields expect."
+      },
+      {
+        "severity": "warning",
+        "text": "Ethernet RMII solder bridges are ON by default: PA1, PA2, PC1, PC4, PC5, PG11, PG13, PA7, and PB13 (JP6) are tied to the PHY."
+      },
+      {
+        "severity": "warning",
+        "text": "Several MCU pins reach two Zio positions (PB5 on D11/D22, PE2 on D31/D56, PB2 on D27/D72, PE9 on D6/D71, PE6 on D38/D59) — drive only one at a time."
+      },
+      {
+        "severity": "warning",
+        "text": "A4/A5 route to PC2/PF10 ADC inputs by default; I2C1 on PB9/PB8 needs the SB53/SB55/SB60/SB62 solder-bridge swap."
+      },
+      {
+        "severity": "warning",
+        "text": "PA13/PA14 are the STLINK-V3E SWD pins; ST advises against using them as I/O."
+      },
+      {
+        "severity": "warning",
+        "text": "This map is for the MB1364 board (NUCLEO-H753ZI / H743ZI2); the older MB1137 NUCLEO-H743ZI in UM1974 differs."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO (1.8 V selectable via JP5). Power: USB, VIN 7-12 V, 5V_EXT, 3V3_EXT."
+      },
+      {
+        "severity": "info",
+        "text": "Zio tables follow ST UM2407 Rev 4 for the MB1364 board (NUCLEO-H723ZG / H743ZI2 / H753ZI)."
+      },
+      {
+        "severity": "info",
+        "text": "A0-A5 and D0-D15 are the Arduino Uno V3 subset; A6-A8 and D16-D72 are the Zio extension."
+      },
+      {
+        "severity": "info",
+        "text": "Every MCU pin also fans out to the ST morpho headers CN11/CN12 (UM2407 Table 22)."
+      },
+      {
+        "severity": "info",
+        "text": "The Ethernet PHY claims PA1, PA2, PC1, PC4, PC5, PG11, PG13, PA7, and PB13 through default-ON solder bridges."
+      }
+    ],
+    "sources": [
+      {
+        "title": "ST NUCLEO-H753ZI product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-h753zi.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "ST STM32H7 Nucleo-144 user manual UM2407 (MB1364)",
+        "url": "https://www.st.com/resource/en/user_manual/um2407-stm32h7-nucleo144-boards-mb1364-stmicroelectronics.pdf",
+        "official": true,
+        "type": "Manual"
+      },
+      {
+        "title": "STM32H753ZI datasheet",
+        "url": "https://www.st.com/resource/en/datasheet/stm32h753zi.pdf",
+        "official": true,
+        "type": "Datasheet"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn7-zio-upper-right",
+        "name": "CN7 Zio (upper right)",
+        "description": "ST Zio connectors CN7, CN8, CN9, CN10",
+        "layout": {
+          "rows": 20,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D16 / PC6",
+            "category": "gpio",
+            "functions": [
+              "I2S2 MCK",
+              "I2S_A_MCK"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D15 / PB8",
+            "category": "communication",
+            "functions": [
+              "I2C1 SCL",
+              "I2C_A_SCL"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D17 / PB15",
+            "category": "gpio",
+            "functions": [
+              "I2S2 SD",
+              "I2S_A_SD"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D14 / PB9",
+            "category": "communication",
+            "functions": [
+              "I2C1 SDA",
+              "I2C_A_SDA"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D18 / PB13",
+            "category": "gpio",
+            "functions": [
+              "I2S2 CK",
+              "I2S_A_CK"
+            ],
+            "notes": [
+              "JP6 ON routes PB13 to the Ethernet PHY as RMII_TXD1 — Ethernet and I2S_A cannot be used together."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "VREF+",
+            "category": "power",
+            "functions": [
+              "VDDA"
+            ],
+            "notes": [
+              "Remove R37 before letting a shield drive VREF+ (UM2407)."
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D19 / PB12",
+            "category": "gpio",
+            "functions": [
+              "I2S2 WS",
+              "I2S_A_WS"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D20 / PA15",
+            "category": "gpio",
+            "functions": [
+              "I2S3 WS",
+              "I2S_B_WS"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D13 / PA5",
+            "category": "communication",
+            "functions": [
+              "SPI1 SCK",
+              "SPI_A_SCK"
+            ],
+            "notes": [
+              "PA5 is also DAC1_OUT2."
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D21 / PC7",
+            "category": "gpio",
+            "functions": [
+              "I2S3 MCK",
+              "I2S_B_MCK"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D12 / PA6",
+            "category": "communication",
+            "functions": [
+              "SPI1 MISO",
+              "SPI_A_MISO"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D22 / PB5",
+            "category": "communication",
+            "functions": [
+              "SPI3 MOSI",
+              "I2S_B_SD"
+            ],
+            "notes": [
+              "Shares PB5 with D11 (CN7 pin 14); use only one at a time."
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D11 / PB5",
+            "category": "communication",
+            "functions": [
+              "SPI1 MOSI",
+              "TIM3 CH2",
+              "TIM_E_PWM1"
+            ],
+            "notes": [
+              "Shares PB5 with D22. SB31 can route PA7 here instead, but PA7 is the Ethernet RMII_CRS_DV signal."
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "D23 / PB3",
+            "category": "communication",
+            "functions": [
+              "SPI3 SCK",
+              "I2S_B_CK"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "D10 / PD14",
+            "category": "communication",
+            "functions": [
+              "SPI1 CS",
+              "TIM4 CH3",
+              "TIM_B_PWM3"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D24 / PA4",
+            "category": "communication",
+            "functions": [
+              "SPI3 NSS",
+              "SPI_B_NSS"
+            ],
+            "notes": [
+              "PA4 is also DAC1_OUT1."
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D9 / PD15",
+            "category": "gpio",
+            "functions": [
+              "TIM4 CH4",
+              "TIM_B_PWM2"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "D25 / PB4",
+            "category": "communication",
+            "functions": [
+              "SPI3 MISO",
+              "SPI_B_MISO"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "D8 / PF3",
+            "category": "gpio"
+          }
+        ]
+      },
+      {
+        "id": "cn8-zio-upper-left",
+        "name": "CN8 Zio (upper left)",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D43 / PC8",
+            "category": "gpio",
+            "functions": [
+              "SDMMC_D0"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power",
+            "notes": [
+              "3.3 V reference for shields."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D44 / PC9",
+            "category": "gpio",
+            "functions": [
+              "SDMMC_D1",
+              "I2S_CKIN"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "NRST",
+            "category": "reserved"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D45 / PC10",
+            "category": "gpio",
+            "functions": [
+              "SDMMC_D2"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D46 / PC11",
+            "category": "gpio",
+            "functions": [
+              "SDMMC_D3"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D47 / PC12",
+            "category": "gpio",
+            "functions": [
+              "SDMMC_CK"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D48 / PD2",
+            "category": "gpio",
+            "functions": [
+              "SDMMC_CMD"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D49 / PG2",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "7-12 V external input."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "D50 / PG3",
+            "category": "gpio"
+          }
+        ]
+      },
+      {
+        "id": "cn9-zio-lower-left",
+        "name": "CN9 Zio (lower left)",
+        "layout": {
+          "rows": 30,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "A0 / PA3",
+            "category": "analog",
+            "functions": [
+              "ADC12_INP15"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D51 / PD7",
+            "category": "communication",
+            "functions": [
+              "USART2 SCLK",
+              "USART_B_SCLK"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "A1 / PC0",
+            "category": "analog",
+            "functions": [
+              "ADC123_INP10"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D52 / PD6",
+            "category": "communication",
+            "functions": [
+              "USART2 RX",
+              "USART_B_RX"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A2 / PC3",
+            "category": "analog",
+            "functions": [
+              "ADC12_INP13"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D53 / PD5",
+            "category": "communication",
+            "functions": [
+              "USART2 TX",
+              "USART_B_TX"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A3 / PB1",
+            "category": "analog",
+            "functions": [
+              "ADC12_INP5"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D54 / PD4",
+            "category": "communication",
+            "functions": [
+              "USART2 RTS",
+              "USART_B_RTS"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A4 / PC2",
+            "category": "analog",
+            "functions": [
+              "ADC123_INP12"
+            ],
+            "notes": [
+              "SB53 ON by default; SB55 reroutes A4 to PB9 (I2C1_SDA) for Arduino shields."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D55 / PD3",
+            "category": "communication",
+            "functions": [
+              "USART2 CTS",
+              "USART_B_CTS"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A5 / PF10",
+            "category": "analog",
+            "functions": [
+              "ADC3_INP6"
+            ],
+            "notes": [
+              "SB60 ON by default; SB62 reroutes A5 to PB8 (I2C1_SCL) for Arduino shields."
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D72 / PB2",
+            "category": "gpio",
+            "functions": [
+              "COMP1_INP"
+            ],
+            "notes": [
+              "PB2 is also QSPI_CLK (D27) on CN10 pin 15."
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D56 / PE2",
+            "category": "gpio",
+            "functions": [
+              "SAI1 A MCLK",
+              "SAI_A_MCLK"
+            ],
+            "notes": [
+              "PE2 is shared with QSPI_BK1_IO2 (D31) on CN10 pin 25; use only one."
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "D71 / PE9",
+            "category": "gpio",
+            "functions": [
+              "COMP2_INP"
+            ],
+            "notes": [
+              "PE9 is also TIM1_CH1 (D6) on CN10 pin 4."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "D57 / PE4",
+            "category": "gpio",
+            "functions": [
+              "SAI1 A FS",
+              "SAI_A_FS"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D70 / PF2",
+            "category": "communication",
+            "functions": [
+              "I2C2 SMBA",
+              "I2C_B_SMBA"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D58 / PE5",
+            "category": "gpio",
+            "functions": [
+              "SAI1 A SCK",
+              "SAI_A_SCK"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "D69 / PF1",
+            "category": "communication",
+            "functions": [
+              "I2C2 SCL",
+              "I2C_B_SCL"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "D59 / PE6",
+            "category": "gpio",
+            "functions": [
+              "SAI1 A SD",
+              "SAI_A_SD"
+            ],
+            "notes": [
+              "PE6 is also TIM1_BKIN2 (D38) on CN10 pin 28."
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "D68 / PF0",
+            "category": "communication",
+            "functions": [
+              "I2C2 SDA",
+              "I2C_B_SDA"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "D60 / PE3",
+            "category": "gpio",
+            "functions": [
+              "SAI1 B SD",
+              "SAI_B_SD"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "D61 / PF8",
+            "category": "gpio",
+            "functions": [
+              "SAI1 B SCK",
+              "SAI_B_SCK"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 25,
+              "column": 1
+            },
+            "label": "D67 / PD0",
+            "category": "gpio",
+            "functions": [
+              "CAN1 RX",
+              "FDCAN1 RX"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 26,
+              "column": 1
+            },
+            "label": "D62 / PF7",
+            "category": "gpio",
+            "functions": [
+              "SAI1 B MCLK",
+              "SAI_B_MCLK"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 27,
+              "column": 1
+            },
+            "label": "D66 / PD1",
+            "category": "gpio",
+            "functions": [
+              "CAN1 TX",
+              "FDCAN1 TX"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 28,
+              "column": 1
+            },
+            "label": "D63 / PF9",
+            "category": "gpio",
+            "functions": [
+              "SAI1 B FS",
+              "SAI_B_FS"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 29,
+              "column": 1
+            },
+            "label": "D65 / PG0",
+            "category": "gpio"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 30,
+              "column": 1
+            },
+            "label": "D64 / PG1",
+            "category": "gpio"
+          }
+        ]
+      },
+      {
+        "id": "cn10-zio-lower-right",
+        "name": "CN10 Zio (lower right)",
+        "layout": {
+          "rows": 34,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "AVDD",
+            "category": "power",
+            "notes": [
+              "Analog supply rail."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D7 / PG12",
+            "category": "gpio"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "AGND",
+            "category": "ground"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D6 / PE9",
+            "category": "gpio",
+            "functions": [
+              "TIM1 CH1",
+              "TIMER_A_PWM1"
+            ],
+            "notes": [
+              "PE9 is also COMP2_INP (D71) on CN9 pin 15."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / PE11",
+            "category": "gpio",
+            "functions": [
+              "TIM1 CH2",
+              "TIMER_A_PWM2"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A6 / PF4",
+            "category": "analog",
+            "functions": [
+              "ADC3_INP9"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D4 / PE14",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A7 / PF5",
+            "category": "analog",
+            "functions": [
+              "ADC3_INP4"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D3 / PE13",
+            "category": "gpio",
+            "functions": [
+              "TIM1 CH3",
+              "TIMER_A_PWM3"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A8 / PF6",
+            "category": "analog",
+            "functions": [
+              "ADC3_INP8"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D2 / PG14",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D26 / PG6",
+            "category": "communication",
+            "functions": [
+              "QSPI1 NCS",
+              "QSPI_CS"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D1 / PB6",
+            "category": "communication",
+            "functions": [
+              "LPUART1 TX",
+              "USART_A_TX"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "D27 / PB2",
+            "category": "communication",
+            "functions": [
+              "QSPI1 CLK",
+              "QSPI_CLK"
+            ],
+            "notes": [
+              "PB2 is also COMP1_INP (D72) on CN9 pin 13."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "D0 / PB7",
+            "category": "communication",
+            "functions": [
+              "LPUART1 RX",
+              "USART_A_RX"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D42 / PE8",
+            "category": "gpio",
+            "functions": [
+              "TIM1 CH1N",
+              "TIMER_A_PWM1N"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "D28 / PD13",
+            "category": "communication",
+            "functions": [
+              "QSPI1 IO3",
+              "QSPI_BK1_IO3"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "D41 / PE7",
+            "category": "gpio",
+            "functions": [
+              "TIM1 ETR",
+              "TIMER_A_ETR"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "D29 / PD12",
+            "category": "communication",
+            "functions": [
+              "QSPI1 IO1",
+              "QSPI_BK1_IO1"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "D30 / PD11",
+            "category": "communication",
+            "functions": [
+              "QSPI1 IO0",
+              "QSPI_BK1_IO0"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "D40 / PE10",
+            "category": "gpio",
+            "functions": [
+              "TIM1 CH2N",
+              "TIMER_A_PWM2N"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 25,
+              "column": 1
+            },
+            "label": "D31 / PE2",
+            "category": "communication",
+            "functions": [
+              "QSPI1 IO2",
+              "QSPI_BK1_IO2"
+            ],
+            "notes": [
+              "PE2 is shared with SAI_A_MCLK (D56) on CN9 pin 14; use only one."
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 26,
+              "column": 1
+            },
+            "label": "D39 / PE12",
+            "category": "gpio",
+            "functions": [
+              "TIM1 CH3N",
+              "TIMER_A_PWM3N"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 27,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 28,
+              "column": 1
+            },
+            "label": "D38 / PE6",
+            "category": "gpio",
+            "functions": [
+              "TIM1 BKIN2",
+              "TIMER_A_BKIN2"
+            ],
+            "notes": [
+              "PE6 is also SAI_A_SD (D59) on CN9 pin 20."
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 29,
+              "column": 1
+            },
+            "label": "D32 / PA0",
+            "category": "gpio",
+            "functions": [
+              "TIM2 CH1",
+              "TIM_C_PWM1"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 30,
+              "column": 1
+            },
+            "label": "D37 / PE15",
+            "category": "gpio",
+            "functions": [
+              "TIM1 BKIN1",
+              "TIMER_A_BKIN1"
+            ]
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 31,
+              "column": 1
+            },
+            "label": "D33 / PB0",
+            "category": "gpio",
+            "functions": [
+              "TIM3 CH3",
+              "TIM_D_PWM1"
+            ]
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 32,
+              "column": 1
+            },
+            "label": "D36 / PB10",
+            "category": "gpio",
+            "functions": [
+              "TIM2 CH3",
+              "TIMER_C_PWM2"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 33,
+              "column": 1
+            },
+            "label": "D34 / PE0",
+            "category": "gpio",
+            "functions": [
+              "TIM4 ETR",
+              "TIM_B_ETR"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 34,
+              "column": 1
+            },
+            "label": "D35 / PB11",
+            "category": "gpio",
+            "functions": [
+              "TIM2 CH4",
+              "TIMER_C_PWM3"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "nordic-nrf5340-dk",
     "name": "Nordic nRF5340 DK",
     "manufacturer": "Nordic Semiconductor",
