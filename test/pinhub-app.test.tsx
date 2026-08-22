@@ -73,6 +73,7 @@ function renderApp() {
 }
 
 beforeEach(() => {
+  history.replaceState(null, "", "/");
   vi.stubGlobal(
     "fetch",
     vi.fn(async () => new Response(JSON.stringify(pi5))),
@@ -189,10 +190,32 @@ describe("PinHubApp result list", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Show \d+ more/ }));
 
+    expect(location.search).toContain("page=2");
+
     expect(status?.textContent).toContain(
       `Showing ${catalog.length} of ${catalog.length}`,
     );
     // Everything is on screen, so the control retires rather than no-opping.
     expect(screen.queryByRole("button", { name: /Show \d+ more/ })).toBeNull();
+  });
+
+  it("keeps search in the URL and moves focus through result cards", () => {
+    setViewport(true);
+    renderApp();
+
+    fireEvent.change(screen.getByLabelText("Search boards"), {
+      target: { value: "Raspberry" },
+    });
+    expect(new URLSearchParams(location.search).get("q")).toBe("Raspberry");
+
+    fireEvent.change(screen.getByLabelText("Search boards"), {
+      target: { value: "" },
+    });
+    const sensor = screen.getByRole("button", { name: "Select Sensor HAT" });
+    sensor.focus();
+    fireEvent.keyDown(sensor, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "Select Filler Board 0" }),
+    );
   });
 });

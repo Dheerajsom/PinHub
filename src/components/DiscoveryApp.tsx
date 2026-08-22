@@ -40,102 +40,17 @@ import {
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { VendorLogo } from "@/components/VendorLogo";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import {
+  activeCatalogFilterCount,
+  defaultCatalogState,
+  matchesCatalogFilters,
+  type CatalogFilterKey,
+  type CatalogSort,
+} from "@/lib/catalog-state";
+import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 
-type SortKey = "relevance" | "name" | "vendor";
-type FilterKey =
-  | "category"
-  | "platform"
-  | "interface"
-  | "logic"
-  | "wireless"
-  | "connector";
-export type CatalogState = {
-  query: string;
-  category: string[];
-  platform: string[];
-  interface: string[];
-  logic: string[];
-  wireless: string[];
-  connector: string[];
-  pinoutOnly: boolean;
-  favoritesOnly: boolean;
-  sort: SortKey;
-};
-
-const defaultState: CatalogState = {
-  query: "",
-  category: [],
-  platform: [],
-  interface: [],
-  logic: [],
-  wireless: [],
-  connector: [],
-  pinoutOnly: false,
-  favoritesOnly: false,
-  sort: "name",
-};
-
-function parseUrlState(): CatalogState {
-  const params = new URLSearchParams(location.search);
-  const sort = params.get("sort");
-  return {
-    query: params.get("q") ?? "",
-    category: params.getAll("category"),
-    platform: params.getAll("platform"),
-    interface: params.getAll("interface"),
-    logic: params.getAll("logic"),
-    wireless: params.getAll("wireless"),
-    connector: params.getAll("connector"),
-    pinoutOnly: params.get("pinout") === "yes",
-    favoritesOnly: params.get("favorites") === "yes",
-    sort: sort === "relevance" || sort === "vendor" ? sort : "name",
-  };
-}
-
-function urlForState(state: CatalogState): string {
-  const params = new URLSearchParams();
-  if (state.query.trim()) params.set("q", state.query.trim());
-  for (const key of [
-    "category",
-    "platform",
-    "interface",
-    "logic",
-    "wireless",
-    "connector",
-  ] as const) {
-    state[key].forEach((value) => params.append(key, value));
-  }
-  if (state.pinoutOnly) params.set("pinout", "yes");
-  if (state.favoritesOnly) params.set("favorites", "yes");
-  const naturalSort = state.query.trim() ? "relevance" : "name";
-  if (state.sort !== naturalSort) params.set("sort", state.sort);
-  return params.size ? `?${params.toString()}` : "/compare";
-}
-
-function matchesFilters(
-  board: BoardSummary,
-  state: CatalogState,
-  favorites: ReadonlySet<string>,
-): boolean {
-  const profile = board.discovery;
-  return (
-    (!state.favoritesOnly || favorites.has(board.id)) &&
-    (!state.pinoutOnly || board.hasPinout) &&
-    (!state.category.length || state.category.includes(board.category)) &&
-    (!state.platform.length || state.platform.includes(profile.computeClass)) &&
-    (!state.interface.length ||
-      state.interface.every((item) =>
-        board.interfaces.some((entry) => entry === item),
-      )) &&
-    (!state.logic.length || state.logic.includes(profile.logicProfile)) &&
-    (!state.wireless.length ||
-      state.wireless.every((item) =>
-        profile.wireless.some((entry) => entry === item),
-      )) &&
-    (!state.connector.length ||
-      state.connector.some((item) => profile.connectorEcosystems.includes(item)))
-  );
-}
+const discoveryDefaultState = { ...defaultCatalogState, sort: "name" as const };
 
 export function DiscoveryApp({
   catalog,
@@ -146,17 +61,15 @@ export function DiscoveryApp({
   sourceCount: number;
   initialCompareIds?: string[];
 }) {
-  const [state, setState] = useState(defaultState);
+  const [state, setState] = useCatalogUrlState("/compare", discoveryDefaultState);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [compareIds, setCompareIds] = useState<string[]>(() =>
     initialCompareIds.slice(0, 3),
   );
-  const [visible, setVisible] = useState(24);
   // Rendering another 24 cards is the slow part on a phone, so the page-in runs
   // as a transition: the button reports it is working and refuses further
   // clicks until the new rows are on screen.
   const [paging, startPaging] = useTransition();
-  const urlReady = useRef(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const storedFavorites = useFavorites();
   const ids = useMemo(() => new Set(catalog.map((board) => board.id)), [catalog]);
@@ -165,24 +78,6 @@ export function DiscoveryApp({
     [ids, storedFavorites],
   );
 
-  useEffect(() => {
-    const restore = () => {
-      setState(parseUrlState());
-      setVisible(24);
-    };
-    const frame = requestAnimationFrame(() => {
-      restore();
-      urlReady.current = true;
-    });
-    addEventListener("popstate", restore);
-    return () => {
-      cancelAnimationFrame(frame);
-      removeEventListener("popstate", restore);
-    };
-  }, []);
-  useEffect(() => {
-    if (urlReady.current) history.replaceState(null, "", urlForState(state));
-  }, [state]);
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
       if (
@@ -204,6 +99,8 @@ export function DiscoveryApp({
       platform: [...new Set(catalog.map((board) => board.discovery.computeClass))],
       interface: [...new Set(catalog.flatMap((board) => board.interfaces))],
       logic: [...new Set(catalog.map((board) => board.discovery.logicProfile))],
+      power: [...new Set(catalog.flatMap((board) => board.discovery.powerInputs))],
+      form: [...new Set(catalog.map((board) => board.discovery.formFactorProfile))],
       wireless: [...new Set(catalog.flatMap((board) => board.discovery.wireless))],
       connector: [
         ...new Set(catalog.flatMap((board) => board.discovery.connectorEcosystems)),
@@ -222,7 +119,7 @@ export function DiscoveryApp({
     for (const entry of searchIndex) {
       const match = matchBoardSearchEntry(entry, tokens);
       if (!match) continue;
-      if (!matchesFilters(entry.board, state, favorites)) continue;
+      if (!matchesCatalogFilters(entry.board, state, favorites)) continue;
       scored.push({ board: entry.board, ...match });
     }
     scored.sort((a, b) => {
@@ -241,38 +138,34 @@ export function DiscoveryApp({
   }, [favorites, searchIndex, state]);
   // Favorites-only with nothing starred is its own state, not a failed filter.
   const favoritesEmpty = state.favoritesOnly && favorites.size === 0;
-  const activeCount =
-    state.category.length +
-    state.platform.length +
-    state.interface.length +
-    state.logic.length +
-    state.wireless.length +
-    state.connector.length +
-    Number(state.pinoutOnly) +
-    Number(state.favoritesOnly);
+  const activeCount = activeCatalogFilterCount(state);
+  const visible = state.page * 24;
 
   const setQuery = (query: string) => {
-    setState((current) => ({
-      ...current,
-      query,
-      sort:
-        query.trim() && current.sort === "name"
-          ? "relevance"
-          : !query.trim() && current.sort === "relevance"
-            ? "name"
-            : current.sort,
-    }));
-    setVisible(24);
+    setState(
+      (current) => ({
+        ...current,
+        query,
+        page: 1,
+        sort:
+          query.trim() && current.sort === "name"
+            ? "relevance"
+            : !query.trim() && current.sort === "relevance"
+              ? "name"
+              : current.sort,
+      }),
+      "replace",
+    );
   };
-  const toggleFilter = useCallback((key: FilterKey, value: string) => {
+  const toggleFilter = useCallback((key: CatalogFilterKey, value: string) => {
     setState((current) => ({
       ...current,
       [key]: current[key].includes(value)
         ? current[key].filter((item) => item !== value)
         : [...current[key], value],
+      page: 1,
     }));
-    setVisible(24);
-  }, []);
+  }, [setState]);
   const toggleCompare = (id: string) => {
     setCompareIds((current) =>
       current.includes(id)
@@ -306,9 +199,12 @@ export function DiscoveryApp({
               </p>
             </div>
           </Link>
-          <div className="hidden items-center gap-5 sm:flex">
-            <Metric value={catalog.length} label="Boards" />
-            <Metric value={sourceCount} label="Sources" />
+          <div className="flex items-center gap-3 sm:gap-5">
+            <div className="hidden items-center gap-5 sm:flex">
+              <Metric value={catalog.length} label="Boards" />
+              <Metric value={sourceCount} label="Sources" />
+            </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -368,7 +264,7 @@ export function DiscoveryApp({
             <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: !current.favoritesOnly }))} aria-pressed={state.favoritesOnly} className={clsx("inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm transition sm:order-4 sm:shrink", state.favoritesOnly ? "fav-button border-amber-300/60 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
               <Star className={clsx("fav-star size-4", state.favoritesOnly && "fill-amber-300")} /> Favorites
             </button>
-            <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as SortKey }))} aria-label="Sort boards" className="h-10 shrink-0 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none sm:order-5 sm:shrink">
+            <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as CatalogSort, page: 1 }))} aria-label="Sort boards" className="h-10 shrink-0 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none sm:order-5 sm:shrink">
               {state.query ? <option value="relevance">Best match</option> : null}
               <option value="name">Name A–Z</option>
               <option value="vendor">Vendor A–Z</option>
@@ -382,11 +278,13 @@ export function DiscoveryApp({
         <aside className={clsx("space-y-3 lg:sticky lg:top-[4.75rem] lg:block lg:max-h-[calc(100vh-5.75rem)] lg:overflow-y-auto lg:pr-1", filtersOpen ? "block" : "hidden")}>
           <div className="flex items-center justify-between px-1">
             <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">Discovery facets</span>
-            {activeCount ? <button type="button" onClick={() => setState(defaultState)} className="text-xs text-cyan-200 hover:text-white">Clear all</button> : null}
+            {activeCount ? <button type="button" onClick={() => setState(discoveryDefaultState)} className="text-xs text-cyan-200 hover:text-white">Clear all</button> : null}
           </div>
           <Facet title="Platform" icon={<Cpu className="size-4" />} filterKey="platform" values={options.platform} selected={state.platform} onToggle={toggleFilter} />
           <Facet title="Category" icon={<Layers3 className="size-4" />} filterKey="category" values={options.category} selected={state.category} onToggle={toggleFilter} />
           <Facet title="Logic level" icon={<Zap className="size-4" />} filterKey="logic" values={options.logic} selected={state.logic} onToggle={toggleFilter} />
+          <Facet title="Power input" icon={<Zap className="size-4" />} filterKey="power" values={options.power} selected={state.power} onToggle={toggleFilter} />
+          <Facet title="Form factor" icon={<CircuitBoard className="size-4" />} filterKey="form" values={options.form} selected={state.form} onToggle={toggleFilter} />
           <Facet title="Wireless" icon={<Wifi className="size-4" />} filterKey="wireless" values={options.wireless} selected={state.wireless} onToggle={toggleFilter} />
           <Facet title="Connector" icon={<CircuitBoard className="size-4" />} filterKey="connector" values={options.connector} selected={state.connector} onToggle={toggleFilter} />
           <Facet title="Interfaces" icon={<SlidersHorizontal className="size-4" />} filterKey="interface" values={options.interface} selected={state.interface} onToggle={toggleFilter} collapsed />
@@ -414,9 +312,10 @@ export function DiscoveryApp({
               type="button"
               onClick={() =>
                 startPaging(() =>
-                  setVisible((current) =>
-                    Math.min(current + 24, filtered.length),
-                  ),
+                  setState((current) => ({
+                    ...current,
+                    page: Math.min(current.page + 1, Math.ceil(filtered.length / 24)),
+                  })),
                 )
               }
               disabled={paging}
@@ -450,7 +349,7 @@ export function DiscoveryApp({
                 <Database className="mx-auto size-8 text-zinc-500" />
                 <h2 className="mt-4 text-lg font-semibold text-white">No boards match this stack</h2>
                 <p className="mt-2 text-sm text-zinc-400">Remove one constraint or clear the complete filter set.</p>
-                <button type="button" onClick={() => setState(defaultState)} className="mt-4 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
+                <button type="button" onClick={() => setState(discoveryDefaultState)} className="mt-4 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
               </div>
             )
           ) : null}
@@ -503,10 +402,10 @@ function Facet({
 }: {
   title: string;
   icon: React.ReactNode;
-  filterKey: FilterKey;
+  filterKey: CatalogFilterKey;
   values: string[];
   selected: string[];
-  onToggle: (key: FilterKey, value: string) => void;
+  onToggle: (key: CatalogFilterKey, value: string) => void;
   collapsed?: boolean;
 }) {
   const content = <div className="mt-2 grid gap-1">{values.map((value) => {

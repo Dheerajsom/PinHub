@@ -12,6 +12,18 @@
   color-scheme: dark;
   --background: #090b0f;
   --foreground: #eef2f3;
+  --panel: #14161d;
+  --well: #0e1015;
+  --panel-border: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --background: #edf2f4;
+  --foreground: #17202a;
+  --panel: #ffffff;
+  --well: #e7edf0;
+  --panel-border: rgba(31, 48, 58, 0.15);
 }
 
 * {
@@ -50,8 +62,8 @@ body {
    --------------------------------------------------------------------------- */
 @layer components {
   .surface-panel {
-    background-color: #14161d;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: var(--panel);
+    border: 1px solid var(--panel-border);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.045),
       0 1px 2px rgba(0, 0, 0, 0.4),
@@ -59,9 +71,102 @@ body {
   }
 
   .surface-well {
-    background-color: #0e1015;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background-color: var(--well);
+    border: 1px solid var(--panel-border);
   }
+}
+
+/* Bright-bench theme. The same dense hierarchy remains; only the workbench
+   materials change from charcoal anodized metal to drafting-paper neutrals. */
+:root[data-theme="light"] .pinhub-background-base {
+  background:
+    radial-gradient(ellipse at 9% 39%, rgba(13, 148, 136, 0.1), transparent 28%),
+    radial-gradient(ellipse at 91% 63%, rgba(8, 145, 178, 0.09), transparent 28%),
+    linear-gradient(90deg, #dce6e9 0%, #edf3f4 22%, #f7fafb 50%, #edf3f4 78%, #dce6e9 100%);
+}
+
+:root[data-theme="light"] .pinhub-background-grid {
+  opacity: 0.48;
+}
+
+:root[data-theme="light"] .pinhub-trace-map {
+  opacity: 0.2;
+}
+
+:root[data-theme="light"] :is(
+  .bg-\[\#090b10\], .bg-\[\#0a0c11\], .bg-\[\#0a0d12\],
+  .bg-\[\#0c0e13\], .bg-\[\#0c0f14\], .bg-\[\#0f1218\],
+  .bg-\[\#101319\], .bg-\[\#11141a\], .bg-\[\#12161d\],
+  .bg-\[\#13161c\], .bg-\[\#14161d\], .bg-\[\#15181f\],
+  .bg-\[\#171b22\], .bg-\[\#191c24\], .bg-\[\#1c2029\],
+  .bg-\[\#212734\], .bg-\[\#262c3a\]
+) {
+  background-color: var(--panel);
+}
+
+:root[data-theme="light"] .bg-\[\#262c3a\] {
+  background-color: #d8e9ee;
+}
+
+:root[data-theme="light"] .bg-\[\#101820\] {
+  background-color: #dceff3;
+}
+
+:root[data-theme="light"] :is(.bg-\[\#1b1410\], .bg-\[\#15120c\]) {
+  background-color: #fff7ed;
+}
+
+:root[data-theme="light"] .bg-zinc-950 {
+  background-color: #e7edf0;
+}
+
+:root[data-theme="light"] :is(.text-white, .text-zinc-100, .text-zinc-200) {
+  color: #17202a;
+}
+
+:root[data-theme="light"] :is(.text-zinc-300, .text-zinc-400) {
+  color: #44545d;
+}
+
+:root[data-theme="light"] :is(.text-zinc-500, .text-zinc-600) {
+  color: #64747c;
+}
+
+:root[data-theme="light"] :is(.text-cyan-50, .text-cyan-100, .text-cyan-200) {
+  color: #075b6b;
+}
+
+:root[data-theme="light"] [class*="text-cyan-200"] {
+  color: #075b6b;
+}
+
+:root[data-theme="light"] :is(.text-emerald-100, .text-emerald-200) {
+  color: #066046;
+}
+
+:root[data-theme="light"] :is(.text-orange-50, .text-orange-100, .text-orange-200) {
+  color: #9a3412;
+}
+
+:root[data-theme="light"] [class*="text-orange-100"] {
+  color: #9a3412;
+}
+
+:root[data-theme="light"] :is(.text-amber-50, .text-amber-100, .text-amber-200) {
+  color: #854d0e;
+}
+
+:root[data-theme="light"] [class*="border-white/"] {
+  border-color: rgba(31, 48, 58, 0.16);
+}
+
+:root[data-theme="light"] [class*="bg-white/"] {
+  background-color: rgba(31, 48, 58, 0.06);
+}
+
+:root[data-theme="light"] .brand-title.text-transparent {
+  color: transparent;
+  background-image: linear-gradient(90deg, #164e63, #087f8c, #8a5b00);
 }
 
 button,

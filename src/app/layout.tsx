@@ -3,6 +3,7 @@ import { Audiowide, Chivo_Mono, Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { siteDescription, siteName, siteUrl } from "@/lib/site";
 import { Footer } from "@/components/Footer";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -82,8 +83,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#090b0f",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#edf2f4" },
+    { media: "(prefers-color-scheme: dark)", color: "#090b0f" },
+  ],
+  colorScheme: "dark light",
   // Cover the full screen (under notches/home indicators) so the dark theme
   // extends edge-to-edge; safe-area insets are then applied in the layout.
   viewportFit: "cover",
@@ -99,9 +103,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} ${audiowide.variable} ${chivoMono.variable}`}
     >
       <body>
+        <Script id="pinhub-theme" strategy="beforeInteractive">
+          {`try{var t=localStorage.getItem("pinhub.theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t}catch(e){}`}
+        </Script>
         {children}
         <Footer />
         {analyticsEnabled ? <Analytics /> : null}

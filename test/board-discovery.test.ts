@@ -23,6 +23,10 @@ describe("board discovery profiles", () => {
       expect(new Set(profile.connectorEcosystems).size).toBe(
         profile.connectorEcosystems.length,
       );
+      expect(new Set(profile.powerInputs).size).toBe(profile.powerInputs.length);
+      expect(profile.formFactorProfile).toMatch(
+        /^(Breadboard|Credit-card SBC|Compact module|Arduino|Feather|XIAO|MKR|Pmod|Evaluation board|Other)$/,
+      );
     }
   });
 

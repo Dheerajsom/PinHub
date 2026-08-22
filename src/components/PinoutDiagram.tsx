@@ -5,6 +5,7 @@ import {
   roleLabels,
 } from "@/components/board-visual/roles";
 import { CopyPinTable } from "@/components/CopyPinTable";
+import { CopyPinButton } from "@/components/CopyPinButton";
 
 type PinoutDiagramProps = {
   pinout?: Pinout;
@@ -134,7 +135,7 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
   );
 
   return (
-    <div className={clsx("min-w-0", towardCenter ? "text-right" : "text-left")}>
+    <div className={clsx("group min-w-0", towardCenter ? "text-right" : "text-left")}>
       <div
         className={clsx(
           "flex min-w-0 items-baseline gap-1.5",
@@ -143,6 +144,7 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
       >
         {towardCenter ? (
           <>
+            <CopyPinButton pin={pin} />
             {role}
             {label}
           </>
@@ -150,6 +152,7 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
           <>
             {label}
             {role}
+            <CopyPinButton pin={pin} />
           </>
         )}
       </div>
@@ -198,7 +201,7 @@ type GroupedPinProps = {
 
 function GroupedPin({ pin }: GroupedPinProps) {
   return (
-    <div className="surface-well flex min-w-0 items-center gap-2 rounded-md px-2 py-1.5">
+    <div className="surface-well group flex min-w-0 items-center gap-2 rounded-md px-2 py-1.5">
       <PinPad pin={pin} compact />
       <div className="min-w-0 flex-1">
         <div className="truncate font-mono text-sm font-semibold leading-tight text-white">
@@ -213,6 +216,7 @@ function GroupedPin({ pin }: GroupedPinProps) {
           ) : null}
         </div>
       </div>
+      <CopyPinButton pin={pin} />
     </div>
   );
 }

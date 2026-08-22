@@ -30,6 +30,8 @@ function summary(overrides: Partial<BoardSummary> = {}): BoardSummary {
       fiveVoltTolerance: "Unknown",
       wireless: [],
       connectorEcosystems: [],
+      powerInputs: ["USB"],
+      formFactorProfile: "Other",
     },
     ...overrides,
   };

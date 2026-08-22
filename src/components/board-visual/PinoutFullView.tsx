@@ -8,6 +8,7 @@ import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Standalone, full-viewport pinout sheet served at /pinout/[id]. Built for the
 // dense expansion headers whose drawings are cramped inside the catalog's narrow
@@ -69,11 +70,14 @@ export function PinoutFullView({ board }: { board: Board }) {
               {board.name}
             </h1>
           </div>
-          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">
-            {[board.vendor, board.family]
-              .filter((part, index, all) => all.indexOf(part) === index)
-              .join(" · ")}
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">
+              {[board.vendor, board.family]
+                .filter((part, index, all) => all.indexOf(part) === index)
+                .join(" · ")}
+            </p>
+            <ThemeToggle />
+          </div>
         </header>
 
         {geometry ? (

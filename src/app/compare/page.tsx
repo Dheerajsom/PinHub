@@ -9,6 +9,7 @@ import { parseComparedIds } from "@/lib/compare-params";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { CompareTable } from "@/components/CompareTable";
 import { DiscoveryApp } from "@/components/DiscoveryApp";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Compare development boards",
@@ -57,9 +58,10 @@ export default async function ComparePage({
           >
             <ArrowLeft className="size-4" /> Back to discovery
           </Link>
-          <Link href="/" className="brand-title text-xl text-white">
-            PinHub
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link href="/" className="brand-title text-xl text-white">PinHub</Link>
+          </div>
         </div>
       </header>
       <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8">

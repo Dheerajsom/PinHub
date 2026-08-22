@@ -8,6 +8,24 @@ export type ComputeClass =
 
 export type LogicProfile = "1.8 V" | "3.3 V" | "5 V" | "Mixed" | "Unknown";
 export type FiveVoltTolerance = "Yes" | "No" | "Mixed" | "Unknown";
+export type PowerInput =
+  | "USB"
+  | "Header rail"
+  | "Barrel jack"
+  | "Battery"
+  | "PoE"
+  | "External supply";
+export type FormFactorProfile =
+  | "Breadboard"
+  | "Credit-card SBC"
+  | "Compact module"
+  | "Arduino"
+  | "Feather"
+  | "XIAO"
+  | "MKR"
+  | "Pmod"
+  | "Evaluation board"
+  | "Other";
 
 export type BoardDiscoveryProfile = {
   computeClass: ComputeClass;
@@ -15,6 +33,8 @@ export type BoardDiscoveryProfile = {
   fiveVoltTolerance: FiveVoltTolerance;
   wireless: BoardInterface[];
   connectorEcosystems: string[];
+  powerInputs: PowerInput[];
+  formFactorProfile: FormFactorProfile;
 };
 
 const wirelessInterfaces = new Set<BoardInterface>([
@@ -92,12 +112,46 @@ export function getBoardDiscoveryProfile(board: Board): BoardDiscoveryProfile {
   if (formFactor.includes("boosterpack")) connectorEcosystems.add("BoosterPack");
   if (formFactor.includes("mikrobus")) connectorEcosystems.add("mikroBUS");
 
+  const power = board.power.toLowerCase();
+  const powerInputs = new Set<PowerInput>();
+  if (/usb|type-c|micro-usb/.test(power)) powerInputs.add("USB");
+  if (/header|\bpins?\b|\brail\b|\bvin\b/.test(power)) {
+    powerInputs.add("Header rail");
+  }
+  if (/barrel|dc jack/.test(power)) powerInputs.add("Barrel jack");
+  if (/battery|lipo|li-ion|coin cell/.test(power)) powerInputs.add("Battery");
+  if (/\bpoe\b|power over ethernet/.test(power)) powerInputs.add("PoE");
+  if (/external|\bvin\b|terminal/.test(power)) powerInputs.add("External supply");
+
+  const formFactorProfile: FormFactorProfile =
+    /breadboard|dual-header|dip module/.test(formFactor)
+      ? "Breadboard"
+      : /credit-card|pi-sized/.test(formFactor)
+        ? "Credit-card SBC"
+        : /feather/.test(formFactor)
+          ? "Feather"
+          : /xiao/.test(formFactor)
+            ? "XIAO"
+            : /\bmkr\b/.test(formFactor)
+              ? "MKR"
+              : /pmod/.test(formFactor)
+                ? "Pmod"
+                : /arduino|uno|shield/.test(formFactor)
+                  ? "Arduino"
+                  : /evaluation|eval\b|development board|dev kit/.test(formFactor)
+                    ? "Evaluation board"
+                    : /compact|module|stamp|sodimm|compute module/.test(formFactor)
+                      ? "Compact module"
+                      : "Other";
+
   return {
     computeClass,
     logicProfile,
     fiveVoltTolerance,
     wireless: board.interfaces.filter((item) => wirelessInterfaces.has(item)),
     connectorEcosystems: [...connectorEcosystems],
+    powerInputs: [...powerInputs],
+    formFactorProfile,
   };
 }
 

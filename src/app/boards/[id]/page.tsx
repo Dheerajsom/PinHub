@@ -22,6 +22,7 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
 import { BoardActions } from "@/components/BoardActions";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -82,7 +83,10 @@ export default async function BoardPage({
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-cyan-200">
             <ArrowLeft className="size-4" /> Back to discovery
           </Link>
-          <Link href="/" className="brand-title text-xl text-white">PinHub</Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link href="/" className="brand-title text-xl text-white">PinHub</Link>
+          </div>
         </div>
       </header>
 

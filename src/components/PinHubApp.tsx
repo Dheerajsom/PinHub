@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Fragment,
-  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -12,21 +11,14 @@ import {
   useState,
   useSyncExternalStore,
   useTransition,
-  type ReactNode,
 } from "react";
 import {
-  ArrowUp,
-  ArrowUpRight,
-  BadgeCheck,
-  BookOpen,
   CircuitBoard,
-  Cpu,
   Database,
   GitCompareArrows,
   Layers3,
   LoaderCircle,
   Search,
-  ShieldAlert,
   SlidersHorizontal,
   Sparkles,
   Star,
@@ -34,25 +26,27 @@ import {
   Zap,
 } from "lucide-react";
 import { clsx } from "clsx";
-import {
-  type Board,
-  type BoardCategory,
-  type BoardInterface,
-} from "@/lib/boards";
+import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import {
   createBoardSearchIndex,
   matchBoardSearchEntry,
-  matchFieldLabels,
   tokenizeQuery,
   type BoardMatchField,
 } from "@/lib/board-search";
 import { createBoardDetailLoader } from "@/lib/board-detail-loader";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
-import { classifySource, verificationSourceFor } from "@/lib/source-trust";
-import { PinoutTabs } from "@/components/PinoutTabs";
-import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
+import { ActiveFilterChip, BoardResult, FilterPanel } from "@/components/catalog/CatalogListParts";
+import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
+import {
+  activeCatalogFilterCount,
+  defaultCatalogState,
+  matchesCatalogFilters,
+  type CatalogSort,
+} from "@/lib/catalog-state";
 
 const allCategory = "All";
 const allInterface = "All";
@@ -62,11 +56,6 @@ const allInterface = "All";
 const initialResultLimit = 16;
 const resultPageSize = 32;
 const desktopMediaQuery = "(min-width: 1024px)";
-
-type DetailState =
-  | { status: "ready"; board: Board }
-  | { status: "loading"; board: null; id: string }
-  | { status: "error"; board: null; id: string };
 
 type PinHubAppProps = {
   catalog: BoardSummary[];
@@ -103,14 +92,17 @@ export function PinHubApp({
   initialBoard,
   sourceCount,
 }: PinHubAppProps) {
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] =
-    useState<BoardCategory | typeof allCategory>(allCategory);
-  const [activeInterface, setActiveInterface] =
-    useState<BoardInterface | typeof allInterface>(allInterface);
+  const [catalogState, setCatalogState] = useCatalogUrlState("/");
+  const query = catalogState.query;
+  const activeCategory = catalogState.category[0] ?? allCategory;
+  const activeInterface = catalogState.interface[0] ?? allInterface;
+  const activeLogic = catalogState.logic[0] ?? allCategory;
+  const activePower = catalogState.power[0] ?? allCategory;
+  const activeForm = catalogState.form[0] ?? allCategory;
   const [selectedId, setSelectedId] = useState(initialBoard.id);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [visibleLimit, setVisibleLimit] = useState(initialResultLimit);
+  const showFavoritesOnly = catalogState.favoritesOnly;
+  const visibleLimit =
+    initialResultLimit + (catalogState.page - 1) * resultPageSize;
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
   const [detailRetry, setDetailRetry] = useState(0);
   const [detailState, setDetailState] = useState<DetailState>({
@@ -167,6 +159,18 @@ export function PinHubApp({
     return counts;
   }, [catalog]);
   const interfaceCount = interfaceItems.length - 1;
+  const logicItems = useMemo(
+    () => [allCategory, ...new Set(catalog.map((board) => board.discovery.logicProfile))],
+    [catalog],
+  );
+  const powerItems = useMemo(
+    () => [allCategory, ...new Set(catalog.flatMap((board) => board.discovery.powerInputs))],
+    [catalog],
+  );
+  const formItems = useMemo(
+    () => [allCategory, ...new Set(catalog.map((board) => board.discovery.formFactorProfile))],
+    [catalog],
+  );
 
   const results = useMemo(() => {
     const tokens = tokenizeQuery(query);
@@ -178,16 +182,7 @@ export function PinHubApp({
     }[] = [];
     for (const entry of boardSearchEntries) {
       const board = entry.board;
-      if (showFavoritesOnly && !favorites.has(board.id)) continue;
-      if (activeCategory !== allCategory && board.category !== activeCategory) {
-        continue;
-      }
-      if (
-        activeInterface !== allInterface &&
-        !board.interfaces.includes(activeInterface)
-      ) {
-        continue;
-      }
+      if (!matchesCatalogFilters(board, catalogState, favorites)) continue;
       const match = matchBoardSearchEntry(entry, tokens);
       if (!match) continue;
       scored.push({ board, score: match.score, matchedBy: match.matchedBy });
@@ -195,17 +190,23 @@ export function PinHubApp({
 
     // Ties keep the catalog's own order, so an equal-scoring set never
     // reshuffles between keystrokes.
-    if (tokens.length > 0) {
+    if (catalogState.sort === "relevance") {
       scored.sort((a, b) => b.score - a.score);
+    } else if (catalogState.sort === "vendor") {
+      scored.sort(
+        (a, b) =>
+          a.board.vendor.localeCompare(b.board.vendor) ||
+          a.board.name.localeCompare(b.board.name),
+      );
+    } else if (catalogState.sort === "name") {
+      scored.sort((a, b) => a.board.name.localeCompare(b.board.name));
     }
     return scored;
   }, [
-    activeCategory,
-    activeInterface,
     boardSearchEntries,
-    query,
+    catalogState,
     favorites,
-    showFavoritesOnly,
+    query,
   ]);
   const filteredBoards = useMemo(
     () => results.map((result) => result.board),
@@ -248,11 +249,9 @@ export function PinHubApp({
   const showMore = useCallback(() => {
     if (paging) return;
     startPaging(() => {
-      setVisibleLimit((limit) =>
-        Math.min(limit + resultPageSize, filteredBoards.length),
-      );
+      setCatalogState((current) => ({ ...current, page: current.page + 1 }));
     });
-  }, [filteredBoards.length, paging]);
+  }, [paging, setCatalogState]);
 
   const hasActiveFilters =
     query.trim().length > 0 ||
@@ -262,9 +261,7 @@ export function PinHubApp({
 
   // Count of sidebar filters in effect, surfaced as a badge on the mobile
   // Filters toggle so users know constraints are applied while it is collapsed.
-  const activeFilterCount =
-    (activeCategory !== allCategory ? 1 : 0) +
-    (activeInterface !== allInterface ? 1 : 0);
+  const activeFilterCount = activeCatalogFilterCount(catalogState);
 
   useEffect(() => {
     if (!selectedBoard || (!isDesktop && !mobileDetailOpen)) return;
@@ -331,20 +328,30 @@ export function PinHubApp({
   // control funnels through this instead of repeating the three resets.
   function resetResultView() {
     setSelectedId("");
-    setVisibleLimit(initialResultLimit);
     setMobileDetailOpen(false);
   }
 
   function resetFilters() {
-    setQuery("");
-    setActiveCategory(allCategory);
-    setActiveInterface(allInterface);
-    setShowFavoritesOnly(false);
+    setCatalogState(defaultCatalogState);
     resetResultView();
   }
 
   function changeQuery(nextQuery: string) {
-    setQuery(nextQuery);
+    setCatalogState(
+      (current) => ({
+        ...current,
+        query: nextQuery,
+        page: 1,
+        sort:
+          nextQuery.trim() &&
+          (current.sort === "name" || current.sort === "catalog")
+            ? "relevance"
+          : !nextQuery.trim() && current.sort === "relevance"
+              ? "catalog"
+              : current.sort,
+      }),
+      "replace",
+    );
     resetResultView();
   }
 
@@ -364,6 +371,39 @@ export function PinHubApp({
       setMobileDetailOpen((open) => !(open && reselected));
     }
   }, []);
+
+  const navigateBoard = useCallback(
+    (id: string, direction: "next" | "previous" | "first" | "last") => {
+      const currentIndex = filteredBoards.findIndex((board) => board.id === id);
+      if (currentIndex < 0) return;
+      const nextIndex =
+        direction === "first"
+          ? 0
+          : direction === "last"
+            ? filteredBoards.length - 1
+            : Math.min(
+                Math.max(currentIndex + (direction === "next" ? 1 : -1), 0),
+                filteredBoards.length - 1,
+              );
+      const next = filteredBoards[nextIndex];
+      if (!next || next.id === id) return;
+      if (nextIndex >= visibleLimit) {
+        setCatalogState((current) => ({
+          ...current,
+          page:
+            Math.ceil(
+              (nextIndex + 1 - initialResultLimit) / resultPageSize,
+            ) + 1,
+        }));
+      }
+      setSelectedId(next.id);
+      prefetchBoard(next.id);
+      requestAnimationFrame(() => {
+        document.getElementById(`board-result-action-${next.id}`)?.focus();
+      });
+    },
+    [filteredBoards, prefetchBoard, setCatalogState, visibleLimit],
+  );
 
   const retryBoardDetail = useCallback(() => {
     setDetailState({
@@ -408,6 +448,7 @@ export function PinHubApp({
               <Metric label="Interfaces" value={interfaceCount.toString()} />
               <Metric label="Sources" value={sourceCount.toString()} />
             </dl>
+            <ThemeToggle />
             <GitHubButton />
           </div>
         </div>
@@ -467,7 +508,14 @@ export function PinHubApp({
                   if (next) {
                     setSelectedId(next.id);
                     if (nextIndex >= visibleLimit) {
-                      setVisibleLimit(nextIndex + 1);
+                      setCatalogState((current) => ({
+                        ...current,
+                        page:
+                          Math.ceil(
+                            (nextIndex + 1 - initialResultLimit) /
+                              resultPageSize,
+                          ) + 1,
+                      }));
                     }
                   }
                 }
@@ -523,7 +571,11 @@ export function PinHubApp({
             <button
               type="button"
               onClick={() => {
-                setShowFavoritesOnly((value) => !value);
+                setCatalogState((current) => ({
+                  ...current,
+                  favoritesOnly: !current.favoritesOnly,
+                  page: 1,
+                }));
                 resetResultView();
               }}
               aria-pressed={showFavoritesOnly}
@@ -557,6 +609,23 @@ export function PinHubApp({
                 </span>
               ) : null}
             </button>
+            <select
+              value={catalogState.sort}
+              onChange={(event) =>
+                setCatalogState((current) => ({
+                  ...current,
+                  sort: event.target.value as CatalogSort,
+                  page: 1,
+                }))
+              }
+              aria-label="Sort boards"
+              className="h-11 shrink-0 rounded-md border border-white/10 bg-[#15181f] px-2.5 text-xs text-zinc-200 outline-none transition focus:border-cyan-300/60"
+            >
+              {query ? <option value="relevance">Best match</option> : null}
+              <option value="catalog">Catalog order</option>
+              <option value="name">Name A–Z</option>
+              <option value="vendor">Vendor A–Z</option>
+            </select>
             <span
               className="shrink-0 font-mono text-xs text-zinc-400"
               role="status"
@@ -571,7 +640,7 @@ export function PinHubApp({
               <ActiveFilterChip
                 label={activeCategory}
                 onClear={() => {
-                  setActiveCategory(allCategory);
+                  setCatalogState((current) => ({ ...current, category: [], page: 1 }));
                   resetResultView();
                 }}
               />
@@ -580,7 +649,7 @@ export function PinHubApp({
               <ActiveFilterChip
                 label={activeInterface}
                 onClear={() => {
-                  setActiveInterface(allInterface);
+                  setCatalogState((current) => ({ ...current, interface: [], page: 1 }));
                   resetResultView();
                 }}
               />
@@ -615,7 +684,11 @@ export function PinHubApp({
             active={activeCategory}
             counts={categoryCounts}
             onChange={(value) => {
-              setActiveCategory(value as BoardCategory | typeof allCategory);
+              setCatalogState((current) => ({
+                ...current,
+                category: value === allCategory ? [] : [value],
+                page: 1,
+              }));
               resetResultView();
               setMobileFiltersOpen(false);
             }}
@@ -631,7 +704,56 @@ export function PinHubApp({
             items={interfaceItems}
             active={activeInterface}
             onChange={(value) => {
-              setActiveInterface(value as BoardInterface | typeof allInterface);
+              setCatalogState((current) => ({
+                ...current,
+                interface: value === allInterface ? [] : [value],
+                page: 1,
+              }));
+              resetResultView();
+              setMobileFiltersOpen(false);
+            }}
+          />
+          <FilterPanel
+            title="Logic level"
+            icon={<Zap className="size-4 text-cyan-200" aria-hidden="true" />}
+            items={logicItems}
+            active={activeLogic}
+            onChange={(value) => {
+              setCatalogState((current) => ({
+                ...current,
+                logic: value === allCategory ? [] : [value],
+                page: 1,
+              }));
+              resetResultView();
+              setMobileFiltersOpen(false);
+            }}
+          />
+          <FilterPanel
+            title="Power input"
+            icon={<Zap className="size-4 text-cyan-200" aria-hidden="true" />}
+            items={powerItems}
+            active={activePower}
+            onChange={(value) => {
+              setCatalogState((current) => ({
+                ...current,
+                power: value === allCategory ? [] : [value],
+                page: 1,
+              }));
+              resetResultView();
+              setMobileFiltersOpen(false);
+            }}
+          />
+          <FilterPanel
+            title="Form factor"
+            icon={<CircuitBoard className="size-4 text-cyan-200" aria-hidden="true" />}
+            items={formItems}
+            active={activeForm}
+            onChange={(value) => {
+              setCatalogState((current) => ({
+                ...current,
+                form: value === allCategory ? [] : [value],
+                page: 1,
+              }));
               resetResultView();
               setMobileFiltersOpen(false);
             }}
@@ -669,6 +791,7 @@ export function PinHubApp({
                   matchedBy={matchReasons.get(board.id) ?? null}
                   favorite={favorites.has(board.id)}
                   onSelect={selectBoard}
+                  onNavigate={navigateBoard}
                   onPrefetch={prefetchBoard}
                   onToggleFavorite={toggleFavorite}
                 />
@@ -756,7 +879,11 @@ export function PinHubApp({
                 <button
                   type="button"
                   onClick={() => {
-                    setShowFavoritesOnly(false);
+                    setCatalogState((current) => ({
+                      ...current,
+                      favoritesOnly: false,
+                      page: 1,
+                    }));
                     resetResultView();
                   }}
                   className="mt-4 min-h-10 rounded-md border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-medium text-amber-50 transition hover:bg-amber-300/20"
@@ -852,559 +979,5 @@ function Metric({ label, value }: MetricProps) {
         {value}
       </dd>
     </div>
-  );
-}
-
-type ActiveFilterChipProps = {
-  label: string;
-  onClear: () => void;
-};
-
-function ActiveFilterChip({ label, onClear }: ActiveFilterChipProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClear}
-      aria-label={`Remove ${label} filter`}
-      className="group flex items-center gap-1.5 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-2 py-1 text-xs text-cyan-50 transition hover:border-cyan-300/80"
-    >
-      {label}
-      <X
-        className="size-3 text-cyan-200/70 transition group-hover:text-white"
-        aria-hidden="true"
-      />
-    </button>
-  );
-}
-
-type FilterPanelProps = {
-  title: string;
-  icon: ReactNode;
-  items: readonly string[];
-  active: string;
-  counts?: Map<string, number>;
-  onChange: (value: string) => void;
-};
-
-function FilterPanel({
-  title,
-  icon,
-  items,
-  active,
-  counts,
-  onChange,
-}: FilterPanelProps) {
-  return (
-    <section className="surface-panel rounded-lg p-3">
-      <div className="mb-2.5 flex items-center gap-2 px-1 text-sm font-semibold text-white">
-        {icon}
-        {title}
-      </div>
-      <div className="flex flex-wrap gap-1.5 lg:flex-col lg:gap-1">
-        {items.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => onChange(item)}
-            className={clsx(
-              "flex min-h-10 items-center justify-between gap-2 rounded-md border px-2.5 py-1.5 text-left text-sm transition lg:min-h-0",
-              active === item
-                ? "border-cyan-300/70 bg-cyan-300/10 text-cyan-50"
-                : "border-transparent text-zinc-400 hover:bg-white/[0.06] hover:text-white",
-            )}
-            aria-pressed={active === item}
-          >
-            <span>{item}</span>
-            {counts?.has(item) ? (
-              <span className="font-mono text-xs text-zinc-500">
-                {counts.get(item)}
-              </span>
-            ) : null}
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-type BoardResultProps = {
-  board: BoardSummary;
-  selected: boolean;
-  /**
-   * Whether this row's inline detail is open. Null on the desktop layout,
-   * where the row selects a board for the side column instead of disclosing
-   * anything.
-   */
-  detailOpen: boolean | null;
-  /** Field that put this board in the results; null when nothing is typed. */
-  matchedBy: BoardMatchField | null;
-  favorite: boolean;
-  onSelect: (id: string) => void;
-  onPrefetch: (id: string) => void;
-  onToggleFavorite: (id: string) => void;
-};
-
-// Memoized with stable callbacks so a keystroke, selection change, or favorite
-// toggle only re-renders the rows whose props actually changed, not the whole
-// catalog. content-visibility lets the browser skip layout/paint for rows far
-// off screen, which keeps scrolling smooth on phones and low-end machines.
-const BoardResult = memo(function BoardResult({
-  board,
-  selected,
-  detailOpen,
-  matchedBy,
-  favorite,
-  onSelect,
-  onPrefetch,
-  onToggleFavorite,
-}: BoardResultProps) {
-  return (
-    <article
-      id={`board-result-${board.id}`}
-      className={clsx(
-        // The selected row powers on rather than wearing a marker. On a bench
-        // the instrument in use is the one that is lit, so selection raises
-        // this row out of the board — lighter surface, light caught on the top
-        // edge, deeper shadow — and brings its contents up to full contrast
-        // (see `selected` below on the description, chips, and meta). No rail,
-        // no badge, no added element: the border stays a uniform hairline on
-        // all four sides in both states, which is also why nothing reflows.
-        // Contrast ratios compress badly this close to black, so the surface
-        // step is sized in perceptual lightness (~11 L*) rather than by ratio.
-        "relative rounded-lg border [contain-intrinsic-block-size:9rem] [content-visibility:auto] transition",
-        selected
-          ? "border-white/25 bg-[#262c3a] shadow-[inset_0_1px_0_rgba(255,255,255,0.11),0_2px_4px_rgba(0,0,0,0.5),0_18px_40px_-18px_rgba(0,0,0,0.95)]"
-          : "border-white/10 bg-[#14161d] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] hover:border-white/20 hover:bg-[#191c24]",
-      )}
-    >
-      <button
-        id={`board-result-action-${board.id}`}
-        type="button"
-        onClick={() => onSelect(board.id)}
-        onPointerEnter={() => onPrefetch(board.id)}
-        onFocus={() => onPrefetch(board.id)}
-        aria-label={
-          detailOpen === null
-            ? `Select ${board.name}`
-            : detailOpen
-              ? `Hide ${board.name} details`
-              : `Show ${board.name} details`
-        }
-        // Two layouts, two roles for the same control: on lg+ it selects the
-        // board for the persistent detail column; below that it discloses the
-        // detail inline underneath the row.
-        {...(detailOpen === null
-          ? { "aria-pressed": selected }
-          : {
-              "aria-expanded": detailOpen,
-              "aria-controls": detailOpen ? "mobile-board-detail" : undefined,
-            })}
-        className="absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
-      />
-      <div className="pointer-events-none relative z-10 p-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pr-10">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <VendorLogo vendor={board.vendor} />
-            <h2 className="text-base font-semibold text-white">{board.name}</h2>
-            <span
-              className={clsx(
-                "rounded border bg-[#0a0c11] px-1.5 py-0.5 text-[11px] transition",
-                selected
-                  ? "border-white/20 text-zinc-100"
-                  : "border-white/10 text-zinc-300",
-              )}
-            >
-              {board.category}
-            </span>
-            {board.hasPinout ? (
-              <span className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[11px] text-emerald-100">
-                <CircuitBoard className="size-3" aria-hidden="true" />
-                Pin map
-              </span>
-            ) : null}
-            {board.warningCount > 0 ? (
-              <span
-                className="flex items-center gap-1 rounded border border-orange-300/40 bg-orange-400/10 px-1.5 py-0.5 text-[11px] text-orange-100"
-                title={`${board.warningCount} wiring caution${board.warningCount === 1 ? "" : "s"} — see “Check before wiring”`}
-              >
-                <ShieldAlert className="size-3" aria-hidden="true" />
-                {board.warningCount}
-              </span>
-            ) : null}
-          </div>
-          <span className="flex min-w-0 items-center gap-2">
-            {matchedBy ? (
-              <span className="shrink-0 rounded border border-cyan-300/25 bg-cyan-300/[0.07] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-cyan-200/90">
-                <span className="sr-only">
-                  Matched by {matchFieldLabels[matchedBy]}
-                </span>
-                <span aria-hidden="true">
-                  {matchFieldLabels[matchedBy]} match
-                </span>
-              </span>
-            ) : null}
-            <span
-              className={clsx(
-                "min-w-0 break-words font-mono text-xs transition sm:text-right",
-                selected ? "text-zinc-300" : "text-zinc-500",
-              )}
-            >
-              {board.vendor} · {board.logicLevel}
-            </span>
-          </span>
-        </div>
-
-        <p
-          className={clsx(
-            "mt-1.5 line-clamp-2 text-sm leading-6 transition",
-            selected ? "text-zinc-200" : "text-zinc-400",
-          )}
-        >
-          {board.description}
-        </p>
-
-        <div className="mt-2.5 flex flex-wrap gap-1.5">
-          {board.interfaces.slice(0, 7).map((item) => (
-            <span
-              key={item}
-              className={clsx(
-                "rounded border px-1.5 py-0.5 text-[11px] transition",
-                selected
-                  ? "border-white/20 bg-[#0f1218] text-zinc-100"
-                  : "border-white/10 bg-zinc-950 text-zinc-300",
-              )}
-            >
-              {item}
-            </span>
-          ))}
-          {board.interfaces.length > 7 ? (
-            <span
-              className={clsx(
-                "rounded border px-1.5 py-0.5 text-[11px] transition",
-                selected
-                  ? "border-white/20 bg-[#0f1218] text-zinc-300"
-                  : "border-white/10 bg-zinc-950 text-zinc-500",
-              )}
-            >
-              +{board.interfaces.length - 7}
-            </span>
-          ) : null}
-        </div>
-      </div>
-      <button
-        type="button"
-        onClick={() => onToggleFavorite(board.id)}
-        aria-label={
-          favorite
-            ? `Remove ${board.name} from favorites`
-            : `Add ${board.name} to favorites`
-        }
-        aria-pressed={favorite}
-        title={favorite ? "Remove from favorites" : "Add to favorites"}
-        className="absolute right-1 top-1 z-20 grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-amber-200"
-      >
-        <Star
-          className={clsx(
-            "size-4",
-            favorite && "fill-amber-300 text-amber-300",
-          )}
-          aria-hidden="true"
-        />
-      </button>
-    </article>
-  );
-});
-
-type BoardDetailProps = {
-  board: Board;
-  onBackToResults: () => void;
-};
-
-type BoardDetailPanelProps = {
-  expectedBoard: BoardSummary;
-  detailState: DetailState;
-  onRetry: () => void;
-  onBackToResults: () => void;
-};
-
-function BoardDetailPanel({
-  expectedBoard,
-  detailState,
-  onRetry,
-  onBackToResults,
-}: BoardDetailPanelProps) {
-  const board =
-    detailState.status === "ready" &&
-    detailState.board.id === expectedBoard.id
-      ? detailState.board
-      : null;
-  const failed =
-    detailState.status === "error" && detailState.id === expectedBoard.id;
-
-  return (
-    <>
-      <span className="sr-only" role="status" aria-live="polite">
-        {board
-          ? `${expectedBoard.name} details loaded.`
-          : failed
-            ? `${expectedBoard.name} details could not be loaded.`
-            : `Loading ${expectedBoard.name} details.`}
-      </span>
-      {board ? (
-        <BoardDetail board={board} onBackToResults={onBackToResults} />
-      ) : (
-        <aside
-          className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:self-start"
-          aria-busy={!failed}
-        >
-          <button
-            type="button"
-            onClick={onBackToResults}
-            className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white lg:hidden"
-          >
-            <ArrowUp className="size-4" aria-hidden="true" />
-            Back to results
-          </button>
-          <section className="surface-panel rounded-lg p-5">
-            <div className="flex items-center gap-3">
-              <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
-                {failed ? (
-                  <ShieldAlert className="size-5" aria-hidden="true" />
-                ) : (
-                  <LoaderCircle
-                    className="size-5 motion-safe:animate-spin"
-                    aria-hidden="true"
-                  />
-                )}
-              </div>
-              <div className="min-w-0">
-                <div className="truncate font-semibold text-white">
-                  {expectedBoard.name}
-                </div>
-                <p className="mt-1 text-sm text-zinc-400">
-                  {failed
-                    ? "The board details could not be loaded."
-                    : "Loading source-backed pin data…"}
-                </p>
-              </div>
-            </div>
-            {failed ? (
-              <button
-                type="button"
-                onClick={onRetry}
-                className="mt-4 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-3 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-300/20"
-              >
-                Try again
-              </button>
-            ) : null}
-          </section>
-        </aside>
-      )}
-    </>
-  );
-}
-
-function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
-  const verifySource = verificationSourceFor(board);
-  const verifySourceOfficial = verifySource
-    ? classifySource(board.vendor, verifySource.url) === "official"
-    : false;
-  return (
-    <aside className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
-      {/* Stacked-layout escape hatch: the detail panel sits below the result
-          list on phones, so offer a quick way back up. Hidden on lg+. */}
-      <button
-        type="button"
-        onClick={onBackToResults}
-        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] lg:hidden"
-      >
-        <ArrowUp className="size-4" aria-hidden="true" />
-        Back to results
-      </button>
-      <section className="surface-panel rounded-lg p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-              Selected board
-            </div>
-            <h2 className="mt-2 flex items-center gap-2.5 text-2xl font-semibold text-white">
-              <VendorLogo vendor={board.vendor} size={24} />
-              {board.name}
-            </h2>
-            <p className="mt-2 text-sm text-zinc-400">
-              {board.vendor} / {board.family}
-            </p>
-          </div>
-          <div className="grid size-11 shrink-0 place-items-center rounded-lg border border-amber-300/40 bg-amber-300/10 text-amber-100">
-            <Cpu className="size-5" aria-hidden="true" />
-          </div>
-        </div>
-
-        <dl className="mt-5 grid gap-3 text-sm">
-          <SpecRow label="Processor" value={board.processor} />
-          <SpecRow label="Logic" value={board.logicLevel} />
-          <SpecRow label="Power" value={board.power} />
-          <SpecRow label="Format" value={board.formFactor} />
-        </dl>
-      </section>
-
-      {verifySource ? (
-        <a
-          href={verifySource.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center justify-between gap-3 rounded-lg border border-orange-300/30 bg-[#1b1410] px-3.5 py-2.5 text-sm text-orange-100/90 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-orange-300/60 hover:text-orange-50"
-        >
-          <span className="flex min-w-0 items-center gap-2">
-            <ShieldAlert
-              className="size-4 shrink-0 text-orange-200"
-              aria-hidden="true"
-            />
-            <span className="min-w-0 truncate">
-              Verify before wiring:{" "}
-              <span className="font-medium">{verifySource.label}</span>
-            </span>
-            <span
-              className={clsx(
-                "shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium",
-                verifySourceOfficial
-                  ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-100"
-                  : "border-white/15 bg-white/[0.05] text-zinc-300",
-              )}
-            >
-              {verifySourceOfficial ? "Official" : "3rd-party"}
-            </span>
-          </span>
-          <ArrowUpRight
-            className="size-4 shrink-0 text-orange-200/60 transition group-hover:text-orange-100"
-            aria-hidden="true"
-          />
-        </a>
-      ) : null}
-
-      <PinoutTabs board={board} />
-
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-        <InfoBlock
-          title="Why it matters"
-          icon={<Zap className="size-4 text-emerald-200" aria-hidden="true" />}
-          items={board.highlights}
-        />
-        <InfoBlock
-          title="Check before wiring"
-          icon={
-            <ShieldAlert className="size-4 text-orange-200" aria-hidden="true" />
-          }
-          items={board.warnings}
-          tone="warning"
-        />
-      </section>
-
-      <section className="surface-panel rounded-lg p-4">
-        <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
-          <BookOpen className="size-4 text-cyan-200" aria-hidden="true" />
-          Source references
-        </div>
-        <div className="grid gap-2">
-          {board.sourceLinks.map((source) => {
-            const official =
-              classifySource(board.vendor, source.url) === "official";
-            return (
-              <a
-                key={source.url}
-                href={source.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="surface-well group flex min-w-0 items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#13161c] hover:text-white"
-              >
-                <span className="flex min-w-0 items-baseline gap-2">
-                  <span className="shrink-0 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-zinc-500 transition group-hover:text-zinc-300">
-                    {source.type}
-                  </span>
-                  <span className="min-w-0 truncate">{source.label}</span>
-                </span>
-                <span className="flex shrink-0 items-center gap-2">
-                  {official ? (
-                    <span
-                      className="flex items-center gap-1 rounded border border-emerald-400/40 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-100"
-                      title="Official board-vendor or primary-component documentation"
-                    >
-                      <BadgeCheck className="size-3" aria-hidden="true" />
-                      Official
-                    </span>
-                  ) : (
-                    <span
-                      className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-zinc-400"
-                      title={`Not published by ${board.vendor} — cross-check against vendor documentation`}
-                    >
-                      3rd-party
-                    </span>
-                  )}
-                  <ArrowUpRight
-                    className="size-4 text-zinc-500 transition group-hover:text-cyan-200"
-                    aria-hidden="true"
-                  />
-                </span>
-              </a>
-            );
-          })}
-        </div>
-      </section>
-    </aside>
-  );
-}
-
-type SpecRowProps = {
-  label: string;
-  value: string;
-};
-
-function SpecRow({ label, value }: SpecRowProps) {
-  return (
-    <div className="grid gap-1 border-t border-white/10 pt-3 first:border-t-0 first:pt-0 sm:grid-cols-[6rem_minmax(0,1fr)]">
-      <dt className="text-xs uppercase tracking-[0.16em] text-zinc-500">
-        {label}
-      </dt>
-      <dd className="text-zinc-200">{value}</dd>
-    </div>
-  );
-}
-
-type InfoBlockProps = {
-  title: string;
-  icon: ReactNode;
-  items: string[];
-  tone?: "default" | "warning";
-};
-
-function InfoBlock({ title, icon, items, tone = "default" }: InfoBlockProps) {
-  return (
-    <section
-      className={clsx(
-        "rounded-lg p-4",
-        tone === "warning"
-          ? "border border-orange-300/30 bg-[#1b1410] shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
-          : "surface-panel",
-      )}
-    >
-      <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
-        {icon}
-        {title}
-      </div>
-      <ul className="space-y-2 text-sm leading-6 text-zinc-400">
-        {items.map((item) => (
-          <li key={item} className="flex gap-2">
-            <span
-              className={clsx(
-                "mt-2.5 size-1 shrink-0 rounded-full",
-                tone === "warning" ? "bg-orange-300/70" : "bg-zinc-500",
-              )}
-              aria-hidden="true"
-            />
-            {item}
-          </li>
-        ))}
-      </ul>
-    </section>
   );
 }
