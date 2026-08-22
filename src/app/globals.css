@@ -156,6 +156,72 @@ body {
   color: #854d0e;
 }
 
+/* Amber fills, borders, and stars on light ground. On charcoal the 10–20%
+   amber washes read as tinted glass; on drafting paper they nearly vanish,
+   leaving the favorites control looking like a detached outline with murky
+   padding, so light mode swaps in denser warm inks at the same steps. */
+:root[data-theme="light"] :is(
+  .bg-amber-400\/10, .bg-amber-300\/10
+) {
+  background-color: rgba(217, 119, 6, 0.13);
+}
+
+:root[data-theme="light"] :is(
+  .bg-amber-400\/20, .bg-amber-300\/20
+) {
+  background-color: rgba(217, 119, 6, 0.24);
+}
+
+:root[data-theme="light"] .hover\:bg-amber-400\/20:hover,
+:root[data-theme="light"] .hover\:bg-amber-300\/20:hover {
+  background-color: rgba(217, 119, 6, 0.24);
+}
+
+:root[data-theme="light"] [class*="border-amber-300/25"] {
+  border-color: rgba(146, 94, 6, 0.4);
+}
+
+:root[data-theme="light"] :is(
+  [class*="border-amber-300/40"], [class*="border-amber-300/50"]
+) {
+  border-color: rgba(146, 94, 6, 0.55);
+}
+
+:root[data-theme="light"] [class*="border-amber-300/60"] {
+  border-color: rgba(146, 94, 6, 0.65);
+}
+
+:root[data-theme="light"] :is(
+  .fill-amber-300, .fill-amber-300\/20, .text-amber-300, .text-amber-300\/80
+) {
+  color: #d97706;
+  fill: #d97706;
+}
+
+/* Alpha-suffixed orange text never matches the plain-class overrides above
+   (the class name is different), so the board page's wiring warnings rendered
+   near-white on cream. Map each variant the theme actually ships. */
+:root[data-theme="light"] :is(
+  .text-orange-50\/70, .text-orange-200\/60
+) {
+  color: #9a3412;
+}
+
+:root[data-theme="light"] :is(
+  .border-orange-300\/30, .border-orange-300\/40
+) {
+  border-color: rgba(154, 52, 18, 0.35);
+}
+
+:root[data-theme="light"] .hover\:border-orange-300\/60:hover {
+  border-color: rgba(154, 52, 18, 0.6);
+}
+
+:root[data-theme="light"] .hover\:text-orange-50:hover,
+:root[data-theme="light"] .group:hover .group-hover\:text-orange-100 {
+  color: #9a3412;
+}
+
 :root[data-theme="light"] [class*="border-white/"] {
   border-color: rgba(31, 48, 58, 0.16);
 }
@@ -191,6 +257,24 @@ button {
 :focus-visible {
   outline: 2px solid rgba(103, 232, 249, 0.7);
   outline-offset: 2px;
+}
+
+/* Cyan-300 focus rings and white scroll thumbs are tuned for charcoal and
+   disappear against paper; light mode darkens both so they stay visible. */
+:root[data-theme="light"] :focus-visible {
+  outline-color: rgba(8, 145, 178, 0.85);
+}
+
+:root[data-theme="light"] * {
+  scrollbar-color: rgba(23, 32, 42, 0.28) transparent;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(23, 32, 42, 0.24);
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(23, 32, 42, 0.36);
 }
 
 ::selection {
@@ -339,6 +423,22 @@ button {
   box-shadow:
     inset 0 0 0 1px rgba(252, 211, 77, 0.9),
     0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* The dark-theme resting ring sits on charcoal with a black drop shadow; on
+   drafting paper that same shadow reads as a smudged halo around a washed-out
+   chip. Light mode keeps the ring but inks it darker and drops the shadow to
+   a neutral hairline. */
+:root[data-theme="light"] .fav-button {
+  box-shadow:
+    inset 0 0 0 1px rgba(146, 94, 6, 0.45),
+    0 1px 2px rgba(23, 32, 42, 0.16);
+}
+
+:root[data-theme="light"] .fav-button:hover {
+  box-shadow:
+    inset 0 0 0 1px rgba(146, 94, 6, 0.85),
+    0 1px 2px rgba(23, 32, 42, 0.16);
 }
 
 /* ---------------------------------------------------------------------------

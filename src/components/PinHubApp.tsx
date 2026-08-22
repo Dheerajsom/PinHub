@@ -580,7 +580,7 @@ export function PinHubApp({
               }}
               aria-pressed={showFavoritesOnly}
               className={clsx(
-                "fav-button ml-1.5 inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-transparent px-3.5 py-1.5 text-xs font-semibold leading-none",
+                "fav-button inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1.5 text-xs font-semibold leading-none",
                 showFavoritesOnly
                   ? "bg-gradient-to-b from-amber-300 to-amber-400 text-zinc-950"
                   : "bg-amber-400/10 text-amber-200 hover:bg-amber-400/20 hover:text-amber-50",
