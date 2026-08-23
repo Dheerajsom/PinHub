@@ -10,6 +10,7 @@ function currentTheme(): Theme {
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
+/** Switches the panel finish between matte black anodize and brushed alloy. */
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>("dark");
 
@@ -22,7 +23,11 @@ export function ThemeToggle() {
     const next = currentTheme() === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     document.documentElement.style.colorScheme = next;
-    localStorage.setItem(storageKey, next);
+    try {
+      localStorage.setItem(storageKey, next);
+    } catch {
+      // Private/restricted storage still gets the switch, just not the memory.
+    }
     setTheme(next);
   }
 
@@ -33,7 +38,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={nextLabel}
       title={nextLabel}
-      className="grid size-10 shrink-0 place-items-center rounded-lg border border-white/15 bg-[#15181f] text-zinc-300 transition hover:border-cyan-300/60 hover:text-white"
+      className="ctl aspect-square !px-0"
     >
       {theme === "dark" ? (
         <Sun className="size-4" aria-hidden="true" />

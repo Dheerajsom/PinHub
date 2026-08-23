@@ -44,9 +44,9 @@ export function PinRoleLegend({ counts, activeRole, onToggle }: PinRoleLegendPro
             aria-label={`${roleLabels[role]} — ${count} ${count === 1 ? "pin" : "pins"}`}
             style={roleChipStyle(role)}
             className={clsx(
-              "touch-target inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-semibold leading-none transition",
+              "touch-target inline-flex items-center rounded-[2px] border px-2 py-1 text-[11px] font-semibold leading-none transition",
               active
-                ? "ring-2 ring-cyan-300/80 ring-offset-1 ring-offset-[#0a0c11]"
+                ? "ring-2 ring-ink ring-offset-1 ring-offset-recess"
                 : activeRole !== null
                   ? "opacity-45 hover:opacity-80"
                   : "hover:brightness-125",

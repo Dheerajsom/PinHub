@@ -10,7 +10,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Board } from "@/lib/boards";
 import { summarizeBoard } from "@/lib/board-summary";
-import { PinHubApp } from "@/components/PinHubApp";
+import { PinHubApp, benchLayoutQuery } from "@/components/PinHubApp";
 
 // The detail panel is exercised by its own tests; here it is stubbed so these
 // cases stay about the result list, its empty states, and its paging.
@@ -48,14 +48,14 @@ const hat = board({
   vendor: "Acme",
   description: "Stacks onto the Raspberry Pi 5 and Raspberry Pi 4.",
 });
-const extras = Array.from({ length: 30 }, (_, index) =>
+const extras = Array.from({ length: 70 }, (_, index) =>
   board({ id: `filler-${index}`, name: `Filler Board ${index}` }),
 );
 const catalog = [pi5, hat, ...extras].map(summarizeBoard);
 
 function setViewport(desktop: boolean) {
   window.matchMedia = ((query: string) => ({
-    matches: query.includes("min-width: 1024px") ? desktop : false,
+    matches: query === benchLayoutQuery ? desktop : false,
     media: query,
     onchange: null,
     addEventListener: () => {},
@@ -105,7 +105,7 @@ describe("PinHubApp result list", () => {
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     const detail = screen.getByRole("region", { name: "Sensor HAT details" });
     // The detail belongs to the row it was opened from, not the end of the list.
-    expect(detail.previousElementSibling?.id).toBe("board-result-sensor-hat");
+    expect(detail.previousElementSibling?.id).toBe("board-row-sensor-hat");
 
     fireEvent.click(toggle);
     expect(
@@ -121,7 +121,7 @@ describe("PinHubApp result list", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Show Sensor HAT details" }),
     );
-    const back = screen.getByRole("button", { name: "Back to results" });
+    const back = screen.getByRole("button", { name: "Back to the index" });
     back.focus();
     fireEvent.click(back);
 
@@ -149,9 +149,9 @@ describe("PinHubApp result list", () => {
     });
 
     const results = screen
-      .getByRole("region", { name: "Board results" })
-      .querySelectorAll('article[id^="board-result-"]');
-    expect(results[0].id).toBe("board-result-raspberry-pi-5");
+      .getByRole("region", { name: "Board index" })
+      .querySelectorAll('article[id^="board-row-"]');
+    expect(results[0].id).toBe("board-row-raspberry-pi-5");
     expect(
       within(results[0] as HTMLElement).getByText("Matched by name"),
     ).toBeTruthy();
@@ -164,15 +164,15 @@ describe("PinHubApp result list", () => {
     setViewport(true);
     renderApp();
 
-    fireEvent.click(screen.getByRole("button", { name: /Favorites/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Saved/ }));
 
-    expect(screen.getByText("No saved boards yet")).toBeTruthy();
-    expect(screen.queryByText("No boards match that filter")).toBeNull();
+    expect(screen.getByText("No saved boards")).toBeTruthy();
+    expect(screen.queryByText("No boards match")).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: "Browse the catalog" }));
-    expect(screen.queryByText("No saved boards yet")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Show all boards" }));
+    expect(screen.queryByText("No saved boards")).toBeNull();
     expect(
-      within(screen.getByRole("region", { name: "Board results" })).getByRole(
+      within(screen.getByRole("region", { name: "Board index" })).getByRole(
         "heading",
         { name: "Raspberry Pi 5" },
       ),
@@ -186,7 +186,7 @@ describe("PinHubApp result list", () => {
     const status = screen
       .getAllByRole("status")
       .find((node) => node.textContent?.startsWith("Showing"));
-    expect(status?.textContent).toContain(`Showing 16 of ${catalog.length}`);
+    expect(status?.textContent).toContain(`Showing 40 of ${catalog.length}`);
 
     fireEvent.click(screen.getByRole("button", { name: /Show \d+ more/ }));
 

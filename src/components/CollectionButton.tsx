@@ -26,7 +26,7 @@ export function CollectionButton({ id, name }: { id: string; name: string }) {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="dialog"
-        className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white"
+        className="inline-flex h-10 items-center gap-2 rounded-[2px] border border-rule bg-face px-3 text-sm text-dim transition hover:text-ink"
       >
         <FolderPlus className="size-4" aria-hidden="true" />
         Collection
@@ -35,17 +35,17 @@ export function CollectionButton({ id, name }: { id: string; name: string }) {
         <div
           role="dialog"
           aria-label={`Collections for ${name}`}
-          className="surface-panel absolute left-0 top-12 z-50 w-72 rounded-lg p-3 shadow-2xl"
+          className="panel absolute left-0 top-12 z-50 w-72 rounded-[2px] p-3"
         >
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-dim">
               Add to collection
             </h3>
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close collections"
-              className="grid size-8 place-items-center rounded text-zinc-500 hover:bg-white/[0.06] hover:text-white"
+              className="grid size-8 place-items-center rounded-[2px] text-faint hover:bg-raised hover:text-ink"
             >
               <X className="size-4" aria-hidden="true" />
             </button>
@@ -62,20 +62,20 @@ export function CollectionButton({ id, name }: { id: string; name: string }) {
                       setBoardInCollection(collection.id, id, !included)
                     }
                     aria-pressed={included}
-                    className="surface-well flex min-h-10 items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white"
+                    className="well flex min-h-10 items-center justify-between gap-3 rounded-[2px] px-3 py-2 text-left text-sm text-dim transition border-rule-strong hover:text-ink"
                   >
                     <span className="truncate">{collection.name}</span>
                     {included ? (
-                      <Check className="size-4 shrink-0 text-emerald-300" aria-hidden="true" />
+                      <Check className="size-4 shrink-0 text-verified-ink" aria-hidden="true" />
                     ) : (
-                      <Plus className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                      <Plus className="size-4 shrink-0 text-faint" aria-hidden="true" />
                     )}
                   </button>
                 );
               })}
             </div>
           ) : (
-            <p className="mt-2 text-xs leading-5 text-zinc-500">
+            <p className="mt-2 text-xs leading-5 text-faint">
               No collections yet. Name one below and this board will be added.
             </p>
           )}
@@ -87,13 +87,13 @@ export function CollectionButton({ id, name }: { id: string; name: string }) {
                 onChange={(event) => setCollectionName(event.target.value)}
                 maxLength={60}
                 placeholder="Robotics boards"
-                className="h-10 w-full rounded-md border border-white/10 bg-[#0a0c11] px-3 text-sm text-white outline-none focus:border-cyan-300/60"
+                className="h-10 w-full rounded-[2px] border border-rule bg-well px-3 text-sm text-ink outline-none"
               />
             </label>
             <button
               type="submit"
               disabled={!collectionName.trim()}
-              className="h-10 rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 text-sm text-cyan-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className="h-10 rounded-[2px] border border-rule-strong bg-raised px-3 text-sm text-ink disabled:cursor-not-allowed disabled:opacity-40"
             >
               Create
             </button>

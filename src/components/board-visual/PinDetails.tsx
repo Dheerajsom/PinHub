@@ -24,50 +24,50 @@ export function PinDetails({
   netSize: number;
 }) {
   return (
-    <div className="surface-well rounded-md px-3 py-2.5 text-sm" aria-live="polite">
+    <div className="well rounded-[2px] px-3 py-2.5 text-sm" aria-live="polite">
       {anchor ? (
         <div className="flex flex-col gap-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="grid h-6 min-w-6 place-items-center rounded bg-white/[0.06] px-1 font-mono text-xs font-semibold text-white">
+            <span className="grid h-6 min-w-6 place-items-center rounded-[2px] bg-raised px-1 font-mono text-xs font-semibold text-ink">
               {anchor.pin.position}
             </span>
-            <span className="font-mono text-base font-semibold text-white">
+            <span className="font-mono text-base font-semibold text-ink">
               {anchor.pin.label}
             </span>
             <span
-              className="rounded border px-1.5 py-0.5 text-[11px] font-medium"
+              className="rounded-[2px] border px-1.5 py-0.5 text-[11px] font-medium"
               style={roleChipStyle(anchor.pin.role)}
             >
               {roleLabels[anchor.pin.role]}
             </span>
             {net && netSize > 1 ? (
-              <span className="rounded border border-cyan-300/45 bg-cyan-300/[0.08] px-1.5 py-0.5 text-[11px] font-medium text-cyan-100">
+              <span className="rounded-[2px] border border-rule-strong bg-raised px-1.5 py-0.5 text-[11px] font-medium text-ink">
                 {netDescription(net)} · {netSize} pins
               </span>
             ) : null}
             {anchor.group ? (
-              <span className="text-[11px] uppercase tracking-[0.12em] text-zinc-500">
+              <span className="text-[11px] uppercase tracking-[0.12em] text-faint">
                 {anchor.group}
               </span>
             ) : null}
             {pinned ? (
-              <span className="ml-auto text-[10px] uppercase tracking-[0.14em] text-cyan-300/80">
+              <span className="ml-auto text-[10px] uppercase tracking-[0.14em] text-ink">
                 Pinned · Esc to clear
               </span>
             ) : null}
           </div>
 
           {anchor.pin.aliases?.length ? (
-            <div className="text-[13px] text-zinc-400">
-              <span className="text-zinc-500">Aliases: </span>
+            <div className="text-[13px] text-dim">
+              <span className="text-faint">Aliases: </span>
               <span className="font-mono">{anchor.pin.aliases.join(" / ")}</span>
             </div>
           ) : null}
 
           {anchor.pin.note ? (
-            <p className="flex items-start gap-1.5 rounded border border-orange-300/25 bg-orange-300/[0.06] px-2 py-1.5 text-[13px] leading-5 text-orange-100/90">
+            <p className="flex items-start gap-1.5 rounded-[2px] border border-hazard/55 bg-hazard-wash px-2 py-1.5 text-[13px] leading-5 text-hazard-ink">
               <TriangleAlert
-                className="mt-0.5 size-3.5 shrink-0 text-orange-300"
+                className="mt-0.5 size-3.5 shrink-0 text-hazard-ink"
                 aria-hidden="true"
               />
               <span className="min-w-0">{anchor.pin.note}</span>
@@ -75,7 +75,7 @@ export function PinDetails({
           ) : null}
         </div>
       ) : (
-        <p className="text-zinc-500">
+        <p className="text-faint">
           Hover, tap, or focus a pad to inspect a pin. Use arrow keys to move
           between pins.
         </p>

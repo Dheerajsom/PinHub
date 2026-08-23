@@ -13,7 +13,7 @@ export function SaveSharedCollection({ name, boardIds }: { name: string; boardId
         if (createCollection(name, boardIds)) setSaved(true);
       }}
       disabled={saved}
-      className="inline-flex h-10 items-center gap-2 rounded-lg border border-cyan-300/40 bg-cyan-300/10 px-3 text-sm text-cyan-50 transition hover:bg-cyan-300/20 disabled:border-emerald-300/40 disabled:bg-emerald-300/10 disabled:text-emerald-100"
+      className="inline-flex h-10 items-center gap-2 rounded-[2px] border border-rule-strong bg-raised px-3 text-sm text-ink transition disabled:border-verified/55 disabled:bg-verified-wash disabled:text-verified-ink"
     >
       {saved ? <Check className="size-4" /> : <FolderPlus className="size-4" />}
       {saved ? "Saved locally" : "Save this collection"}

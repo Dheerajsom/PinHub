@@ -6,6 +6,7 @@ import { clsx } from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Board } from "@/lib/boards";
 import { getBoardDiscoveryProfile } from "@/lib/board-discovery";
+import type { SignalRow } from "@/lib/compare-pins";
 import { VendorLogo } from "@/components/VendorLogo";
 
 type Row = { label: string; values: string[] };
@@ -14,7 +15,14 @@ function uniqueValues(values: string[]) {
   return new Set(values.map((value) => value.toLowerCase())).size;
 }
 
-export function CompareTable({ boards }: { boards: Board[] }) {
+export function CompareTable({
+  boards,
+  signalRows,
+}: {
+  boards: Board[];
+  /** Bus-signal rows: which physical pin carries each signal on each board. */
+  signalRows?: SignalRow[] | null;
+}) {
   const [differencesOnly, setDifferencesOnly] = useState(true);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
     "idle",
@@ -29,17 +37,17 @@ export function CompareTable({ boards }: { boards: Board[] }) {
   const rows = useMemo<Row[]>(() => {
     const profiles = boards.map(getBoardDiscoveryProfile);
     return [
-      { label: "Compute class", values: profiles.map((item) => item.computeClass) },
-      { label: "Processor", values: boards.map((item) => item.processor) },
       { label: "Logic level", values: boards.map((item) => item.logicLevel) },
       { label: "5 V tolerance", values: profiles.map((item) => item.fiveVoltTolerance) },
+      { label: "Wiring cautions", values: boards.map((item) => `${item.warnings.length}`) },
+      { label: "Compute class", values: profiles.map((item) => item.computeClass) },
+      { label: "Processor", values: boards.map((item) => item.processor) },
       { label: "Power", values: boards.map((item) => item.power) },
       { label: "Form factor", values: boards.map((item) => item.formFactor) },
       { label: "Wireless", values: profiles.map((item) => item.wireless.join(", ") || "None listed") },
       { label: "Connector ecosystem", values: profiles.map((item) => item.connectorEcosystems.join(", ") || "Board-specific") },
       { label: "Interfaces", values: boards.map((item) => item.interfaces.join(", ")) },
       { label: "In-app pin map", values: boards.map((item) => item.pinout ? "Available" : "Not available") },
-      { label: "Wiring cautions", values: boards.map((item) => `${item.warnings.length}`) },
       { label: "Sources", values: boards.map((item) => `${item.sourceLinks.length} linked references`) },
     ];
   }, [boards]);
@@ -69,16 +77,16 @@ export function CompareTable({ boards }: { boards: Board[] }) {
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-zinc-400" role="status" aria-live="polite">
+        <p className="text-sm text-dim" role="status" aria-live="polite">
           {differencesOnly ? `${visibleRows.length} differing attributes shown` : `${rows.length} attributes shown`}
         </p>
         <div className="flex gap-2">
-          <button type="button" onClick={() => setDifferencesOnly((value) => !value)} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
+          <button type="button" onClick={() => setDifferencesOnly((value) => !value)} className="inline-flex h-10 items-center gap-2 rounded-[2px] border border-rule bg-face px-3 text-sm text-dim transition hover:text-ink">
             {differencesOnly ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
             {differencesOnly ? "Show identical" : "Differences only"}
           </button>
-          <button type="button" onClick={copyLink} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
-            {copied ? <Check className="size-4 text-emerald-300" /> : copyFailed ? <X className="size-4 text-red-300" /> : <Copy className="size-4" />}
+          <button type="button" onClick={copyLink} className="inline-flex h-10 items-center gap-2 rounded-[2px] border border-rule bg-face px-3 text-sm text-dim transition hover:text-ink">
+            {copied ? <Check className="size-4 text-verified-ink" /> : copyFailed ? <X className="size-4 text-hazard-ink" /> : <Copy className="size-4" />}
             <span aria-live="polite">{copied ? "Copied" : copyFailed ? "Share failed" : "Share"}</span>
           </button>
         </div>
@@ -97,7 +105,7 @@ export function CompareTable({ boards }: { boards: Board[] }) {
       </div>
 
       <div
-        className="comparison-scroll hidden overflow-x-auto rounded-xl border border-white/10 bg-[#11141a] shadow-2xl md:block"
+        className="comparison-scroll hidden overflow-x-auto rounded-[2px] border border-rule bg-face md:block"
         // A scroll container is only reachable by keyboard if it can hold
         // focus; the attribute column stays pinned while it moves.
         tabIndex={0}
@@ -106,19 +114,19 @@ export function CompareTable({ boards }: { boards: Board[] }) {
       >
         <table className="w-full min-w-[760px] border-collapse text-left">
           <thead>
-            <tr className="border-b border-white/10 bg-[#0c0f14]">
-              <th scope="col" className="sticky left-0 z-20 w-40 bg-[#0c0f14] p-4 text-xs uppercase tracking-[0.14em] text-zinc-500">Attribute</th>
+            <tr className="border-b border-rule bg-well">
+              <th scope="col" className="sticky left-0 z-20 w-40 bg-well p-4 text-xs uppercase tracking-[0.14em] text-faint">Attribute</th>
               {boards.map((board) => (
                 <th scope="col" key={board.id} className="min-w-52 p-4 align-top">
                   <div className="flex items-start justify-between gap-2">
-                    <Link href={`/boards/${board.id}`} className="group flex items-center gap-2 font-semibold text-white hover:text-cyan-100">
+                    <Link href={`/boards/${board.id}`} className="group flex items-center gap-2 font-semibold text-ink text-ink">
                       <VendorLogo vendor={board.vendor} size={22} />{board.name}
                     </Link>
-                    <button type="button" onClick={() => removeBoard(board.id)} aria-label={`Remove ${board.name} from comparison`} className="grid size-8 shrink-0 place-items-center rounded-md text-zinc-600 hover:bg-white/[0.06] hover:text-white"><X className="size-4" /></button>
+                    <button type="button" onClick={() => removeBoard(board.id)} aria-label={`Remove ${board.name} from comparison`} className="grid size-8 shrink-0 place-items-center rounded-[2px] text-faint hover:bg-raised hover:text-ink"><X className="size-4" /></button>
                   </div>
                   <div className="mt-2 flex gap-2">
-                    <Link href={`/boards/${board.id}`} className="text-xs text-cyan-200 hover:text-white">Overview</Link>
-                    {board.pinout ? <Link href={`/pinout/${board.id}`} className="text-xs text-emerald-200 hover:text-white">Pinout</Link> : null}
+                    <Link href={`/boards/${board.id}`} className="text-xs text-ink hover:text-ink">Overview</Link>
+                    {board.pinout ? <Link href={`/pinout/${board.id}`} className="text-xs text-verified-ink hover:text-ink">Pinout</Link> : null}
                   </div>
                 </th>
               ))}
@@ -128,10 +136,10 @@ export function CompareTable({ boards }: { boards: Board[] }) {
             {visibleRows.map((row) => {
               const differs = uniqueValues(row.values) > 1;
               return (
-                <tr key={row.label} className="border-b border-white/[0.07] last:border-0">
-                  <th scope="row" className="sticky left-0 z-10 bg-[#11141a] p-4 text-xs font-medium uppercase tracking-[0.1em] text-zinc-500">{row.label}</th>
+                <tr key={row.label} className="border-b border-rule last:border-0">
+                  <th scope="row" className="sticky left-0 z-10 bg-face p-4 text-xs font-medium uppercase tracking-[0.1em] text-faint">{row.label}</th>
                   {row.values.map((value, index) => (
-                    <td key={boards[index]?.id} className={clsx("p-4 text-sm leading-6 text-zinc-300", differs && "bg-cyan-300/[0.025]")}>{value || "Not documented"}</td>
+                    <td key={boards[index]?.id} className={clsx("p-4 text-sm leading-6 text-dim", differs && "bg-raised")}>{value || "Not documented"}</td>
                   ))}
                 </tr>
               );
@@ -139,6 +147,65 @@ export function CompareTable({ boards }: { boards: Board[] }) {
           </tbody>
         </table>
       </div>
+
+      {signalRows?.length ? (
+        <section className="panel mt-3" aria-labelledby="signal-map">
+          <div className="border-b border-rule px-3 py-1.5">
+            <h2 id="signal-map" className="silk">
+              Where each bus signal lands
+            </h2>
+          </div>
+          <p className="border-b border-rule px-3 py-2 text-[13px] leading-snug text-dim">
+            Answers the re-wiring question directly: if a harness is already
+            built for one of these boards, this is the pin it moves to on the
+            others. Every entry comes from that board&rsquo;s own labels and
+            aliases — a board with no match says so rather than borrowing a
+            neighbour&rsquo;s answer.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] border-collapse text-left">
+              <thead>
+                <tr className="border-b border-rule">
+                  <th scope="col" className="silk w-28 px-3 py-2">
+                    Signal
+                  </th>
+                  {boards.map((board) => (
+                    <th
+                      scope="col"
+                      key={board.id}
+                      className="silk min-w-40 px-3 py-2 !text-dim"
+                    >
+                      {board.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {signalRows.map((row) => (
+                  <tr key={row.signal} className="border-b border-rule last:border-0">
+                    <th scope="row" className="data px-3 py-2 text-[12px] font-medium text-ink">
+                      {row.signal}
+                    </th>
+                    {row.values.map((value, index) => (
+                      <td
+                        key={boards[index]?.id}
+                        className={clsx(
+                          "data px-3 py-2 text-[12px] leading-snug",
+                          value === "Not exposed" || value === "No pin map"
+                            ? "text-faint"
+                            : "text-dim",
+                        )}
+                      >
+                        {value}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }
@@ -159,36 +226,36 @@ function StackedComparison({
     <div className="space-y-3">
       <section
         aria-label="Boards in this comparison"
-        className="surface-panel rounded-xl p-3"
+        className="panel rounded-[2px] p-3"
       >
-        <h2 className="px-1 text-xs uppercase tracking-[0.14em] text-zinc-500">
+        <h2 className="px-1 text-xs uppercase tracking-[0.14em] text-faint">
           Comparing {boards.length} boards
         </h2>
         <ul className="mt-2 grid gap-2">
           {boards.map((board) => (
             <li
               key={board.id}
-              className="surface-well flex items-center gap-2 rounded-lg p-2.5"
+              className="well flex items-center gap-2 rounded-[2px] p-2.5"
             >
               <VendorLogo vendor={board.vendor} size={22} />
               <div className="min-w-0 flex-1">
                 <Link
                   href={`/boards/${board.id}`}
-                  className="block truncate text-sm font-semibold text-white"
+                  className="block truncate text-sm font-semibold text-ink"
                 >
                   {board.name}
                 </Link>
                 <div className="mt-0.5 flex gap-3">
                   <Link
                     href={`/boards/${board.id}`}
-                    className="text-xs text-cyan-200"
+                    className="text-xs text-ink"
                   >
                     Overview
                   </Link>
                   {board.pinout ? (
                     <Link
                       href={`/pinout/${board.id}`}
-                      className="text-xs text-emerald-200"
+                      className="text-xs text-verified-ink"
                     >
                       Pinout
                     </Link>
@@ -199,7 +266,7 @@ function StackedComparison({
                 type="button"
                 onClick={() => onRemove(board.id)}
                 aria-label={`Remove ${board.name} from comparison`}
-                className="grid size-10 shrink-0 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-white"
+                className="grid size-10 shrink-0 place-items-center rounded-[2px] text-faint transition hover:bg-raised hover:text-ink"
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
@@ -214,20 +281,20 @@ function StackedComparison({
           <section
             key={row.label}
             className={clsx(
-              "rounded-xl p-3",
+              "rounded-[2px] p-3",
               differs
-                ? "border border-cyan-300/25 bg-[#101820]"
-                : "surface-panel",
+                ? "border border-rule-strong bg-face"
+                : "panel",
             )}
           >
             <div className="flex items-baseline justify-between gap-2 px-1">
-              <h2 className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-400">
+              <h2 className="text-xs font-medium uppercase tracking-[0.12em] text-dim">
                 {row.label}
               </h2>
               <span
                 className={clsx(
                   "shrink-0 font-mono text-[10px] uppercase tracking-[0.1em]",
-                  differs ? "text-cyan-200/80" : "text-zinc-600",
+                  differs ? "text-ink" : "text-faint",
                 )}
               >
                 {differs ? "Differs" : "Same"}
@@ -237,12 +304,12 @@ function StackedComparison({
               {row.values.map((value, index) => (
                 <div
                   key={boards[index]?.id}
-                  className="surface-well rounded-lg px-2.5 py-2"
+                  className="well rounded-[2px] px-2.5 py-2"
                 >
-                  <dt className="truncate font-mono text-[11px] text-zinc-500">
+                  <dt className="truncate font-mono text-[11px] text-faint">
                     {boards[index]?.name}
                   </dt>
-                  <dd className="mt-0.5 text-sm leading-6 text-zinc-200">
+                  <dd className="mt-0.5 text-sm leading-6 text-ink">
                     {value || "Not documented"}
                   </dd>
                 </div>

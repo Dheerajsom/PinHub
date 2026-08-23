@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Shield } from "lucide-react";
-import { CircuitBackground } from "@/components/CircuitBackground";
 
 export const metadata: Metadata = {
   title: "Privacy & disclaimer",
@@ -16,45 +15,44 @@ const repoUrl = "https://github.com/Dheerajsom/PinHub";
 export default function PrivacyPage() {
   return (
     <main className="relative isolate min-h-screen pb-10">
-      <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#0a0d12] px-4 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-6 lg:px-8">
+      <header className="relative border-b border-rule bg-well px-4 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-[860px] items-center justify-between gap-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-cyan-200"
+            className="inline-flex items-center gap-2 text-sm text-dim transition text-ink"
           >
             <ArrowLeft className="size-4" /> Back to discovery
           </Link>
-          <Link href="/" className="brand-title text-xl text-white">
+          <Link href="/" className="readout text-xl text-ink">
             PinHub
           </Link>
         </div>
       </header>
 
       <div className="relative mx-auto max-w-[860px] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200">
+        <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-ink">
           <Shield className="size-4" /> Privacy & disclaimer
         </div>
-        <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">
+        <h1 className="mt-2 text-3xl font-semibold text-ink sm:text-4xl">
           What we collect, and what we don&apos;t
         </h1>
-        <p className="mt-3 text-sm text-zinc-500">Last updated {lastUpdated}</p>
+        <p className="mt-3 text-sm text-faint">Last updated {lastUpdated}</p>
 
         <div className="mt-8 space-y-5">
-          <section className="surface-panel rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-white">No accounts, no server-side profile</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <section className="panel rounded-[2px] p-5">
+            <h2 className="text-lg font-semibold text-ink">No accounts, no server-side profile</h2>
+            <p className="mt-2 text-sm leading-6 text-dim">
               PinHub is a static catalog. There is no sign-up, no login, and no
               database of personal information. Nothing you do while browsing
               boards or pinouts is tied to your identity on our servers.
             </p>
           </section>
 
-          <section className="surface-panel rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-white">Favorites stay on your device</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <section className="panel rounded-[2px] p-5">
+            <h2 className="text-lg font-semibold text-ink">Favorites stay on your device</h2>
+            <p className="mt-2 text-sm leading-6 text-dim">
               Starring a board saves its ID to your browser&apos;s{" "}
-              <code className="rounded bg-white/10 px-1 py-0.5 text-[13px] text-zinc-300">
+              <code className="rounded-[2px] bg-raised px-1 py-0.5 text-[13px] text-dim">
                 localStorage
               </code>
               . It never leaves your browser, is never sent to PinHub, and is
@@ -62,9 +60,9 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <section className="surface-panel rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-white">Analytics</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <section className="panel rounded-[2px] p-5">
+            <h2 className="text-lg font-semibold text-ink">Analytics</h2>
+            <p className="mt-2 text-sm leading-6 text-dim">
               When deployed on Vercel, PinHub uses Vercel Web Analytics for
               anonymous, aggregate page-view counts. It does not use cookies
               or track individuals across sites. See{" "}
@@ -72,7 +70,7 @@ export default function PrivacyPage() {
                 href="https://vercel.com/docs/analytics/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-white"
+                className="underline underline-offset-2 hover:text-ink"
               >
                 Vercel&apos;s analytics privacy policy
               </a>{" "}
@@ -80,20 +78,20 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <section className="surface-panel rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-white">Third-party links</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <section className="panel rounded-[2px] p-5">
+            <h2 className="text-lg font-semibold text-ink">Third-party links</h2>
+            <p className="mt-2 text-sm leading-6 text-dim">
               Source references, datasheets, and manuals link out to vendor
               and third-party sites. Those sites have their own privacy
               practices, which PinHub doesn&apos;t control.
             </p>
           </section>
 
-          <section className="rounded-xl border border-orange-300/30 bg-[#1b1410] p-5">
-            <h2 className="text-lg font-semibold text-orange-100">
+          <section className="rounded-[2px] border border-hazard/55 bg-face p-5">
+            <h2 className="text-lg font-semibold text-hazard-ink">
               Pinout data: reference only, no warranty
             </h2>
-            <p className="mt-2 text-sm leading-6 text-orange-50/80">
+            <p className="mt-2 text-sm leading-6 text-hazard-ink">
               Pin maps, voltage levels, and wiring notes on PinHub are
               community-compiled from public datasheets, schematics, and
               vendor documentation. They are provided &ldquo;as is&rdquo; for
@@ -102,16 +100,16 @@ export default function PrivacyPage() {
               always cross-check the linked official source before applying
               power or signals to real hardware.
             </p>
-            <p className="mt-3 text-sm leading-6 text-orange-50/80">
+            <p className="mt-3 text-sm leading-6 text-hazard-ink">
               PinHub, its maintainer, and its contributors accept no
               liability for damage to hardware, data, or anything else
               resulting from use of this data. Use it at your own risk.
             </p>
           </section>
 
-          <section className="surface-panel rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-white">Changes & contact</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <section className="panel rounded-[2px] p-5">
+            <h2 className="text-lg font-semibold text-ink">Changes & contact</h2>
+            <p className="mt-2 text-sm leading-6 text-dim">
               This page may be updated as the project changes; the date above
               reflects the last revision. Questions or corrections are welcome
               via{" "}
@@ -119,7 +117,7 @@ export default function PrivacyPage() {
                 href={repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-white"
+                className="underline underline-offset-2 hover:text-ink"
               >
                 the GitHub repository
               </a>

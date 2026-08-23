@@ -22,8 +22,11 @@ function summary(overrides: Partial<BoardSummary> = {}): BoardSummary {
     tags: ["test"],
     interfaces: ["GPIO"],
     hasPinout: false,
+    pinCount: 0,
     warningCount: 0,
     warningSearchText: "",
+    hasOfficialDocumentation: true,
+    catalogIndex: 0,
     discovery: {
       computeClass: "Microcontroller",
       logicProfile: "3.3 V",

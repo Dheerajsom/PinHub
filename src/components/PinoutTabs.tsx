@@ -106,15 +106,12 @@ export function PinoutTabs({ board }: { board: Board }) {
 
   return (
     <section>
-      <div className="mb-2.5 flex items-center justify-between gap-3">
-        <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-          Pin map
-        </div>
+      <div className="mb-2 flex items-center justify-end gap-3">
         <div
           role="tablist"
           aria-label="Pin map view"
           onKeyDown={handleTabListKeyDown}
-          className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-[#0a0c11] p-1"
+          className="inline-flex items-center border border-rule"
         >
           <TabButton
             id="static"
@@ -187,10 +184,8 @@ function TabButton({
       tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={clsx(
-        "inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition",
-        active
-          ? "bg-cyan-300/15 text-cyan-50 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.4)]"
-          : "text-zinc-400 hover:bg-white/[0.06] hover:text-white",
+        "silk inline-flex min-h-9 items-center gap-1.5 px-2.5 transition-colors",
+        active ? "bg-raised !text-ink" : "hover:bg-raised hover:!text-ink",
       )}
     >
       {icon}

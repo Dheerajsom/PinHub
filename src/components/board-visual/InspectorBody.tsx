@@ -94,7 +94,7 @@ export function InspectorBody({
             <div className="mb-2 flex items-center justify-between gap-2">
               <p
                 id={hintId}
-                className="min-w-0 text-[11px] leading-4 text-zinc-500"
+                className="min-w-0 text-[11px] leading-4 text-faint"
               >
                 {fitToWidth
                   ? "Whole board shown — labels are reduced"
@@ -105,10 +105,10 @@ export function InspectorBody({
                 onClick={() => setFitToWidth((value) => !value)}
                 aria-pressed={fitToWidth}
                 className={clsx(
-                  "touch-target inline-flex shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition",
+                  "touch-target inline-flex shrink-0 items-center gap-1.5 rounded-[2px] border px-2.5 py-1.5 text-[11px] font-medium transition",
                   fitToWidth
-                    ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50"
-                    : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
+                    ? "border-rule-strong bg-raised text-ink"
+                    : "border-rule bg-face text-ink hover:text-ink",
                 )}
               >
                 <Scan className="size-3.5" aria-hidden="true" />
@@ -127,7 +127,7 @@ export function InspectorBody({
               role="group"
               aria-label={`${board.name} connector diagram`}
               aria-describedby={scrollable || fitToWidth ? hintId : undefined}
-              className="bv-stage-wrap w-full overflow-auto rounded-md p-2"
+              className="bv-stage-wrap w-full overflow-auto rounded-[2px] p-2"
             >
               <div
                 className="mx-auto"
@@ -174,7 +174,7 @@ export function InspectorBody({
               </>
             ) : null}
           </div>
-          <p className="mt-2 text-[11px] leading-5 text-zinc-500">
+          <p className="mt-2 text-[11px] leading-5 text-faint">
             {geometry.notToScale
               ? "Simplified diagram, grouped by function — not to physical scale. Pin data is source-backed; verify against the linked documentation."
               : "Simplified technical illustration. Pin data is source-backed; verify against the linked documentation before wiring."}
@@ -191,11 +191,11 @@ export function InspectorBody({
         </div>
 
         {board.pinout ? (
-          <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-3 text-sm leading-6 text-zinc-400">
+          <ul className="mt-4 space-y-1.5 border-t border-rule pt-3 text-sm leading-6 text-dim">
             {board.pinout.notes.map((note) => (
               <li key={note} className="flex gap-2">
                 <span
-                  className="mt-2.5 size-1 shrink-0 rounded-full bg-zinc-600"
+                  className="mt-2.5 size-1 shrink-0 rounded-full bg-well"
                   aria-hidden="true"
                 />
                 <span className="min-w-0">{note}</span>
@@ -206,7 +206,7 @@ export function InspectorBody({
       </div>
 
       <div className="min-w-0">
-        <h4 className="mb-2 text-xs uppercase tracking-[0.16em] text-zinc-500">
+        <h4 className="mb-2 text-xs uppercase tracking-[0.16em] text-faint">
           All {geometry.anchors.length} pins
         </h4>
         <PinoutTable

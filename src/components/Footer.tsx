@@ -6,31 +6,30 @@ const sourceCount = boards.reduce(
   0,
 );
 
+/**
+ * The instrument's rating plate: the legal disclaimer, the privacy link, and
+ * the catalog's size, set small at the very bottom edge the way a compliance
+ * label is printed on the underside of a piece of equipment.
+ */
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
-      {/* zinc-400, not zinc-500: at 12 px on the #090b0f page ground, zinc-500
-          (#71717b) measures 4.08:1 — under the 4.5:1 WCAG AA floor for normal
-          text. This block carries the liability disclaimer and the Privacy
-          link, so it is the last text on the site that should be hard to read.
-          zinc-400 (#9f9fa9) measures 7.51:1. */}
-      <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-zinc-400 sm:px-6 lg:px-8">
-        <span>
+    <footer className="relative z-10 border-t border-rule pb-[env(safe-area-inset-bottom)]">
+      <div className="mx-auto flex max-w-[1720px] flex-wrap items-baseline justify-between gap-x-6 gap-y-2 px-4 py-4 text-xs text-dim sm:px-6">
+        <p className="max-w-3xl">
           Pinout data is community-compiled for reference only, provided
-          &ldquo;as is&rdquo; without warranty. Always verify against the
-          linked official documentation before wiring — PinHub and its
-          contributors are not liable for hardware damage or other loss
-          arising from its use.{" "}
+          &ldquo;as is&rdquo; without warranty. Always verify against the linked
+          official documentation before wiring — PinHub and its contributors are
+          not liable for hardware damage or other loss arising from its use.{" "}
           <Link
             href="/privacy"
-            className="underline underline-offset-2 transition hover:text-zinc-300"
+            className="underline underline-offset-2 transition hover:text-ink"
           >
             Privacy
           </Link>
-        </span>
-        <span className="font-mono">
+        </p>
+        <p className="data text-faint">
           {boards.length} boards · {sourceCount} source links
-        </span>
+        </p>
       </div>
     </footer>
   );

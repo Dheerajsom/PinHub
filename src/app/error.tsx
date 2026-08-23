@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
+import { TriangleAlert } from "lucide-react";
 
 export default function ErrorBoundary({
   error,
@@ -15,21 +17,31 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <main className="grid min-h-screen place-items-center bg-[#080a0e] px-6 text-zinc-100">
-      <section className="max-w-md rounded-xl border border-red-300/20 bg-[#10131a] p-6 text-center shadow-2xl">
-        <p className="text-xs uppercase tracking-[0.2em] text-red-300">Unexpected error</p>
-        <h1 className="mt-2 text-2xl font-semibold">The catalog could not be displayed</h1>
-        <p className="mt-3 text-sm leading-6 text-zinc-400">
-          Try the request again. If it keeps failing, the deployment may need attention.
+    <div className="panel-grain grid min-h-screen place-items-center px-4">
+      <section className="panel max-w-lg p-5">
+        <h1 className="silk flex items-center gap-1.5 !text-hazard-ink">
+          <TriangleAlert className="size-3" aria-hidden="true" />
+          Catalog failed to render
+        </h1>
+        <p className="mt-2 text-[13px] leading-relaxed text-dim">
+          The page stopped part-way through building. Nothing was changed and no
+          board data was lost — this is a rendering fault, not a data one.
+          Retrying usually clears it.
         </p>
-        <button
-          type="button"
-          onClick={reset}
-          className="mt-5 min-h-11 rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-4 text-sm font-medium text-cyan-50 hover:bg-cyan-300/15"
-        >
-          Try again
-        </button>
+        {error.digest ? (
+          <p className="data mt-2 text-[11px] text-faint">
+            Reference {error.digest}
+          </p>
+        ) : null}
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          <button type="button" onClick={reset} className="ctl">
+            Try again
+          </button>
+          <Link href="/" className="ctl">
+            Back to the index
+          </Link>
+        </div>
       </section>
-    </main>
+    </div>
   );
 }

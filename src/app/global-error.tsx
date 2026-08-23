@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-
+/**
+ * The root boundary. It replaces <html>, so it cannot rely on the app's fonts
+ * or token sheet — everything here is inline and self-sufficient.
+ */
 export default function GlobalError({
   error,
   reset,
@@ -9,27 +11,61 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error("PinHub root error", error.digest ?? error.name);
-  }, [error]);
-
   return (
     <html lang="en">
-      <body className="bg-[#080a0e] text-zinc-100">
-        <main className="grid min-h-screen place-items-center px-6">
-          <section className="max-w-md text-center">
-            <h1 className="text-2xl font-semibold">PinHub could not start</h1>
-            <p className="mt-3 text-sm leading-6 text-zinc-400">
-              Reload the application. If this persists, check the latest deployment status.
+      <body
+        style={{
+          margin: 0,
+          minHeight: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#131417",
+          color: "#f2f3ef",
+          fontFamily: "ui-sans-serif, system-ui, sans-serif",
+          padding: "1rem",
+        }}
+      >
+        <main style={{ maxWidth: "32rem", border: "1px solid rgba(242,243,239,0.11)", padding: "1.25rem" }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "0.6875rem",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "#767c83",
+            }}
+          >
+            Application error
+          </p>
+          <h1 style={{ margin: "0.5rem 0 0", fontSize: "1.375rem" }}>
+            PinHub could not start
+          </h1>
+          <p style={{ margin: "0.5rem 0 0", fontSize: "0.8125rem", lineHeight: 1.6, color: "#a2a8ae" }}>
+            The application failed before any page could render. Reloading
+            usually clears it; if it does not, the deployment needs attention.
+          </p>
+          {error.digest ? (
+            <p style={{ margin: "0.5rem 0 0", fontSize: "0.6875rem", color: "#767c83" }}>
+              Reference {error.digest}
             </p>
-            <button
-              type="button"
-              onClick={reset}
-              className="mt-5 min-h-11 rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-4 text-sm font-medium text-cyan-50"
-            >
-              Reload PinHub
-            </button>
-          </section>
+          ) : null}
+          <button
+            type="button"
+            onClick={reset}
+            style={{
+              marginTop: "1rem",
+              minHeight: "2.25rem",
+              padding: "0 0.75rem",
+              background: "#292c31",
+              color: "#f2f3ef",
+              border: "1px solid rgba(242,243,239,0.26)",
+              cursor: "pointer",
+              font: "inherit",
+              fontSize: "0.8125rem",
+            }}
+          >
+            Reload PinHub
+          </button>
         </main>
       </body>
     </html>

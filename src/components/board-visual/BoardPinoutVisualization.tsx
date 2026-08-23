@@ -45,9 +45,9 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
 
   if (!board.pinout || !geometry) {
     return (
-      <section className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-4">
-        <div className="text-sm font-medium text-white">Pin map queued</div>
-        <p className="mt-2 text-sm leading-6 text-zinc-400">
+      <section className="rounded-[2px] border border-dashed border-rule bg-face p-4">
+        <div className="text-sm font-medium text-ink">Pin map queued</div>
+        <p className="mt-2 text-sm leading-6 text-dim">
           This board has official references linked, but its in-app connector map
           still needs a source-backed import.
         </p>
@@ -79,29 +79,19 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
 
   return (
     <section
-      className="@container surface-panel rounded-lg p-4"
+      className="@container"
       onKeyDown={(event) => {
         if (event.key === "Escape") handleEscape();
       }}
     >
       <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
-        <div className="min-w-0">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-            Connector
-          </div>
-          <h3 className="mt-1 text-base font-semibold text-white">
-            {board.pinout.connector}
-          </h3>
-          <p className="mt-0.5 text-[11px] leading-4 text-zinc-500">
-            {geometry.orientation}
-          </p>
-        </div>
+        <p className="silk min-w-0 flex-1">{geometry.orientation}</p>
         <div className="flex shrink-0 items-center gap-1.5">
           <button
             ref={expandButtonRef}
             type="button"
             onClick={() => setExpanded(true)}
-            className="touch-target inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-[#15181f] px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
+            className="ctl !min-h-8"
           >
             <Expand className="size-3.5" aria-hidden="true" />
             Inspect
@@ -112,12 +102,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             rel="noopener noreferrer"
             aria-label={`Open the ${board.name} pinout in a new tab`}
             title="Open the full pinout in a new tab"
-            className={clsx(
-              "touch-target inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition",
-              isComplex
-                ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50 hover:bg-cyan-300/20"
-                : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
-            )}
+            className={clsx("ctl !min-h-8", isComplex && "!bg-raised !text-ink")}
           >
             <ExternalLink className="size-3.5" aria-hidden="true" />
             Full view
@@ -137,7 +122,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           stay legible; flatter ones letterbox to fit the panel. */}
       <div
         className={clsx(
-          "bv-stage-wrap mt-3 w-full rounded-md",
+          "bv-stage-wrap mt-3 w-full rounded-[2px]",
           tall ? "overflow-y-auto overflow-x-hidden" : "overflow-hidden",
         )}
         style={tall ? { maxHeight: 460 } : undefined}
@@ -168,14 +153,14 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </div>
 
       {isComplex ? (
-        <p className="mt-2 flex items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
+        <p className="mt-2 flex items-center gap-1.5 text-[11px] leading-5 text-ink">
           <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
           Dense header — open{" "}
           <a
             href={`/pinout/${board.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium underline underline-offset-2 hover:text-cyan-100"
+            className="font-medium underline underline-offset-2 text-ink"
           >
             Full view
           </a>{" "}
@@ -183,7 +168,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         </p>
       ) : null}
 
-      <p className="mt-2 text-[11px] leading-5 text-zinc-500">
+      <p className="mt-2 text-[11px] leading-5 text-faint">
         {geometry.notToScale
           ? "Simplified diagram, grouped by function — not to physical scale. Pin data is source-backed; verify against the linked documentation."
           : "Simplified technical illustration. Pin data is source-backed; verify against the linked documentation before wiring."}
@@ -199,11 +184,11 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </div>
 
       {/* Connector caveats from the source-backed pinout notes. */}
-      <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-3 text-sm leading-6 text-zinc-400">
+      <ul className="mt-4 space-y-1.5 border-t border-rule pt-3 text-sm leading-6 text-dim">
         {board.pinout.notes.map((note) => (
           <li key={note} className="flex gap-2">
             <span
-              className="mt-2.5 size-1 shrink-0 rounded-full bg-zinc-600"
+              className="mt-2.5 size-1 shrink-0 rounded-full bg-well"
               aria-hidden="true"
             />
             <span className="min-w-0">{note}</span>
@@ -211,8 +196,8 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         ))}
       </ul>
 
-      <details className="mt-3 border-t border-white/10 pt-3">
-        <summary className="cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
+      <details className="mt-3 border-t border-rule pt-3">
+        <summary className="cursor-pointer text-sm font-medium text-dim transition hover:text-ink">
           All {geometry.anchors.length} pins (table)
         </summary>
         <div className="mt-2 max-h-80 overflow-y-auto pr-1">
@@ -331,14 +316,14 @@ function ExpandedInspector({
         role="dialog"
         aria-modal="true"
         aria-label={`${board.name} pinout inspector`}
-        className="surface-panel flex max-h-[92vh] w-full max-w-[1100px] flex-col overflow-hidden rounded-xl"
+        className="panel flex max-h-[92vh] w-full max-w-[1100px] flex-col overflow-hidden rounded-[2px]"
       >
-        <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-rule px-4 py-3">
           <div className="min-w-0">
-            <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+            <div className="text-xs uppercase tracking-[0.18em] text-faint">
               Connector
             </div>
-            <div className="mt-1 truncate text-sm font-semibold text-white">
+            <div className="mt-1 truncate text-sm font-semibold text-ink">
               {board.name} · {board.pinout?.connector}
             </div>
           </div>
@@ -347,7 +332,7 @@ function ExpandedInspector({
             type="button"
             onClick={onClose}
             aria-label="Close inspector"
-            className="touch-target grid size-9 shrink-0 place-items-center rounded-md border border-white/15 text-zinc-300 transition hover:border-cyan-300/60 hover:text-white"
+            className="touch-target grid size-9 shrink-0 place-items-center rounded-[2px] border border-rule text-dim transition hover:text-ink"
           >
             <X className="size-4" aria-hidden="true" />
           </button>

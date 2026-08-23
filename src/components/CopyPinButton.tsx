@@ -39,10 +39,10 @@ export function CopyPinButton({ pin }: { pin: Pin }) {
       onClick={copyPin}
       aria-label={`Copy pin ${pin.position}, ${pin.label}`}
       title={copied ? "Pin copied" : "Copy this pin"}
-      className="touch-target grid size-7 shrink-0 place-items-center rounded text-zinc-600 opacity-70 transition hover:bg-white/[0.06] hover:text-cyan-100 focus-visible:opacity-100 group-hover:opacity-100"
+      className="touch-target grid size-7 shrink-0 place-items-center rounded-[2px] text-faint opacity-70 transition hover:bg-raised text-ink focus-visible:opacity-100 group-hover:opacity-100"
     >
       {copied ? (
-        <Check className="size-3.5 text-emerald-300" aria-hidden="true" />
+        <Check className="size-3.5 text-verified-ink" aria-hidden="true" />
       ) : (
         <Copy className="size-3.5" aria-hidden="true" />
       )}

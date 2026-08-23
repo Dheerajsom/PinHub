@@ -2,27 +2,34 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Search, X } from "lucide-react";
+import { ArrowLeft, Printer, Search, TriangleAlert, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
+import { getBoardDiscoveryProfile } from "@/lib/board-discovery";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
-import { VendorLogo } from "@/components/VendorLogo";
-import { CircuitBackground } from "@/components/CircuitBackground";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { HazardBlock, VerifyStrip } from "@/components/board/BoardBlocks";
 
-// Standalone, full-viewport pinout sheet served at /pinout/[id]. Built for the
-// dense expansion headers whose drawings are cramped inside the catalog's narrow
-// detail column, but works for every board with a pin map.
+/**
+ * The reference sheet, at `/pinout/[id]`.
+ *
+ * This is the page you keep open with a board in your hand, and the one the
+ * print stylesheet is built around. So it leads with the two electrical facts
+ * that decide whether wiring is safe — logic level and 5 V tolerance — and
+ * carries the full wiring cautions. Someone landing here cold from a search
+ * engine must not have to visit another page to learn a board is not 5 V
+ * tolerant.
+ */
 export function PinoutFullView({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [query, setQuery] = useState("");
+  const profile = getBoardDiscoveryProfile(board);
 
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
-    geometry?.anchors.forEach((a) => map.set(a.key, a));
+    geometry?.anchors.forEach((anchor) => map.set(anchor.key, anchor));
     return map;
   }, [geometry]);
 
@@ -31,6 +38,7 @@ export function PinoutFullView({ board }: { board: Board }) {
     if (!needle) return [];
     return (geometry?.anchors ?? []).filter(({ pin }) =>
       [
+        String(pin.position),
         pin.label,
         pin.role,
         pin.note ?? "",
@@ -40,10 +48,12 @@ export function PinoutFullView({ board }: { board: Board }) {
   }, [geometry, query]);
 
   const liveAnchor = anchorsByKey.get(activeKey ?? selectedKey ?? "") ?? null;
+  const fiveVolt = profile.fiveVoltTolerance;
+  const fiveVoltRisky = fiveVolt === "No" || fiveVolt === "Mixed";
 
   return (
     <main
-      className="relative isolate min-h-screen px-4 py-5 sm:px-6 lg:px-8"
+      className="panel-grain min-h-screen px-4 py-3 sm:px-6"
       onKeyDown={(event) => {
         if (event.key !== "Escape") return;
         if (selectedKey) {
@@ -54,86 +64,124 @@ export function PinoutFullView({ board }: { board: Board }) {
         }
       }}
     >
-      <CircuitBackground />
-      <div className="relative mx-auto max-w-[1400px]">
-        <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-white/10 pb-4">
+      <div className="mx-auto max-w-[1500px]">
+        <header className="mb-2 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-rule pb-2">
           <div className="min-w-0">
             <Link
               href={`/boards/${board.id}`}
-              className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-zinc-500 transition hover:text-cyan-200"
+              className="silk inline-flex items-center gap-1 transition-colors hover:!text-ink"
+              data-print="hide"
             >
-              <ArrowLeft className="size-3" aria-hidden="true" />
-              Board overview
+              <ArrowLeft className="size-2.5" aria-hidden="true" />
+              {board.name} overview
             </Link>
-            <h1 className="mt-2 flex items-center gap-2.5 text-2xl font-semibold tracking-tight text-white">
-              <VendorLogo vendor={board.vendor} size={24} />
-              {board.name}
+            <h1 className="readout mt-1 text-2xl uppercase text-ink">
+              {board.name} pinout
             </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">
-              {[board.vendor, board.family]
-                .filter((part, index, all) => all.indexOf(part) === index)
-                .join(" · ")}
+            <p className="data mt-0.5 text-[11px] text-faint">
+              {board.vendor} · {board.pinout?.connector ?? "No mapped connector"}
+              {geometry ? ` · ${geometry.anchors.length} pins` : ""}
             </p>
-            <ThemeToggle />
           </div>
+
+          {/* The two facts that decide whether a wire is safe, printed on the
+              sheet itself rather than one page away. */}
+          <dl className="flex flex-wrap items-end gap-x-5 gap-y-2">
+            <div>
+              <dt className="silk">Logic level</dt>
+              <dd className="data mt-0.5 text-[13px] text-ink">
+                {board.logicLevel}
+              </dd>
+            </div>
+            <div>
+              <dt className="silk">5 V tolerance</dt>
+              <dd
+                className={
+                  fiveVoltRisky
+                    ? "data mt-0.5 text-[13px] font-semibold text-hazard-ink"
+                    : "data mt-0.5 text-[13px] text-ink"
+                }
+              >
+                {fiveVolt === "Unknown" ? "Not documented" : fiveVolt}
+              </dd>
+            </div>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="ctl !min-h-8"
+              data-print="hide"
+            >
+              <Printer className="size-3.5" aria-hidden="true" />
+              Print sheet
+            </button>
+          </dl>
         </header>
 
+        <div className="mb-2 grid gap-2">
+          <HazardBlock board={board} />
+          <VerifyStrip board={board} />
+        </div>
+
         {geometry ? (
-          <div className="mt-5">
-            <label className="relative mb-4 block">
-              <Search
-                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
-                aria-hidden="true"
-              />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Find a pin, alias, role, or warning…"
-                aria-label="Search pins"
-                className="h-11 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-12 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/30"
-              />
+          <>
+            <div className="mb-2" data-print="hide">
+              <label className="relative block">
+                <Search
+                  className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-faint"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Search pins on this connector</span>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") setQuery("");
+                  }}
+                  placeholder="Find a pin by number, signal, alias, role, or note"
+                  className="h-10 w-full border border-rule bg-well pl-8 pr-10 text-[13px] text-ink outline-none placeholder:text-faint focus-visible:border-ink"
+                />
+                {query ? (
+                  <button
+                    type="button"
+                    onClick={() => setQuery("")}
+                    aria-label="Clear pin search"
+                    className="absolute right-0 top-1/2 grid size-10 -translate-y-1/2 place-items-center text-faint transition-colors hover:text-ink"
+                  >
+                    <X className="size-3.5" aria-hidden="true" />
+                  </button>
+                ) : null}
+              </label>
+
               {query ? (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  aria-label="Clear pin search"
-                  className="absolute right-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-zinc-500 transition hover:text-white"
+                <div
+                  className="mt-1.5 flex max-h-24 flex-wrap gap-1 overflow-y-auto"
+                  role="status"
                 >
-                  <X className="size-4" />
-                </button>
+                  {matches.length ? (
+                    matches.map((anchor) => (
+                      <button
+                        key={anchor.key}
+                        type="button"
+                        onClick={() => {
+                          setSelectedKey(anchor.key);
+                          setActiveKey(anchor.key);
+                        }}
+                        className="chip transition-colors hover:text-ink"
+                      >
+                        {anchor.pin.position} · {anchor.pin.label}
+                      </button>
+                    ))
+                  ) : (
+                    <span className="text-[13px] text-dim">
+                      No pin on this connector matches that. Try a pin number, a
+                      signal name, or an alias such as SDA.
+                    </span>
+                  )}
+                </div>
               ) : null}
-            </label>
-            {query ? (
-              <div
-                className="mb-4 flex max-h-24 flex-wrap gap-1.5 overflow-y-auto"
-                role="status"
-              >
-                {matches.length ? (
-                  matches.map((anchor) => (
-                    <button
-                      key={anchor.key}
-                      type="button"
-                      onClick={() => {
-                        setSelectedKey(anchor.key);
-                        setActiveKey(anchor.key);
-                      }}
-                      className="rounded-md border border-white/15 bg-white/[0.04] px-2 py-1 font-mono text-xs text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
-                    >
-                      {anchor.pin.position} · {anchor.pin.label}
-                    </button>
-                  ))
-                ) : (
-                  <span className="px-1 py-1 text-xs text-zinc-500">
-                    No pin matches that.
-                  </span>
-                )}
-              </div>
-            ) : null}
-            {/* Opaque panel: the workbench backdrop belongs in the page
-                gutters, not behind a diagram that has to be read. */}
-            <div className="surface-panel rounded-lg p-4">
+            </div>
+
+            <div className="panel p-3" data-print="expand">
               <InspectorBody
                 board={board}
                 geometry={geometry}
@@ -149,12 +197,22 @@ export function PinoutFullView({ board }: { board: Board }) {
                 onToggleRole={setActiveRole}
               />
             </div>
-          </div>
+          </>
         ) : (
-          <p className="mt-8 rounded-lg border border-dashed border-white/15 bg-[#101319] p-6 text-sm text-zinc-400">
-            This board has no in-app connector map yet. See the catalog entry for
-            its official documentation links.
-          </p>
+          <section className="panel p-5">
+            <h2 className="silk flex items-center gap-1.5">
+              <TriangleAlert className="size-3" aria-hidden="true" />
+              No connector map
+            </h2>
+            <p className="mt-2 max-w-prose text-[13px] leading-relaxed text-dim">
+              PinHub has not mapped this connector yet. Pin data is only
+              published once it can be checked against a vendor document, so
+              nothing is drawn rather than guessed.
+            </p>
+            <Link href={`/boards/${board.id}`} className="ctl mt-3">
+              See the documented sources for {board.name}
+            </Link>
+          </section>
         )}
       </div>
     </main>

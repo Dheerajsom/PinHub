@@ -1,29 +1,135 @@
 @import "tailwindcss";
 
+/* ===========================================================================
+   PinHub — "Bench Panel"
+
+   The interface is the front fascia of a piece of bench equipment: a matte
+   anodized panel, hard corners, engraved hairline rules, legends printed in
+   silkscreen-white condensed caps, and one recessed readout window where the
+   live value appears.
+
+   GOVERNING RULE — COLOUR IS DATA.
+   `components/board-visual/roles.ts` already spends the entire hue wheel on the
+   thirteen pin roles. So the chrome here is achromatic by necessity, not by
+   taste: graphite panel, alloy rules, silkscreen ink. The only saturated colour
+   anywhere in the product is a pin role, a hazard, a verification mark, or the
+   live probe. That is why no token below names a hue, and why selection is
+   expressed as a lightness step plus a pin-1 marker rather than a colour wash.
+
+   Every colour in the app comes from a token in this file. Components never
+   write a hex. The previous build hardcoded dark hex values in JSX and remapped
+   them for light mode with a sheet of escaped-class-name selectors
+   (`.bg-\[\#0a0d12\]`), which silently dropped any class whose utility prefix
+   differed — `ring-offset-[#0c0e13]` was already broken in light mode. Tokens
+   remove that entire failure surface.
+   =========================================================================== */
+
 @theme inline {
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono",
-    "Cascadia Code", "Roboto Mono", monospace;
-  --font-display: "Audiowide", "Audiowide Fallback", var(--font-sans);
-  --font-technical: "Chivo Mono", "Chivo Mono Fallback", var(--font-mono);
+  /* The three faces are loaded by next/font in app/layout.tsx, which hashes the
+     family names; these variables are the only stable handle on them. */
+  --font-sans: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, "SF Mono", "Cascadia Code",
+    monospace;
+  /* Condensed industrial caps — the register a silkscreen legend is set in. */
+  --font-display: var(--font-display-face), var(--font-sans-face), ui-sans-serif,
+    system-ui, sans-serif;
+
+  /* Panel tiers. Elevation is a lightness step, never a shadow. */
+  --color-recess: var(--panel-recess);
+  --color-face: var(--panel-face);
+  --color-raised: var(--panel-raised);
+  --color-well: var(--panel-well);
+
+  /* Legend inks. */
+  --color-ink: var(--legend-ink);
+  --color-dim: var(--legend-dim);
+  --color-faint: var(--legend-faint);
+
+  /* Engraved rules. */
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+
+  /* Data-only semantics. Never used for chrome. */
+  --color-hazard: var(--hazard);
+  --color-hazard-ink: var(--hazard-ink);
+  --color-hazard-wash: var(--hazard-wash);
+  --color-verified: var(--verified);
+  --color-verified-ink: var(--verified-ink);
+  --color-verified-wash: var(--verified-wash);
+  --color-probe: var(--probe);
+
+  /* 2.54 mm header pitch, expressed as the layout rhythm. */
+  --spacing-pitch: 0.25rem;
+
+  --radius-panel: 2px;
+
+  /* The width at which the index and the bench fit side by side. Consumed by
+     the `bench:` variant here and by benchLayoutQuery in PinHubApp.tsx —
+     changing it means changing both. */
+  --breakpoint-bench: 1180px;
 }
 
+/* --------------------------------------------------------------------------
+   Dark theme — matte black anodize. The default.
+   -------------------------------------------------------------------------- */
 :root {
   color-scheme: dark;
-  --background: #090b0f;
-  --foreground: #eef2f3;
-  --panel: #14161d;
-  --well: #0e1015;
-  --panel-border: rgba(255, 255, 255, 0.08);
+
+  --panel-recess: #131417;
+  --panel-face: #1c1e22;
+  --panel-raised: #292c31;
+  --panel-well: #0e0f12;
+
+  --legend-ink: #f2f3ef;
+  --legend-dim: #a2a8ae;
+  --legend-faint: #767c83;
+
+  --rule: rgba(242, 243, 239, 0.11);
+  --rule-strong: rgba(242, 243, 239, 0.26);
+
+  --hazard: #ff7a1a;
+  --hazard-ink: #ffcda3;
+  --hazard-wash: #2a1608;
+  --verified: #3dd68c;
+  --verified-ink: #a7ecc8;
+  --verified-wash: #08251a;
+  --probe: #f5f5f0;
+
+  /* The board illustration's own ground. It is a physical object on a bench,
+     so it keeps a dark well in both themes — a PCB does not turn white. */
+  --stage-well: #0b0c0e;
 }
 
+/* --------------------------------------------------------------------------
+   Light theme — brushed alloy fascia under bench light. Same instrument, same
+   hierarchy, different finish. Every token is redefined; nothing is patched.
+   -------------------------------------------------------------------------- */
 :root[data-theme="light"] {
   color-scheme: light;
-  --background: #edf2f4;
-  --foreground: #17202a;
-  --panel: #ffffff;
-  --well: #e7edf0;
-  --panel-border: rgba(31, 48, 58, 0.15);
+
+  --panel-recess: #e4e6e3;
+  --panel-face: #fafaf8;
+  --panel-raised: #ffffff;
+  --panel-well: #eceeea;
+
+  --legend-ink: #16181b;
+  --legend-dim: #4d5459;
+  --legend-faint: #6b7278;
+
+  --rule: rgba(22, 24, 27, 0.16);
+  --rule-strong: rgba(22, 24, 27, 0.34);
+
+  /* Warm hues lose contrast fast on a light ground; these are the darkened
+     inks that still clear 4.5:1 on --panel-face and --panel-raised. */
+  --hazard: #b34700;
+  --hazard-ink: #7c3200;
+  --hazard-wash: #fdf0e6;
+  --verified: #0f7a4d;
+  --verified-ink: #0a5c3a;
+  --verified-wash: #e6f5ee;
+  --probe: #16181b;
+
+  --stage-well: #14161a;
 }
 
 * {
@@ -37,273 +143,190 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  /* Guard against accidental horizontal scrolling on narrow phones. */
-  overflow-x: hidden;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--panel-recess);
+  color: var(--legend-ink);
   font-family: var(--font-sans);
-  /* Remove the grey tap flash on iOS/Android for a more app-like feel; we
-     provide our own :active / hover states instead. */
+  font-size: 0.875rem;
+  line-height: 1.5;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
 }
 
-.brand-title {
-  font-family: var(--font-display);
-}
-
-/* ---------------------------------------------------------------------------
-   Solid widget surfaces
-   The precision-workbench backdrop (CircuitBackground) shows through the page
-   gutters and the gaps between cards, but the interface widgets themselves
-   are opaque, lightly-raised panels — not a glass blur — so the catalog reads
-   crisp and layered instead of washed-out. Two tiers: a raised "panel" for
-   top-level cards and a recessed "well" for content nested inside them.
-   --------------------------------------------------------------------------- */
-@layer components {
-  .surface-panel {
-    background-color: var(--panel);
-    border: 1px solid var(--panel-border);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.045),
-      0 1px 2px rgba(0, 0, 0, 0.4),
-      0 14px 34px -22px rgba(0, 0, 0, 0.85);
-  }
-
-  .surface-well {
-    background-color: var(--well);
-    border: 1px solid var(--panel-border);
-  }
-}
-
-/* Bright-bench theme. The same dense hierarchy remains; only the workbench
-   materials change from charcoal anodized metal to drafting-paper neutrals. */
-:root[data-theme="light"] .pinhub-background-base {
-  background:
-    radial-gradient(ellipse at 9% 39%, rgba(13, 148, 136, 0.1), transparent 28%),
-    radial-gradient(ellipse at 91% 63%, rgba(8, 145, 178, 0.09), transparent 28%),
-    linear-gradient(90deg, #dce6e9 0%, #edf3f4 22%, #f7fafb 50%, #edf3f4 78%, #dce6e9 100%);
-}
-
-:root[data-theme="light"] .pinhub-background-grid {
-  opacity: 0.48;
-}
-
-:root[data-theme="light"] .pinhub-trace-map {
-  opacity: 0.2;
-}
-
-:root[data-theme="light"] :is(
-  .bg-\[\#090b10\], .bg-\[\#0a0c11\], .bg-\[\#0a0d12\],
-  .bg-\[\#0c0e13\], .bg-\[\#0c0f14\], .bg-\[\#0f1218\],
-  .bg-\[\#101319\], .bg-\[\#11141a\], .bg-\[\#12161d\],
-  .bg-\[\#13161c\], .bg-\[\#14161d\], .bg-\[\#15181f\],
-  .bg-\[\#171b22\], .bg-\[\#191c24\], .bg-\[\#1c2029\],
-  .bg-\[\#212734\], .bg-\[\#262c3a\]
-) {
-  background-color: var(--panel);
-}
-
-:root[data-theme="light"] .bg-\[\#262c3a\] {
-  background-color: #d8e9ee;
-}
-
-:root[data-theme="light"] .bg-\[\#101820\] {
-  background-color: #dceff3;
-}
-
-:root[data-theme="light"] :is(.bg-\[\#1b1410\], .bg-\[\#15120c\]) {
-  background-color: #fff7ed;
-}
-
-:root[data-theme="light"] .bg-zinc-950 {
-  background-color: #e7edf0;
-}
-
-:root[data-theme="light"] :is(.text-white, .text-zinc-100, .text-zinc-200) {
-  color: #17202a;
-}
-
-:root[data-theme="light"] :is(.text-zinc-300, .text-zinc-400) {
-  color: #44545d;
-}
-
-/* One step darker than the mid-grey used for zinc-300/400: #64747c sat at
-   3.7–4.4:1 on the tinted wells and chips, just under AA, so the counts and
-   meta labels read washed-out on paper. #536269 clears 4.5:1 on every light
-   surface the catalog uses while keeping the same cool-slate cast. */
-:root[data-theme="light"] :is(.text-zinc-500, .text-zinc-600) {
-  color: #536269;
-}
-
-:root[data-theme="light"] :is(.text-cyan-50, .text-cyan-100, .text-cyan-200) {
-  color: #075b6b;
-}
-
-:root[data-theme="light"] [class*="text-cyan-200"] {
-  color: #075b6b;
-}
-
-:root[data-theme="light"] :is(.text-emerald-100, .text-emerald-200) {
-  color: #066046;
-}
-
-:root[data-theme="light"] :is(.text-orange-50, .text-orange-100, .text-orange-200) {
-  color: #9a3412;
-}
-
-:root[data-theme="light"] [class*="text-orange-100"] {
-  color: #9a3412;
-}
-
-:root[data-theme="light"] :is(.text-amber-50, .text-amber-100, .text-amber-200) {
-  color: #854d0e;
-}
-
-/* Amber fills, borders, and stars on light ground. On charcoal the 10–20%
-   amber washes read as tinted glass; on drafting paper they nearly vanish,
-   leaving the favorites control looking like a detached outline with murky
-   padding, so light mode swaps in denser warm inks at the same steps. */
-:root[data-theme="light"] :is(
-  .bg-amber-400\/10, .bg-amber-300\/10
-) {
-  background-color: rgba(217, 119, 6, 0.13);
-}
-
-:root[data-theme="light"] :is(
-  .bg-amber-400\/20, .bg-amber-300\/20
-) {
-  background-color: rgba(217, 119, 6, 0.24);
-}
-
-:root[data-theme="light"] .hover\:bg-amber-400\/20:hover,
-:root[data-theme="light"] .hover\:bg-amber-300\/20:hover {
-  background-color: rgba(217, 119, 6, 0.24);
-}
-
-:root[data-theme="light"] [class*="border-amber-300/25"] {
-  border-color: rgba(146, 94, 6, 0.4);
-}
-
-:root[data-theme="light"] :is(
-  [class*="border-amber-300/40"], [class*="border-amber-300/50"]
-) {
-  border-color: rgba(146, 94, 6, 0.55);
-}
-
-:root[data-theme="light"] [class*="border-amber-300/60"] {
-  border-color: rgba(146, 94, 6, 0.65);
-}
-
-:root[data-theme="light"] :is(
-  .fill-amber-300, .fill-amber-300\/20, .text-amber-300, .text-amber-300\/80
-) {
-  color: #d97706;
-  fill: #d97706;
-}
-
-/* Alpha-suffixed orange text never matches the plain-class overrides above
-   (the class name is different), so the board page's wiring warnings rendered
-   near-white on cream. Map each variant the theme actually ships. */
-:root[data-theme="light"] :is(
-  .text-orange-50\/70, .text-orange-200\/60
-) {
-  color: #9a3412;
-}
-
-:root[data-theme="light"] :is(
-  .border-orange-300\/30, .border-orange-300\/40
-) {
-  border-color: rgba(154, 52, 18, 0.35);
-}
-
-:root[data-theme="light"] .hover\:border-orange-300\/60:hover {
-  border-color: rgba(154, 52, 18, 0.6);
-}
-
-:root[data-theme="light"] .hover\:text-orange-50:hover,
-:root[data-theme="light"] .group:hover .group-hover\:text-orange-100 {
-  color: #9a3412;
-}
-
-:root[data-theme="light"] [class*="border-white/"] {
-  border-color: rgba(31, 48, 58, 0.16);
-}
-
-:root[data-theme="light"] [class*="bg-white/"] {
-  background-color: rgba(31, 48, 58, 0.06);
-}
-
-:root[data-theme="light"] .brand-title.text-transparent {
-  color: transparent;
-  background-image: linear-gradient(90deg, #164e63, #087f8c, #8a5b00);
-}
-
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
+  color: inherit;
 }
 
 button {
   cursor: pointer;
 }
 
-/* Preserve the catalog's dense desktop controls while ensuring compact
-   pinout actions remain comfortable on touch-first devices. */
-@media (pointer: coarse) {
-  .touch-target {
-    min-width: 2.5rem;
-    min-height: 2.5rem;
+/* ---------------------------------------------------------------------------
+   Legend type
+   Silkscreen text is condensed, set in caps, tracked wide, and small — it has
+   to survive being printed on a board at 1 mm. `.silk` is that voice: section
+   legends, column headers, the eyebrow above a value. `.readout` is the large
+   condensed value the instrument is actually reporting.
+   --------------------------------------------------------------------------- */
+@layer components {
+  .silk {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    color: var(--legend-faint);
+  }
+
+  .readout {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.05;
+  }
+
+  /* Tabular data: pin numbers, positions, counts. Figures must column up. */
+  .data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- Panel tiers -------------------------------------------------------
+     A panel is a face with an engraved edge. Depth comes from the lightness
+     step between tiers, not from a shadow — the one shadow in the system is on
+     the command palette, which genuinely floats. */
+  .panel {
+    background-color: var(--panel-face);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-panel);
+  }
+
+  .panel-raised {
+    background-color: var(--panel-raised);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-panel);
+  }
+
+  .well {
+    background-color: var(--panel-well);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-panel);
+  }
+
+  /* ---- Pin-1 marker ------------------------------------------------------
+     Every header on every board marks pin 1 with a square pad among round
+     ones. That is the selection affordance here: the selected row does not get
+     a colour wash or a rail, it gets the square. */
+  .pin1::before {
+    content: "";
+    position: absolute;
+    left: 0.375rem;
+    top: 0.75rem;
+    width: 0.3125rem;
+    height: 0.3125rem;
+    background-color: var(--legend-ink);
+  }
+
+  /* ---- Controls ---------------------------------------------------------- */
+  .ctl {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    min-height: 2.25rem;
     padding-inline: 0.625rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-panel);
+    background-color: var(--panel-face);
+    color: var(--legend-dim);
+    font-size: 0.8125rem;
+    transition:
+      background-color 120ms ease,
+      color 120ms ease,
+      border-color 120ms ease;
+  }
+
+  .ctl:hover:not(:disabled) {
+    background-color: var(--panel-raised);
+    border-color: var(--rule-strong);
+    color: var(--legend-ink);
+  }
+
+  .ctl[aria-pressed="true"],
+  .ctl[data-active="true"] {
+    background-color: var(--panel-raised);
+    border-color: var(--rule-strong);
+    color: var(--legend-ink);
+  }
+
+  .ctl:disabled,
+  .ctl[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /* A chip is a legend fragment, not a button: hairline, square, quiet. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-panel);
+    padding: 0.0625rem 0.3125rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    color: var(--legend-dim);
+    white-space: nowrap;
+  }
+
+  .chip-hazard {
+    border-color: color-mix(in oklab, var(--hazard) 55%, transparent);
+    background-color: var(--hazard-wash);
+    color: var(--hazard-ink);
+  }
+
+  .chip-verified {
+    border-color: color-mix(in oklab, var(--verified) 55%, transparent);
+    background-color: var(--verified-wash);
+    color: var(--verified-ink);
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Focus
+   Achromatic on purpose: the ring has to read against thirteen role colours,
+   a green PCB, and both themes. Ink-on-recess does; any hue would collide with
+   a pin role somewhere.
+   --------------------------------------------------------------------------- */
 :focus-visible {
-  outline: 2px solid rgba(103, 232, 249, 0.7);
+  outline: 2px solid var(--legend-ink);
   outline-offset: 2px;
-}
-
-/* Cyan-300 focus rings and white scroll thumbs are tuned for charcoal and
-   disappear against paper; light mode darkens both so they stay visible. */
-:root[data-theme="light"] :focus-visible {
-  outline-color: rgba(8, 145, 178, 0.85);
-}
-
-:root[data-theme="light"] * {
-  scrollbar-color: rgba(23, 32, 42, 0.28) transparent;
-}
-
-:root[data-theme="light"] ::-webkit-scrollbar-thumb {
-  background: rgba(23, 32, 42, 0.24);
-}
-
-:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
-  background: rgba(23, 32, 42, 0.36);
+  border-radius: 1px;
 }
 
 ::selection {
-  background: rgba(34, 211, 238, 0.3);
+  background: var(--rule-strong);
+  color: var(--legend-ink);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: var(--rule-strong) transparent;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
+  background: var(--rule-strong);
   border: 2px solid transparent;
-  background-clip: padding-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
   background-clip: padding-box;
 }
 
@@ -312,170 +335,103 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Reference-board workbench (see components/CircuitBackground.tsx)
-   Detailed hardware sits in the desktop gutters while animated signal traces
-   add life without competing with the dense catalog in the center.
+   Panel texture
+   A real anodized fascia is not a flat fill — it has a fine machine grain. One
+   repeating linear-gradient at very low contrast, applied to the app shell
+   only. It is the entire decorative budget for the redesign.
    --------------------------------------------------------------------------- */
-.pinhub-background-base {
-  background:
-    radial-gradient(ellipse at 9% 39%, rgba(22, 157, 151, 0.13), transparent 28%),
-    radial-gradient(ellipse at 91% 63%, rgba(16, 151, 175, 0.12), transparent 28%),
-    linear-gradient(90deg, #070a0d 0%, #0b1116 18%, #090c10 34%, #090c10 66%, #0b1116 82%, #070a0d 100%);
-}
-
-.pinhub-background-grid {
-  background-image:
-    radial-gradient(circle, rgba(161, 193, 205, 0.14) 0.65px, transparent 0.75px),
-    linear-gradient(to right, rgba(125, 160, 176, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(125, 160, 176, 0.04) 1px, transparent 1px);
-  background-size: 20px 20px, 100px 100px, 100px 100px;
-  background-position: -10px -10px, -1px -1px, -1px -1px;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.52) 18%,
-    rgba(0, 0, 0, 0.1) 38%,
-    rgba(0, 0, 0, 0.1) 62%,
-    rgba(0, 0, 0, 0.52) 82%,
-    rgba(0, 0, 0, 0.9) 100%
+.panel-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    var(--legend-ink) 2px 3px
   );
-  mask-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.52) 18%,
-    rgba(0, 0, 0, 0.1) 38%,
-    rgba(0, 0, 0, 0.1) 62%,
-    rgba(0, 0, 0, 0.52) 82%,
-    rgba(0, 0, 0, 0.9) 100%
-  );
-}
-
-.pinhub-trace-map {
-  opacity: 0.92;
-  filter: saturate(0.92);
-}
-
-.pinhub-board {
-  transform-box: fill-box;
-  transform-origin: center;
-  will-change: translate;
-}
-
-.pinhub-board-pi {
-  animation: board-drift-pi 11s ease-in-out infinite;
-}
-
-.pinhub-board-uno {
-  animation: board-drift-uno 13s ease-in-out -4s infinite;
-}
-
-.pinhub-signal-traces path {
-  stroke-dasharray: 0.06 0.025;
-  animation: signal-flow 3.8s linear infinite;
-}
-
-.pinhub-signal-traces path:nth-child(even) {
-  animation-direction: reverse;
-  animation-duration: 4.6s;
-}
-
-@keyframes board-drift-pi {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 7px -10px; }
-}
-
-@keyframes board-drift-uno {
-  0%, 100% { translate: 0 0; }
-  50% { translate: -8px 9px; }
-}
-
-@keyframes signal-flow {
-  to { stroke-dashoffset: -0.17; }
-}
-
-.pinhub-background-light {
-  background:
-    linear-gradient(90deg, rgba(73, 220, 219, 0.025), transparent 27%, transparent 73%, rgba(73, 220, 219, 0.02)),
-    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.006) 3px 4px);
-}
-
-.pinhub-background-vignette {
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.04), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.26)),
-    radial-gradient(ellipse at center, transparent 52%, rgba(3, 5, 8, 0.3) 100%);
+  opacity: 0.022;
 }
 
 /* ---------------------------------------------------------------------------
-   Favorites filter button — the one warm control in an otherwise cool catalog.
-   Amber carries the meaning on its own, so the button states itself once: a
-   steady ring at rest that firms up on hover. No resting animation, no sheen,
-   no spin — an always-on effect stops reading as emphasis and starts reading
-   as noise, and it competes with the row the user is actually scanning.
+   The readout rail — the signature element
+   A 1:1 flattened strip of the board's own header. Square pads, role-coloured,
+   in physical pin order. It is the pin map, the navigation control, and the
+   answer, docked so it is reachable at any scroll depth.
    --------------------------------------------------------------------------- */
-.fav-button {
+.rail {
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* The probe ring is drawn 4px outside the pad with box-shadow, and
+     `overflow-x: auto` clips vertically as well as horizontally — without this
+     padding the ring is sheared off top and bottom. */
+  padding: 5px 5px 6px;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.rail-pad {
   position: relative;
-  box-shadow:
-    inset 0 0 0 1px rgba(251, 191, 36, 0.45),
-    0 1px 2px rgba(0, 0, 0, 0.4);
+  flex: 0 0 auto;
+  width: 1.125rem;
+  border: 1px solid transparent;
+  border-radius: 1px;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
   transition:
-    background-color 0.18s ease,
-    color 0.18s ease,
-    box-shadow 0.18s ease;
+    opacity 120ms ease,
+    box-shadow 120ms ease;
 }
 
-.fav-button:hover {
+/* The probed pad and everything on its net. The probe is achromatic so it can
+   sit on top of any role colour without being mistaken for one. */
+.rail-pad[data-probed="true"] {
   box-shadow:
-    inset 0 0 0 1px rgba(252, 211, 77, 0.9),
-    0 1px 2px rgba(0, 0, 0, 0.4);
+    0 0 0 2px var(--panel-face),
+    0 0 0 4px var(--probe);
+  z-index: 1;
 }
 
-/* The dark-theme resting ring sits on charcoal with a black drop shadow; on
-   drafting paper that same shadow reads as a smudged halo around a washed-out
-   chip. Light mode keeps the ring but inks it darker and drops the shadow to
-   a neutral hairline. */
-:root[data-theme="light"] .fav-button {
+.rail-pad[data-on-net="true"]:not([data-probed="true"]) {
   box-shadow:
-    inset 0 0 0 1px rgba(146, 94, 6, 0.45),
-    0 1px 2px rgba(23, 32, 42, 0.16);
+    0 0 0 1px var(--panel-face),
+    0 0 0 2px color-mix(in oklab, var(--probe) 60%, transparent);
 }
 
-:root[data-theme="light"] .fav-button:hover {
-  box-shadow:
-    inset 0 0 0 1px rgba(146, 94, 6, 0.85),
-    0 1px 2px rgba(23, 32, 42, 0.16);
+.rail-pad[data-dimmed="true"] {
+  opacity: 0.25;
+}
+
+/* Pin 1 is square and the rest are not — the one place the product breaks its
+   own radius rule, because the board does too. */
+.rail-pad[data-first="true"] {
+  border-radius: 0;
+  border-color: var(--legend-ink);
 }
 
 /* ---------------------------------------------------------------------------
-   Board diagram
-   The pinout is drawn as the board: soldermask in the vendor's colour, copper
-   routed to the connector, recognizable connector shells, and a colored pad per
-   pin. The illustration exists so a reader can line the diagram up with the
-   board in their hand; the pins on it are the catalog's, and the panel says in
-   as many words which parts of the picture are which.
-
-   A role is identified by hue (see components/board-visual/roles.ts) and cyan
-   belongs to the probe alone, so "what am I touching" never competes with
-   "what is this pin".
-
-   Motion is purely an enhancement: the diagram is fully usable, and identical
-   in information, without it. Animations touch transform / opacity / stroke
-   only so they stay cheap.
+   Board illustration (components/board-visual/*)
+   The PCB is a physical object on the bench, so it keeps its own dark well in
+   both themes. Only the chrome around it re-finishes.
    --------------------------------------------------------------------------- */
-
-/* Annotation type: squared mono, tabular figures so pin numbers in a column
-   line up, and a touch of tracking to hold up at label sizes. Used by the
-   static pin map. */
 .pin-tech {
-  font-family: var(--font-technical);
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
 }
 
-/* The dark well the board illustration sits on, so the PCB reads as an object
-   on a bench rather than as a shape floating on the panel. */
 .bv-stage-wrap {
-  background-color: #0a0c11;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--stage-well);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
 }
 
 .bv-stage {
@@ -492,9 +448,6 @@ button {
   animation: bv-ring-in 160ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* The net path: a hairline that snaps between every pad sharing the probed
-   pin's net, drawn on rather than faded in — it reads as continuity being
-   traced, which is what it reports. */
 .bv-net-path {
   stroke-dasharray: 2000;
   animation: bv-net-draw 260ms cubic-bezier(0.33, 1, 0.68, 1) both;
@@ -512,12 +465,10 @@ button {
   outline: none;
 }
 
-/* Keyboard focus lands on a pad, so it gets the same cyan the probe uses —
-   heavier, and lit, so it is unmistakable against a colored board. */
 .bv-pad:focus-visible .bv-pad-body {
-  stroke: #67e8f9;
+  stroke: #f5f5f0;
   stroke-width: 3.5;
-  filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.9));
+  filter: drop-shadow(0 0 5px rgba(245, 245, 240, 0.8));
 }
 
 @keyframes bv-ring-in {
@@ -551,130 +502,112 @@ button {
   }
 }
 
-/* On narrow screens the catalog occupies the frame, so the trace artwork is
-   removed and only the quiet graphite grid remains. */
-@media (max-width: 1023px) {
-  .pinhub-trace-map {
-    display: none;
-  }
-
-  .pinhub-background-grid {
-    opacity: 0.5;
-    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%);
-    mask-image: linear-gradient(to bottom, #000, transparent 75%);
-  }
-}
-
-/* Respect users who prefer reduced motion: keep the static composition,
-   drop every animation. */
+/* ---------------------------------------------------------------------------
+   Motion
+   Colour and opacity only, 120ms, never layout. Nothing loops — a permanently
+   moving element stops reading as emphasis and starts competing with the row
+   the user is trying to read.
+   --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .bv-pad,
-  .bv-pad-ring,
-  .bv-leader,
-  .bv-label,
-  .bv-net-path,
-  .pinhub-board,
-  .pinhub-signal-traces path {
-    animation: none;
-    transition: none;
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
-  /* The net path is drawn by animating its dash offset, so with motion off the
-     dash pattern has to be cleared or the line would never appear. */
+
+  /* The net path is revealed by animating its dash offset, so with motion off
+     the dash pattern has to be cleared or the line would never appear at all. */
   .bv-net-path {
     stroke-dasharray: none;
   }
 }
 
-/* Discovery workspace motion communicates state without slowing lookup. */
-@keyframes discovery-card-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes compare-tray-in {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.discovery-card {
-  animation: discovery-card-in 420ms both cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.compare-tray {
-  animation: compare-tray-in 260ms both cubic-bezier(0.22, 1, 0.36, 1);
-}
-
+/* ---------------------------------------------------------------------------
+   Print — the bench reference sheet
+   A pinout is a thing people print and carry to the bench. Print drops every
+   interactive surface and the board illustration (its soldermask and label inks
+   are baked for a dark screen and come out as a black slab), and keeps what
+   reads on paper: identity, hazards, and the full pin table.
+   --------------------------------------------------------------------------- */
 @media print {
-  :root {
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
     color-scheme: light;
+    --panel-recess: #ffffff;
+    --panel-face: #ffffff;
+    --panel-raised: #ffffff;
+    --panel-well: #ffffff;
+    --legend-ink: #000000;
+    --legend-dim: #1f2937;
+    --legend-faint: #374151;
+    --rule: #9ca3af;
+    --rule-strong: #4b5563;
+    --hazard: #000000;
+    --hazard-ink: #000000;
+    --hazard-wash: #ffffff;
+    --verified: #000000;
+    --verified-ink: #000000;
+    --verified-wash: #ffffff;
   }
+
   body {
-    background: white !important;
-    color: #111827 !important;
+    background: #fff;
+    font-size: 10pt;
   }
-  .pinhub-background-base,
-  .compare-tray,
-  header,
-  footer,
-  button {
+
+  [data-print="hide"],
+  .bv-stage-wrap,
+  .rail {
     display: none !important;
   }
-  .surface-panel,
-  .surface-well,
-  .comparison-scroll {
-    background: white !important;
-    border-color: #d1d5db !important;
-    box-shadow: none !important;
-  }
-  /* A pinout is a thing people print and take to the bench. The board diagram
-     is built for a dark screen — its soldermask and label inks are baked into
-     the SVG and would come out as a dark slab on white paper — so print drops
-     the illustration and keeps what reads on paper: the notes and the full pin
-     table, which is opened for the occasion. */
-  .bv-stage-wrap {
+
+  .panel-grain::before {
     display: none !important;
   }
+
+  /* Open every collapsed disclosure so the table it hides actually prints. */
+  [data-print="expand"],
   details > *:not(summary) {
     display: block !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
-  .pin-tech {
-    color: #111827 !important;
-  }
-  table,
-  th,
-  td,
-  h1,
-  h2,
-  h3,
-  h4,
-  p,
-  li,
-  dd,
-  dt,
-  span {
-    color: #111827 !important;
-  }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .discovery-card,
-  .compare-tray {
-    animation: none;
-    transition: none;
+  .panel,
+  .panel-raised,
+  .well {
+    border-color: #9ca3af !important;
+    break-inside: avoid;
+  }
+
+  /* Role chips are coloured by inline style from roles.ts. On paper the hue
+     carries no meaning a reader can rely on, so they print as ruled text. */
+  .chip,
+  [data-role-chip] {
+    color: #000 !important;
+    background: #fff !important;
+    border-color: #4b5563 !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #374151;
   }
 }

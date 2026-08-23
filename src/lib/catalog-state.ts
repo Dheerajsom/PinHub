@@ -1,6 +1,13 @@
 import type { BoardSummary } from "@/lib/board-summary";
 
-export type CatalogSort = "catalog" | "relevance" | "name" | "vendor";
+export type CatalogSort =
+  | "catalog"
+  | "relevance"
+  | "name"
+  | "vendor"
+  | "recentlyAdded"
+  | "interfaceCount"
+  | "pinCount";
 export type WirelessCapability = "any" | "has" | "none";
 export type OfficialDocumentationFilter = "any" | "has" | "none";
 export type CatalogFilterKey =
@@ -83,6 +90,9 @@ const sortAliases: Record<string, CatalogSort> = {
   interfaceCount: "interfaceCount",
   "interface-count": "interfaceCount",
   interfaces: "interfaceCount",
+  pinCount: "pinCount",
+  "pin-count": "pinCount",
+  pins: "pinCount",
 };
 
 const wirelessCapabilityValues = new Set<WirelessCapability>([
@@ -290,6 +300,11 @@ export function compareCatalogBoards(
       b.interfaces.length - a.interfaces.length ||
       a.name.localeCompare(b.name)
     );
+  }
+  // Boards without an in-app map sort last rather than tying at zero, so
+  // "most pins mapped" reads as a ranking of what PinHub can actually show.
+  if (sort === "pinCount") {
+    return b.pinCount - a.pinCount || a.name.localeCompare(b.name);
   }
   return 0;
 }

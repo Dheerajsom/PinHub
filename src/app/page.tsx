@@ -10,7 +10,7 @@ import { summarizeBoard } from "@/lib/board-summary";
 assertBoardSourcesValid(boards);
 assertBoardVisualsValid();
 
-const catalog = boards.map(summarizeBoard);
+const catalog = boards.map((board, index) => summarizeBoard(board, index));
 const sourceCount = boards.reduce(
   (total, board) => total + board.sourceLinks.length,
   0,

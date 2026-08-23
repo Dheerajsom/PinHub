@@ -131,12 +131,12 @@ export function CopyPinTable({ pinout }: { pinout: Pinout }) {
         aria-label="Copy pin table as Markdown"
         title="Copy pin table as Markdown"
         className={clsx(
-          "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border px-3 py-1 text-[11px] font-medium transition",
+          "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-[2px] border px-3 py-1 text-[11px] font-medium transition",
           copied
-            ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-100"
+            ? "border-verified/55 bg-verified-wash text-verified-ink"
             : failed
-              ? "border-red-400/50 bg-red-400/10 text-red-100"
-              : "border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/25 hover:text-white",
+              ? "border-hazard/55 bg-hazard-wash text-hazard-ink"
+              : "border-rule bg-raised text-dim hover:border-rule-strong hover:text-ink",
         )}
       >
         {copied ? <Check className="size-3.5" aria-hidden="true" /> : failed ? <X className="size-3.5" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
@@ -146,7 +146,7 @@ export function CopyPinTable({ pinout }: { pinout: Pinout }) {
         href={csvHref}
         download={csvFilename}
         aria-label="Download pin table as CSV"
-        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-medium text-zinc-400 transition hover:border-white/25 hover:text-white"
+        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-[2px] border border-rule bg-raised px-3 py-1 text-[11px] font-medium text-dim transition hover:border-rule-strong hover:text-ink"
       >
         <Download className="size-3.5" aria-hidden="true" />
         CSV
