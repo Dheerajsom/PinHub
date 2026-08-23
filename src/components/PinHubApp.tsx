@@ -414,6 +414,12 @@ export function PinHubApp({ catalog, initialBoard, sourceCount }: PinHubAppProps
         Skip to the board index
       </a>
 
+      {/* The wordmark in AppHeader is a logo, not a heading — every route needs
+          its own real <h1>. This one is visually silent because the header
+          already carries the identity; a screen reader still gets a page
+          title instead of dropping straight to "Bench index". */}
+      <h1 className="sr-only">PinHub — pinout reference and dev board catalog</h1>
+
       <AppHeader
         section="index"
         readings={[
@@ -594,6 +600,11 @@ export function PinHubApp({ catalog, initialBoard, sourceCount }: PinHubAppProps
             facetsOpen ? "block" : "hidden bench:block",
           )}
         >
+          {/* aria-label already names the landmark for a screen reader; this
+              gives the section an entry in the heading outline too, so the
+              FacetGroup <h3>s below nest under something instead of floating
+              past it. */}
+          <h2 className="sr-only">Filters</h2>
           <FacetSwitch
             legend="Mapped connectors only"
             description="Boards with a pin map published in PinHub"
@@ -792,52 +803,61 @@ export function PinHubApp({ catalog, initialBoard, sourceCount }: PinHubAppProps
         ) : null}
       </div>
 
-      {/* ---- Comparison tray ---------------------------------------------- */}
-      {compared.length ? (
-        <div className="sticky bottom-0 z-20 border-t border-rule bg-raised" data-print="hide">
-          <div className="mx-auto flex max-w-[1720px] flex-wrap items-center gap-2 px-4 py-1.5 sm:px-6">
-            <span className="silk">
-              Comparison · {compared.length}/{maxComparedBoards}
-            </span>
-            <ul className="flex min-w-0 flex-1 flex-wrap gap-1">
-              {compared.map((id) => {
-                const board = catalog.find((entry) => entry.id === id);
-                if (!board) return null;
-                return (
-                  <li key={id}>
-                    <button
-                      type="button"
-                      onClick={() => toggleCompared(id)}
-                      className="chip transition-colors hover:text-ink"
-                      aria-label={`Remove ${board.name} from the comparison`}
-                    >
-                      {board.name}
-                      <X className="size-2.5" aria-hidden="true" />
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-            <button type="button" onClick={clearCompared} className="ctl !min-h-8">
-              Clear
-            </button>
-            <Link
-              href={compareUrl(compared)}
-              className="ctl !min-h-8 !bg-raised !text-ink"
-              aria-disabled={compared.length < 2}
-              onClick={(event) => {
-                if (compared.length < 2) event.preventDefault();
-              }}
-            >
-              <GitCompareArrows className="size-3.5" aria-hidden="true" />
-              {compared.length < 2 ? "Pick one more board" : "Compare"}
-            </Link>
+      {/* ---- Docked footer: comparison tray + readout rail -----------------
+          Both pieces dock at the bottom of the viewport, so they share a single
+          sticky wrapper instead of each being `sticky bottom-0` on its own —
+          two independent bottom-0 stickies overlap rather than stack, since
+          neither reserves space for the other. That previously left the
+          comparison tray (the higher z-index of the two) painted on top of the
+          readout rail's pad strip, hiding it entirely whenever a comparison was
+          in progress. One wrapper stacks them in normal flow instead, so the
+          rail is always fully visible above the tray. The rail's own section
+          carries the bottom safe-area inset (see ReadoutRail), since it is
+          always the bottom-most piece of this stack. */}
+      <div className="sticky bottom-0 z-20 flex flex-col" data-print="hide">
+        {compared.length ? (
+          <div className="border-t border-rule bg-raised">
+            <div className="mx-auto flex max-w-[1720px] flex-wrap items-center gap-2 px-4 py-1.5 sm:px-6">
+              <span className="silk">
+                Comparison · {compared.length}/{maxComparedBoards}
+              </span>
+              <ul className="flex min-w-0 flex-1 flex-wrap gap-1">
+                {compared.map((id) => {
+                  const board = catalog.find((entry) => entry.id === id);
+                  if (!board) return null;
+                  return (
+                    <li key={id}>
+                      <button
+                        type="button"
+                        onClick={() => toggleCompared(id)}
+                        className="chip transition-colors hover:text-ink"
+                        aria-label={`Remove ${board.name} from the comparison`}
+                      >
+                        {board.name}
+                        <X className="size-2.5" aria-hidden="true" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+              <button type="button" onClick={clearCompared} className="ctl !min-h-8">
+                Clear
+              </button>
+              <Link
+                href={compareUrl(compared)}
+                className="ctl !min-h-8 !bg-raised !text-ink"
+                aria-disabled={compared.length < 2}
+                onClick={(event) => {
+                  if (compared.length < 2) event.preventDefault();
+                }}
+              >
+                <GitCompareArrows className="size-3.5" aria-hidden="true" />
+                {compared.length < 2 ? "Pick one more board" : "Compare"}
+              </Link>
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      {/* ---- The readout rail --------------------------------------------- */}
-      <div className="sticky bottom-0 z-10">
         {benchBoard ? <ReadoutRail board={benchBoard} /> : null}
       </div>
     </div>

@@ -116,9 +116,11 @@ export const IndexRow = memo(function IndexRow({
             {String(ordinal).padStart(3, "0")}
           </span>
           <VendorLogo vendor={board.vendor} size={14} />
-          <h2 className="readout truncate text-[15px] uppercase text-ink">
+          {/* h3, not h2: this row nests under the "Bench index" h2 above it —
+              147 repeated h2s would flatten the page's heading outline. */}
+          <h3 className="readout truncate text-[15px] uppercase text-ink">
             {board.name}
-          </h2>
+          </h3>
           <span className="chip">{board.category}</span>
 
           {board.hasPinout ? (

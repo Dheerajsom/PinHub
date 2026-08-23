@@ -82,7 +82,10 @@
 
   --legend-ink: #f2f3ef;
   --legend-dim: #a2a8ae;
-  --legend-faint: #767c83;
+  /* Measured against all four panel tiers this sits on (recess/face/raised/
+     well) — clears 4.5:1 (WCAG AA, normal text) on every one; the previous
+     #767c83 fell as low as 3.32:1 on --panel-raised. */
+  --legend-faint: #8d939a;
 
   --rule: rgba(242, 243, 239, 0.11);
   --rule-strong: rgba(242, 243, 239, 0.26);
@@ -114,7 +117,9 @@
 
   --legend-ink: #16181b;
   --legend-dim: #4d5459;
-  --legend-faint: #6b7278;
+  /* Same 4.5:1-on-every-surface treatment as the dark theme; #6b7278 fell to
+     3.89:1 on --panel-recess and 4.18:1 on --panel-well. */
+  --legend-faint: #5b6167;
 
   --rule: rgba(22, 24, 27, 0.16);
   --rule-strong: rgba(22, 24, 27, 0.34);
@@ -391,6 +396,19 @@ button {
     box-shadow 120ms ease;
 }
 
+/* The pad is drawn at pin-pitch width on purpose — it is a 1:1 strip of the
+   board's own header, and widening it would misrepresent the connector. But a
+   ~18px visual pad is a poor touch target on its own, so this claims the
+   space around it that was already dead (half of each inter-pad gap, plus
+   .rail's own top/bottom padding) as part of the hit area instead. That
+   space is unshared with any neighbour, so this never makes two pads
+   ambiguous to tap; it only removes gaps that used to swallow a touch. */
+.rail-pad::before {
+  content: "";
+  position: absolute;
+  inset: -5px -1.5px -6px;
+}
+
 /* The probed pad and everything on its net. The probe is achromatic so it can
    sit on top of any role colour without being mistaken for one. */
 .rail-pad[data-probed="true"] {
@@ -499,6 +517,21 @@ button {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Touch targets
+   A handful of controls (the pinout diagram's fit-width toggle, the copy-pin
+   button, the pin-role legend chips) are sized to their content on a mouse but
+   need to grow on a touchscreen. `pointer: coarse` is true for the input that
+   is actually being used, which a viewport-width media query cannot tell —
+   a touch-capable laptop at desktop width still needs this.
+   --------------------------------------------------------------------------- */
+@media (pointer: coarse) {
+  .touch-target {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
   }
 }
 

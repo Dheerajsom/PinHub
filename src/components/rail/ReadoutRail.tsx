@@ -114,7 +114,12 @@ function ReadoutRailForBoard({ board }: { board: Board }) {
     <section
       aria-label={`${board.name} pin rail`}
       data-print="hide"
-      className="border-t border-rule bg-face"
+      // The rail is always the bottom-most docked surface, so its own face
+      // colour has to run under the home-indicator / gesture-bar area rather
+      // than stopping short of it — otherwise the shell's background shows
+      // through below the rail on a phone with a bottom inset, the same
+      // failure the header would have if it skipped env(safe-area-inset-top).
+      className="border-t border-rule bg-face pb-[env(safe-area-inset-bottom)]"
     >
       <div className="mx-auto flex max-w-[1720px] flex-col gap-1.5 px-3 py-1.5 sm:px-6 lg:flex-row lg:items-center lg:gap-5 lg:py-2">
         {/* ---- The readout window ---------------------------------------- */}
@@ -204,7 +209,13 @@ function ReadoutRailForBoard({ board }: { board: Board }) {
                   type="button"
                   onClick={() => setQuery("")}
                   aria-label="Clear pin search"
-                  className="text-faint transition-colors hover:text-ink"
+                  // The icon stays small to fit this dense toolbar row, but the
+                  // tap target is grown with padding + a matching negative
+                  // margin so it doesn't nudge the row's layout — the same
+                  // 12px-icon-in-tiny-box gap this toolbar's other clear
+                  // button (in the command bar search) avoids by sizing itself
+                  // to a full 36px control instead.
+                  className="-m-2 p-2 text-faint transition-colors hover:text-ink"
                 >
                   <X className="size-3" aria-hidden="true" />
                 </button>
