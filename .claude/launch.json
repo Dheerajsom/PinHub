@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "pinhub-prod",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start", "--", "--port", "3210"],
+      "port": 3210
+    },
+    {
       "name": "pinhub-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],

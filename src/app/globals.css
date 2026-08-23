@@ -128,8 +128,12 @@ body {
   color: #44545d;
 }
 
+/* One step darker than the mid-grey used for zinc-300/400: #64747c sat at
+   3.7–4.4:1 on the tinted wells and chips, just under AA, so the counts and
+   meta labels read washed-out on paper. #536269 clears 4.5:1 on every light
+   surface the catalog uses while keeping the same cool-slate cast. */
 :root[data-theme="light"] :is(.text-zinc-500, .text-zinc-600) {
-  color: #64747c;
+  color: #536269;
 }
 
 :root[data-theme="light"] :is(.text-cyan-50, .text-cyan-100, .text-cyan-200) {
