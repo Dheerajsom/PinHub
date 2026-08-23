@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  compareUrl,
   maxComparedBoards,
   parseComparedIds,
 } from "@/lib/compare-params";
@@ -34,6 +35,23 @@ describe("parseComparedIds", () => {
 
   it("accepts a repeated parameter as separate values", () => {
     expect(parseComparedIds(["pico", "uno"])).toEqual(["pico", "uno"]);
+  });
+
+  it("trims ids and preserves four selected boards", () => {
+    expect(parseComparedIds(" pico ,uno,esp32,zero,fifth ")).toEqual([
+      "pico",
+      "uno",
+      "esp32",
+      "zero",
+    ]);
+    expect(maxComparedBoards).toBe(4);
+  });
+
+  it("builds a bounded shareable URL", () => {
+    expect(compareUrl([" pico ", "uno", "uno", "esp32", "zero", "extra"])).toBe(
+      "/compare?boards=pico,uno,esp32,zero",
+    );
+    expect(compareUrl([])).toBe("/compare");
   });
 
   it("bounds a hostile query string instead of parsing all of it", () => {

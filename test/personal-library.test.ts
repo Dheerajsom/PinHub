@@ -54,5 +54,32 @@ describe("personal project library", () => {
     expect(normalized.collections).toHaveLength(1);
     expect(normalized.collections[0]).toMatchObject({ id: "one", name: "Valid", boardIds: ["pico"] });
   });
-});
 
+  it("keeps working when storage reads and writes are unavailable", async () => {
+    const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    const library = await loadLibrary();
+    expect(library.getPersonalLibrarySnapshot()).toMatchObject({ recentBoardIds: [] });
+    expect(() => library.recordRecentBoard("pico")).not.toThrow();
+    expect(library.getPersonalLibrarySnapshot().recentBoardIds).toEqual(["pico"]);
+    getItem.mockRestore();
+    setItem.mockRestore();
+  });
+
+  it("re-reads the library after a cross-tab storage event", async () => {
+    const library = await loadLibrary();
+    const listener = vi.fn();
+    library.subscribeToPersonalLibrary(listener);
+    window.localStorage.setItem(
+      library.personalLibraryStorageKey,
+      JSON.stringify({ version: 1, recentBoardIds: ["uno"], collections: [] }),
+    );
+    window.dispatchEvent(new StorageEvent("storage", { key: library.personalLibraryStorageKey }));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(library.getPersonalLibrarySnapshot().recentBoardIds).toEqual(["uno"]);
+  });
+});

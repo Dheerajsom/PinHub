@@ -1,6 +1,12 @@
 import type { BoardSummary } from "@/lib/board-summary";
 
-export type CatalogSort = "catalog" | "relevance" | "name" | "vendor";
+export type CatalogSort =
+  | "catalog"
+  | "relevance"
+  | "name"
+  | "vendor"
+  | "recentlyAdded"
+  | "interfaceCount";
 export type WirelessCapability = "any" | "has" | "none";
 export type OfficialDocumentationFilter = "any" | "has" | "none";
 export type CatalogFilterKey =
@@ -132,13 +138,15 @@ export function parseCatalogState(
       ? "has"
       : wirelessValues.includes("none")
         ? "none"
-        : "any";
-  const officialDocumentation = parseOfficialDocumentation(
+        : defaults.wirelessCapability;
+  const officialDocumentationParam =
     params.get("official") ??
-      params.get("officialDocumentation") ??
-      params.get("official-documentation") ??
-      params.get("docs"),
-  );
+    params.get("officialDocumentation") ??
+    params.get("official-documentation") ??
+    params.get("docs");
+  const officialDocumentation = officialDocumentationParam
+    ? parseOfficialDocumentation(officialDocumentationParam)
+    : defaults.officialDocumentation;
   const state: CatalogState = {
     ...defaults,
     query: params.get("q") ?? "",
@@ -242,7 +250,7 @@ export function matchesCatalogFilters(
       (state.officialDocumentation === "has" &&
         board.hasOfficialDocumentation === true) ||
       (state.officialDocumentation === "none" &&
-        board.hasOfficialDocumentation !== true))
+        board.hasOfficialDocumentation === false))
   );
 }
 

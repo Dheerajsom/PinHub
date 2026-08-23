@@ -1,5 +1,5 @@
-/** How many boards the comparison table renders side by side. */
-export const maxComparedBoards = 3;
+/** How many boards the comparison workspace renders side by side. */
+export const maxComparedBoards = 4;
 
 // Only the first few ids of a `?boards=` value are ever meaningful, so the
 // input is bounded before it is split. That keeps a hostile query string on
@@ -16,7 +16,19 @@ export function parseComparedIds(
 ): string[] {
   const parts = (Array.isArray(value) ? value : [value ?? ""])
     .slice(0, maxComparedBoards)
-    .flatMap((part) => part.slice(0, maxPartLength).split(","));
+    .flatMap((part) => part.slice(0, maxPartLength).split(","))
+    .map((part) => part.trim())
+    .filter(Boolean);
 
-  return [...new Set(parts.filter(Boolean))].slice(0, maxComparedBoards);
+  return [...new Set(parts)].slice(0, maxComparedBoards);
+}
+
+/** Builds the canonical, shareable comparison URL for an ordered board set. */
+export function compareUrl(ids: readonly string[], pathname = "/compare"): string {
+  const selected = [...new Set(ids.map((id) => id.trim()).filter(Boolean))].slice(
+    0,
+    maxComparedBoards,
+  );
+  if (!selected.length) return pathname;
+  return `${pathname}?boards=${selected.map(encodeURIComponent).join(",")}`;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, FolderPlus, Plus, X } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   createCollection,
   setBoardInCollection,
@@ -12,6 +12,15 @@ export function CollectionButton({ id, name }: { id: string; name: string }) {
   const library = usePersonalLibrary();
   const [open, setOpen] = useState(false);
   const [collectionName, setCollectionName] = useState("");
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
 
   function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -103,4 +112,3 @@ export function CollectionButton({ id, name }: { id: string; name: string }) {
     </div>
   );
 }
-

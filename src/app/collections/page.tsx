@@ -25,11 +25,12 @@ export default async function CollectionsPage({
   const selected = parseSharedCollectionIds(params.boards)
     .map((id) => boards.find((board) => board.id === id))
     .filter((board): board is Board => Boolean(board));
+  const compareIds = selected.slice(0, 4).map((board) => board.id).join(",");
 
   return (
     <main className="relative isolate min-h-screen pb-10">
       <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#0a0d12] px-4 py-3 sm:px-6 lg:px-8">
+      <header className="relative border-b border-white/10 bg-[#0a0d12] px-4 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-[1100px] items-center justify-between gap-4">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-cyan-200"><ArrowLeft className="size-4" /> Catalog</Link>
           <ThemeToggle />
@@ -51,7 +52,7 @@ export default async function CollectionsPage({
                 <h2 className="flex items-center gap-2 font-semibold text-white"><VendorLogo vendor={board.vendor} /> {board.name}</h2>
                 <p className="mt-2 line-clamp-3 text-sm leading-6 text-zinc-400">{board.description}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">{board.interfaces.slice(0, 6).map((item) => <span key={item} className="rounded border border-white/10 bg-zinc-950 px-1.5 py-0.5 text-[11px] text-zinc-300">{item}</span>)}</div>
-                <div className="mt-4 flex gap-3 text-xs"><Link href={`/boards/${board.id}`} className="text-cyan-200 hover:text-white">Board reference</Link><Link href={`/compare?boards=${board.id}`} className="text-zinc-400 hover:text-white">Compare</Link></div>
+                <div className="mt-4 flex gap-3 text-xs"><Link href={`/boards/${board.id}`} className="text-cyan-200 hover:text-white">Board reference</Link>{compareIds ? <Link href={`/compare?boards=${compareIds}`} className="text-zinc-400 hover:text-white">Compare set</Link> : null}</div>
               </article>
             ))}
           </div>
@@ -67,4 +68,3 @@ export default async function CollectionsPage({
     </main>
   );
 }
-

@@ -5,9 +5,11 @@ import Link from "next/link";
 import {
   ArrowRight,
   Check,
+  BookCheck,
   CircuitBoard,
   Cpu,
   Database,
+  Factory,
   GitCompareArrows,
   Layers3,
   LoaderCircle,
@@ -43,11 +45,13 @@ import { VendorLogo } from "@/components/VendorLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   activeCatalogFilterCount,
+  compareCatalogBoards,
   defaultCatalogState,
   matchesCatalogFilters,
   type CatalogFilterKey,
   type CatalogSort,
 } from "@/lib/catalog-state";
+import { compareUrl, maxComparedBoards } from "@/lib/compare-params";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 
 const discoveryDefaultState = { ...defaultCatalogState, sort: "name" as const };
@@ -64,8 +68,21 @@ export function DiscoveryApp({
   const [state, setState] = useCatalogUrlState("/compare", discoveryDefaultState);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [compareIds, setCompareIds] = useState<string[]>(() =>
-    initialCompareIds.slice(0, 3),
+    initialCompareIds.slice(0, maxComparedBoards),
   );
+  // The catalog URL-state hook owns search/filter parameters and intentionally
+  // does not know about comparison selection. Preserve the boards parameter
+  // while this discovery surface is hydrated so a one-board compare URL stays
+  // shareable instead of being rewritten to bare `/compare`.
+  useEffect(() => {
+    if (!compareIds.length) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("boards", compareIds.join(","));
+    const next = `${url.pathname}${url.search}`;
+    if (`${window.location.pathname}${window.location.search}` !== next) {
+      window.history.replaceState(null, "", next);
+    }
+  }, [compareIds]);
   // Rendering another 24 cards is the slow part on a phone, so the page-in runs
   // as a transition: the button reports it is working and refuses further
   // clicks until the new rows are on screen.
@@ -96,6 +113,8 @@ export function DiscoveryApp({
   const options = useMemo(
     () => ({
       category: [...new Set(catalog.map((board) => board.category))],
+      vendor: [...new Set(catalog.map((board) => board.vendor))].sort(),
+      family: [...new Set(catalog.map((board) => board.family))].sort(),
       platform: [...new Set(catalog.map((board) => board.discovery.computeClass))],
       interface: [...new Set(catalog.flatMap((board) => board.interfaces))],
       logic: [...new Set(catalog.map((board) => board.discovery.logicProfile))],
@@ -122,18 +141,9 @@ export function DiscoveryApp({
       if (!matchesCatalogFilters(entry.board, state, favorites)) continue;
       scored.push({ board: entry.board, ...match });
     }
-    scored.sort((a, b) => {
-      if (state.sort === "relevance") {
-        return b.score - a.score || a.board.name.localeCompare(b.board.name);
-      }
-      if (state.sort === "vendor") {
-        return (
-          a.board.vendor.localeCompare(b.board.vendor) ||
-          a.board.name.localeCompare(b.board.name)
-        );
-      }
-      return a.board.name.localeCompare(b.board.name);
-    });
+    scored.sort((a, b) =>
+      compareCatalogBoards(a.board, b.board, state.sort, a.score, b.score),
+    );
     return scored;
   }, [favorites, searchIndex, state]);
   // Favorites-only with nothing starred is its own state, not a failed filter.
@@ -170,7 +180,7 @@ export function DiscoveryApp({
     setCompareIds((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
-        : current.length < 3
+        : current.length < maxComparedBoards
           ? [...current, id]
           : current,
     );
@@ -268,6 +278,8 @@ export function DiscoveryApp({
               {state.query ? <option value="relevance">Best match</option> : null}
               <option value="name">Name A–Z</option>
               <option value="vendor">Vendor A–Z</option>
+              <option value="recentlyAdded">Recently added</option>
+              <option value="interfaceCount">Most interfaces</option>
             </select>
             <span className="ml-auto shrink-0 font-mono text-xs text-zinc-400 sm:order-6 sm:shrink" role="status" aria-live="polite">{filtered.length} matches</span>
           </div>
@@ -282,12 +294,26 @@ export function DiscoveryApp({
           </div>
           <Facet title="Platform" icon={<Cpu className="size-4" />} filterKey="platform" values={options.platform} selected={state.platform} onToggle={toggleFilter} />
           <Facet title="Category" icon={<Layers3 className="size-4" />} filterKey="category" values={options.category} selected={state.category} onToggle={toggleFilter} />
+          <Facet title="Manufacturer" icon={<Factory className="size-4" />} filterKey="vendor" values={options.vendor} selected={state.vendor} onToggle={toggleFilter} collapsed />
+          <Facet title="Processor family" icon={<Cpu className="size-4" />} filterKey="family" values={options.family} selected={state.family} onToggle={toggleFilter} collapsed />
           <Facet title="Logic level" icon={<Zap className="size-4" />} filterKey="logic" values={options.logic} selected={state.logic} onToggle={toggleFilter} />
           <Facet title="Power input" icon={<Zap className="size-4" />} filterKey="power" values={options.power} selected={state.power} onToggle={toggleFilter} />
           <Facet title="Form factor" icon={<CircuitBoard className="size-4" />} filterKey="form" values={options.form} selected={state.form} onToggle={toggleFilter} />
           <Facet title="Wireless" icon={<Wifi className="size-4" />} filterKey="wireless" values={options.wireless} selected={state.wireless} onToggle={toggleFilter} />
           <Facet title="Connector" icon={<CircuitBoard className="size-4" />} filterKey="connector" values={options.connector} selected={state.connector} onToggle={toggleFilter} />
           <Facet title="Interfaces" icon={<SlidersHorizontal className="size-4" />} filterKey="interface" values={options.interface} selected={state.interface} onToggle={toggleFilter} collapsed />
+          <section className="surface-panel grid gap-2 rounded-lg p-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-white"><Wifi className="size-4" /> Wireless capability</div>
+            <select value={state.wirelessCapability} onChange={(event) => setState((current) => ({ ...current, wirelessCapability: event.target.value as "any" | "has" | "none", page: 1 }))} className="h-10 rounded-md border border-white/10 bg-[#0a0c11] px-2.5 text-sm text-zinc-200 outline-none focus:border-cyan-300/60">
+              <option value="any">Any</option><option value="has">Has wireless</option><option value="none">No wireless</option>
+            </select>
+          </section>
+          <section className="surface-panel grid gap-2 rounded-lg p-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-white"><BookCheck className="size-4" /> Documentation</div>
+            <select value={state.officialDocumentation} onChange={(event) => setState((current) => ({ ...current, officialDocumentation: event.target.value as "any" | "has" | "none", page: 1 }))} className="h-10 rounded-md border border-white/10 bg-[#0a0c11] px-2.5 text-sm text-zinc-200 outline-none focus:border-cyan-300/60">
+              <option value="any">Any</option><option value="has">Official docs available</option><option value="none">No official source</option>
+            </select>
+          </section>
           <label className="surface-panel flex cursor-pointer items-center justify-between rounded-lg p-3 text-sm text-zinc-300">
             Has in-app pin map
             <input type="checkbox" checked={state.pinoutOnly} onChange={(event) => setState((current) => ({ ...current, pinoutOnly: event.target.checked }))} className="size-4 accent-cyan-300" />
@@ -300,11 +326,11 @@ export function DiscoveryApp({
               <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200"><Sparkles className="size-3.5" /> Discovery workspace</div>
               <h2 className="mt-1 text-xl font-semibold text-white">Find the right board, then verify every wire.</h2>
             </div>
-            <p className="max-w-md text-sm leading-6 text-zinc-400">Use factual filters, shortlist up to three boards, and inspect the differences that matter.</p>
+            <p className="max-w-md text-sm leading-6 text-zinc-400">Use factual filters, shortlist up to four boards, and inspect the differences that matter.</p>
           </div>
           <div className="grid gap-3 xl:grid-cols-2">
             {filtered.slice(0, visible).map(({ board, matchedBy }, index) => (
-              <BoardCard key={board.id} board={board} matchedBy={matchedBy} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === 3} onFavorite={toggleFavorite} onCompare={toggleCompare} index={index} />
+              <BoardCard key={board.id} board={board} matchedBy={matchedBy} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === maxComparedBoards} onFavorite={toggleFavorite} onCompare={toggleCompare} index={index} />
             ))}
           </div>
           {visible < filtered.length ? (
@@ -370,9 +396,9 @@ export function DiscoveryApp({
                   return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} className="inline-flex max-w-full items-center gap-1 rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" /></button> : null;
                 })}
               </div>
-              <p className="mt-1 text-[11px] text-zinc-500">{compareIds.length < 2 ? "Choose one more board." : compareIds.length === 3 ? "Comparison set is full." : "Ready to compare."}</p>
+              <p className="mt-1 text-[11px] text-zinc-500">{compareIds.length < 2 ? "Choose one more board." : compareIds.length === maxComparedBoards ? "Comparison set is full." : "Ready to compare."}</p>
             </div>
-            <Link href={compareIds.length > 1 ? `/compare?boards=${compareIds.join(",")}` : "#board-results"} aria-disabled={compareIds.length < 2} className={clsx("inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition sm:w-auto", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
+            <Link href={compareIds.length > 1 ? compareUrl(compareIds) : "#board-results"} aria-disabled={compareIds.length < 2} className={clsx("inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition sm:w-auto", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
           </div>
         </div>
       ) : null}

@@ -5,6 +5,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { boards } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
+import { PinDetails } from "@/components/board-visual/PinDetails";
 
 // A drawing only exists for a board with both a source-backed pinout and a
 // curated visual, so the sheet is tested against a real catalog entry.
@@ -94,5 +95,50 @@ describe("InspectorBody sheet", () => {
     expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Fit width" }));
     expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
+  });
+
+  it("filters the real table and reports the active search/category", () => {
+    renderSheet();
+
+    const status = () =>
+      screen
+        .getAllByRole("status")
+        .find((node) => node.textContent?.startsWith("Showing"));
+
+    fireEvent.change(screen.getByLabelText("Search pins, groups, or connector"), {
+      target: { value: "GPIO2" },
+    });
+    expect(status()?.textContent).toContain("matching “GPIO2”");
+    expect(status()?.textContent).toMatch(/Showing \d+ of \d+ pins/);
+
+    fireEvent.click(screen.getByRole("button", { name: "I2C" }));
+    expect(status()?.textContent).toContain("in I2C");
+    expect(screen.getByRole("button", { name: "Clear filters" })).toBeTruthy();
+  });
+
+  it("exposes the catalog source and its provenance in the inspector", () => {
+    renderSheet();
+
+    expect(
+      screen.getByRole("link", { name: /Open official .* source:/i }),
+    ).toBeTruthy();
+  });
+
+  it("offers the existing copy action for a selected pin", () => {
+    const geometry = buildBoardGeometry(board);
+    if (!geometry) throw new Error("fixture board has no geometry");
+
+    render(
+      <PinDetails
+        anchor={geometry.anchors[0]}
+        pinned
+        net={null}
+        netSize={1}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: /Copy pin \d+,/i }),
+    ).toBeTruthy();
   });
 });

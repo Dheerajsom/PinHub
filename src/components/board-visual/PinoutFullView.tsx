@@ -6,6 +6,10 @@ import { ArrowLeft, Search, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
+import {
+  filterPinAnchors,
+  type PinoutFilterCategory,
+} from "@/components/board-visual/PinoutTable";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -19,6 +23,9 @@ export function PinoutFullView({ board }: { board: Board }) {
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [query, setQuery] = useState("");
+  const [activeCategories, setActiveCategories] = useState<
+    PinoutFilterCategory[]
+  >([]);
 
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
@@ -29,15 +36,12 @@ export function PinoutFullView({ board }: { board: Board }) {
   const matches = useMemo(() => {
     const needle = query.trim().toLowerCase();
     if (!needle) return [];
-    return (geometry?.anchors ?? []).filter(({ pin }) =>
-      [
-        pin.label,
-        pin.role,
-        pin.note ?? "",
-        ...(pin.aliases ?? []),
-      ].some((value) => value.toLowerCase().includes(needle)),
-    );
-  }, [geometry, query]);
+    return filterPinAnchors(geometry?.anchors ?? [], {
+      query,
+      categories: activeCategories,
+      connector: board.pinout?.connector ?? "",
+    });
+  }, [activeCategories, board.pinout?.connector, geometry, query]);
 
   const liveAnchor = anchorsByKey.get(activeKey ?? selectedKey ?? "") ?? null;
 
@@ -90,7 +94,7 @@ export function PinoutFullView({ board }: { board: Board }) {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Find a pin, alias, role, or warning…"
+                placeholder="Find a pin, position, group, connector, or warning…"
                 aria-label="Search pins"
                 className="h-11 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-12 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/30"
               />
@@ -108,7 +112,6 @@ export function PinoutFullView({ board }: { board: Board }) {
             {query ? (
               <div
                 className="mb-4 flex max-h-24 flex-wrap gap-1.5 overflow-y-auto"
-                role="status"
               >
                 {matches.length ? (
                   matches.map((anchor) => (
@@ -122,6 +125,7 @@ export function PinoutFullView({ board }: { board: Board }) {
                       className="rounded-md border border-white/15 bg-white/[0.04] px-2 py-1 font-mono text-xs text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
                     >
                       {anchor.pin.position} · {anchor.pin.label}
+                      {anchor.group ? ` · ${anchor.group}` : ""}
                     </button>
                   ))
                 ) : (
@@ -129,8 +133,14 @@ export function PinoutFullView({ board }: { board: Board }) {
                     No pin matches that.
                   </span>
                 )}
+                <span className="sr-only">
+                  {matches.length} pin {matches.length === 1 ? "match" : "matches"}
+                </span>
               </div>
             ) : null}
+            <p className="sr-only" role="status" aria-live="polite">
+              {query ? `${matches.length} pin ${matches.length === 1 ? "match" : "matches"}` : "Pin search cleared"}
+            </p>
             {/* Opaque panel: the workbench backdrop belongs in the page
                 gutters, not behind a diagram that has to be read. */}
             <div className="surface-panel rounded-lg p-4">
@@ -147,6 +157,10 @@ export function PinoutFullView({ board }: { board: Board }) {
                 }}
                 onActiveKey={setActiveKey}
                 onToggleRole={setActiveRole}
+                query={query}
+                onQueryChange={setQuery}
+                activeCategories={activeCategories}
+                onActiveCategoriesChange={setActiveCategories}
               />
             </div>
           </div>
