@@ -105,7 +105,7 @@ export default async function BoardPage({
               </h1>
               <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-400">{board.description}</p>
               <div className="mt-5">
-                <BoardActions id={board.id} name={board.name} />
+                <BoardActions board={board} />
               </div>
             </div>
             <div className="grid min-w-0 gap-2 sm:grid-cols-2 lg:w-[25rem] lg:grid-cols-1">

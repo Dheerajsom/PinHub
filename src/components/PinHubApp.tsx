@@ -40,6 +40,7 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 import { ActiveFilterChip, BoardResult, FilterPanel } from "@/components/catalog/CatalogListParts";
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ProjectShelf } from "@/components/ProjectShelf";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 import {
   activeCatalogFilterCount,
@@ -666,6 +667,8 @@ export function PinHubApp({
           </div>
         </div>
       </div>
+
+      <ProjectShelf catalog={catalog} />
 
       <div className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
         <aside

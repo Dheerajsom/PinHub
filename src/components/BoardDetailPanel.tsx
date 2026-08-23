@@ -14,6 +14,7 @@ import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import { VendorLogo } from "@/components/VendorLogo";
 import { PinoutTabs } from "@/components/PinoutTabs";
+import { BoardActions } from "@/components/BoardActions";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 
 export type DetailState =
@@ -151,6 +152,9 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           <SpecRow label="Power" value={board.power} />
           <SpecRow label="Format" value={board.formFactor} />
         </dl>
+        <div className="mt-4 border-t border-white/10 pt-4">
+          <BoardActions board={board} />
+        </div>
       </section>
 
       {verifySource ? (

@@ -7,6 +7,107 @@ import type { PinAnchor } from "@/lib/board-visual-geometry";
 import type { PinNet } from "@/lib/pin-nets";
 import { roleChipStyle, roleLabels } from "@/components/board-visual/roles";
 
+/**
+ * Categories people actually use when looking for a header signal. These are
+ * intentionally broader than PinRole: ADC and DAC are both analog, and boot
+ * pins are commonly represented as `system` or `special` with a caution note.
+ */
+export const pinoutFilterOptions = [
+  { id: "gpio", label: "GPIO" },
+  { id: "power", label: "Power" },
+  { id: "ground", label: "Ground" },
+  { id: "analog", label: "Analog" },
+  { id: "pwm", label: "PWM" },
+  { id: "uart", label: "UART" },
+  { id: "i2c", label: "I2C" },
+  { id: "spi", label: "SPI" },
+  { id: "boot", label: "Boot / strap" },
+  { id: "reserved", label: "Reserved" },
+] as const;
+
+export type PinoutFilterCategory = (typeof pinoutFilterOptions)[number]["id"];
+
+const bootPinText = /\b(?:boot|strap|strapping|download mode|flash mode)\b/i;
+const reservedPinText =
+  /\b(?:reserved|no[- ]?connect|not connected|unavailable|flash|psram)\b/i;
+
+export function pinMatchesCategory(
+  pin: PinAnchor["pin"],
+  category: PinoutFilterCategory,
+): boolean {
+  const searchable = [
+    pin.label,
+    ...(pin.aliases ?? []),
+    pin.note ?? "",
+  ].join(" ");
+
+  switch (category) {
+    case "gpio":
+      return pin.role === "gpio";
+    case "power":
+      return pin.role === "power";
+    case "ground":
+      return pin.role === "ground";
+    case "analog":
+      return pin.role === "adc" || pin.role === "dac";
+    case "pwm":
+      return pin.role === "pwm";
+    case "uart":
+      return pin.role === "uart";
+    case "i2c":
+      return pin.role === "i2c";
+    case "spi":
+      return pin.role === "spi";
+    case "boot":
+      return bootPinText.test(searchable);
+    case "reserved":
+      return pin.role === "reserved" || reservedPinText.test(searchable);
+  }
+}
+
+/** Search fields shared by the full-view chips and the filtered table. */
+export function pinMatchesQuery(
+  anchor: PinAnchor,
+  query: string,
+  connector = "",
+): boolean {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return true;
+
+  return [
+    String(anchor.pin.position),
+    anchor.pin.label,
+    anchor.pin.role,
+    anchor.group ?? "",
+    connector,
+    ...(anchor.pin.aliases ?? []),
+    anchor.pin.note ?? "",
+  ]
+    .join(" ")
+    .toLowerCase()
+    .includes(needle);
+}
+
+export function filterPinAnchors(
+  anchors: PinAnchor[],
+  {
+    query = "",
+    categories = [],
+    connector = "",
+  }: {
+    query?: string;
+    categories?: readonly PinoutFilterCategory[];
+    connector?: string;
+  } = {},
+): PinAnchor[] {
+  return anchors.filter(
+    (anchor) =>
+      pinMatchesQuery(anchor, query, connector) &&
+      (!categories.length ||
+        categories.some((category) => pinMatchesCategory(anchor.pin, category))),
+  );
+}
+
 // The pin schedule: the drawing's companion table, and the robust fallback for
 // assistive technology and print. Always present in the DOM and synchronized
 // with the drawing — the probed pin's row is marked, every row on the probed net
