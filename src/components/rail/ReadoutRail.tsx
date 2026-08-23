@@ -116,17 +116,17 @@ function ReadoutRailForBoard({ board }: { board: Board }) {
       data-print="hide"
       className="border-t border-rule bg-face"
     >
-      <div className="mx-auto flex max-w-[1720px] flex-col gap-2 px-4 py-2 sm:px-6 lg:flex-row lg:items-center lg:gap-5">
+      <div className="mx-auto flex max-w-[1720px] flex-col gap-1.5 px-3 py-1.5 sm:px-6 lg:flex-row lg:items-center lg:gap-5 lg:py-2">
         {/* ---- The readout window ---------------------------------------- */}
         <div
-          className="well flex min-h-[3.25rem] min-w-0 shrink-0 items-center gap-3 px-3 py-1.5 lg:w-[21rem]"
+          className="well flex min-w-0 shrink-0 items-center gap-2 px-2 py-1 sm:gap-3 sm:px-3 lg:min-h-[3.25rem] lg:w-[21rem] lg:py-1.5"
           role="status"
           aria-live="polite"
         >
           {probed ? (
             <>
               <span
-                className="data grid size-9 shrink-0 place-items-center border text-sm font-semibold"
+                className="data grid size-7 shrink-0 place-items-center border text-[13px] font-semibold sm:size-9 sm:text-sm"
                 style={{
                   color: roleColors[probed.pin.role].ink,
                   backgroundColor: roleColors[probed.pin.role].wash,
@@ -137,7 +137,7 @@ function ReadoutRailForBoard({ board }: { board: Board }) {
                 {probed.pin.position}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="readout block truncate text-lg text-ink">
+                <span className="readout block truncate text-base text-ink sm:text-lg">
                   {probed.pin.label}
                 </span>
                 <span className="block truncate text-[11px] text-dim">
@@ -168,9 +168,12 @@ function ReadoutRailForBoard({ board }: { board: Board }) {
               </button>
             </>
           ) : (
-            <span className="text-xs leading-snug text-dim">
+            <span className="text-[11px] leading-snug text-dim sm:text-xs">
               <span className="silk mr-1.5">Readout</span>
-              Point at a pad, or press Tab then the arrow keys, to read a pin.
+              <span className="hidden sm:inline">
+                Point at a pad, or press Tab then the arrow keys, to read a pin.
+              </span>
+              <span className="sm:hidden">Tap a pad to read a pin.</span>
             </span>
           )}
         </div>
@@ -179,7 +182,10 @@ function ReadoutRailForBoard({ board }: { board: Board }) {
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex items-center justify-between gap-3">
             <span className="silk truncate">
-              {board.pinout?.connector ?? "Connector"} · {pins.length} pins
+              <span className="hidden sm:inline">
+                {board.pinout?.connector ?? "Connector"} ·{" "}
+              </span>
+              {pins.length} pins
             </span>
             <label className="flex items-center gap-1.5">
               <Search className="size-3 text-faint" aria-hidden="true" />

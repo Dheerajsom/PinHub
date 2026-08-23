@@ -32,22 +32,22 @@ type AppHeaderProps = {
 export function AppHeader({ section, context, readings = [] }: AppHeaderProps) {
   return (
     <header className="relative z-30 border-b border-rule bg-face pt-[env(safe-area-inset-top)]">
-      <div className="mx-auto flex max-w-[1720px] flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2 sm:px-6">
+      <div className="mx-auto flex max-w-[1720px] items-center gap-x-2 px-3 py-1.5 sm:gap-x-4 sm:px-6 sm:py-2">
         <Link
           href="/"
           className="flex shrink-0 items-baseline gap-2"
           aria-label="PinHub home"
         >
-          <span className="readout text-[1.35rem] uppercase tracking-[0.06em] text-ink">
+          <span className="readout text-[1.2rem] uppercase tracking-[0.06em] text-ink sm:text-[1.35rem]">
             PinHub
           </span>
-          <span className="silk hidden sm:inline">Pinout reference</span>
+          <span className="silk hidden lg:inline">Pinout reference</span>
         </Link>
 
         {context ? (
           <>
             <span className="hidden h-4 w-px shrink-0 bg-rule-strong sm:block" />
-            <span className="readout min-w-0 truncate text-base uppercase text-dim">
+            <span className="readout hidden min-w-0 truncate text-base uppercase text-dim sm:block">
               {context}
             </span>
           </>
@@ -55,7 +55,7 @@ export function AppHeader({ section, context, readings = [] }: AppHeaderProps) {
 
         <nav
           aria-label="Sections"
-          className="ml-auto flex shrink-0 items-center gap-px border border-rule"
+          className="ml-auto flex shrink-0 items-center border border-rule"
         >
           {sections.map((entry) => {
             const current = entry.id === section;
@@ -65,7 +65,7 @@ export function AppHeader({ section, context, readings = [] }: AppHeaderProps) {
                 href={entry.href}
                 aria-current={current ? "page" : undefined}
                 className={clsx(
-                  "silk px-2.5 py-2 transition-colors",
+                  "silk px-2 py-2 transition-colors sm:px-2.5",
                   current
                     ? "bg-raised text-ink"
                     : "text-faint hover:bg-raised hover:text-ink",
@@ -90,7 +90,7 @@ export function AppHeader({ section, context, readings = [] }: AppHeaderProps) {
           </dl>
         ) : null}
 
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1">
           <ThemeToggle />
           <a
             href={repoUrl}

@@ -145,12 +145,18 @@ export const IndexRow = memo(function IndexRow({
           ) : null}
 
           {board.hasOfficialDocumentation ? (
-            <span className="chip chip-verified" title="Backed by an official vendor source">
+            <span
+              className="chip chip-verified hidden sm:inline-flex"
+              title="Backed by an official vendor source"
+            >
               <BadgeCheck className="size-2.5" aria-hidden="true" />
               OFFICIAL
             </span>
           ) : (
-            <span className="chip opacity-70" title="No official vendor source; cross-check before wiring">
+            <span
+              className="chip hidden opacity-70 sm:inline-flex"
+              title="No official vendor source; cross-check before wiring"
+            >
               3RD-PARTY
             </span>
           )}
@@ -167,17 +173,21 @@ export const IndexRow = memo(function IndexRow({
           {board.description}
         </p>
 
-        <div className="data mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px] text-faint">
-          <span className="text-dim">{board.vendor}</span>
-          <span aria-hidden="true">·</span>
-          <span>{board.processor}</span>
-          <span aria-hidden="true">·</span>
-          <span className={clsx(notFiveVoltSafe && "text-hazard-ink")}>
+        <div className="data mt-1 flex items-center gap-x-2 truncate text-[11px] text-faint">
+          <span className="shrink-0 text-dim">{board.vendor}</span>
+          <span className="hidden shrink-0 sm:inline" aria-hidden="true">·</span>
+          <span className="hidden shrink-0 sm:inline">{board.processor}</span>
+          <span className="shrink-0" aria-hidden="true">·</span>
+          <span
+            className={clsx("shrink-0", notFiveVoltSafe && "text-hazard-ink")}
+          >
             {discovery.logicProfile}
             {notFiveVoltSafe ? " · not 5 V tolerant" : ""}
           </span>
-          <span aria-hidden="true">·</span>
-          <span className="truncate">{board.interfaces.join(" ")}</span>
+          <span className="hidden shrink-0 lg:inline" aria-hidden="true">·</span>
+          <span className="hidden truncate lg:inline">
+            {board.interfaces.join(" ")}
+          </span>
         </div>
       </div>
 
