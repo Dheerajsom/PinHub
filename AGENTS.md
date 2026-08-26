@@ -28,3 +28,4 @@
 
 - Always commit to the MAIN branch unless explicitly commanded not to.
 - The agent may push its own commits to GitHub when the user asks it to publish changes.
+- After a branch has been merged, automatically delete both its local and remote refs. Never delete `main`, the currently checked-out branch, or a branch that has not been fully merged.
