@@ -3,6 +3,7 @@ import {
   getBoardDiscoveryProfile,
   type BoardDiscoveryProfile,
 } from "@/lib/board-discovery";
+import { classifySource } from "@/lib/source-trust";
 
 // The catalog only needs fields used by search and result rows. Keeping pin
 // maps, source lists, and long-form detail data out of this shape prevents the
@@ -24,11 +25,15 @@ export type BoardSummary = Pick<
 > & {
   discovery: BoardDiscoveryProfile;
   hasPinout: boolean;
+  /** True when at least one linked reference is official for this vendor. */
+  hasOfficialDocumentation?: boolean;
   warningCount: number;
   warningSearchText: string;
+  /** Zero-based insertion position in the static catalog. */
+  catalogIndex?: number;
 };
 
-export function summarizeBoard(board: Board): BoardSummary {
+export function summarizeBoard(board: Board, catalogIndex = 0): BoardSummary {
   return {
     id: board.id,
     name: board.name,
@@ -43,8 +48,12 @@ export function summarizeBoard(board: Board): BoardSummary {
     tags: board.tags,
     interfaces: board.interfaces,
     hasPinout: Boolean(board.pinout),
+    hasOfficialDocumentation: board.sourceLinks.some(
+      (source) => classifySource(board.vendor, source.url) === "official",
+    ),
     discovery: getBoardDiscoveryProfile(board),
     warningCount: board.warnings.length,
     warningSearchText: board.warnings.join(" "),
+    catalogIndex,
   };
 }

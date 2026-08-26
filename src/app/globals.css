@@ -641,6 +641,15 @@ button {
     border-color: #d1d5db !important;
     box-shadow: none !important;
   }
+  .comparison-scroll {
+    display: block !important;
+    overflow: visible !important;
+  }
+  body [class*="bg-[#1b1410]"],
+  body [class*="bg-[#15120c]"] {
+    background: white !important;
+    border-color: #9ca3af !important;
+  }
   /* A pinout is a thing people print and take to the bench. The board diagram
      is built for a dark screen — its soldermask and label inks are baked into
      the SVG and would come out as a dark slab on white paper — so print drops

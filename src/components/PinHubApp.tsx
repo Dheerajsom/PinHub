@@ -14,10 +14,14 @@ import {
 } from "react";
 import {
   CircuitBoard,
+  BookCheck,
+  Cpu,
   Database,
+  Factory,
   GitCompareArrows,
   Layers3,
   LoaderCircle,
+  Radio,
   Search,
   SlidersHorizontal,
   Sparkles,
@@ -37,14 +41,17 @@ import {
 import { createBoardDetailLoader } from "@/lib/board-detail-loader";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
-import { ActiveFilterChip, BoardResult, FilterPanel } from "@/components/catalog/CatalogListParts";
+import { ActiveFilterChip, BoardResult, FilterPanel, FilterSelect } from "@/components/catalog/CatalogListParts";
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ProjectShelf } from "@/components/ProjectShelf";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 import {
   activeCatalogFilterCount,
+  compareCatalogBoards,
   defaultCatalogState,
   matchesCatalogFilters,
+  type CatalogFilterKey,
   type CatalogSort,
 } from "@/lib/catalog-state";
 
@@ -99,6 +106,8 @@ export function PinHubApp({
   const activeLogic = catalogState.logic[0] ?? allCategory;
   const activePower = catalogState.power[0] ?? allCategory;
   const activeForm = catalogState.form[0] ?? allCategory;
+  const activeVendor = catalogState.vendor[0] ?? allCategory;
+  const activeFamily = catalogState.family[0] ?? allCategory;
   const [selectedId, setSelectedId] = useState(initialBoard.id);
   const showFavoritesOnly = catalogState.favoritesOnly;
   const visibleLimit =
@@ -171,6 +180,14 @@ export function PinHubApp({
     () => [allCategory, ...new Set(catalog.map((board) => board.discovery.formFactorProfile))],
     [catalog],
   );
+  const vendorItems = useMemo(
+    () => [allCategory, ...new Set(catalog.map((board) => board.vendor))].sort((a, b) => a === allCategory ? -1 : b === allCategory ? 1 : a.localeCompare(b)),
+    [catalog],
+  );
+  const familyItems = useMemo(
+    () => [allCategory, ...new Set(catalog.map((board) => board.family))].sort((a, b) => a === allCategory ? -1 : b === allCategory ? 1 : a.localeCompare(b)),
+    [catalog],
+  );
 
   const results = useMemo(() => {
     const tokens = tokenizeQuery(query);
@@ -188,19 +205,9 @@ export function PinHubApp({
       scored.push({ board, score: match.score, matchedBy: match.matchedBy });
     }
 
-    // Ties keep the catalog's own order, so an equal-scoring set never
-    // reshuffles between keystrokes.
-    if (catalogState.sort === "relevance") {
-      scored.sort((a, b) => b.score - a.score);
-    } else if (catalogState.sort === "vendor") {
-      scored.sort(
-        (a, b) =>
-          a.board.vendor.localeCompare(b.board.vendor) ||
-          a.board.name.localeCompare(b.board.name),
-      );
-    } else if (catalogState.sort === "name") {
-      scored.sort((a, b) => a.board.name.localeCompare(b.board.name));
-    }
+    scored.sort((a, b) =>
+      compareCatalogBoards(a.board, b.board, catalogState.sort, a.score, b.score),
+    );
     return scored;
   }, [
     boardSearchEntries,
@@ -253,15 +260,10 @@ export function PinHubApp({
     });
   }, [paging, setCatalogState]);
 
-  const hasActiveFilters =
-    query.trim().length > 0 ||
-    activeCategory !== allCategory ||
-    activeInterface !== allInterface ||
-    showFavoritesOnly;
-
   // Count of sidebar filters in effect, surfaced as a badge on the mobile
   // Filters toggle so users know constraints are applied while it is collapsed.
   const activeFilterCount = activeCatalogFilterCount(catalogState);
+  const hasActiveFilters = query.trim().length > 0 || activeFilterCount > 0;
 
   useEffect(() => {
     if (!selectedBoard || (!isDesktop && !mobileDetailOpen)) return;
@@ -352,6 +354,15 @@ export function PinHubApp({
       }),
       "replace",
     );
+    resetResultView();
+  }
+
+  function clearArrayFilter(key: CatalogFilterKey, value: string) {
+    setCatalogState((current) => ({
+      ...current,
+      [key]: current[key].filter((item) => item !== value),
+      page: 1,
+    }));
     resetResultView();
   }
 
@@ -625,6 +636,8 @@ export function PinHubApp({
               <option value="catalog">Catalog order</option>
               <option value="name">Name A–Z</option>
               <option value="vendor">Vendor A–Z</option>
+              <option value="recentlyAdded">Recently added</option>
+              <option value="interfaceCount">Most interfaces</option>
             </select>
             <span
               className="shrink-0 font-mono text-xs text-zinc-400"
@@ -636,23 +649,35 @@ export function PinHubApp({
               {hasActiveFilters ? ` · ${catalog.length} total` : ""}
               {paging ? " · loading more" : ""}
             </span>
-            {activeCategory !== allCategory ? (
-              <ActiveFilterChip
-                label={activeCategory}
-                onClear={() => {
-                  setCatalogState((current) => ({ ...current, category: [], page: 1 }));
-                  resetResultView();
-                }}
-              />
+            {catalogState.category.map((value) => (
+              <ActiveFilterChip key={`category-${value}`} label={value} onClear={() => clearArrayFilter("category", value)} />
+            ))}
+            {catalogState.interface.map((value) => (
+              <ActiveFilterChip key={`interface-${value}`} label={value} onClear={() => clearArrayFilter("interface", value)} />
+            ))}
+            {catalogState.vendor.map((value) => (
+              <ActiveFilterChip key={`vendor-${value}`} label={`Maker: ${value}`} onClear={() => clearArrayFilter("vendor", value)} />
+            ))}
+            {catalogState.family.map((value) => (
+              <ActiveFilterChip key={`family-${value}`} label={`Family: ${value}`} onClear={() => clearArrayFilter("family", value)} />
+            ))}
+            {catalogState.logic.map((value) => (
+              <ActiveFilterChip key={`logic-${value}`} label={value} onClear={() => clearArrayFilter("logic", value)} />
+            ))}
+            {catalogState.power.map((value) => (
+              <ActiveFilterChip key={`power-${value}`} label={value} onClear={() => clearArrayFilter("power", value)} />
+            ))}
+            {catalogState.form.map((value) => (
+              <ActiveFilterChip key={`form-${value}`} label={value} onClear={() => clearArrayFilter("form", value)} />
+            ))}
+            {catalogState.wirelessCapability !== "any" ? (
+              <ActiveFilterChip label={catalogState.wirelessCapability === "has" ? "Has wireless" : "No wireless"} onClear={() => setCatalogState((current) => ({ ...current, wirelessCapability: "any", page: 1 }))} />
             ) : null}
-            {activeInterface !== allInterface ? (
-              <ActiveFilterChip
-                label={activeInterface}
-                onClear={() => {
-                  setCatalogState((current) => ({ ...current, interface: [], page: 1 }));
-                  resetResultView();
-                }}
-              />
+            {catalogState.officialDocumentation !== "any" ? (
+              <ActiveFilterChip label={catalogState.officialDocumentation === "has" ? "Official docs" : "No official docs"} onClear={() => setCatalogState((current) => ({ ...current, officialDocumentation: "any", page: 1 }))} />
+            ) : null}
+            {catalogState.pinoutOnly ? (
+              <ActiveFilterChip label="In-app pin map" onClear={() => setCatalogState((current) => ({ ...current, pinoutOnly: false, page: 1 }))} />
             ) : null}
             {hasActiveFilters ? (
               <button
@@ -666,6 +691,8 @@ export function PinHubApp({
           </div>
         </div>
       </div>
+
+      <ProjectShelf catalog={catalog} />
 
       <div className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
         <aside
@@ -689,6 +716,28 @@ export function PinHubApp({
                 category: value === allCategory ? [] : [value],
                 page: 1,
               }));
+              resetResultView();
+              setMobileFiltersOpen(false);
+            }}
+          />
+          <FilterSelect
+            title="Manufacturer"
+            icon={<Factory className="size-4 text-cyan-200" aria-hidden="true" />}
+            items={vendorItems}
+            active={activeVendor}
+            onChange={(value) => {
+              setCatalogState((current) => ({ ...current, vendor: value === allCategory ? [] : [value], page: 1 }));
+              resetResultView();
+              setMobileFiltersOpen(false);
+            }}
+          />
+          <FilterSelect
+            title="Processor family"
+            icon={<Cpu className="size-4 text-cyan-200" aria-hidden="true" />}
+            items={familyItems}
+            active={activeFamily}
+            onChange={(value) => {
+              setCatalogState((current) => ({ ...current, family: value === allCategory ? [] : [value], page: 1 }));
               resetResultView();
               setMobileFiltersOpen(false);
             }}
@@ -758,6 +807,40 @@ export function PinHubApp({
               setMobileFiltersOpen(false);
             }}
           />
+          <FilterPanel
+            title="Wireless capability"
+            icon={<Radio className="size-4 text-cyan-200" aria-hidden="true" />}
+            items={["All", "Has wireless", "No wireless"]}
+            active={catalogState.wirelessCapability === "has" ? "Has wireless" : catalogState.wirelessCapability === "none" ? "No wireless" : "All"}
+            onChange={(value) => {
+              setCatalogState((current) => ({ ...current, wirelessCapability: value === "Has wireless" ? "has" : value === "No wireless" ? "none" : "any", page: 1 }));
+              resetResultView();
+              setMobileFiltersOpen(false);
+            }}
+          />
+          <FilterPanel
+            title="Documentation"
+            icon={<BookCheck className="size-4 text-cyan-200" aria-hidden="true" />}
+            items={["All", "Official documentation", "No official source"]}
+            active={catalogState.officialDocumentation === "has" ? "Official documentation" : catalogState.officialDocumentation === "none" ? "No official source" : "All"}
+            onChange={(value) => {
+              setCatalogState((current) => ({ ...current, officialDocumentation: value === "Official documentation" ? "has" : value === "No official source" ? "none" : "any", page: 1 }));
+              resetResultView();
+              setMobileFiltersOpen(false);
+            }}
+          />
+          <label className="surface-panel flex cursor-pointer items-center justify-between gap-3 rounded-lg p-3 text-sm text-zinc-300">
+            Has in-app pin map
+            <input
+              type="checkbox"
+              checked={catalogState.pinoutOnly}
+              onChange={(event) => {
+                setCatalogState((current) => ({ ...current, pinoutOnly: event.target.checked, page: 1 }));
+                resetResultView();
+              }}
+              className="size-4 accent-cyan-300"
+            />
+          </label>
           <section className="surface-panel hidden rounded-lg p-4 lg:block">
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <Sparkles className="size-4 text-amber-200" aria-hidden="true" />

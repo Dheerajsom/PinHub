@@ -22,7 +22,11 @@ export function ThemeToggle() {
     const next = currentTheme() === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     document.documentElement.style.colorScheme = next;
-    localStorage.setItem(storageKey, next);
+    try {
+      localStorage.setItem(storageKey, next);
+    } catch {
+      // Theme switching remains usable in private/restricted storage modes.
+    }
     setTheme(next);
   }
 

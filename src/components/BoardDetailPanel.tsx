@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   BadgeCheck,
   BookOpen,
+  Cable,
   Cpu,
   LoaderCircle,
   ShieldAlert,
@@ -14,7 +15,9 @@ import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import { VendorLogo } from "@/components/VendorLogo";
 import { PinoutTabs } from "@/components/PinoutTabs";
+import { BoardActions } from "@/components/BoardActions";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
+import { revisionNotesFor } from "@/lib/board-utilities";
 
 export type DetailState =
   | { status: "ready"; board: Board }
@@ -114,6 +117,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   const verifySourceOfficial = verifySource
     ? classifySource(board.vendor, verifySource.url) === "official"
     : false;
+  const revisionNotes = revisionNotesFor(board);
   return (
     <aside className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
       {/* Stacked-layout escape hatch: the detail panel sits below the result
@@ -151,6 +155,9 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           <SpecRow label="Power" value={board.power} />
           <SpecRow label="Format" value={board.formFactor} />
         </dl>
+        <div className="mt-4 border-t border-white/10 pt-4">
+          <BoardActions board={board} />
+        </div>
       </section>
 
       {verifySource ? (
@@ -188,6 +195,16 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
       ) : null}
 
       <PinoutTabs board={board} />
+
+      <section className="surface-panel rounded-lg p-4">
+        <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Cable className="size-4 text-cyan-200" /> Interfaces</div>
+        <div className="flex flex-wrap gap-1.5">{board.interfaces.map((item) => <span key={item} className="surface-well rounded-md px-2 py-1 font-mono text-[11px] text-zinc-300">{item}</span>)}</div>
+      </section>
+
+      <section className="surface-panel rounded-lg p-4">
+        <div className="text-sm font-semibold text-white">Revision notes</div>
+        {revisionNotes.length ? <ul className="mt-2 grid gap-2 text-sm leading-6 text-zinc-400">{revisionNotes.map((note) => <li key={note}>{note}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-500">No revision-specific note is documented in PinHub. Verify your exact board revision against the linked sources.</p>}
+      </section>
 
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
         <InfoBlock

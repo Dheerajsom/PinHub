@@ -1,5 +1,6 @@
 import { memo, type ReactNode } from "react";
-import { CircuitBoard, ShieldAlert, Star, X } from "lucide-react";
+import Link from "next/link";
+import { CircuitBoard, GitCompareArrows, ShieldAlert, Star, X } from "lucide-react";
 import { clsx } from "clsx";
 import type { BoardSummary } from "@/lib/board-summary";
 import {
@@ -77,6 +78,38 @@ export function FilterPanel({
         ))}
       </div>
     </section>
+  );
+}
+
+type FilterSelectProps = {
+  title: string;
+  icon: ReactNode;
+  items: readonly string[];
+  active: string;
+  onChange: (value: string) => void;
+};
+
+export function FilterSelect({
+  title,
+  icon,
+  items,
+  active,
+  onChange,
+}: FilterSelectProps) {
+  return (
+    <label className="surface-panel block rounded-lg p-3">
+      <span className="mb-2.5 flex items-center gap-2 px-1 text-sm font-semibold text-white">
+        {icon}
+        {title}
+      </span>
+      <select
+        value={active}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-10 w-full rounded-md border border-white/10 bg-[#0a0c11] px-2.5 text-sm text-zinc-200 outline-none focus:border-cyan-300/60"
+      >
+        {items.map((item) => <option key={item} value={item}>{item}</option>)}
+      </select>
+    </label>
   );
 }
 
@@ -175,7 +208,7 @@ export const BoardResult = memo(function BoardResult({
         className="absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
       />
       <div className="pointer-events-none relative z-10 p-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pr-10">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pr-20">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <VendorLogo vendor={board.vendor} />
             <h2 className="text-base font-semibold text-white">{board.name}</h2>
@@ -264,6 +297,14 @@ export const BoardResult = memo(function BoardResult({
           ) : null}
         </div>
       </div>
+      <Link
+        href={`/compare?boards=${encodeURIComponent(board.id)}`}
+        aria-label={`Compare ${board.name}`}
+        title="Compare board"
+        className="absolute right-12 top-1 z-20 grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.08] hover:text-cyan-200 focus-visible:ring-2 focus-visible:ring-cyan-300/70"
+      >
+        <GitCompareArrows className="size-4" aria-hidden="true" />
+      </Link>
       <button
         type="button"
         onClick={() => onToggleFavorite(board.id)}

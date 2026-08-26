@@ -6,6 +6,7 @@ import {
   type PinRole,
   type SourceLink,
 } from "@/lib/boards";
+import { validateBoardSources } from "@/lib/source-trust";
 
 const pinRoles = new Set<PinRole>([
   "power",
@@ -64,6 +65,10 @@ function expectValidPins(pins: readonly Pin[], context: string) {
 }
 
 describe("board catalog integrity", () => {
+  it("keeps at least one official source on every catalog entry", () => {
+    expect(validateBoardSources(boards)).toEqual([]);
+  });
+
   it("keeps board identity, search fields, and source metadata valid", () => {
     const ids = new Set<string>();
 

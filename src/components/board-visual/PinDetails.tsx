@@ -1,10 +1,16 @@
 "use client";
 
-import { TriangleAlert } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, TriangleAlert } from "lucide-react";
+import type { SourceLink } from "@/lib/boards";
 import type { PinAnchor } from "@/lib/board-visual-geometry";
 import type { PinNet } from "@/lib/pin-nets";
 import { netDescription } from "@/lib/pin-nets";
 import { roleChipStyle, roleLabels } from "@/components/board-visual/roles";
+import { CopyPinButton } from "@/components/CopyPinButton";
+
+export type PinoutSource = SourceLink & {
+  provenance: "official" | "third-party";
+};
 
 // The readout for the pin under the probe: what it is, what net it sits on, and
 // anything about it that could damage hardware. Semantic and screen-reader
@@ -16,12 +22,14 @@ export function PinDetails({
   pinned,
   net,
   netSize,
+  source,
 }: {
   anchor: PinAnchor | null;
   pinned: boolean;
   net: PinNet | null;
   /** How many pins on this connector share the net, including this one. */
   netSize: number;
+  source?: PinoutSource;
 }) {
   return (
     <div className="surface-well rounded-md px-3 py-2.5 text-sm" aria-live="polite">
@@ -34,6 +42,7 @@ export function PinDetails({
             <span className="font-mono text-base font-semibold text-white">
               {anchor.pin.label}
             </span>
+            {pinned ? <CopyPinButton pin={anchor.pin} /> : null}
             <span
               className="rounded border px-1.5 py-0.5 text-[11px] font-medium"
               style={roleChipStyle(anchor.pin.role)}
@@ -80,6 +89,34 @@ export function PinDetails({
           between pins.
         </p>
       )}
+      {source ? (
+        <a
+          href={source.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${source.provenance} ${source.type.toLowerCase()} source: ${source.label}`}
+          className="mt-2 flex min-w-0 items-center gap-2 border-t border-white/10 pt-2 text-[11px] text-zinc-400 transition hover:text-cyan-100"
+        >
+          {source.provenance === "official" ? (
+            <BadgeCheck
+              className="size-3.5 shrink-0 text-emerald-300"
+              aria-hidden="true"
+            />
+          ) : (
+            <ArrowUpRight
+              className="size-3.5 shrink-0 text-zinc-500"
+              aria-hidden="true"
+            />
+          )}
+          <span className="min-w-0 truncate">
+            <span className="text-zinc-500">Mapped source · </span>
+            {source.label}
+          </span>
+          <span className="shrink-0 rounded border border-white/10 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] text-zinc-500">
+            {source.provenance === "official" ? "Official" : "3rd-party"}
+          </span>
+        </a>
+      ) : null}
     </div>
   );
 }

@@ -6,8 +6,10 @@ import {
   ArrowUpRight,
   BadgeCheck,
   BookOpen,
+  Cable,
   CircuitBoard,
   Cpu,
+  GitBranch,
   ShieldAlert,
   Sparkles,
 } from "lucide-react";
@@ -18,6 +20,8 @@ import {
 } from "@/lib/board-discovery";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { siteName } from "@/lib/site";
+import { boardVisuals } from "@/lib/board-visuals";
+import { revisionNotesFor } from "@/lib/board-utilities";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
@@ -74,6 +78,12 @@ export default async function BoardPage({
   const profile = getBoardDiscoveryProfile(board);
   const verifySource = verificationSourceFor(board);
   const related = similarBoards(board);
+  const revisionNotes = [
+    ...revisionNotesFor(board),
+    ...(boardVisuals[board.id]?.revisionNote
+      ? [boardVisuals[board.id].revisionNote]
+      : []),
+  ].filter((note, index, all) => all.indexOf(note) === index);
 
   return (
     <main className="relative isolate min-h-screen pb-10">
@@ -105,7 +115,7 @@ export default async function BoardPage({
               </h1>
               <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-400">{board.description}</p>
               <div className="mt-5">
-                <BoardActions id={board.id} name={board.name} />
+                <BoardActions board={board} />
               </div>
             </div>
             <div className="grid min-w-0 gap-2 sm:grid-cols-2 lg:w-[25rem] lg:grid-cols-1">
@@ -131,6 +141,18 @@ export default async function BoardPage({
                 </ul>
               </section>
             ) : null}
+
+            <section className="surface-panel rounded-xl p-4 sm:p-5">
+              <div className="flex items-center gap-2 font-semibold text-white">
+                <Cable className="size-4 text-cyan-200" aria-hidden="true" />
+                Interfaces
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {board.interfaces.map((item) => (
+                  <span key={item} className="surface-well rounded-md px-2.5 py-1.5 font-mono text-xs text-zinc-300">{item}</span>
+                ))}
+              </div>
+            </section>
 
             <section className="surface-panel rounded-xl p-4 sm:p-5">
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
@@ -164,15 +186,37 @@ export default async function BoardPage({
             ) : null}
 
             <section className="surface-panel rounded-xl p-4">
+              <div className="flex items-center gap-2 font-semibold text-white"><GitBranch className="size-4 text-amber-200" /> Revision notes</div>
+              {revisionNotes.length ? (
+                <ul className="mt-3 grid gap-2 text-sm leading-6 text-zinc-400">
+                  {revisionNotes.map((note) => <li key={note} className="surface-well rounded-lg p-3">{note}</li>)}
+                </ul>
+              ) : (
+                <p className="mt-3 text-sm leading-6 text-zinc-500">No revision-specific differences are documented in PinHub for this board. Check the linked vendor material for your exact hardware revision.</p>
+              )}
+            </section>
+
+            <section className="surface-panel rounded-xl p-4">
               <div className="mb-3 flex items-center gap-2 font-semibold text-white"><BookOpen className="size-4 text-cyan-200" /> Source references</div>
-              <div className="grid gap-2">
-                {board.sourceLinks.map((source) => {
-                  const official = classifySource(board.vendor, source.url) === "official";
+              <div className="grid gap-4">
+                {(["Docs", "Datasheet", "Schematic", "Manual", "Pinout"] as const).map((type) => {
+                  const sources = board.sourceLinks.filter((source) => source.type === type);
+                  if (!sources.length) return null;
                   return (
-                    <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="surface-well group flex items-start justify-between gap-2 rounded-lg p-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
-                      <span className="min-w-0"><span className="block text-[10px] uppercase tracking-[0.12em] text-zinc-600">{source.type}</span><span className="mt-1 block">{source.label}</span></span>
-                      {official ? <BadgeCheck className="mt-1 size-4 shrink-0 text-emerald-300" aria-label="Official source" /> : <ArrowUpRight className="mt-1 size-4 shrink-0 text-zinc-600" />}
-                    </a>
+                    <div key={type}>
+                      <h3 className="mb-1.5 text-[10px] uppercase tracking-[0.14em] text-zinc-600">{type}</h3>
+                      <div className="grid gap-2">
+                        {sources.map((source) => {
+                          const official = classifySource(board.vendor, source.url) === "official";
+                          return (
+                            <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="surface-well group flex items-start justify-between gap-2 rounded-lg p-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
+                              <span className="min-w-0">{source.label}</span>
+                              {official ? <BadgeCheck className="mt-1 size-4 shrink-0 text-emerald-300" aria-label="Official source" /> : <ArrowUpRight className="mt-1 size-4 shrink-0 text-zinc-600" />}
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
                   );
                 })}
               </div>
