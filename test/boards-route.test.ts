@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { GET } from "@/app/api/boards/[id]/route";
+import {
+  DELETE,
+  GET,
+  OPTIONS,
+  PATCH,
+  POST,
+  PUT,
+} from "@/app/api/boards/[id]/route";
 import { boards } from "@/lib/boards";
 
 function requestBoard(id: string) {
@@ -24,8 +31,34 @@ describe("GET /api/boards/[id]", () => {
     const response = await requestBoard("not-a-real-board");
 
     expect(response.status).toBe(404);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
     await expect(response.json()).resolves.toEqual({
       error: "Board not found",
     });
+  });
+
+  it.each([
+    ["POST", POST],
+    ["PUT", PUT],
+    ["PATCH", PATCH],
+    ["DELETE", DELETE],
+  ])("rejects the mutating %s method without caching it", async (_method, handler) => {
+    const response = handler();
+
+    expect(response.status).toBe(405);
+    expect(response.headers.get("Allow")).toBe("GET, HEAD, OPTIONS");
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    await expect(response.json()).resolves.toEqual({
+      error: "Method not allowed",
+    });
+  });
+
+  it("answers OPTIONS without enabling cross-origin access", () => {
+    const response = OPTIONS();
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get("Allow")).toBe("GET, HEAD, OPTIONS");
+    expect(response.headers.get("Access-Control-Allow-Origin")).toBeNull();
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
   });
 });

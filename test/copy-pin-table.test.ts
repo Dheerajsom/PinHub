@@ -33,18 +33,27 @@ describe("pinoutToMarkdown", () => {
     expect(markdown).toContain("line one<br>line two");
   });
 
-  it("exports spreadsheet-safe CSV with connector groups and escaped cells", () => {
+  it("exports formula-safe CSV with connector groups and escaped cells", () => {
     const pinout: Pinout = {
-      connector: "Header A",
+      connector: "=HYPERLINK(\"https://example.test\")",
       layout: "grouped",
       notes: [],
       groups: [{
-        label: "Bank 1",
-        pins: [{ position: 2, label: 'SDA "ALT"', role: "i2c", aliases: ["GPIO4"] }],
+        label: "@Bank 1",
+        pins: [{
+          position: 2,
+          label: '+3.3V "ALT"',
+          role: "i2c",
+          aliases: ["-GPIO4"],
+          note: "  =1+1\rforbidden",
+        }],
       }],
     };
     const csv = pinoutToCsv(pinout);
-    expect(csv).toContain('"Header A","Bank 1","2","SDA ""ALT"""');
+    expect(csv).toContain(
+      '"\'=HYPERLINK(""https://example.test"")","\'@Bank 1","2","\'+3.3V ""ALT"""',
+    );
+    expect(csv).toContain('"\'-GPIO4","\'  =1+1 forbidden"');
     expect(csv.startsWith("\uFEFF")).toBe(true);
   });
 

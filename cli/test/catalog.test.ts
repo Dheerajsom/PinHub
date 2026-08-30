@@ -41,6 +41,10 @@ describe("catalog invariants", () => {
       for (const alias of [board.id, ...board.aliases]) {
         const normalized = normalizeQuery(alias);
         expect(normalized, `alias "${alias}" on ${board.id}`).toBe(alias);
+        expect(
+          alias,
+          `alias "${alias}" on ${board.id} must be a shell-safe kebab-case token`,
+        ).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
         const owner = seen.get(normalized);
         expect(
           owner === undefined || owner === board.id,

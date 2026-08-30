@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { runCli } from "../src/run.js";
-import { suggestBoards } from "../src/catalog.js";
+import {
+  MAX_SUGGESTION_QUERY_LENGTH,
+  suggestBoards,
+} from "../src/catalog.js";
 
 describe("unknown board handling", () => {
   it("suggests close matches and exits non-zero", async () => {
@@ -24,6 +27,16 @@ describe("unknown board handling", () => {
     expect(suggestBoards("rasp", -1)).toEqual([]);
     expect(suggestBoards("rasp", Number.NaN)).toEqual([]);
     expect(suggestBoards("rasp", Number.POSITIVE_INFINITY)).toEqual([]);
+  });
+
+  it("skips fuzzy scoring and bounds diagnostics for oversized queries", async () => {
+    const hostile = "x".repeat(MAX_SUGGESTION_QUERY_LENGTH * 1_000);
+
+    expect(suggestBoards(hostile)).toEqual([]);
+    const result = await runCli([hostile], { env: {} });
+    expect(result.code).toBe(1);
+    expect(result.stderr).toContain("…");
+    expect(result.stderr.length).toBeLessThan(500);
   });
 
   it("exits non-zero for unmatched search", async () => {

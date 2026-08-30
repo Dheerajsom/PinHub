@@ -50,7 +50,10 @@ const vendorDomains: Record<string, string[]> = {
   StarFive: ["starfivetech.com", "rvspace.org"],
   "Flipper Devices": ["flipperzero.one", "flipper.net"],
   Digilent: ["digilent.com", "digilentinc.com"],
-  "Google Coral": ["coral.ai", "google.com", "withgoogle.com"],
+  // Coral's product documentation lives on coral.ai. Broad Google domains
+  // include user-published surfaces (for example Sites and Drive), so they
+  // must not earn an "official" hardware-source badge automatically.
+  "Google Coral": ["coral.ai"],
   // Blue Pill boards are generic STM32F103 designs without a single board
   // vendor; ST's MCU datasheet is their authoritative primary reference.
   Generic: ["st.com"],
@@ -72,14 +75,28 @@ function hostMatchesDomain(host: string, domain: string): boolean {
   return host === domain || host.endsWith(`.${domain}`);
 }
 
+function isNonPublicHost(hostname: string): boolean {
+  const host = hostname.toLowerCase().replace(/\.$/, "");
+  return (
+    !host.includes(".") ||
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local") ||
+    /^(?:\d{1,3}\.){3}\d{1,3}$/.test(host) ||
+    (host.startsWith("[") && host.endsWith("]"))
+  );
+}
+
 function parseSafeExternalUrl(url: string): URL | null {
   try {
     const parsed = new URL(url);
     if (
       parsed.protocol !== "https:" ||
       !parsed.hostname ||
+      parsed.port ||
       parsed.username ||
-      parsed.password
+      parsed.password ||
+      isNonPublicHost(parsed.hostname)
     ) {
       return null;
     }
@@ -89,7 +106,7 @@ function parseSafeExternalUrl(url: string): URL | null {
   }
 }
 
-/** True when a catalog link is a credential-free, absolute HTTPS URL. */
+/** True for public, credential-free HTTPS URLs on the default port. */
 export function isSafeExternalUrl(url: string): boolean {
   return parseSafeExternalUrl(url) !== null;
 }

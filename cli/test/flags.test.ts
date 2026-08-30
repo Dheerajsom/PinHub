@@ -115,9 +115,15 @@ describe("global output flags", () => {
   });
 
   it("sanitizes control characters when echoing an unknown query", async () => {
-    const result = await runCli(["missing\u001b[2Jboard"], { env: {} });
+    const result = await runCli(
+      ["missing\u001b[2Jboard\nforged\u0085line\u202etext"],
+      { env: {} },
+    );
     expect(result.code).toBe(1);
     expect(result.stderr).not.toContain("\u001b");
+    expect(result.stderr).not.toContain("\u0085");
+    expect(result.stderr).not.toContain("\u202e");
     expect(result.stderr).toContain("missingboard");
+    expect(result.stderr).not.toContain("\nforged");
   });
 });

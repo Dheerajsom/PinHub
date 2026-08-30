@@ -45,8 +45,10 @@ import { VendorLogo } from "@/components/VendorLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   activeCatalogFilterCount,
+  boundCatalogQuery,
   compareCatalogBoards,
   defaultCatalogState,
+  maxCatalogQueryLength,
   matchesCatalogFilters,
   type CatalogFilterKey,
   type CatalogSort,
@@ -152,15 +154,16 @@ export function DiscoveryApp({
   const visible = state.page * 24;
 
   const setQuery = (query: string) => {
+    const boundedQuery = boundCatalogQuery(query);
     setState(
       (current) => ({
         ...current,
-        query,
+        query: boundedQuery,
         page: 1,
         sort:
-          query.trim() && current.sort === "name"
+          boundedQuery.trim() && current.sort === "name"
             ? "relevance"
-            : !query.trim() && current.sort === "relevance"
+            : !boundedQuery.trim() && current.sort === "relevance"
               ? "name"
               : current.sort,
       }),
@@ -230,6 +233,7 @@ export function DiscoveryApp({
             <input
               ref={searchRef}
               value={state.query}
+              maxLength={maxCatalogQueryLength}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === "Escape") {

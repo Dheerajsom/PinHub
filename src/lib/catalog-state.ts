@@ -78,6 +78,66 @@ const arrayKeys: CatalogFilterKey[] = [
   "connector",
 ];
 
+// URL state is attacker-controlled when a catalog link is shared. Bound both
+// the raw query and its repeated facets before React stores or scores them.
+export const maxCatalogQueryLength = 256;
+export const maxCatalogFilterValues = 32;
+export const maxCatalogFilterValueLength = 128;
+const maxCatalogSearchLength = 16_384;
+const maxCatalogParameters = 256;
+const maxScannedCatalogParameters = 1_024;
+const acceptedCatalogParamNames = new Set([
+  ...arrayKeys,
+  "q",
+  "sort",
+  "page",
+  "pinout",
+  "favorites",
+  "manufacturer",
+  "processorFamily",
+  "processor-family",
+  "wirelessCapability",
+  "wireless-capability",
+  "official",
+  "officialDocumentation",
+  "official-documentation",
+  "docs",
+]);
+
+export function boundCatalogQuery(value: string): string {
+  return value.slice(0, maxCatalogQueryLength);
+}
+
+function boundedCatalogParams(
+  search: string | URLSearchParams,
+): URLSearchParams {
+  const source =
+    typeof search === "string"
+      ? new URLSearchParams(search.slice(0, maxCatalogSearchLength))
+      : search;
+  const bounded = new URLSearchParams();
+  let scanned = 0;
+  for (const [key, value] of source) {
+    scanned += 1;
+    if (scanned > maxScannedCatalogParameters) break;
+    if (!acceptedCatalogParamNames.has(key)) continue;
+    bounded.append(key, boundCatalogQuery(value));
+    if (bounded.size >= maxCatalogParameters) break;
+  }
+  return bounded;
+}
+
+function boundedFilterValues(values: readonly string[]): string[] {
+  const unique = new Set<string>();
+  for (const value of values) {
+    const bounded = value.slice(0, maxCatalogFilterValueLength);
+    if (!bounded || unique.has(bounded)) continue;
+    unique.add(bounded);
+    if (unique.size >= maxCatalogFilterValues) break;
+  }
+  return [...unique];
+}
+
 const sortAliases: Record<string, CatalogSort> = {
   catalog: "catalog",
   relevance: "relevance",
@@ -125,11 +185,11 @@ export function parseCatalogState(
   search: string | URLSearchParams,
   defaults: CatalogState = defaultCatalogState,
 ): CatalogState {
-  const params =
-    typeof search === "string" ? new URLSearchParams(search) : search;
+  const params = boundedCatalogParams(search);
   const sort = params.get("sort");
   const parsedPage = Number.parseInt(params.get("page") ?? "1", 10);
-  const wirelessValues = params.getAll("wireless");
+  const wirelessValues = boundedFilterValues(params.getAll("wireless"));
+  const query = boundCatalogQuery(params.get("q") ?? "");
   const explicitWirelessCapability =
     params.get("wirelessCapability") ?? params.get("wireless-capability");
   const wirelessCapability = explicitWirelessCapability
@@ -149,7 +209,7 @@ export function parseCatalogState(
     : defaults.officialDocumentation;
   const state: CatalogState = {
     ...defaults,
-    query: params.get("q") ?? "",
+    query,
     pinoutOnly: params.get("pinout") === "yes",
     favoritesOnly: params.get("favorites") === "yes",
     wirelessCapability,
@@ -157,7 +217,7 @@ export function parseCatalogState(
     sort:
       sort && sortAliases[sort]
         ? sortAliases[sort]
-        : params.get("q")?.trim()
+        : query.trim()
           ? "relevance"
           : defaults.sort,
     page:
@@ -180,7 +240,7 @@ export function parseCatalogState(
                 (value) => value !== "has" && value !== "none",
               )
             : params.getAll(key);
-    state[key] = [...new Set(values)];
+    state[key] = boundedFilterValues(values);
   }
   return state;
 }
@@ -191,9 +251,12 @@ export function catalogUrl(
   defaultSort: CatalogSort = defaultCatalogState.sort,
 ): string {
   const params = new URLSearchParams();
-  if (state.query.trim()) params.set("q", state.query.trim());
+  const query = boundCatalogQuery(state.query.trim());
+  if (query) params.set("q", query);
   for (const key of arrayKeys) {
-    for (const value of state[key] ?? []) params.append(key, value);
+    for (const value of boundedFilterValues(state[key] ?? [])) {
+      params.append(key, value);
+    }
   }
   if (state.wirelessCapability && state.wirelessCapability !== "any") {
     // Keep the short `wireless=has|none` spelling compatible with the original
@@ -208,7 +271,7 @@ export function catalogUrl(
   ) {
     params.set("official", state.officialDocumentation);
   }
-  const naturalSort = state.query.trim() ? "relevance" : defaultSort;
+  const naturalSort = query ? "relevance" : defaultSort;
   if (state.sort !== naturalSort) params.set("sort", state.sort);
   if (state.page > 1) params.set("page", String(state.page));
   return params.size ? `${pathname}?${params.toString()}` : pathname;

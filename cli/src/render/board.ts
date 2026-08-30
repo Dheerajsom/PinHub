@@ -10,6 +10,7 @@ import {
   wrapText,
 } from "./text.js";
 import { pinStyle, warningStyle } from "./theme.js";
+import { sanitizeBoardForTerminal } from "./sanitize.js";
 
 export { wrapText } from "./text.js";
 
@@ -318,6 +319,7 @@ function primarySourceFor(board: Board) {
 }
 
 export function renderBoard(board: Board, opts: RenderOptions): string {
+  board = sanitizeBoardForTerminal(board);
   const { chalk: c, chars: ch } = opts;
   const width = renderWidth(opts);
   const lines: string[] = [];

@@ -74,6 +74,10 @@ describe("board catalog integrity", () => {
 
     for (const board of boards) {
       expect(ids.has(board.id), `duplicate board id ${board.id}`).toBe(false);
+      expect(
+        board.id,
+        `${board.id}.id must be a route-safe kebab-case identifier`,
+      ).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
       ids.add(board.id);
 
       for (const field of requiredStringFields) {
@@ -81,6 +85,8 @@ describe("board catalog integrity", () => {
       }
       expectUniqueStrings(board.tags, `${board.id}.tags`);
       expectUniqueStrings(board.interfaces, `${board.id}.interfaces`);
+      expect(board.warnings.length, `${board.id}.warnings`).toBeGreaterThan(0);
+      expectUniqueStrings(board.warnings, `${board.id}.warnings`);
       expect(board.sourceLinks.length, `${board.id}.sourceLinks`).toBeGreaterThan(0);
 
       for (const source of board.sourceLinks) {
@@ -105,8 +111,10 @@ describe("board catalog integrity", () => {
         expect(pinout.pins, `${board.id} dual-row pins`).toBeDefined();
         expect(pinout.pins?.left.length, `${board.id} left row`).toBeGreaterThan(0);
         expect(pinout.pins?.right.length, `${board.id} right row`).toBeGreaterThan(0);
-        expectValidPins(pinout.pins?.left ?? [], `${board.id}/left`);
-        expectValidPins(pinout.pins?.right ?? [], `${board.id}/right`);
+        expectValidPins(
+          [...(pinout.pins?.left ?? []), ...(pinout.pins?.right ?? [])],
+          `${board.id}/dual-row`,
+        );
       } else {
         expect(pinout.groups?.length, `${board.id} grouped pinout`).toBeGreaterThan(0);
         const groupLabels = pinout.groups?.map((group) => group.label) ?? [];

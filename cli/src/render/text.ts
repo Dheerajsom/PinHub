@@ -127,8 +127,17 @@ export function safeTerminalText(text: string): string {
       return character;
     }
     const code = character.codePointAt(0) ?? 0;
-    return code <= 0x1f || code === 0x7f ? " " : character;
+    return code <= 0x1f ||
+      (code >= 0x7f && code <= 0x9f) ||
+      /\p{Cf}/u.test(character)
+      ? " "
+      : character;
   }).join("");
+}
+
+/** Sanitize one catalog/argument value without allowing forged output lines. */
+export function safeTerminalValue(text: string): string {
+  return safeTerminalText(text).replace(/[\r\n\t]+/g, " ");
 }
 
 /**

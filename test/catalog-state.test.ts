@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  boundCatalogQuery,
   catalogUrl,
   compareCatalogBoards,
   defaultCatalogState,
+  maxCatalogFilterValueLength,
+  maxCatalogFilterValues,
+  maxCatalogQueryLength,
   matchesCatalogFilters,
   parseCatalogState,
 } from "@/lib/catalog-state";
@@ -66,6 +70,43 @@ describe("catalog URL state", () => {
       officialDocumentation: "none",
       sort: "interfaceCount",
     });
+  });
+
+  it("bounds hostile query text, repeated facets, and serialized state", () => {
+    const params = new URLSearchParams();
+    params.set("q", "x".repeat(100_000));
+    for (let index = 0; index < 5_000; index += 1) {
+      params.append("vendor", `vendor-${index}-${"y".repeat(200)}`);
+    }
+
+    const parsed = parseCatalogState(params);
+    expect(parsed.query).toHaveLength(maxCatalogQueryLength);
+    expect(parsed.vendor).toHaveLength(maxCatalogFilterValues);
+    expect(
+      parsed.vendor.every(
+        (value) => value.length <= maxCatalogFilterValueLength,
+      ),
+    ).toBe(true);
+
+    const url = catalogUrl(
+      {
+        ...defaultCatalogState,
+        query: "q".repeat(100_000),
+        vendor: Array.from(
+          { length: 5_000 },
+          (_, index) => `vendor-${index}-${"z".repeat(200)}`,
+        ),
+      },
+      "/",
+    );
+    const serialized = parseCatalogState(
+      new URL(url, "https://pinhub.test").search,
+    );
+    expect(serialized.query).toHaveLength(maxCatalogQueryLength);
+    expect(serialized.vendor).toHaveLength(maxCatalogFilterValues);
+    expect(boundCatalogQuery("x".repeat(100_000))).toHaveLength(
+      maxCatalogQueryLength,
+    );
   });
 });
 

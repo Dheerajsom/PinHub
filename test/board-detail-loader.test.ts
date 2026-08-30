@@ -134,6 +134,20 @@ describe("createBoardDetailLoader", () => {
       },
     ],
     [
+      "credential-bearing source URL",
+      {
+        sourceLinks: [
+          {
+            label: "Vendor documentation",
+            url: "https://user:secret@example.com/docs",
+            type: "Docs",
+          },
+        ],
+      },
+    ],
+    ["missing wiring warnings", { warnings: [] }],
+    ["missing source links", { sourceLinks: [] }],
+    [
       "invalid pin role",
       {
         pinout: {
@@ -160,6 +174,42 @@ describe("createBoardDetailLoader", () => {
             {
               label: "Pins",
               pins: [{ position: 0, label: "D0", role: "gpio" }],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "duplicate dual-row pin positions",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "dual-row",
+          notes: ["Fixture"],
+          pins: {
+            left: [{ position: 1, label: "D1", role: "gpio" }],
+            right: [{ position: 1, label: "GND", role: "ground" }],
+          },
+        },
+      },
+    ],
+    [
+      "unsafe pin position",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [
+                {
+                  position: Number.MAX_SAFE_INTEGER + 1,
+                  label: "D0",
+                  role: "gpio",
+                },
+              ],
             },
           ],
         },

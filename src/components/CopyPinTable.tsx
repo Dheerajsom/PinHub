@@ -55,7 +55,16 @@ export function pinoutToMarkdown(pinout: Pinout): string {
 }
 
 function csvCell(value: string): string {
-  return `"${value.replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
+  const flattened = value.replace(/[\r\n]+/g, " ");
+  // Spreadsheet applications interpret cells beginning with these markers as
+  // formulas, even in a quoted CSV field. Prefix a text marker so pin labels
+  // such as "+3.3V" remain literal and future catalog text cannot become an
+  // executable spreadsheet expression.
+  const literal =
+    /^[ \t]*[=+\-@]/.test(flattened) || flattened.startsWith("\t")
+      ? `'${flattened}`
+      : flattened;
+  return `"${literal.replace(/"/g, '""')}"`;
 }
 
 export function pinoutToCsv(pinout: Pinout): string {

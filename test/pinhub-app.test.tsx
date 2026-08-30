@@ -10,6 +10,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Board } from "@/lib/boards";
 import { summarizeBoard } from "@/lib/board-summary";
+import { maxCatalogQueryLength } from "@/lib/catalog-state";
 import { PinHubApp } from "@/components/PinHubApp";
 
 // The detail panel is exercised by its own tests; here it is stubbed so these
@@ -158,6 +159,19 @@ describe("PinHubApp result list", () => {
     expect(
       within(results[1] as HTMLElement).getByText("Matched by description"),
     ).toBeTruthy();
+  });
+
+  it("bounds scripted search input before storing or filtering it", () => {
+    setViewport(true);
+    renderApp();
+
+    const search = screen.getByLabelText("Search boards") as HTMLInputElement;
+    fireEvent.change(search, { target: { value: "x".repeat(10_000) } });
+
+    expect(search.value).toHaveLength(maxCatalogQueryLength);
+    expect(new URLSearchParams(location.search).get("q")).toHaveLength(
+      maxCatalogQueryLength,
+    );
   });
 
   it("offers a favorites-specific empty state, not the filter one", () => {
