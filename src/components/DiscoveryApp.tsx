@@ -53,7 +53,11 @@ import {
   type CatalogFilterKey,
   type CatalogSort,
 } from "@/lib/catalog-state";
-import { compareUrl, maxComparedBoards } from "@/lib/compare-params";
+import {
+  compareUrl,
+  maxComparedBoards,
+  parseComparedIds,
+} from "@/lib/compare-params";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 
 const discoveryDefaultState = { ...defaultCatalogState, sort: "name" as const };
@@ -67,31 +71,38 @@ export function DiscoveryApp({
   sourceCount: number;
   initialCompareIds?: string[];
 }) {
-  const [state, setState] = useCatalogUrlState("/compare", discoveryDefaultState);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const ids = useMemo(() => new Set(catalog.map((board) => board.id)), [catalog]);
   const [compareIds, setCompareIds] = useState<string[]>(() =>
-    initialCompareIds.slice(0, maxComparedBoards),
+    parseComparedIds(initialCompareIds).filter((id) => ids.has(id)),
   );
-  // The catalog URL-state hook owns search/filter parameters and intentionally
-  // does not know about comparison selection. Preserve the boards parameter
-  // while this discovery surface is hydrated so a one-board compare URL stays
-  // shareable instead of being rewritten to bare `/compare`.
-  useEffect(() => {
-    if (!compareIds.length) return;
-    const url = new URL(window.location.href);
-    url.searchParams.set("boards", compareIds.join(","));
-    const next = `${url.pathname}${url.search}`;
-    if (`${window.location.pathname}${window.location.search}` !== next) {
-      window.history.replaceState(null, "", next);
-    }
+  const restoreCompareIds = useCallback(
+    (params: URLSearchParams) => {
+      const values = params.getAll("boards");
+      setCompareIds(
+        parseComparedIds(values.length ? values : undefined).filter((id) =>
+          ids.has(id),
+        ),
+      );
+    },
+    [ids],
+  );
+  const compareSearch = useMemo(() => {
+    if (!compareIds.length) return "";
+    return new URLSearchParams({ boards: compareIds.join(",") }).toString();
   }, [compareIds]);
+  const [state, setState] = useCatalogUrlState(
+    "/compare",
+    discoveryDefaultState,
+    compareSearch,
+    restoreCompareIds,
+  );
+  const [filtersOpen, setFiltersOpen] = useState(false);
   // Rendering another 24 cards is the slow part on a phone, so the page-in runs
   // as a transition: the button reports it is working and refuses further
   // clicks until the new rows are on screen.
   const [paging, startPaging] = useTransition();
   const searchRef = useRef<HTMLInputElement>(null);
   const storedFavorites = useFavorites();
-  const ids = useMemo(() => new Set(catalog.map((board) => board.id)), [catalog]);
   const favorites = useMemo(
     () => new Set([...storedFavorites].filter((id) => ids.has(id))),
     [ids, storedFavorites],

@@ -64,8 +64,20 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === "string");
+function isCleanStringArray(
+  value: unknown,
+  { allowEmpty = true }: { allowEmpty?: boolean } = {},
+): value is string[] {
+  if (!Array.isArray(value) || (!allowEmpty && value.length === 0)) return false;
+
+  const seen = new Set<string>();
+  for (const item of value) {
+    if (typeof item !== "string") return false;
+    const normalized = item.trim();
+    if (!normalized || seen.has(normalized)) return false;
+    seen.add(normalized);
+  }
+  return true;
 }
 
 type PayloadPin = {
@@ -86,8 +98,9 @@ function isPin(value: unknown): value is PayloadPin {
     value.label.trim().length > 0 &&
     typeof value.role === "string" &&
     pinRoles.has(value.role) &&
-    (value.aliases === undefined || isStringArray(value.aliases)) &&
-    (value.note === undefined || typeof value.note === "string")
+    (value.aliases === undefined || isCleanStringArray(value.aliases)) &&
+    (value.note === undefined ||
+      (typeof value.note === "string" && value.note.trim().length > 0))
   );
 }
 
@@ -116,8 +129,7 @@ function isPinout(value: unknown): boolean {
   if (
     typeof value.connector !== "string" ||
     value.connector.trim().length === 0 ||
-    !isStringArray(value.notes) ||
-    value.notes.length === 0
+    !isCleanStringArray(value.notes, { allowEmpty: false })
   ) {
     return false;
   }
@@ -143,7 +155,9 @@ function isPinout(value: unknown): boolean {
     ) {
       return false;
     }
-    return new Set(groups.map((group) => group.label)).size === groups.length;
+    return (
+      new Set(groups.map((group) => group.label.trim())).size === groups.length
+    );
   }
 
   return false;
@@ -177,7 +191,7 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
     return false;
   }
   if (
-    !isStringArray(interfaces) ||
+    !isCleanStringArray(interfaces) ||
     !interfaces.every((item) => boardInterfaces.has(item))
   ) {
     return false;
@@ -185,17 +199,17 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
 
   const { tags, highlights, warnings } = value;
   if (
-    !isStringArray(tags) ||
-    !isStringArray(highlights) ||
-    !isStringArray(warnings) ||
-    warnings.length === 0
+    !isCleanStringArray(tags) ||
+    !isCleanStringArray(highlights) ||
+    !isCleanStringArray(warnings, { allowEmpty: false })
   ) {
     return false;
   }
 
+  if (!Array.isArray(value.sourceLinks) || value.sourceLinks.length === 0) {
+    return false;
+  }
   if (
-    !Array.isArray(value.sourceLinks) ||
-    value.sourceLinks.length === 0 ||
     !value.sourceLinks.every(
       (source) =>
         isRecord(source) &&
@@ -205,7 +219,9 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
         typeof source.type === "string" &&
         sourceTypes.has(source.type) &&
         isSafeExternalUrl(source.url),
-    )
+    ) ||
+    new Set(value.sourceLinks.map((source) => source.url)).size !==
+      value.sourceLinks.length
   ) {
     return false;
   }

@@ -49,11 +49,13 @@ export const raspberryPi5: Board = {
       title: "Raspberry Pi GPIO documentation",
       url: "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
       official: true,
+      type: "Docs",
     },
     {
       title: "Raspberry Pi 5 product brief",
       url: "https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf",
       official: true,
+      type: "Datasheet",
     },
   ],
   headers: [

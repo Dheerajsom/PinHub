@@ -29,11 +29,13 @@ export const raspberryPiPicoW: Board = {
       title: "Raspberry Pi Pico W pinout PDF",
       url: "https://pip-assets.raspberrypi.com/categories/686-raspberry-pi-pico-w/documents/RP-008315-DS-1-PicoW-A4-Pinout.pdf",
       official: true,
+      type: "Pinout",
     },
     {
       title: "Raspberry Pi Pico documentation",
       url: "https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html",
       official: true,
+      type: "Docs",
     },
   ],
   headers: [picoEdgeHeader(), picoDebugHeader("SWD debug pads (mid-board)")],

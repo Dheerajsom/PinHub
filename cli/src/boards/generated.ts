@@ -246,7 +246,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -459,7 +459,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -471,7 +471,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -723,7 +723,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -936,7 +936,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -948,7 +948,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -1344,7 +1344,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF / B0",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "tied to A0 area; see datasheet"
             ]
@@ -4047,7 +4047,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "I2S0_FS",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 37,
@@ -4119,7 +4119,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S0_SCLK",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 14,
@@ -4239,7 +4239,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S0_DIN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 40,
@@ -4248,7 +4248,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S0_DOUT",
-            "category": "gpio"
+            "category": "special"
           }
         ]
       }
@@ -4888,7 +4888,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "23 / A9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CRX1"
             ]
@@ -4900,7 +4900,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "22 / A8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CTX1"
             ]
@@ -4912,7 +4912,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CRX2"
             ]
@@ -4924,7 +4924,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "1",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CTX2"
             ]
@@ -5058,7 +5058,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_A2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_MCLK"
             ]
@@ -5181,7 +5181,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_A4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_LRCK"
             ]
@@ -5262,7 +5262,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SCLK"
             ]
@@ -5399,7 +5399,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SDI"
             ]
@@ -5411,7 +5411,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SDO"
             ]
@@ -5545,7 +5545,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO4_B2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN1 RX",
               "PWM14"
@@ -5558,7 +5558,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO4_B3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN1 TX"
             ]
@@ -5570,7 +5570,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO0_D4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN2 RX",
               "I2C1 SCL",
@@ -5694,7 +5694,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO0_D5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN2 TX",
               "I2C1 SDA"
@@ -7865,7 +7865,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "analog reference"
             ]
@@ -8261,7 +8261,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PA03"
             ],
@@ -9028,7 +9028,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+"
             ]
@@ -9040,7 +9040,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-"
             ]
@@ -9379,7 +9379,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "IO18",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-"
             ]
@@ -9391,7 +9391,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "IO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+"
             ]
@@ -9804,7 +9804,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO18",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB Serial/JTAG"
             ],
@@ -9819,7 +9819,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB Serial/JTAG"
             ],
@@ -10484,7 +10484,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+",
               "ADC2_CH9",
@@ -10498,7 +10498,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-",
               "ADC2_CH8",
@@ -10860,7 +10860,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO13",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+"
             ]
@@ -10872,7 +10872,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-"
             ]
@@ -11414,7 +11414,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+",
               "ADC2_CH9"
@@ -11427,7 +11427,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-",
               "ADC2_CH8"
@@ -11440,7 +11440,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO18",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "RGB LED",
               "DAC2",
@@ -13159,7 +13159,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "analog reference"
             ]
@@ -13577,7 +13577,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D8 / GPIO15",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "Strapping",
               "Touch 3"
@@ -13608,7 +13608,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D12 / GPIO12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "Strapping",
               "ADC2 CH5"
@@ -14633,7 +14633,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -14846,7 +14846,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -14858,7 +14858,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -15113,7 +15113,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -15326,7 +15326,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -15338,7 +15338,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -15783,7 +15783,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "PA12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+",
               "CAN_TX"
@@ -15799,7 +15799,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "PA11",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-",
               "CAN_RX"
@@ -16336,7 +16336,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "PA12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+"
             ],
@@ -16351,7 +16351,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "PA11",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-"
             ],
@@ -17238,7 +17238,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOX_5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDIO CMD"
             ]
@@ -17259,7 +17259,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOX_3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDIO D3"
             ]
@@ -17271,7 +17271,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOX_4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDIO CLK"
             ]
@@ -17304,7 +17304,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOX_8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -17316,7 +17316,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOX_9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -17328,7 +17328,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOX_11",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM CLK"
             ]
@@ -17397,7 +17397,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOAO_7",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TDMB FS"
             ]
@@ -17409,7 +17409,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOAO_9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S MCLK"
             ]
@@ -17481,7 +17481,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOAO_8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TDMB SCLK"
             ]
@@ -17502,7 +17502,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOX_0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDIO D0"
             ]
@@ -17514,7 +17514,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOX_1",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDIO D1"
             ]
@@ -17535,7 +17535,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOX_2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDIO D2"
             ]
@@ -17547,7 +17547,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOX_10",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM SYNC"
             ]
@@ -17613,7 +17613,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOH_5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SPDIF IN"
             ]
@@ -17625,7 +17625,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOAO_10",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TDMB DIN"
             ]
@@ -17637,7 +17637,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOAO_4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TDMB DOUT"
             ]
@@ -18231,7 +18231,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO4_D0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CPU GPCLK"
             ]
@@ -18365,7 +18365,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_D5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 SDI2/SDO2"
             ]
@@ -18377,7 +18377,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_D2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 LRCKTX"
             ]
@@ -18389,7 +18389,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_D1",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 LRCKRX"
             ]
@@ -18461,7 +18461,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_D0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 CLK"
             ]
@@ -18563,7 +18563,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_D4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 SDI1/SDO3"
             ]
@@ -18584,7 +18584,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_D6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 SDI3/SDO1"
             ]
@@ -18596,7 +18596,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_D3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 SDI0"
             ]
@@ -18608,7 +18608,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_D7",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S0 SDO0"
             ]
@@ -18721,7 +18721,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOCLK_0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CLK24",
               "CLK12"
@@ -18743,7 +18743,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOAO_8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "HDMI CEC",
               "PWM AO A"
@@ -18756,7 +18756,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOAO_9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SPDIF OUT",
               "PWM AO B"
@@ -18904,7 +18904,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIOX_5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "Wi-Fi SD CMD"
             ]
@@ -18976,7 +18976,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOAO_6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SPDIF OUT",
               "PWM AO B"
@@ -19137,7 +19137,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIOX_4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "Wi-Fi SD CLK"
             ]
@@ -19672,7 +19672,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "ADC1 CH2",
               "Touch 3",
@@ -20046,7 +20046,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D8 / GPIO15",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "HSPI CS"
             ],
@@ -20118,7 +20118,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "D3 / GPIO0",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "Boot-strap: LOW = flash mode, must be HIGH for normal boot."
             ]
@@ -20130,7 +20130,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "D4 / GPIO2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TXD1"
             ],
@@ -20285,7 +20285,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO15",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "SPI2 CS / D8 compat; check boot strapping."
             ]
@@ -21707,7 +21707,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "BCM19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S LRCLK"
             ]
@@ -21793,7 +21793,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "BCM18",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S BCLK"
             ]
@@ -21945,7 +21945,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "BCM20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S SDIN"
             ]
@@ -21957,7 +21957,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "BCM21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S SDOUT"
             ]
@@ -22298,7 +22298,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PA15"
             ],
@@ -23215,7 +23215,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CAN RX / D93",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PB5"
             ]
@@ -23227,7 +23227,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CAN TX / D94",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PB13"
             ]
@@ -23905,7 +23905,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO13",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XTAL_32K_P"
             ]
@@ -23917,7 +23917,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO14",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XTAL_32K_N"
             ]
@@ -24082,7 +24082,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "RGB LED",
               "LOG"
@@ -24131,7 +24131,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO27 / USB_D+",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 29,
@@ -24140,7 +24140,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO26 / USB_D-",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 30,
@@ -24411,7 +24411,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PA17-EINT17",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SPDIF-OUT"
             ]
@@ -26047,7 +26047,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -26260,7 +26260,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -26272,7 +26272,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -26528,7 +26528,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -26741,7 +26741,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -26753,7 +26753,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -27005,7 +27005,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -27218,7 +27218,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -27230,7 +27230,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -27486,7 +27486,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -27699,7 +27699,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -27711,7 +27711,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -27967,7 +27967,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -28180,7 +28180,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -28192,7 +28192,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -28444,7 +28444,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -28657,7 +28657,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -28669,7 +28669,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -31128,7 +31128,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CANRX",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN0 RX"
             ]
@@ -31140,7 +31140,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CANTX",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN0 TX"
             ]
@@ -31640,7 +31640,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PA03"
             ],
@@ -32058,7 +32058,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "analog reference"
             ]
@@ -32449,7 +32449,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PA03"
             ],
@@ -32846,7 +32846,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PA03"
             ],
@@ -33261,7 +33261,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "analog reference, max 3.3 V"
             ]
@@ -33665,7 +33665,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AREF",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "P0.31"
             ],
@@ -34610,7 +34610,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D5 / GP14",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "Output-only and level-shifted to VHI."
             ]
@@ -36990,7 +36990,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -37203,7 +37203,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -37215,7 +37215,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -37973,7 +37973,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO0",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "BOOT button; ADC2_CH1; must be HIGH at reset."
             ]
@@ -38844,7 +38844,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CAN TX / RX",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "Pins 3/4 alternate function"
             ]
@@ -38856,7 +38856,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "Touch pins",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "0-1, 15-19, 22-23, 25, 32-33"
             ]
@@ -40371,7 +40371,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AUDIO_MCLK",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "GPIO09"
             ]
@@ -40512,7 +40512,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "I2S4_LRCK",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 37,
@@ -40584,7 +40584,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S4_SCLK",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 14,
@@ -40704,7 +40704,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S4_SDIN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 40,
@@ -40713,7 +40713,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S4_SDOUT",
-            "category": "gpio"
+            "category": "special"
           }
         ]
       }
@@ -40950,7 +40950,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "I2S0_FS",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 37,
@@ -41022,7 +41022,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S0_SCLK",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 14,
@@ -41145,7 +41145,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S0_DIN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 40,
@@ -41154,7 +41154,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S0_DOUT",
-            "category": "gpio"
+            "category": "special"
           }
         ]
       }
@@ -41394,7 +41394,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM FS"
             ]
@@ -41475,7 +41475,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO18",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM CLK"
             ]
@@ -41607,7 +41607,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DIN"
             ]
@@ -41619,7 +41619,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO21",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PCM DOUT"
             ]
@@ -42774,7 +42774,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_B6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S2_LRCK"
             ]
@@ -43006,7 +43006,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_B3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S2_SDO"
             ]
@@ -43138,7 +43138,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_A2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_MCLK"
             ]
@@ -43261,7 +43261,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_A4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_LRCK"
             ]
@@ -43342,7 +43342,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SCLK"
             ]
@@ -43479,7 +43479,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SDI"
             ]
@@ -43491,7 +43491,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SDO"
             ]
@@ -44559,7 +44559,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_A2_3V3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_MCLK"
             ]
@@ -44664,7 +44664,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_A4_3V3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_LRCK"
             ]
@@ -44676,7 +44676,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO1_A4_3V3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SPDIF_TX"
             ]
@@ -44742,7 +44742,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A3_3V3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SCLK"
             ]
@@ -44868,7 +44868,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A6_3V3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SDI"
             ]
@@ -44880,7 +44880,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A5_3V3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3_SDO"
             ]
@@ -44973,7 +44973,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "HUB_D4N",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB hub D-"
             ]
@@ -44985,7 +44985,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "HUB_D4P",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB hub D+"
             ]
@@ -45069,7 +45069,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "SPDIFOUT",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 14,
@@ -46898,7 +46898,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D16 / PC6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S2 MCK",
               "I2S_A_MCK"
@@ -46924,7 +46924,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D17 / PB15",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S2 SD",
               "I2S_A_SD"
@@ -46950,7 +46950,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D18 / PB13",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S2 CK",
               "I2S_A_CK"
@@ -46981,7 +46981,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D19 / PB12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S2 WS",
               "I2S_A_WS"
@@ -47003,7 +47003,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D20 / PA15",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3 WS",
               "I2S_B_WS"
@@ -47032,7 +47032,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D21 / PC7",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "I2S3 MCK",
               "I2S_B_MCK"
@@ -47188,7 +47188,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D43 / PC8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDMMC_D0"
             ]
@@ -47212,7 +47212,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D44 / PC9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDMMC_D1",
               "I2S_CKIN"
@@ -47234,7 +47234,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D45 / PC10",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDMMC_D2"
             ]
@@ -47255,7 +47255,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D46 / PC11",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDMMC_D3"
             ]
@@ -47276,7 +47276,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D47 / PC12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDMMC_CK"
             ]
@@ -47297,7 +47297,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D48 / PD2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SDMMC_CMD"
             ]
@@ -47510,7 +47510,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D72 / PB2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "COMP1_INP"
             ],
@@ -47525,7 +47525,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D56 / PE2",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 A MCLK",
               "SAI_A_MCLK"
@@ -47541,7 +47541,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D71 / PE9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "COMP2_INP"
             ],
@@ -47556,7 +47556,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D57 / PE4",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 A FS",
               "SAI_A_FS"
@@ -47582,7 +47582,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D58 / PE5",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 A SCK",
               "SAI_A_SCK"
@@ -47608,7 +47608,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D59 / PE6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 A SD",
               "SAI_A_SD"
@@ -47637,7 +47637,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D60 / PE3",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 B SD",
               "SAI_B_SD"
@@ -47659,7 +47659,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D61 / PF8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 B SCK",
               "SAI_B_SCK"
@@ -47672,7 +47672,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D67 / PD0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN1 RX",
               "FDCAN1 RX"
@@ -47685,7 +47685,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D62 / PF7",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 B MCLK",
               "SAI_B_MCLK"
@@ -47698,7 +47698,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D66 / PD1",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN1 TX",
               "FDCAN1 TX"
@@ -47711,7 +47711,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D63 / PF9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI1 B FS",
               "SAI_B_FS"
@@ -47977,7 +47977,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D41 / PE7",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TIM1 ETR",
               "TIMER_A_ETR"
@@ -48076,7 +48076,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D38 / PE6",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TIM1 BKIN2",
               "TIMER_A_BKIN2"
@@ -48105,7 +48105,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D37 / PE15",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TIM1 BKIN1",
               "TIMER_A_BKIN1"
@@ -48144,7 +48144,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D34 / PE0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "TIM4 ETR",
               "TIM_B_ETR"
@@ -49346,7 +49346,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PA13",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN RX"
             ]
@@ -49358,7 +49358,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PA12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "CAN TX"
             ]
@@ -50944,7 +50944,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 109 / DONE",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 4,
@@ -50953,7 +50953,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 110 / INITn",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 5,
@@ -51034,7 +51034,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 119 / PROGn",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 14,
@@ -51043,7 +51043,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 120 / JTAGen",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 15,
@@ -51142,7 +51142,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 130 / TMS",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 26,
@@ -51151,7 +51151,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 131 / TCK",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 27,
@@ -51178,7 +51178,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 136 / TDI",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 30,
@@ -51187,7 +51187,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 137 / TDO",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 31,
@@ -52054,7 +52054,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 71 / SI / SISPI",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 4,
@@ -52072,7 +52072,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 70 / SN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 6,
@@ -52306,7 +52306,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 45 / S0 / SPISO",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 32,
@@ -52324,7 +52324,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 44 / MCLK / CCLK",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 34,
@@ -52378,7 +52378,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "TQ144 pin 40 / CSSPIN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 40,
@@ -52496,7 +52496,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PT44C/INITn (ball A13)",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 4,
@@ -52505,7 +52505,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PT44D/DONE (ball C13)",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 5,
@@ -52595,7 +52595,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PT31C/JTAGENB (ball C10)",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 15,
@@ -54434,7 +54434,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PT36C/INITn (ball A13)",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 4,
@@ -54443,7 +54443,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PT36D/DONE (ball C13)",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 5,
@@ -54533,7 +54533,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PT27C/JTAGENB (ball C10)",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 15,
@@ -59497,7 +59497,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "SAI1_TXFS",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI audio"
             ]
@@ -59581,7 +59581,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "SAI1_TXC",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI audio"
             ]
@@ -59713,7 +59713,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "SAI1_RXD0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI audio"
             ]
@@ -59725,7 +59725,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "SAI1_TXD0",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "SAI audio"
             ]
@@ -60574,7 +60574,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PB14",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "iButton"
             ],
@@ -65043,7 +65043,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MCLK05",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "Audio master clock output."
             ]
@@ -65148,7 +65148,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CAN0_DIN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 31,
@@ -65157,7 +65157,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CAN0_DOUT",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 33,
@@ -65166,7 +65166,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CAN1_DOUT",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 35,
@@ -65175,7 +65175,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "I2S2_FS",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 37,
@@ -65184,7 +65184,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "CAN1_DIN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 39,
@@ -65250,7 +65250,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S2_CLK",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 14,
@@ -65370,7 +65370,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S2_DIN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 40,
@@ -65379,7 +65379,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "I2S2_DOUT",
-            "category": "gpio"
+            "category": "special"
           }
         ]
       }
@@ -65804,7 +65804,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO13",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+"
             ]
@@ -65816,7 +65816,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-"
             ]
@@ -66853,7 +66853,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO20",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+"
             ],
@@ -66868,7 +66868,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO19",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-"
             ],
@@ -66883,7 +66883,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO48",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "SPICLK_N, SUBSPICLK_N_DIFF. Drives the onboard addressable RGB LED."
             ]
@@ -66895,7 +66895,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO47",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "SPICLK_P, SUBSPICLK_P_DIFF"
             ]
@@ -67314,7 +67314,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO13",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+"
             ]
@@ -67326,7 +67326,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO12",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-"
             ]
@@ -68249,7 +68249,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AUDIO_OUT_R",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "Analog audio output; not GPIO."
             ]
@@ -68277,7 +68277,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AUDIO_OUT_L",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "Analog audio output; not GPIO."
             ]
@@ -68305,7 +68305,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AUDIO_IN_R",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "Analog audio input; not GPIO."
             ]
@@ -68330,7 +68330,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "AUDIO_IN_L",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "Analog audio input; not GPIO."
             ]
@@ -68382,7 +68382,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C18 / MIPI_TX_3N",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[18]",
               "GPIO 434"
@@ -68410,7 +68410,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C19 / MIPI_TX_3P",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[19]",
               "GPIO 435"
@@ -68441,7 +68441,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C20 / MIPI_TX_2N",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[20]",
               "GPIO 436"
@@ -68454,7 +68454,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C16 / MIPI_TX_CN",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[16]",
               "GPIO 432"
@@ -68467,7 +68467,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C21 / MIPI_TX_2P",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[21]",
               "GPIO 437"
@@ -68480,7 +68480,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C17 / MIPI_TX_CP",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[17]",
               "GPIO 433"
@@ -68511,7 +68511,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C14 / MIPI_TX_1N",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[14]",
               "GPIO 430"
@@ -68524,7 +68524,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C12 / MIPI_TX_0N",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[12]",
               "GPIO 428"
@@ -68537,7 +68537,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C15 / MIPI_TX_1P",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[15]",
               "GPIO 431"
@@ -68550,7 +68550,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "C13 / MIPI_TX_0P",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "XGPIOC[13]",
               "GPIO 429"
@@ -68582,7 +68582,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DN0",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 3,
@@ -68591,7 +68591,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DP0",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 4,
@@ -68609,7 +68609,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DN1",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 6,
@@ -68618,7 +68618,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DP1",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 7,
@@ -68636,7 +68636,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_CKN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 9,
@@ -68645,7 +68645,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_CKP",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 10,
@@ -68675,7 +68675,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "SENSOR_CLK0",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "1.8 V camera clock."
             ]
@@ -68775,7 +68775,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "SENSOR_CLK1",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "3.3 V camera clock."
             ]
@@ -68808,7 +68808,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DP5 / CAM1_CP",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 8,
@@ -68817,7 +68817,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DN5 / CAM1_CN",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 9,
@@ -68835,7 +68835,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DP4 / CAM1_DP1",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 11,
@@ -68844,7 +68844,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DN4 / CAM1_DN1",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 12,
@@ -68862,7 +68862,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DP3 / CAM1_DP0",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 14,
@@ -68871,7 +68871,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "MIPI0_DN3 / CAM1_DN0",
-            "category": "gpio"
+            "category": "special"
           },
           {
             "physical": 15,
@@ -68899,7 +68899,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "VB-",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "PoE power-domain pair; not logic I/O."
             ]
@@ -68911,7 +68911,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "VB+",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "PoE power-domain pair; not logic I/O."
             ]
@@ -68923,7 +68923,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "VA-",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "PoE power-domain pair; not logic I/O."
             ]
@@ -68935,7 +68935,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "VA+",
-            "category": "gpio",
+            "category": "special",
             "notes": [
               "PoE power-domain pair; not logic I/O."
             ]
@@ -69173,7 +69173,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO8",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PAD_COMP0",
               "SDIO_DATA0"
@@ -69186,7 +69186,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO9",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "PAD_COMP1",
               "SDIO_CLK"
@@ -69433,7 +69433,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO14",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D+",
               "SDIO_DATA2"
@@ -69449,7 +69449,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO13",
-            "category": "gpio",
+            "category": "special",
             "functions": [
               "USB_D-",
               "SDIO_DATA3"

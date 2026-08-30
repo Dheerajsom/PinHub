@@ -5,9 +5,18 @@ const readOnlyAllow = "GET, HEAD, OPTIONS";
 const noStoreHeaders = { "Cache-Control": "no-store" };
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  if (new URL(request.url).search) {
+    // The record is identified entirely by the path. Caching arbitrary query
+    // variants would let one board populate an unbounded number of CDN keys.
+    return Response.json(
+      { error: "Query parameters are not supported" },
+      { status: 400, headers: noStoreHeaders },
+    );
+  }
+
   const { id } = await params;
   const board = boardsById.get(id);
 

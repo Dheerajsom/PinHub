@@ -41,6 +41,20 @@ describe("deployment security headers", () => {
     expect(web).not.toContain("npm audit --omit=dev");
   });
 
+  it("runs web CI when files covered by its repository assertions change", () => {
+    const web = repositoryFile(".github/workflows/web-ci.yml");
+    const triggerBlocks = [
+      web.match(/  push:\r?\n[\s\S]*?(?=  pull_request:)/)?.[0],
+      web.match(/  pull_request:\r?\n[\s\S]*?(?=\r?\npermissions:)/)?.[0],
+    ];
+
+    expect(triggerBlocks.every(Boolean)).toBe(true);
+    for (const block of triggerBlocks) {
+      expect(block).toContain('".claude/launch.json"');
+      expect(block).toContain('".github/workflows/cli-ci.yml"');
+    }
+  });
+
   it("keeps repository launchers inside the PinHub workspace", () => {
     const launch = JSON.parse(repositoryFile(".claude/launch.json")) as {
       configurations: Array<{ name: string; runtimeArgs: string[] }>;

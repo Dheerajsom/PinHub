@@ -146,7 +146,112 @@ describe("createBoardDetailLoader", () => {
       },
     ],
     ["missing wiring warnings", { warnings: [] }],
+    ["blank wiring warning", { warnings: ["   "] }],
+    [
+      "normalized duplicate tags",
+      { tags: ["wireless", " wireless "] },
+    ],
+    ["blank highlight", { highlights: [" "] }],
     ["missing source links", { sourceLinks: [] }],
+    [
+      "duplicate source URLs",
+      {
+        sourceLinks: [
+          {
+            label: "Vendor documentation",
+            url: "https://example.com/docs",
+            type: "Docs",
+          },
+          {
+            label: "Vendor pinout",
+            url: "https://example.com/docs",
+            type: "Pinout",
+          },
+        ],
+      },
+    ],
+    [
+      "blank pinout note",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: [""],
+          groups: [
+            {
+              label: "Pins",
+              pins: [{ position: 1, label: "D1", role: "gpio" }],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "normalized duplicate group labels",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [{ position: 1, label: "D1", role: "gpio" }],
+            },
+            {
+              label: " Pins ",
+              pins: [{ position: 2, label: "D2", role: "gpio" }],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "blank pin alias",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [
+                {
+                  position: 1,
+                  label: "D1",
+                  role: "gpio",
+                  aliases: [""],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "blank pin note",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [
+                {
+                  position: 1,
+                  label: "D1",
+                  role: "gpio",
+                  note: " ",
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
     [
       "invalid pin role",
       {

@@ -49,16 +49,19 @@ export const arduinoUnoR3: Board = {
       title: "Arduino UNO Rev3 documentation",
       url: "https://docs.arduino.cc/hardware/uno-rev3/",
       official: true,
+      type: "Docs",
     },
     {
       title: "Arduino UNO Rev3 full pinout PDF",
       url: "https://content.arduino.cc/assets/A000066-full-pinout.pdf",
       official: true,
+      type: "Pinout",
     },
     {
       title: "Arduino UNO Rev3 datasheet",
       url: "https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf",
       official: true,
+      type: "Datasheet",
     },
   ],
   headers: [

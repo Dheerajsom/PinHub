@@ -176,8 +176,9 @@ source links, and incomplete connector maps — so run it before pushing rather
 than waiting on CI. `npm run build` additionally fails on unsafe or missing
 source links and on pin maps the board visuals cannot render.
 
-CI runs the same commands, plus `npm audit --audit-level=high`, on every pull
-request.
+Web CI runs the same commands, plus `npm audit --audit-level=high`, on pull
+requests that touch the website, catalog, or their test and configuration
+paths.
 
 If you changed the CLI, see [cli/README.md](cli/README.md) for its own
 validation steps.

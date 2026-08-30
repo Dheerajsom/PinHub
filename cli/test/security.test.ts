@@ -4,6 +4,7 @@ import { renderBoard } from "../src/render/board.js";
 import { unicodeChars } from "../src/render/chars.js";
 import { sanitizeBoardForTerminal } from "../src/render/sanitize.js";
 import { makeChalk } from "../src/render/theme.js";
+import { safeTerminalValue } from "../src/render/text.js";
 
 const maliciousBoard: Board = {
   id: "unsafe\nboard",
@@ -40,6 +41,10 @@ const maliciousBoard: Board = {
 };
 
 describe("terminal output boundaries", () => {
+  it("flattens every line-separating character in untrusted values", () => {
+    expect(safeTerminalValue("a\rb\nc\td\u2028e\u2029f")).toBe("a b c d e f");
+  });
+
   it("deeply sanitizes board data without mutating the caller's object", () => {
     const safe = sanitizeBoardForTerminal(maliciousBoard);
 

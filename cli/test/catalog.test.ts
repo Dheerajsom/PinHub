@@ -97,4 +97,15 @@ describe("catalog invariants", () => {
       "C15",
     );
   });
+
+  it("preserves special pin roles instead of presenting them as GPIO", () => {
+    const board = boards.find((candidate) => candidate.id === "adafruit-feather-m4-express");
+    const aref = board?.headers
+      .flatMap((header) => header.pins)
+      .find((pin) => pin.label === "AREF");
+
+    expect(aref?.notes?.join(" ")).toContain("analog reference");
+    expect(aref?.category).toBe("special");
+    expect(aref?.category).not.toBe("gpio");
+  });
 });

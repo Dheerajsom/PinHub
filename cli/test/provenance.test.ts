@@ -6,9 +6,8 @@ import {
   verificationSourceFor,
 } from "../../src/lib/source-trust";
 import { boards } from "../src/catalog.js";
-import { generatedBoards } from "../src/boards/generated.js";
 
-describe("generated source provenance", () => {
+describe("catalog source provenance", () => {
   it("keeps every CLI source safe and aligned with website provenance rules", () => {
     const siteVendorById = new Map(
       siteBoards.map((board) => [board.id, board.vendor]),
@@ -21,6 +20,7 @@ describe("generated source provenance", () => {
           true,
         );
         expect(source.title.trim(), `${board.id}: empty source title`).not.toBe("");
+        expect(source.type, `${board.id}: ${source.url} is missing its source type`).toBeDefined();
         expect(source.official, `${board.id}: ${source.url}`).toBe(
           classifySource(siteVendor ?? "", source.url) === "official",
         );
@@ -28,30 +28,30 @@ describe("generated source provenance", () => {
     }
   });
 
-  it("matches the website's vendor-specific source classification", () => {
-    const generatedById = new Map(
-      generatedBoards.map((board) => [board.id, board]),
-    );
+  it("matches every website source by URL, provenance, and type", () => {
+    const cliById = new Map(boards.map((board) => [board.id, board]));
 
     for (const siteBoard of siteBoards) {
-      const generated = generatedById.get(siteBoard.id);
-      if (!generated) continue; // flagship boards are maintained by hand
-
+      const cliBoard = cliById.get(siteBoard.id);
+      expect(cliBoard, `${siteBoard.id}: missing CLI board`).toBeDefined();
+      if (!cliBoard) continue;
       expect(
-        generated.sources.map(({ url, official, type }) => ({
-          url,
-          official,
-          type,
-        })),
-        siteBoard.id,
-      ).toEqual(
-        siteBoard.sourceLinks.map((source) => ({
-          url: source.url,
-          official:
-            classifySource(siteBoard.vendor, source.url) === "official",
-          type: source.type,
-        })),
-      );
+        cliBoard.sources,
+        `${siteBoard.id}: source count differs from the website catalog`,
+      ).toHaveLength(siteBoard.sourceLinks.length);
+      expect(
+        new Set(cliBoard.sources.map((source) => source.url)),
+        `${siteBoard.id}: source URL set differs from the website catalog`,
+      ).toEqual(new Set(siteBoard.sourceLinks.map((source) => source.url)));
+
+      for (const siteSource of siteBoard.sourceLinks) {
+        const cliSource = cliBoard.sources.find((source) => source.url === siteSource.url);
+        expect(cliSource, `${siteBoard.id}: missing ${siteSource.url}`).toBeDefined();
+        expect(cliSource?.official, `${siteBoard.id}: ${siteSource.url}`).toBe(
+          classifySource(siteBoard.vendor, siteSource.url) === "official",
+        );
+        expect(cliSource?.type, `${siteBoard.id}: ${siteSource.url}`).toBe(siteSource.type);
+      }
     }
   });
 

@@ -25,6 +25,8 @@ export function pinStyle(c: ChalkInstance, pin: Pin): (text: string) => string {
       return c.blue;
     case "communication":
       return c.cyan;
+    case "special":
+      return c.white;
     case "reserved":
       return c.magenta;
     case "nc":

@@ -41,7 +41,7 @@ const ROLE_TO_CATEGORY: Record<PinRole, PinCategory> = {
   pwm: "gpio",
   debug: "communication",
   system: "reserved",
-  special: "gpio",
+  special: "special",
   reserved: "reserved",
 };
 

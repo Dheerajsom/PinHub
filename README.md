@@ -102,7 +102,8 @@ curl https://pinhub-mauve.vercel.app/api/boards/raspberry-pi-5
 The response is the board object described under [Data Model](#data-model).
 Unknown ids return `{"error":"Board not found"}` with a `404`. Records are
 read from the same static catalog as the website. Known records use a shared-CDN
-cache policy; unknown ids and rejected mutating methods are never cached.
+cache policy. Query parameters are unsupported and return an uncached `400`;
+unknown ids and rejected mutating methods are never cached.
 `POST`, `PUT`, `PATCH`, and `DELETE` return `405`, so the endpoint remains
 explicitly read-only and needs no API key.
 
@@ -130,7 +131,8 @@ npm version updates and weekly GitHub Actions version updates.
   pin labels are unchanged; only the exported cell representation is guarded.
 - The CLI strips terminal escape, control, bidirectional-formatting, and forged
   line-break content at its rendering boundary, including for callers of the
-  exported `renderBoard` API.
+  exported `renderBoard` API, and rejects malformed or oversized numeric header
+  layouts before rendering them.
 
 ## Deployment
 

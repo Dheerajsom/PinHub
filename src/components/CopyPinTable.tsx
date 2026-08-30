@@ -12,7 +12,7 @@ function markdownCell(value: string): string {
   return value
     .replace(/\\/g, "\\\\")
     .replace(/\|/g, "\\|")
-    .replace(/\r?\n/g, "<br>");
+    .replace(/\r\n?|\n/g, "<br>");
 }
 
 function pinRow(pin: Pin): string {
@@ -28,7 +28,7 @@ function pinRow(pin: Pin): string {
 
 export function pinoutToMarkdown(pinout: Pinout): string {
   const header = [
-    `### ${pinout.connector}`,
+    `### ${markdownCell(pinout.connector)}`,
     "",
     "| Pin | Signal | Role | Aliases | Note |",
     "| --- | --- | --- | --- | --- |",
@@ -48,7 +48,7 @@ export function pinoutToMarkdown(pinout: Pinout): string {
   }
 
   const notes = pinout.notes.length
-    ? ["", ...pinout.notes.map((note) => `> ${note}`)]
+    ? ["", ...pinout.notes.map((note) => `> ${markdownCell(note)}`)]
     : [];
 
   return [...header, ...rows, ...notes].join("\n");
@@ -96,6 +96,17 @@ export function pinoutToCsv(pinout: Pinout): string {
         pin.note ?? "",
       ]);
     }
+  }
+  for (const note of pinout.notes) {
+    rows.push([
+      pinout.connector,
+      "",
+      "",
+      "",
+      "",
+      "",
+      `Connector note: ${note}`,
+    ]);
   }
   return `\uFEFF${rows.map((row) => row.map(csvCell).join(",")).join("\r\n")}`;
 }

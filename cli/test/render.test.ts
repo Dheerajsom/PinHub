@@ -124,6 +124,11 @@ describe("rendering", () => {
     expect(result.stdout).toContain("30-pin layout (third-party)");
   });
 
+  it("headlines the official UNO connector pinout instead of generic documentation", async () => {
+    const result = await runCli(["uno", "--no-color"], WIDE);
+    expect(result.stdout).toContain("Source: Arduino UNO Rev3 full pinout PDF (official)");
+  });
+
   it("lists all boards with `ph list`", async () => {
     const result = await runCli(["list"], WIDE);
     expect(result.code).toBe(0);

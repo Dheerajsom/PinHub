@@ -9,8 +9,8 @@ import {
 } from "@/app/api/boards/[id]/route";
 import { boards } from "@/lib/boards";
 
-function requestBoard(id: string) {
-  return GET(new Request(`https://pinhub.test/api/boards/${id}`), {
+function requestBoard(id: string, search = "") {
+  return GET(new Request(`https://pinhub.test/api/boards/${id}${search}`), {
     params: Promise.resolve({ id }),
   });
 }
@@ -25,6 +25,16 @@ describe("GET /api/boards/[id]", () => {
     expect(response.headers.get("Cache-Control")).toBe(
       "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
     );
+  });
+
+  it("rejects query variants without populating shared-cache keys", async () => {
+    const response = await requestBoard(boards[0].id, "?nonce=one");
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    await expect(response.json()).resolves.toEqual({
+      error: "Query parameters are not supported",
+    });
   });
 
   it("returns 404 for an unknown board", async () => {

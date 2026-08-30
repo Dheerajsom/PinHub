@@ -47,12 +47,21 @@ type DiagramFlags = {
 };
 
 const MAX_DISPLAY_QUERY_LENGTH = 256;
+const MAX_COMMANDER_ERROR_LENGTH = 512;
 
 function displayQuery(query: string): string {
   const safe = safeTerminalValue(query);
   return safe.length > MAX_DISPLAY_QUERY_LENGTH
     ? `${safe.slice(0, MAX_DISPLAY_QUERY_LENGTH - 1)}…`
     : safe;
+}
+
+function commanderErrorText(text: string): string {
+  const safe = safeTerminalValue(text).trimEnd();
+  const bounded = safe.length > MAX_COMMANDER_ERROR_LENGTH
+    ? `${safe.slice(0, MAX_COMMANDER_ERROR_LENGTH - 1)}…`
+    : safe;
+  return `${bounded}\n`;
 }
 
 export function parseWidth(value: string): number {
@@ -93,7 +102,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
     stdout += `${text}\n`;
   };
   const printErr = (text: string) => {
-    stderr += `${safeTerminalText(text)}\n`;
+    stderr += `${safeTerminalValue(text)}\n`;
   };
 
   const env = runOpts.env ?? process.env;
@@ -198,6 +207,9 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       },
       writeErr: (text) => {
         stderr += safeTerminalText(text);
+      },
+      outputError: (text, write) => {
+        write(commanderErrorText(text));
       },
     })
     .argument("[board...]", "board id or alias (e.g. rpi5, pico, uno, esp32)")
@@ -310,11 +322,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       // without a stack trace either way.
       code = error.exitCode;
     } else {
-      printErr(
-        safeTerminalText(
-          error instanceof Error ? error.message : String(error),
-        ),
-      );
+      printErr(error instanceof Error ? error.message : String(error));
       code = 1;
     }
   }
