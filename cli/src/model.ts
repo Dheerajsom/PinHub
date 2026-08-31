@@ -11,6 +11,7 @@ export type PinCategory =
   | "analog"
   | "digital"
   | "communication"
+  | "special"
   | "reserved"
   | "nc";
 

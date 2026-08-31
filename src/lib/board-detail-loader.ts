@@ -1,4 +1,5 @@
 import type { Board } from "@/lib/boards";
+import { isSafeExternalUrl } from "@/lib/source-trust";
 
 const boardCategories = new Set([
   "SBC",
@@ -63,59 +64,99 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === "string");
-}
+function isCleanStringArray(
+  value: unknown,
+  { allowEmpty = true }: { allowEmpty?: boolean } = {},
+): value is string[] {
+  if (!Array.isArray(value) || (!allowEmpty && value.length === 0)) return false;
 
-function isHttpsUrl(value: string): boolean {
-  try {
-    return new URL(value).protocol === "https:";
-  } catch {
-    return false;
+  const seen = new Set<string>();
+  for (const item of value) {
+    if (typeof item !== "string") return false;
+    const normalized = item.trim();
+    if (!normalized || seen.has(normalized)) return false;
+    seen.add(normalized);
   }
+  return true;
 }
 
-function isPin(value: unknown): boolean {
+type PayloadPin = {
+  position: number;
+  label: string;
+  role: string;
+  aliases?: string[];
+  note?: string;
+};
+
+function isPin(value: unknown): value is PayloadPin {
   if (!isRecord(value)) return false;
   return (
     typeof value.position === "number" &&
-    Number.isInteger(value.position) &&
+    Number.isSafeInteger(value.position) &&
     value.position > 0 &&
     typeof value.label === "string" &&
+    value.label.trim().length > 0 &&
     typeof value.role === "string" &&
     pinRoles.has(value.role) &&
-    (value.aliases === undefined || isStringArray(value.aliases)) &&
-    (value.note === undefined || typeof value.note === "string")
+    (value.aliases === undefined || isCleanStringArray(value.aliases)) &&
+    (value.note === undefined ||
+      (typeof value.note === "string" && value.note.trim().length > 0))
   );
 }
 
-function isPinArray(value: unknown): boolean {
-  return Array.isArray(value) && value.every(isPin);
+function isPinArray(value: unknown): value is PayloadPin[] {
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every(isPin) &&
+    new Set(value.map((pin) => pin.position)).size === value.length
+  );
+}
+
+function isPinGroup(
+  value: unknown,
+): value is { label: string; pins: PayloadPin[] } {
+  return (
+    isRecord(value) &&
+    typeof value.label === "string" &&
+    value.label.trim().length > 0 &&
+    isPinArray(value.pins)
+  );
 }
 
 function isPinout(value: unknown): boolean {
   if (!isRecord(value)) return false;
-  if (typeof value.connector !== "string" || !isStringArray(value.notes)) {
+  if (
+    typeof value.connector !== "string" ||
+    value.connector.trim().length === 0 ||
+    !isCleanStringArray(value.notes, { allowEmpty: false })
+  ) {
     return false;
   }
 
   if (value.layout === "dual-row") {
-    return (
-      isRecord(value.pins) &&
-      isPinArray(value.pins.left) &&
-      isPinArray(value.pins.right)
-    );
+    if (
+      !isRecord(value.pins) ||
+      !isPinArray(value.pins.left) ||
+      !isPinArray(value.pins.right)
+    ) {
+      return false;
+    }
+    const pins = [...value.pins.left, ...value.pins.right];
+    return new Set(pins.map((pin) => pin.position)).size === pins.length;
   }
 
   if (value.layout === "grouped") {
+    const { groups } = value;
+    if (
+      !Array.isArray(groups) ||
+      groups.length === 0 ||
+      !groups.every(isPinGroup)
+    ) {
+      return false;
+    }
     return (
-      Array.isArray(value.groups) &&
-      value.groups.every(
-        (group) =>
-          isRecord(group) &&
-          typeof group.label === "string" &&
-          isPinArray(group.pins),
-      )
+      new Set(groups.map((group) => group.label.trim())).size === groups.length
     );
   }
 
@@ -137,7 +178,11 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
     "formFactor",
     "description",
   ] as const;
-  if (!requiredStrings.every((key) => typeof value[key] === "string")) {
+  if (
+    !requiredStrings.every(
+      (key) => typeof value[key] === "string" && value[key].trim().length > 0,
+    )
+  ) {
     return false;
   }
 
@@ -146,28 +191,37 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
     return false;
   }
   if (
-    !isStringArray(interfaces) ||
+    !isCleanStringArray(interfaces) ||
     !interfaces.every((item) => boardInterfaces.has(item))
   ) {
     return false;
   }
 
-  const requiredStringArrays = ["tags", "highlights", "warnings"] as const;
-  if (!requiredStringArrays.every((key) => isStringArray(value[key]))) {
+  const { tags, highlights, warnings } = value;
+  if (
+    !isCleanStringArray(tags) ||
+    !isCleanStringArray(highlights) ||
+    !isCleanStringArray(warnings, { allowEmpty: false })
+  ) {
     return false;
   }
 
+  if (!Array.isArray(value.sourceLinks) || value.sourceLinks.length === 0) {
+    return false;
+  }
   if (
-    !Array.isArray(value.sourceLinks) ||
     !value.sourceLinks.every(
       (source) =>
         isRecord(source) &&
         typeof source.label === "string" &&
+        source.label.trim().length > 0 &&
         typeof source.url === "string" &&
         typeof source.type === "string" &&
         sourceTypes.has(source.type) &&
-        isHttpsUrl(source.url),
-    )
+        isSafeExternalUrl(source.url),
+    ) ||
+    new Set(value.sourceLinks.map((source) => source.url)).size !==
+      value.sourceLinks.length
   ) {
     return false;
   }

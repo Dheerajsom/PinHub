@@ -1,23 +1,33 @@
 import { boards } from "@/lib/boards";
 
-export const dynamic = "force-static";
-
-// Known boards are generated at build time. Unknown IDs still reach GET so
-// API consumers receive the documented JSON 404 instead of Next's HTML 404.
-
-export function generateStaticParams() {
-  return boards.map((board) => ({ id: board.id }));
-}
+const boardsById = new Map(boards.map((board) => [board.id, board]));
+const readOnlyAllow = "GET, HEAD, OPTIONS";
+const noStoreHeaders = { "Cache-Control": "no-store" };
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  if (new URL(request.url).search) {
+    // The record is identified entirely by the path. Caching arbitrary query
+    // variants would let one board populate an unbounded number of CDN keys.
+    return Response.json(
+      { error: "Query parameters are not supported" },
+      { status: 400, headers: noStoreHeaders },
+    );
+  }
+
   const { id } = await params;
-  const board = boards.find((candidate) => candidate.id === id);
+  const board = boardsById.get(id);
 
   if (!board) {
-    return Response.json({ error: "Board not found" }, { status: 404 });
+    // Unknown ids are intentionally not cached. Long-lived negative cache
+    // entries could hide a board added by a later deployment, and arbitrary
+    // ids must not create an unbounded CDN cache.
+    return Response.json(
+      { error: "Board not found" },
+      { status: 404, headers: noStoreHeaders },
+    );
   }
 
   return Response.json(board, {
@@ -27,5 +37,38 @@ export async function GET(
       "Cache-Control":
         "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
     },
+  });
+}
+
+function methodNotAllowed() {
+  return Response.json(
+    { error: "Method not allowed" },
+    {
+      status: 405,
+      headers: { ...noStoreHeaders, Allow: readOnlyAllow },
+    },
+  );
+}
+
+export function POST() {
+  return methodNotAllowed();
+}
+
+export function PUT() {
+  return methodNotAllowed();
+}
+
+export function PATCH() {
+  return methodNotAllowed();
+}
+
+export function DELETE() {
+  return methodNotAllowed();
+}
+
+export function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: { ...noStoreHeaders, Allow: readOnlyAllow },
   });
 }

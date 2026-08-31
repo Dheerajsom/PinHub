@@ -117,18 +117,24 @@ export function wrapText(
   return output;
 }
 
-/**
- * Remove terminal control sequences before echoing untrusted text. Preserve
- * layout whitespace so the same guard can safely wrap parser diagnostics.
- */
+/** Remove terminal controls while preserving trusted layout whitespace. */
 export function safeTerminalText(text: string): string {
   return Array.from(stripVTControlCharacters(text), (character) => {
     if (character === "\n" || character === "\r" || character === "\t") {
       return character;
     }
     const code = character.codePointAt(0) ?? 0;
-    return code <= 0x1f || code === 0x7f ? " " : character;
+    return code <= 0x1f ||
+      (code >= 0x7f && code <= 0x9f) ||
+      /\p{Cf}/u.test(character)
+      ? " "
+      : character;
   }).join("");
+}
+
+/** Sanitize one catalog/argument value without allowing forged output lines. */
+export function safeTerminalValue(text: string): string {
+  return safeTerminalText(text).replace(/[\r\n\t\u2028\u2029]+/g, " ");
 }
 
 /**

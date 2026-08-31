@@ -1,6 +1,8 @@
 import type { Board } from "./model.js";
 import { boards } from "./boards/index.js";
 
+export const MAX_SUGGESTION_QUERY_LENGTH = 256;
+
 /**
  * Normalizes a user query or alias: case-insensitive, and spaces, underscores
  * and repeated hyphens all collapse to single hyphens, so "Raspberry Pi 5",
@@ -54,7 +56,10 @@ export type Suggestion = {
 export function suggestBoards(query: string, max = 3): Suggestion[] {
   const q = normalizeQuery(query);
   const limit = Number.isFinite(max) ? Math.max(0, Math.floor(max)) : 0;
-  if (!q || limit === 0) return [];
+  // Levenshtein work grows with query length × aliases × boards. Command-line
+  // arguments can be far larger than a human lookup, so skip fuzzy scoring
+  // beyond a practical search length instead of allowing algorithmic DoS.
+  if (!q || q.length > MAX_SUGGESTION_QUERY_LENGTH || limit === 0) return [];
   const scored = boards.map((board) => {
     let best: Suggestion = { board, alias: board.id, distance: Number.POSITIVE_INFINITY };
     for (const name of candidateNames(board)) {

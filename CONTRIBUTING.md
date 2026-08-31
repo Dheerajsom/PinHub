@@ -98,7 +98,8 @@ The build enforces all of the following:
 
 - At least one source link.
 - At least one link on an **official vendor domain**.
-- Absolute `https://` URLs only, with no embedded credentials.
+- Absolute public `https://` URLs only, with no embedded credentials, IP/local
+  hostnames, or non-default ports.
 - No duplicate URLs within the same board.
 
 **Adding a vendor PinHub has not seen before?** Its domain also has to be
@@ -169,14 +170,15 @@ npm test
 npm run build
 ```
 
-`npm test` includes catalog integrity checks that will catch duplicate ids,
-empty required fields, malformed source links, and incomplete connector maps —
-so run it before pushing rather than waiting on CI. `npm run build` additionally
-fails on unsafe or missing source links and on pin maps the board visuals cannot
-render.
+`npm test` includes catalog integrity checks that will catch duplicate or
+non-route-safe ids, missing wiring warnings, empty required fields, malformed
+source links, and incomplete connector maps — so run it before pushing rather
+than waiting on CI. `npm run build` additionally fails on unsafe or missing
+source links and on pin maps the board visuals cannot render.
 
-CI runs the same commands, plus `npm audit --audit-level=high`, on every pull
-request.
+Web CI runs the same commands, plus `npm audit --audit-level=high`, on pull
+requests that touch the website, catalog, or their test and configuration
+paths.
 
 If you changed the CLI, see [cli/README.md](cli/README.md) for its own
 validation steps.

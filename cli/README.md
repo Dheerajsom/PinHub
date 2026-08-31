@@ -209,6 +209,12 @@ Run `ph list` for the current set.
   version, JSON, completion, `--no-color`, or `--no-motion`. Set
   `PINHUB_NO_MOTION=1` to disable it persistently.
 - Tab completion works from the keyboard alone and needs no color or Unicode.
+- Board text and echoed arguments are stripped of terminal escape, control,
+  bidirectional-formatting, and forged line-break content before rendering.
+  The exported renderer also rejects non-finite or oversized header layouts
+  and out-of-range pin positions before producing terminal output.
+  Oversized fuzzy queries skip edit-distance scoring instead of consuming
+  unbounded CPU.
 
 ## Troubleshooting
 

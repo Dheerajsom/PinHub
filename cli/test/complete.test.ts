@@ -87,6 +87,19 @@ describe("completion candidates", () => {
     expect(await complete("", "rpi5", "--width")).toEqual([]);
   });
 
+  it("does not treat --width values as positional words", async () => {
+    for (const widthWords of [["--width", "80"], ["--width=80"]]) {
+      expect(await complete("l", ...widthWords)).toContain("list");
+
+      const listFlags = await complete("--", ...widthWords, "list");
+      expect(listFlags).not.toContain("--source");
+      expect(listFlags).not.toContain("--details");
+      expect(listFlags).not.toContain("--width");
+
+      expect(await complete("b", ...widthWords, "completion")).toEqual(["bash"]);
+    }
+  });
+
   it("completes shell names for the completion command, then stops", async () => {
     expect(await complete("", "completion")).toEqual([...COMPLETION_SHELLS].sort());
     expect(await complete("b", "completion")).toEqual(["bash"]);

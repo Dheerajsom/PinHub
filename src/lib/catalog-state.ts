@@ -78,6 +78,94 @@ const arrayKeys: CatalogFilterKey[] = [
   "connector",
 ];
 
+// URL state is attacker-controlled when a catalog link is shared. Bound both
+// the raw query and its repeated facets before React stores or scores them.
+export const maxCatalogQueryLength = 256;
+export const maxCatalogFilterValues = 256;
+export const maxCatalogFilterValueLength = 128;
+export const maxCatalogSearchLength = 16_384;
+const maxCatalogParameters = arrayKeys.length * maxCatalogFilterValues + 16;
+const maxScannedCatalogParameters = maxCatalogParameters * 4;
+const acceptedCatalogParamNames = new Set([
+  ...arrayKeys,
+  "q",
+  "sort",
+  "page",
+  "pinout",
+  "favorites",
+  "manufacturer",
+  "processorFamily",
+  "processor-family",
+  "wirelessCapability",
+  "wireless-capability",
+  "official",
+  "officialDocumentation",
+  "official-documentation",
+  "docs",
+]);
+
+export function boundCatalogQuery(value: string): string {
+  return value.slice(0, maxCatalogQueryLength);
+}
+
+function appendWithinSearchBudget(
+  params: URLSearchParams,
+  key: string,
+  value: string,
+  currentLength: number,
+): number | null {
+  const entry = new URLSearchParams([[key, value]]).toString();
+  const nextLength = currentLength + (currentLength ? 1 : 0) + entry.length;
+  if (nextLength > maxCatalogSearchLength) return null;
+  params.append(key, value);
+  return nextLength;
+}
+
+function boundedCatalogParams(
+  search: string | URLSearchParams,
+): URLSearchParams {
+  const source =
+    typeof search === "string"
+      ? new URLSearchParams(
+          (search.startsWith("?") ? search.slice(1) : search).slice(
+            0,
+            maxCatalogSearchLength,
+          ),
+        )
+      : search;
+  const bounded = new URLSearchParams();
+  let scanned = 0;
+  let accepted = 0;
+  let serializedLength = 0;
+  for (const [key, value] of source) {
+    scanned += 1;
+    if (scanned > maxScannedCatalogParameters) break;
+    if (!acceptedCatalogParamNames.has(key)) continue;
+    if (accepted >= maxCatalogParameters) break;
+    const nextLength = appendWithinSearchBudget(
+      bounded,
+      key,
+      boundCatalogQuery(value),
+      serializedLength,
+    );
+    if (nextLength === null) continue;
+    serializedLength = nextLength;
+    accepted += 1;
+  }
+  return bounded;
+}
+
+function boundedFilterValues(values: readonly string[]): string[] {
+  const unique = new Set<string>();
+  for (const value of values) {
+    const bounded = value.slice(0, maxCatalogFilterValueLength);
+    if (!bounded || unique.has(bounded)) continue;
+    unique.add(bounded);
+    if (unique.size >= maxCatalogFilterValues) break;
+  }
+  return [...unique];
+}
+
 const sortAliases: Record<string, CatalogSort> = {
   catalog: "catalog",
   relevance: "relevance",
@@ -125,18 +213,21 @@ export function parseCatalogState(
   search: string | URLSearchParams,
   defaults: CatalogState = defaultCatalogState,
 ): CatalogState {
-  const params =
-    typeof search === "string" ? new URLSearchParams(search) : search;
+  const params = boundedCatalogParams(search);
   const sort = params.get("sort");
   const parsedPage = Number.parseInt(params.get("page") ?? "1", 10);
-  const wirelessValues = params.getAll("wireless");
+  const rawWirelessValues = params.getAll("wireless");
+  const wirelessValues = boundedFilterValues(
+    rawWirelessValues.filter((value) => value !== "has" && value !== "none"),
+  );
+  const query = boundCatalogQuery(params.get("q") ?? "");
   const explicitWirelessCapability =
     params.get("wirelessCapability") ?? params.get("wireless-capability");
   const wirelessCapability = explicitWirelessCapability
     ? parseWirelessCapability(explicitWirelessCapability)
-    : wirelessValues.includes("has")
+    : rawWirelessValues.includes("has")
       ? "has"
-      : wirelessValues.includes("none")
+      : rawWirelessValues.includes("none")
         ? "none"
         : defaults.wirelessCapability;
   const officialDocumentationParam =
@@ -149,7 +240,7 @@ export function parseCatalogState(
     : defaults.officialDocumentation;
   const state: CatalogState = {
     ...defaults,
-    query: params.get("q") ?? "",
+    query,
     pinoutOnly: params.get("pinout") === "yes",
     favoritesOnly: params.get("favorites") === "yes",
     wirelessCapability,
@@ -157,7 +248,7 @@ export function parseCatalogState(
     sort:
       sort && sortAliases[sort]
         ? sortAliases[sort]
-        : params.get("q")?.trim()
+        : query.trim()
           ? "relevance"
           : defaults.sort,
     page:
@@ -176,11 +267,9 @@ export function parseCatalogState(
               ...params.getAll("processor-family"),
             ]
           : key === "wireless"
-            ? wirelessValues.filter(
-                (value) => value !== "has" && value !== "none",
-              )
+            ? wirelessValues
             : params.getAll(key);
-    state[key] = [...new Set(values)];
+    state[key] = boundedFilterValues(values);
   }
   return state;
 }
@@ -191,26 +280,49 @@ export function catalogUrl(
   defaultSort: CatalogSort = defaultCatalogState.sort,
 ): string {
   const params = new URLSearchParams();
-  if (state.query.trim()) params.set("q", state.query.trim());
-  for (const key of arrayKeys) {
-    for (const value of state[key] ?? []) params.append(key, value);
-  }
+  let serializedLength = 0;
+  const append = (key: string, value: string) => {
+    const nextLength = appendWithinSearchBudget(
+      params,
+      key,
+      value,
+      serializedLength,
+    );
+    if (nextLength === null) return false;
+    serializedLength = nextLength;
+    return true;
+  };
+
+  // Reserve the bounded URL budget for the singleton controls first. Facets
+  // can be trimmed without changing the search mode, pagination, or boolean
+  // controls represented by an otherwise maximal share URL.
+  const query = boundCatalogQuery(state.query.trim());
+  if (query) append("q", query);
   if (state.wirelessCapability && state.wirelessCapability !== "any") {
     // Keep the short `wireless=has|none` spelling compatible with the original
     // interface-specific `wireless=` facet while still allowing both in one URL.
-    params.append("wireless", state.wirelessCapability);
+    append("wireless", state.wirelessCapability);
   }
-  if (state.pinoutOnly) params.set("pinout", "yes");
-  if (state.favoritesOnly) params.set("favorites", "yes");
+  if (state.pinoutOnly) append("pinout", "yes");
+  if (state.favoritesOnly) append("favorites", "yes");
   if (
     state.officialDocumentation &&
     state.officialDocumentation !== "any"
   ) {
-    params.set("official", state.officialDocumentation);
+    append("official", state.officialDocumentation);
   }
-  const naturalSort = state.query.trim() ? "relevance" : defaultSort;
-  if (state.sort !== naturalSort) params.set("sort", state.sort);
-  if (state.page > 1) params.set("page", String(state.page));
+  const naturalSort = query ? "relevance" : defaultSort;
+  if (state.sort !== naturalSort) append("sort", state.sort);
+  const page = Number.isSafeInteger(state.page)
+    ? Math.min(Math.max(state.page, 1), 100)
+    : 1;
+  if (page > 1) append("page", String(page));
+
+  for (const key of arrayKeys) {
+    for (const value of boundedFilterValues(state[key] ?? [])) {
+      append(key, value);
+    }
+  }
   return params.size ? `${pathname}?${params.toString()}` : pathname;
 }
 

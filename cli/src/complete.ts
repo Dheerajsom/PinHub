@@ -71,7 +71,25 @@ export function completionCandidates(words: string[], prefix: string): string[] 
   // `--width` takes a column count no catalog can enumerate.
   if (words[words.length - 1] === "--width") return [];
 
-  const positional = words.filter((word) => !word.startsWith("-"));
+  const positional: string[] = [];
+  const usedFlags = new Set<string>();
+  for (let index = 0; index < words.length; index += 1) {
+    const word = words[index];
+    if (word === "--width") {
+      usedFlags.add(word);
+      index += 1;
+      continue;
+    }
+    if (word.startsWith("--width=")) {
+      usedFlags.add("--width");
+      continue;
+    }
+    if (word.startsWith("-")) {
+      usedFlags.add(word.split("=", 1)[0]);
+      continue;
+    }
+    positional.push(word);
+  }
   const first = positional[0];
   const subcommand = first !== undefined && SUBCOMMANDS.includes(first) ? first : undefined;
 
@@ -79,9 +97,9 @@ export function completionCandidates(words: string[], prefix: string): string[] 
     if (subcommand === "completion" || subcommand === "help") return [];
     const flags = [...PRESENTATION_FLAGS, "--json", "--help"];
     if (subcommand !== "list" && subcommand !== "search") flags.push(...SINGLE_BOARD_FLAGS);
-    if (words.length === 0) flags.push("--version");
+    if (positional.length === 0) flags.push("--version");
     return startingWith(
-      flags.filter((flag) => !words.includes(flag)),
+      flags.filter((flag) => !usedFlags.has(flag)),
       prefix,
     );
   }

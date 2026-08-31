@@ -5,11 +5,13 @@ import {
   normalizeWidth,
   padEndVisible,
   padStartVisible,
+  safeTerminalValue,
   toAscii,
   visibleWidth,
   wrapText,
 } from "./text.js";
 import { warningStyle } from "./theme.js";
+import { sanitizeBoardForTerminal } from "./sanitize.js";
 
 type BoardRow = {
   id: string;
@@ -55,10 +57,12 @@ export function renderBoardTable(boardList: Board[], opts: RenderOptions): strin
   const { chalk: c } = opts;
   const width = normalizeWidth(opts.width);
   const rows: BoardRow[] = boardList.map((board) => ({
-    id: board.id,
-    name: board.name,
-    manufacturer: board.manufacturer,
-    pins: String(board.headers.reduce((sum, header) => sum + header.pins.length, 0)),
+    id: safeTerminalValue(board.id),
+    name: safeTerminalValue(board.name),
+    manufacturer: safeTerminalValue(board.manufacturer),
+    pins: String(
+      board.headers.reduce((sum, header) => sum + header.pins.length, 0),
+    ),
   }));
   const lines: string[] = [c.bold(`${rows.length} board${rows.length === 1 ? "" : "s"}`)];
 
@@ -102,6 +106,7 @@ export function renderBoardTable(boardList: Board[], opts: RenderOptions): strin
 }
 
 export function renderSources(board: Board, opts: RenderOptions): string {
+  board = sanitizeBoardForTerminal(board);
   const { chalk: c, chars: ch } = opts;
   const width = normalizeWidth(opts.width);
   const lines = wrapText(`${board.name} ${ch.dash ?? "-"} sources`, width).map((line) => c.bold(line));
@@ -118,6 +123,7 @@ export function renderSources(board: Board, opts: RenderOptions): string {
 }
 
 export function renderInfo(board: Board, opts: RenderOptions): string {
+  board = sanitizeBoardForTerminal(board);
   const { chalk: c, chars: ch } = opts;
   const width = normalizeWidth(opts.width);
   const lines: string[] = [];

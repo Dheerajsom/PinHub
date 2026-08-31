@@ -101,8 +101,11 @@ curl https://pinhub-mauve.vercel.app/api/boards/raspberry-pi-5
 
 The response is the board object described under [Data Model](#data-model).
 Unknown ids return `{"error":"Board not found"}` with a `404`. Records are
-generated at build time and served with a CDN cache policy, so the endpoint is
-safe to poll and needs no API key.
+read from the same static catalog as the website. Known records use a shared-CDN
+cache policy. Query parameters are unsupported and return an uncached `400`;
+unknown ids and rejected mutating methods are never cached.
+`POST`, `PUT`, `PATCH`, and `DELETE` return `405`, so the endpoint remains
+explicitly read-only and needs no API key.
 
 ## Validation
 
@@ -113,16 +116,32 @@ npm test
 npm run build
 ```
 
-Both the website and CLI workflows also run `npm audit --audit-level=high`.
-Dependabot checks npm and GitHub Actions dependencies weekly.
+Both the website and CLI workflows also run `npm audit --audit-level=high` over
+production and development dependencies. Dependabot is configured for monthly
+npm version updates and weekly GitHub Actions version updates.
+
+## Security boundaries
+
+- Shared catalog/search URLs cap query length, parameter count, and repeated
+  facet values before they reach React state or filtering work.
+- External catalog references must use credential-free public HTTPS URLs on
+  the default port. Official badges are based on narrowly registered vendor
+  domains or GitHub organizations.
+- CSV downloads prefix spreadsheet formula markers as literal text. The source
+  pin labels are unchanged; only the exported cell representation is guarded.
+- The CLI strips terminal escape, control, bidirectional-formatting, and forged
+  line-break content at its rendering boundary, including for callers of the
+  exported `renderBoard` API, and rejects malformed or oversized numeric header
+  layouts before rendering them.
 
 ## Deployment
 
 The production website is deployed from `main` to
 [pinhub-mauve.vercel.app](https://pinhub-mauve.vercel.app). The application is
-statically generated for every known board, requires no runtime environment
+statically generated for every known board page, requires no runtime environment
 variables, and publishes a robots policy, sitemap, web app manifest, canonical
-URLs, and social metadata. Unknown API records return a JSON 404.
+URLs, and social metadata. The JSON API reads the same in-memory static catalog
+and CDN-caches only known records.
 
 The CLI is published separately as `@dheerajsom/pinhub` on npm. Run the web
 and CLI validation commands before publishing either surface.

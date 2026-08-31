@@ -41,6 +41,10 @@ describe("catalog invariants", () => {
       for (const alias of [board.id, ...board.aliases]) {
         const normalized = normalizeQuery(alias);
         expect(normalized, `alias "${alias}" on ${board.id}`).toBe(alias);
+        expect(
+          alias,
+          `alias "${alias}" on ${board.id} must be a shell-safe kebab-case token`,
+        ).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
         const owner = seen.get(normalized);
         expect(
           owner === undefined || owner === board.id,
@@ -92,5 +96,16 @@ describe("catalog invariants", () => {
     expect(board?.warnings.map((warning) => warning.text).join(" ")).toContain(
       "C15",
     );
+  });
+
+  it("preserves special pin roles instead of presenting them as GPIO", () => {
+    const board = boards.find((candidate) => candidate.id === "adafruit-feather-m4-express");
+    const aref = board?.headers
+      .flatMap((header) => header.pins)
+      .find((pin) => pin.label === "AREF");
+
+    expect(aref?.notes?.join(" ")).toContain("analog reference");
+    expect(aref?.category).toBe("special");
+    expect(aref?.category).not.toBe("gpio");
   });
 });

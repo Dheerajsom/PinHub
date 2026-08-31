@@ -45,22 +45,33 @@ const requiredStringFields = [
 ] as const satisfies readonly (keyof Board)[];
 
 function expectUniqueStrings(values: readonly string[], context: string) {
+  const normalized = values.map((value) => value.trim());
   for (const value of values) {
     expect(value.trim(), `${context} contains an empty value`).not.toBe("");
   }
-  expect(new Set(values).size, `${context} contains duplicates`).toBe(values.length);
+  expect(new Set(normalized).size, `${context} contains duplicates`).toBe(
+    values.length,
+  );
 }
 
 function expectValidPins(pins: readonly Pin[], context: string) {
   const positions = new Set<number>();
   for (const pin of pins) {
-    expect(Number.isInteger(pin.position), `${context}/${pin.label} position`).toBe(true);
+    expect(
+      Number.isSafeInteger(pin.position),
+      `${context}/${pin.label} position`,
+    ).toBe(true);
     expect(pin.position, `${context}/${pin.label} position`).toBeGreaterThan(0);
     expect(positions.has(pin.position), `${context} repeats position ${pin.position}`).toBe(false);
     positions.add(pin.position);
     expect(pin.label.trim(), `${context} has an empty pin label`).not.toBe("");
     expect(pinRoles.has(pin.role), `${context}/${pin.label} has invalid role`).toBe(true);
     if (pin.aliases) expectUniqueStrings(pin.aliases, `${context}/${pin.label} aliases`);
+    if (pin.note !== undefined) {
+      expect(pin.note.trim(), `${context}/${pin.label} has an empty note`).not.toBe(
+        "",
+      );
+    }
   }
 }
 
@@ -74,13 +85,20 @@ describe("board catalog integrity", () => {
 
     for (const board of boards) {
       expect(ids.has(board.id), `duplicate board id ${board.id}`).toBe(false);
+      expect(
+        board.id,
+        `${board.id}.id must be a route-safe kebab-case identifier`,
+      ).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
       ids.add(board.id);
 
       for (const field of requiredStringFields) {
         expect(String(board[field]).trim(), `${board.id}.${field} is empty`).not.toBe("");
       }
       expectUniqueStrings(board.tags, `${board.id}.tags`);
+      expectUniqueStrings(board.highlights, `${board.id}.highlights`);
       expectUniqueStrings(board.interfaces, `${board.id}.interfaces`);
+      expect(board.warnings.length, `${board.id}.warnings`).toBeGreaterThan(0);
+      expectUniqueStrings(board.warnings, `${board.id}.warnings`);
       expect(board.sourceLinks.length, `${board.id}.sourceLinks`).toBeGreaterThan(0);
 
       for (const source of board.sourceLinks) {
@@ -105,8 +123,10 @@ describe("board catalog integrity", () => {
         expect(pinout.pins, `${board.id} dual-row pins`).toBeDefined();
         expect(pinout.pins?.left.length, `${board.id} left row`).toBeGreaterThan(0);
         expect(pinout.pins?.right.length, `${board.id} right row`).toBeGreaterThan(0);
-        expectValidPins(pinout.pins?.left ?? [], `${board.id}/left`);
-        expectValidPins(pinout.pins?.right ?? [], `${board.id}/right`);
+        expectValidPins(
+          [...(pinout.pins?.left ?? []), ...(pinout.pins?.right ?? [])],
+          `${board.id}/dual-row`,
+        );
       } else {
         expect(pinout.groups?.length, `${board.id} grouped pinout`).toBeGreaterThan(0);
         const groupLabels = pinout.groups?.map((group) => group.label) ?? [];

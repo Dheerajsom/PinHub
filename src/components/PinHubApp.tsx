@@ -48,8 +48,10 @@ import { ProjectShelf } from "@/components/ProjectShelf";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 import {
   activeCatalogFilterCount,
+  boundCatalogQuery,
   compareCatalogBoards,
   defaultCatalogState,
+  maxCatalogQueryLength,
   matchesCatalogFilters,
   type CatalogFilterKey,
   type CatalogSort,
@@ -339,16 +341,17 @@ export function PinHubApp({
   }
 
   function changeQuery(nextQuery: string) {
+    const boundedQuery = boundCatalogQuery(nextQuery);
     setCatalogState(
       (current) => ({
         ...current,
-        query: nextQuery,
+        query: boundedQuery,
         page: 1,
         sort:
-          nextQuery.trim() &&
+          boundedQuery.trim() &&
           (current.sort === "name" || current.sort === "catalog")
             ? "relevance"
-          : !nextQuery.trim() && current.sort === "relevance"
+          : !boundedQuery.trim() && current.sort === "relevance"
               ? "catalog"
               : current.sort,
       }),
@@ -492,6 +495,7 @@ export function PinHubApp({
             <input
               ref={searchRef}
               value={query}
+              maxLength={maxCatalogQueryLength}
               onChange={(event) => changeQuery(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === "Escape") {

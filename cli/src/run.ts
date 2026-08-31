@@ -16,6 +16,7 @@ import {
   MIN_TERMINAL_WIDTH,
   normalizeWidth,
   safeTerminalText,
+  safeTerminalValue,
 } from "./render/text.js";
 import { hasNoColor, isCiEnvironment } from "./status.js";
 
@@ -44,6 +45,24 @@ type DiagramFlags = {
   motion?: boolean;
   width?: number;
 };
+
+const MAX_DISPLAY_QUERY_LENGTH = 256;
+const MAX_COMMANDER_ERROR_LENGTH = 512;
+
+function displayQuery(query: string): string {
+  const safe = safeTerminalValue(query);
+  return safe.length > MAX_DISPLAY_QUERY_LENGTH
+    ? `${safe.slice(0, MAX_DISPLAY_QUERY_LENGTH - 1)}…`
+    : safe;
+}
+
+function commanderErrorText(text: string): string {
+  const safe = safeTerminalValue(text).trimEnd();
+  const bounded = safe.length > MAX_COMMANDER_ERROR_LENGTH
+    ? `${safe.slice(0, MAX_COMMANDER_ERROR_LENGTH - 1)}…`
+    : safe;
+  return `${bounded}\n`;
+}
 
 export function parseWidth(value: string): number {
   if (!/^\d+$/.test(value)) {
@@ -83,7 +102,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
     stdout += `${text}\n`;
   };
   const printErr = (text: string) => {
-    stderr += `${text}\n`;
+    stderr += `${safeTerminalValue(text)}\n`;
   };
 
   const env = runOpts.env ?? process.env;
@@ -109,15 +128,17 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
 
   const resolveOrSuggest = (words: string[]): ReturnType<typeof resolveBoard> => {
     const query = words.join(" ");
-    const displayQuery = safeTerminalText(query);
+    const safeQuery = displayQuery(query);
     const board = resolveBoard(query);
     if (board) return board;
-    printErr(`Board "${displayQuery}" was not found.`);
+    printErr(`Board "${safeQuery}" was not found.`);
     const suggestions = suggestBoards(query);
     if (suggestions.length > 0) {
       printErr("");
       printErr("Did you mean:");
-      for (const suggestion of suggestions) printErr(`  ph ${suggestion.alias}`);
+      for (const suggestion of suggestions) {
+        printErr(`  ph ${safeTerminalValue(suggestion.alias)}`);
+      }
     }
     printErr("");
     printErr("Run `ph list` to see all supported boards.");
@@ -187,6 +208,9 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       writeErr: (text) => {
         stderr += safeTerminalText(text);
       },
+      outputError: (text, write) => {
+        write(commanderErrorText(text));
+      },
     })
     .argument("[board...]", "board id or alias (e.g. rpi5, pico, uno, esp32)")
     .option("--compact", "tighter, borderless layout")
@@ -237,7 +261,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       const results = searchBoards(query);
       if (results.length === 0) {
         printErr(
-          `No boards matched "${safeTerminalText(query)}". Run \`ph list\` to see all boards.`,
+          `No boards matched "${displayQuery(query)}". Run \`ph list\` to see all boards.`,
         );
         code = 1;
         return;
@@ -281,7 +305,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       const resolved = resolveCompletionShell(shell);
       if (!resolved) {
         printErr(
-          `Unknown shell "${safeTerminalText(shell)}". Choose one of: ${COMPLETION_SHELLS.join(", ")}.`,
+          `Unknown shell "${displayQuery(shell)}". Choose one of: ${COMPLETION_SHELLS.join(", ")}.`,
         );
         code = 1;
         return;
@@ -298,11 +322,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       // without a stack trace either way.
       code = error.exitCode;
     } else {
-      printErr(
-        safeTerminalText(
-          error instanceof Error ? error.message : String(error),
-        ),
-      );
+      printErr(error instanceof Error ? error.message : String(error));
       code = 1;
     }
   }

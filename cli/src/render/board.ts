@@ -10,6 +10,7 @@ import {
   wrapText,
 } from "./text.js";
 import { pinStyle, warningStyle } from "./theme.js";
+import { sanitizeBoardForTerminal } from "./sanitize.js";
 
 export { wrapText } from "./text.js";
 
@@ -258,6 +259,7 @@ function renderLegend(board: Board, opts: RenderOptions): string[] {
     "digital",
     "analog",
     "communication",
+    "special",
     "reserved",
     "nc",
   ];
@@ -306,18 +308,26 @@ function primarySourceFor(board: Board) {
     Manual: 60,
     Docs: 50,
   } as const;
+  const score = (source: (typeof board.sources)[number]): number => {
+    const searchable = `${source.title} ${source.url}`;
+    const connectorSpecific = /pinout|gpio|connector|header/i.test(searchable);
+    return (
+      (source.official ? 1000 : 0) +
+      (connectorSpecific ? 200 : 0) +
+      (source.type ? typeScore[source.type] : 0)
+    );
+  };
   return board.sources.reduce<(typeof board.sources)[number] | undefined>(
     (best, source) => {
       if (!best) return source;
-      const score = (source.official ? 1000 : 0) + (source.type ? typeScore[source.type] : 0);
-      const bestScore = (best.official ? 1000 : 0) + (best.type ? typeScore[best.type] : 0);
-      return score > bestScore ? source : best;
+      return score(source) > score(best) ? source : best;
     },
     undefined,
   );
 }
 
 export function renderBoard(board: Board, opts: RenderOptions): string {
+  board = sanitizeBoardForTerminal(board);
   const { chalk: c, chars: ch } = opts;
   const width = renderWidth(opts);
   const lines: string[] = [];

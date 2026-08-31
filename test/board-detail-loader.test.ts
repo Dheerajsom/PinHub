@@ -134,6 +134,125 @@ describe("createBoardDetailLoader", () => {
       },
     ],
     [
+      "credential-bearing source URL",
+      {
+        sourceLinks: [
+          {
+            label: "Vendor documentation",
+            url: "https://user:secret@example.com/docs",
+            type: "Docs",
+          },
+        ],
+      },
+    ],
+    ["missing wiring warnings", { warnings: [] }],
+    ["blank wiring warning", { warnings: ["   "] }],
+    [
+      "normalized duplicate tags",
+      { tags: ["wireless", " wireless "] },
+    ],
+    ["blank highlight", { highlights: [" "] }],
+    ["missing source links", { sourceLinks: [] }],
+    [
+      "duplicate source URLs",
+      {
+        sourceLinks: [
+          {
+            label: "Vendor documentation",
+            url: "https://example.com/docs",
+            type: "Docs",
+          },
+          {
+            label: "Vendor pinout",
+            url: "https://example.com/docs",
+            type: "Pinout",
+          },
+        ],
+      },
+    ],
+    [
+      "blank pinout note",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: [""],
+          groups: [
+            {
+              label: "Pins",
+              pins: [{ position: 1, label: "D1", role: "gpio" }],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "normalized duplicate group labels",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [{ position: 1, label: "D1", role: "gpio" }],
+            },
+            {
+              label: " Pins ",
+              pins: [{ position: 2, label: "D2", role: "gpio" }],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "blank pin alias",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [
+                {
+                  position: 1,
+                  label: "D1",
+                  role: "gpio",
+                  aliases: [""],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "blank pin note",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [
+                {
+                  position: 1,
+                  label: "D1",
+                  role: "gpio",
+                  note: " ",
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+    [
       "invalid pin role",
       {
         pinout: {
@@ -160,6 +279,42 @@ describe("createBoardDetailLoader", () => {
             {
               label: "Pins",
               pins: [{ position: 0, label: "D0", role: "gpio" }],
+            },
+          ],
+        },
+      },
+    ],
+    [
+      "duplicate dual-row pin positions",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "dual-row",
+          notes: ["Fixture"],
+          pins: {
+            left: [{ position: 1, label: "D1", role: "gpio" }],
+            right: [{ position: 1, label: "GND", role: "ground" }],
+          },
+        },
+      },
+    ],
+    [
+      "unsafe pin position",
+      {
+        pinout: {
+          connector: "Header",
+          layout: "grouped",
+          notes: ["Fixture"],
+          groups: [
+            {
+              label: "Pins",
+              pins: [
+                {
+                  position: Number.MAX_SAFE_INTEGER + 1,
+                  label: "D0",
+                  role: "gpio",
+                },
+              ],
             },
           ],
         },

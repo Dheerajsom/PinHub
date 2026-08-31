@@ -7,7 +7,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 // all other browser resource types to the application and its known providers.
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "base-uri 'self'",
+  "base-uri 'none'",
   "form-action 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",
@@ -29,6 +29,9 @@ const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+  { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
