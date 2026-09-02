@@ -24,8 +24,11 @@ export function PricesApp({ listings, now }: {
     return () => clearInterval(timer);
   }, []);
 
-  function update(next: PriceFilters, replace = false) {
-    const url = pricesUrl(next);
+  function update(patch: Partial<PriceFilters>, replace = false) {
+    // History changes immediately; the router snapshot may still be rendering.
+    // Read the current URL so quick successive controls preserve each other.
+    const current = parsePriceFilters(new URLSearchParams(location.search));
+    const url = pricesUrl({ ...current, ...patch });
     if (`${location.pathname}${location.search}` !== url) {
       if (replace) history.replaceState(null, "", url);
       else history.pushState(null, "", url);
@@ -57,14 +60,14 @@ export function PricesApp({ listings, now }: {
             <span className="sr-only">Search board prices</span>
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" aria-hidden="true" />
             <input type="search" value={filters.query} maxLength={100}
-              onChange={(event) => update({ ...filters, query: event.target.value }, true)}
+              onChange={(event) => update({ query: event.target.value }, true)}
               placeholder="Search board, variant, or retailer…"
               className="price-search surface-well min-h-11 w-full rounded-lg pl-10 pr-12 text-base text-white sm:text-sm" />
-            {filters.query ? <button type="button" aria-label="Clear price search" onClick={() => update({ ...filters, query: "" }, true)} className="absolute right-0 top-0 grid size-11 place-items-center text-zinc-400 hover:text-white"><X className="size-4" aria-hidden="true" /></button> : null}
+            {filters.query ? <button type="button" aria-label="Clear price search" onClick={() => update({ query: "" }, true)} className="absolute right-0 top-0 grid size-11 place-items-center text-zinc-400 hover:text-white"><X className="size-4" aria-hidden="true" /></button> : null}
           </label>
           <label className="price-filter-sort flex min-h-11 min-w-0 items-center text-xs text-zinc-400">
             <span className="sr-only">Sort by</span>
-            <select value={filters.sort} onChange={(event) => update({ ...filters, sort: event.target.value })} className="surface-well min-h-11 min-w-0 w-full rounded-lg px-2 text-base text-zinc-200 sm:px-3 sm:text-sm">
+            <select value={filters.sort} onChange={(event) => update({ sort: event.target.value })} className="surface-well min-h-11 min-w-0 w-full rounded-lg px-2 text-base text-zinc-200 sm:px-3 sm:text-sm">
               <option value="featured">Featured</option>
               <option value="price-asc">Price: low to high</option>
               <option value="price-desc">Price: high to low</option>
@@ -72,11 +75,11 @@ export function PricesApp({ listings, now }: {
             </select>
           </label>
           <div className="price-filter-category flex flex-wrap gap-1" role="group" aria-label="Board category">
-            {categories.map(({ value, label }) => <button key={value} type="button" aria-pressed={filters.category === value} onClick={() => update({ ...filters, category: value })}
+            {categories.map(({ value, label }) => <button key={value} type="button" aria-pressed={filters.category === value} onClick={() => update({ category: value })}
               className={clsx("min-h-11 rounded-lg border px-2 text-xs font-medium transition sm:px-3", filters.category === value ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-100" : "border-transparent text-zinc-400 hover:bg-white/[0.05] hover:text-white")}>{label}</button>)}
           </div>
           <label className="price-filter-stock flex min-h-11 cursor-pointer items-center justify-end gap-2 text-xs text-zinc-300">
-            <input type="checkbox" checked={filters.inStock} onChange={(event) => update({ ...filters, inStock: event.target.checked })} className="size-4 shrink-0 accent-cyan-300" /> In stock at check
+            <input type="checkbox" checked={filters.inStock} onChange={(event) => update({ inStock: event.target.checked })} className="size-4 shrink-0 accent-cyan-300" /> In stock at check
           </label>
       </section>
 

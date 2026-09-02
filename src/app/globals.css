@@ -52,6 +52,10 @@ body {
   font-family: var(--font-display);
 }
 
+/* Match button and link labels despite the global form-control font reset. */
+.board-actions button, .board-actions > a { font-size: 0.8125rem; }
+.board-actions > button, .board-actions > a { font-weight: 500; }
+
 /* Prices read like a parts list: the amber price column anchors each row.
    On a phone the same content becomes a two-column purchasing card. */
 .price-grid {
@@ -86,6 +90,20 @@ body {
    top-level cards and a recessed "well" for content nested inside them.
    --------------------------------------------------------------------------- */
 @layer components {
+  .board-tool {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    text-align: left;
+  }
+  .board-tool:hover { background: var(--panel-border); }
+  .board-tool svg { flex-shrink: 0; opacity: 0.7; }
   .surface-panel {
     background-color: var(--panel);
     border: 1px solid var(--panel-border);
