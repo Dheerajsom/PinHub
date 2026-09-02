@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "refresh-prices": "tsx scripts/refresh-prices.ts"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",
@@ -33,6 +34,7 @@
     "jsdom": "26.1.0",
     "postcss": "8.5.26",
     "tailwindcss": "4.3.3",
+    "tsx": "4.23.13",
     "typescript": "6.0.3",
     "vite": "6.4.3",
     "vitest": "3.2.7"

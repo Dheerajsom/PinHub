@@ -1,0 +1,75 @@
+name: Weekly board prices
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Check retailers without changing snapshots"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-board-prices
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Use the repository's declared npm version
+        run: npm install --global npm@11.11.0
+      - run: npm ci
+      - name: Refresh retailer snapshots
+        id: refresh
+        continue-on-error: true
+        run: npm run refresh-prices -- --report="$RUNNER_TEMP/price-refresh-report.json" ${{ inputs.dry_run && '--dry-run' || '' }}
+      - name: Report every listing
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/price-refresh-report.json" ]; then
+            echo '### Board price refresh' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat "$RUNNER_TEMP/price-refresh-report.json" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - run: npm audit --audit-level=high
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit validated snapshots to main
+        if: ${{ !inputs.dry_run }}
+        shell: bash
+        run: |
+          test -f "$RUNNER_TEMP/price-refresh-report.json"
+          git add -- src/lib/board-prices.json
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "chore: update weekly board price snapshots"
+          # A concurrent main update rejects this normal push. Never force or
+          # rebase already-tested data onto an untested revision; rerun instead.
+          git push origin HEAD:main
+      - name: Surface incomplete retailer checks
+        if: ${{ always() && steps.refresh.outcome == 'failure' }}
+        run: |
+          echo "One or more checks failed. See the listing report. Failed snapshots retain their previous values and dates."
+          exit 1

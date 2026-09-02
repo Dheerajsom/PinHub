@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Board } from "@/lib/boards";
 import { CompareTable } from "@/components/CompareTable";
+import { formatPrice, formatPriceDate, priceForBoard } from "@/lib/board-prices";
 
 function board(overrides: Partial<Board> = {}): Board {
   return {
@@ -91,5 +92,19 @@ describe("CompareTable", () => {
     fireEvent.click(screen.getByRole("button", { name: "Share" }));
 
     expect(await screen.findByText("Share failed")).toBeTruthy();
+  });
+
+  it("shows dated exact-variant prices and missing data in desktop and mobile rows", () => {
+    const price = priceForBoard("raspberry-pi-5")!;
+    render(<CompareTable boards={[board({ id: "raspberry-pi-5", name: "Raspberry Pi 5" }), board({ id: "unpriced", name: "Unpriced board" })]} />);
+    const desktopRow = screen.getByRole("rowheader", { name: "Reference price" }).closest("tr")!;
+    const mobileRow = screen.getByRole("heading", { name: "Reference price" }).closest("section")!;
+    for (const row of [desktopRow, mobileRow]) {
+      expect(within(row).getByRole("link", { name: `${formatPrice(price)} at ${price.retailer} (opens in a new tab)` }).getAttribute("href")).toBe(price.url);
+      expect(within(row).getByText(price.variant)).toBeTruthy();
+      expect(within(row).getByText(formatPriceDate(price.checkedAt))).toBeTruthy();
+      expect(within(row).getByText("No price recorded")).toBeTruthy();
+      expect(within(row).queryByText(/in stock/i)).toBeNull();
+    }
   });
 });

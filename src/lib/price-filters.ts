@@ -1,5 +1,5 @@
 import type { BoardPrice } from "@/lib/board-prices";
-import { isPriceStale } from "@/lib/board-prices";
+import { hasRecentStockCheck } from "@/lib/board-prices";
 
 export type PriceListing = BoardPrice & { name: string; vendor: string; category: string };
 export type PriceFilters = { query: string; board: string; category: string; sort: string; inStock: boolean };
@@ -31,7 +31,7 @@ export function filterPrices(listings: PriceListing[], filters: PriceFilters, no
     const searchable = `${item.name} ${item.vendor} ${item.variant} ${item.sku} ${item.retailer}`.toLowerCase();
     return (!filters.board || item.boardId === filters.board)
       && (filters.category === "all" || filters.category === item.category)
-      && (!filters.inStock || (item.stock === "in-stock" && !isPriceStale(item, now)))
+      && (!filters.inStock || (item.stock === "in-stock" && hasRecentStockCheck(item, now)))
       && words.every((word) => searchable.includes(word));
   });
   if (filters.sort === "price-asc") matches.sort((a, b) => a.amount - b.amount);
