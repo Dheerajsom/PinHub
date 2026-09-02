@@ -26,6 +26,7 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
 import { BoardActions } from "@/components/BoardActions";
+import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const dynamicParams = false;
@@ -178,6 +179,7 @@ export default async function BoardPage({
           </div>
 
           <aside className="min-w-0 space-y-5">
+            <BoardPriceLink boardId={board.id} />
             {verifySource ? (
               <a href={verifySource.url} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-3 rounded-xl border border-orange-300/30 bg-[#1b1410] p-4 text-sm text-orange-100 transition hover:border-orange-300/60">
                 <span><span className="block text-[10px] uppercase tracking-[0.15em] text-orange-200/60">Verify before wiring</span><span className="mt-1 block font-medium">{verifySource.label}</span></span>

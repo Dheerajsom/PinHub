@@ -43,6 +43,7 @@ import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { VendorLogo } from "@/components/VendorLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SectionNav } from "@/components/SectionNav";
 import {
   activeCatalogFilterCount,
   boundCatalogQuery,
@@ -265,23 +266,7 @@ export function DiscoveryApp({
             )}
           </label>
           <div className="-mx-4 flex items-center gap-2.5 overflow-x-auto px-4 sm:contents">
-            <nav
-              aria-label="PinHub sections"
-              className="flex h-10 shrink-0 items-center rounded-lg border border-white/10 bg-[#090b10] p-1 sm:order-1"
-            >
-              <Link
-                href="/"
-                className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-zinc-400 transition hover:bg-white/[0.05] hover:text-white"
-              >
-                <CircuitBoard className="size-3.5" /> Pin Maps
-              </Link>
-              <span
-                aria-current="page"
-                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-cyan-300/12 px-2.5 text-xs font-semibold text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.25)]"
-              >
-                <GitCompareArrows className="size-3.5" /> Compare
-              </span>
-            </nav>
+            <SectionNav current="/compare" className="sm:order-1" />
             <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 sm:order-3 sm:shrink lg:hidden">
               <SlidersHorizontal className="size-4 text-cyan-200" /> Filters
               {activeCount ? <span className="rounded bg-cyan-300/15 px-1.5 font-mono text-xs text-cyan-100">{activeCount}</span> : null}
@@ -302,7 +287,7 @@ export function DiscoveryApp({
       </div>
 
       <div className="relative mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:px-8">
-        <aside className={clsx("space-y-3 lg:sticky lg:top-[4.75rem] lg:block lg:max-h-[calc(100vh-5.75rem)] lg:overflow-y-auto lg:pr-1", filtersOpen ? "block" : "hidden")}>
+        <aside className={clsx("space-y-3 lg:sticky lg:top-[5.25rem] lg:block lg:max-h-[calc(100vh-6.25rem)] lg:overflow-y-auto lg:pr-1", filtersOpen ? "block" : "hidden")}>
           <div className="flex items-center justify-between px-1">
             <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">Discovery facets</span>
             {activeCount ? <button type="button" onClick={() => setState(discoveryDefaultState)} className="text-xs text-cyan-200 hover:text-white">Clear all</button> : null}

@@ -1,71 +1,88 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Check,
-  Clipboard,
-  Code2,
-  GitCompareArrows,
-  Link2,
-  Printer,
-  Star,
-} from "lucide-react";
-import { clsx } from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { Clipboard, Code2, GitCompareArrows, Link2, MoreHorizontal, Printer } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { Board } from "@/lib/boards";
 import { boardPinSnippet } from "@/lib/board-utilities";
-import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { recordRecentBoard } from "@/lib/personal-library";
 import { CollectionButton } from "@/components/CollectionButton";
 
 export function BoardActions({ board }: { board: Board }) {
-  const favorite = useFavorites().has(board.id);
-  const [copied, setCopied] = useState<"link" | "id" | "snippet" | null>(null);
+  // Changing boards also dismisses disclosures and clears clipboard feedback.
+  return <BoardActionToolbar key={board.id} board={board} />;
+}
+
+function BoardActionToolbar({ board }: { board: Board }) {
+  const [panel, setPanel] = useState<"collection" | "tools" | null>(null);
+  const [feedback, setFeedback] = useState("");
+  const root = useRef<HTMLDivElement>(null);
+  const moreButton = useRef<HTMLButtonElement>(null);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const toolsId = useId();
   const snippet = boardPinSnippet(board);
 
   useEffect(() => {
     recordRecentBoard(board.id);
-    return () => {
-      if (resetTimer.current) clearTimeout(resetTimer.current);
-    };
+    return () => { if (resetTimer.current) clearTimeout(resetTimer.current); };
   }, [board.id]);
 
-  async function copy(value: string, kind: "link" | "id" | "snippet") {
+  useEffect(() => {
+    if (panel === null) return;
+    const dismiss = (event: PointerEvent) => {
+      if (event.target instanceof Node && !root.current?.contains(event.target)) setPanel(null);
+    };
+    document.addEventListener("pointerdown", dismiss);
+    return () => document.removeEventListener("pointerdown", dismiss);
+  }, [panel]);
+
+  async function copy(value: string, message: string) {
+    if (resetTimer.current) clearTimeout(resetTimer.current);
     try {
       await navigator.clipboard.writeText(value);
-      setCopied(kind);
+      setFeedback(message);
     } catch {
-      setCopied(null);
-      return;
+      setFeedback("Couldn’t copy. Check clipboard permission and try again.");
     }
-    if (resetTimer.current) clearTimeout(resetTimer.current);
-    resetTimer.current = setTimeout(() => setCopied(null), 1800);
+    resetTimer.current = setTimeout(() => setFeedback(""), 3000);
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <button type="button" onClick={() => toggleFavorite(board.id)} aria-pressed={favorite} className={clsx("inline-flex h-10 items-center gap-2 rounded-lg border px-3 text-sm transition", favorite ? "border-amber-300/50 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
-        <Star className={clsx("size-4", favorite && "fill-amber-300")} />{favorite ? "Saved" : "Favorite"}
-      </button>
-      <CollectionButton id={board.id} name={board.name} />
-      <Link href={`/compare?boards=${encodeURIComponent(board.id)}`} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white">
-        <GitCompareArrows className="size-4" /> Compare
+    <div ref={root} className="board-actions grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_2.75rem] gap-2 sm:max-w-sm"
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && panel === "tools") {
+          event.preventDefault();
+          setPanel(null);
+          moreButton.current?.focus();
+        }
+      }}>
+      <CollectionButton id={board.id} name={board.name} open={panel === "collection"} onOpenChange={(open) => setPanel(open ? "collection" : null)} />
+      <Link href={`/compare?boards=${encodeURIComponent(board.id)}`} className="inline-flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-2 text-xs font-medium text-cyan-100 transition hover:border-cyan-300/60 hover:bg-cyan-300/20">
+        <GitCompareArrows className="size-4 shrink-0" aria-hidden="true" /> Compare
       </Link>
-      <button type="button" onClick={() => copy(location.href, "link")} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white">
-        {copied === "link" ? <Check className="size-4 text-emerald-300" /> : <Link2 className="size-4" />}{copied === "link" ? "Copied" : "Copy link"}
+      <button ref={moreButton} type="button" aria-label="More board actions" title="More board actions" aria-expanded={panel === "tools"} aria-controls={toolsId}
+        onClick={() => setPanel(panel === "tools" ? null : "tools")}
+        className="grid size-11 place-items-center rounded-lg border border-white/10 bg-[#15181f] text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
+        <MoreHorizontal className="size-5" aria-hidden="true" />
       </button>
-      <button type="button" onClick={() => copy(board.id, "id")} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white">
-        {copied === "id" ? <Check className="size-4 text-emerald-300" /> : <Clipboard className="size-4" />}{copied === "id" ? "ID copied" : "Copy board ID"}
-      </button>
-      {snippet ? (
-        <button type="button" onClick={() => copy(snippet, "snippet")} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white">
-          {copied === "snippet" ? <Check className="size-4 text-emerald-300" /> : <Code2 className="size-4" />}{copied === "snippet" ? "Snippet copied" : "Copy pin lookup"}
-        </button>
+      {panel === "tools" ? (
+        <div id={toolsId} role="region" aria-label="Copy and print tools" className="surface-well col-span-full rounded-lg p-1">
+          <button type="button" onClick={() => copy(new URL(`/boards/${board.id}`, location.origin).href, "Board link copied.")} className="board-tool">
+            <Link2 className="size-4" aria-hidden="true" /><span>Copy link</span>
+          </button>
+          <button type="button" onClick={() => copy(board.id, "Board ID copied.")} className="board-tool">
+            <Clipboard className="size-4" aria-hidden="true" /><span>Copy board ID</span>
+          </button>
+          {snippet ? <button type="button" onClick={() => copy(snippet, "Pin lookup copied.")} className="board-tool">
+            <Code2 className="size-4" aria-hidden="true" /><span>Copy pin lookup</span>
+          </button> : null}
+          <div className="mx-2 my-1 border-t border-white/10" />
+          <button type="button" onClick={() => window.print()} className="board-tool">
+            <Printer className="size-4" aria-hidden="true" /><span>Print reference</span>
+          </button>
+        </div>
       ) : null}
-      <button type="button" onClick={() => window.print()} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:text-white">
-        <Printer className="size-4" /> Print reference
-      </button>
+      <p role="status" aria-live="polite" className={feedback ? "col-span-full text-xs leading-5 text-zinc-400" : "sr-only"}>{feedback}</p>
     </div>
   );
 }

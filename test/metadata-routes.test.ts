@@ -10,7 +10,8 @@ import { siteUrl } from "@/lib/site";
 describe("discovery metadata", () => {
   it("publishes every static pinout in the canonical sitemap", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(boards.length * 2 + 2);
+    expect(entries).toHaveLength(boards.length * 2 + 3);
+    expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/prices", siteUrl).toString() }));
     expect(entries[0]?.url).toBe(siteUrl.toString());
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/compare", siteUrl).toString() }));
     expect(entries).toContainEqual(

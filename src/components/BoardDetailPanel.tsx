@@ -16,6 +16,7 @@ import type { BoardSummary } from "@/lib/board-summary";
 import { VendorLogo } from "@/components/VendorLogo";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { BoardActions } from "@/components/BoardActions";
+import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { revisionNotesFor } from "@/lib/board-utilities";
 
@@ -63,7 +64,7 @@ export function BoardDetailPanel({
         <BoardDetail board={board} onBackToResults={onBackToResults} />
       ) : (
         <aside
-          className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:self-start"
+          className="min-w-0 space-y-4 lg:sticky lg:top-[5.25rem] lg:self-start"
           aria-busy={!failed}
         >
           <button
@@ -119,7 +120,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
     : false;
   const revisionNotes = revisionNotesFor(board);
   return (
-    <aside className="min-w-0 space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
+    <aside className="min-w-0 space-y-4 lg:sticky lg:top-[5.25rem] lg:max-h-[calc(100vh-6.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
       {/* Stacked-layout escape hatch: the detail panel sits below the result
           list on phones, so offer a quick way back up. Hidden on lg+. */}
       <button
@@ -159,6 +160,8 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           <BoardActions board={board} />
         </div>
       </section>
+
+      <BoardPriceLink boardId={board.id} />
 
       {verifySource ? (
         <a
