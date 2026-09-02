@@ -52,6 +52,31 @@ body {
   font-family: var(--font-display);
 }
 
+/* Prices read like a parts list: the amber price column anchors each row.
+   On a phone the same content becomes a two-column purchasing card. */
+.price-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+}
+.price-board, .price-actions { grid-column: 1 / -1; }
+.price-checked { grid-column: 1 / -1; }
+.price-search::-webkit-search-cancel-button { display: none; }
+.price-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.price-filter-search { grid-column: 1 / -1; grid-row: 1; }
+.price-filter-category { grid-column: 1 / -1; grid-row: 2; }
+.price-filter-sort, .price-filter-stock { grid-row: 3; }
+@media (min-width: 640px) {
+  .price-filters { grid-template-columns: minmax(0, 1fr) 12rem; }
+  .price-filter-search { grid-column: 1; }
+  .price-filter-sort { grid-column: 2; grid-row: 1; }
+  .price-filter-category { grid-column: 1; }
+  .price-filter-stock { grid-column: 2; grid-row: 2; }
+}
+@media (min-width: 1024px) {
+  .price-grid { grid-template-columns: minmax(0, 1fr) 9rem 12rem 8rem 8rem; gap: 1.25rem; }
+  .price-board, .price-actions, .price-checked { grid-column: auto; }
+}
+
 /* ---------------------------------------------------------------------------
    Solid widget surfaces
    The precision-workbench backdrop (CircuitBackground) shows through the page

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import {
   Fragment,
   useCallback,
@@ -18,7 +17,6 @@ import {
   Cpu,
   Database,
   Factory,
-  GitCompareArrows,
   Layers3,
   LoaderCircle,
   Radio,
@@ -44,6 +42,7 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 import { ActiveFilterChip, BoardResult, FilterPanel, FilterSelect } from "@/components/catalog/CatalogListParts";
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SectionNav } from "@/components/SectionNav";
 import { ProjectShelf } from "@/components/ProjectShelf";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 import {
@@ -470,23 +469,7 @@ export function PinHubApp({
 
       <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.95)]">
         <div className="mx-auto flex max-w-[1560px] flex-col gap-2.5 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:px-6 lg:px-8">
-          <nav
-            aria-label="PinHub sections"
-            className="flex h-10 w-fit shrink-0 items-center rounded-lg border border-white/10 bg-[#090b10] p-1"
-          >
-            <span
-              aria-current="page"
-              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-cyan-300/12 px-2.5 text-xs font-semibold text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.25)]"
-            >
-              <CircuitBoard className="size-3.5" /> Pin Maps
-            </span>
-            <Link
-              href="/compare"
-              className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-zinc-400 transition hover:bg-white/[0.05] hover:text-white"
-            >
-              <GitCompareArrows className="size-3.5" /> Compare
-            </Link>
-          </nav>
+          <SectionNav current="/" />
           <label className="relative block w-full sm:min-w-56 sm:flex-1">
             <Search
               className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
@@ -702,7 +685,7 @@ export function PinHubApp({
         <aside
           id="mobile-filters"
           className={clsx(
-            "space-y-4 lg:sticky lg:top-[4.25rem] lg:max-h-[calc(100vh-5.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2",
+            "space-y-4 lg:sticky lg:top-[5.25rem] lg:max-h-[calc(100vh-6.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2",
             // Collapsed on phones until the Filters toggle is tapped; the
             // sidebar is always visible from lg up.
             mobileFiltersOpen ? "block" : "hidden lg:block",
