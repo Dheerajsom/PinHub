@@ -662,6 +662,157 @@ button {
   animation: compare-tray-in 260ms both cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* ---------------------------------------------------------------------------
+   Redesign V1 — bench instrument, alive.
+   Catalog stays first; this layer adds invitation (quick-start, search glow),
+   retention (shortcuts, live status), and premium finish (depth, staggered
+   card entrance, protocol-tinted chips). All motion is enhancement-only and
+   disabled under prefers-reduced-motion. No glass/blur — opaque panels stay.
+   --------------------------------------------------------------------------- */
+@keyframes ph-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ph-live-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(52, 211, 153, 0);
+  }
+}
+
+@keyframes ph-star-pop {
+  0% { transform: scale(0.7) rotate(-14deg); }
+  55% { transform: scale(1.18) rotate(6deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.ph-card-in {
+  animation: ph-rise 380ms both cubic-bezier(0.22, 1, 0.36, 1);
+  animation-delay: var(--ph-delay, 0ms);
+}
+
+.ph-live-dot {
+  animation: ph-live-pulse 2.4s ease-in-out infinite;
+}
+
+.ph-search-shell {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.22s ease,
+    background-color 0.18s ease;
+}
+
+.ph-search-shell:focus-within {
+  border-color: rgba(103, 232, 249, 0.65);
+  box-shadow:
+    0 0 0 1px rgba(103, 232, 249, 0.35),
+    0 0 24px -6px rgba(34, 211, 238, 0.45),
+    inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ph-kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #a1a1aa;
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+:root[data-theme="light"] .ph-kbd {
+  border-color: rgba(31, 48, 58, 0.2);
+  background: rgba(31, 48, 58, 0.06);
+  color: #536269;
+}
+
+.ph-row {
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    transform 0.16s ease,
+    box-shadow 0.2s ease;
+}
+
+.ph-row:hover {
+  transform: translateY(-1px);
+}
+
+.ph-row-selected {
+  background:
+    linear-gradient(180deg, rgba(103, 232, 249, 0.07), transparent 42%),
+    #212734;
+}
+
+:root[data-theme="light"] .ph-row-selected {
+  background:
+    linear-gradient(180deg, rgba(8, 145, 178, 0.1), transparent 46%),
+    var(--panel);
+}
+
+.ph-row-accent {
+  background: linear-gradient(180deg, #67e8f9, #22d3ee 55%, #fbbf24);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.65);
+}
+
+.ph-quick-chip {
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.ph-quick-chip:hover {
+  transform: translateY(-1px);
+}
+
+.ph-quick-chip:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.ph-fav-active svg {
+  animation: ph-star-pop 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ph-spec-tile {
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.ph-spec-tile:hover {
+  border-color: rgba(103, 232, 249, 0.35);
+}
+
+.ph-source-row {
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.ph-source-row:hover {
+  transform: translateX(2px);
+}
+
+.ph-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
 @media print {
   :root {
     color-scheme: light;
@@ -725,8 +876,16 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
   .discovery-card,
-  .compare-tray {
+  .compare-tray,
+  .ph-card-in,
+  .ph-live-dot,
+  .ph-fav-active svg {
     animation: none;
     transition: none;
+  }
+  .ph-row:hover,
+  .ph-quick-chip:hover,
+  .ph-source-row:hover {
+    transform: none;
   }
 }
