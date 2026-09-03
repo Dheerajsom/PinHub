@@ -38,7 +38,7 @@ export function ProjectShelf({ catalog }: { catalog: BoardSummary[] }) {
   }
 
   return (
-    <details className="group border-b border-white/10 bg-[#0b0e13]/80">
+    <details className="group border-b border-white/10 bg-[#0b0e13]">
       <summary className="mx-auto flex min-h-11 max-w-[1560px] cursor-pointer list-none items-center gap-2.5 px-4 py-2 text-sm text-zinc-300 outline-none transition hover:text-white focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-300/70 sm:px-6 lg:px-8 [&::-webkit-details-marker]:hidden">
         <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-[#0a0c11]">
           <Folder className="size-3.5 text-cyan-200" aria-hidden="true" />

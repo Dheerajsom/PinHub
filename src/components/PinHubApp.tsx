@@ -445,7 +445,7 @@ export function PinHubApp({
   return (
     <main className="relative isolate min-h-screen">
       <CircuitBackground />
-      <header className="relative overflow-hidden border-b border-white/10 bg-[#0a0d12] shadow-[0_1px_0_rgba(255,255,255,0.05)_inset,0_12px_30px_-24px_rgba(0,0,0,0.9)] pt-[env(safe-area-inset-top)]">
+      <header className="ph-header relative overflow-hidden pt-[env(safe-area-inset-top)]">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" aria-hidden="true" />
         <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
@@ -489,11 +489,10 @@ export function PinHubApp({
         </div>
       </header>
 
-      <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.95)] backdrop-blur-sm">
-        <div className="mx-auto flex max-w-[1560px] flex-col gap-2.5 px-4 py-3 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-3">
-            <SectionNav current="/" />
-            <label className="ph-search-shell relative block w-full rounded-xl border border-white/10 bg-[#0a0c11] shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] sm:min-w-56 sm:flex-1">
+      <div className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
+        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6 lg:px-8">
+          <SectionNav current="/" />
+          <label className="ph-search-shell relative block w-full min-w-44 flex-1 rounded-xl shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] max-sm:order-first sm:w-auto">
               <Search
                 className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
                 aria-hidden="true"
@@ -541,10 +540,10 @@ export function PinHubApp({
                     }
                   }
                 }}
-                placeholder="Search boards, vendors, interfaces, warnings…  try “I2C” or “strap pins”"
+                placeholder="Search boards, vendors, interfaces, warnings…"
                 aria-label="Search boards"
                 aria-controls="board-results"
-                className="h-12 w-full rounded-xl border-0 bg-transparent pl-10 pr-16 text-sm text-white outline-none placeholder:text-zinc-600"
+                className="ph-search-input h-10 w-full rounded-xl border-0 bg-transparent pl-10 pr-12 text-sm outline-none"
               />
               {query ? (
                 <button
@@ -564,38 +563,6 @@ export function PinHubApp({
                 </kbd>
               )}
             </label>
-          </div>
-
-          {!hasActiveFilters ? (
-            <div className="flex items-center gap-2 overflow-x-auto text-xs [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <span className="flex shrink-0 items-center gap-1.5 font-medium text-zinc-500">
-                <Zap className="size-3.5 text-cyan-300/70" aria-hidden="true" />
-                Try:
-              </span>
-              {quickQueries.map((suggestion) => (
-                <button
-                  key={suggestion}
-                  type="button"
-                  onClick={() => {
-                    changeQuery(suggestion);
-                    searchRef.current?.focus();
-                  }}
-                  className="ph-quick-chip shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
-                >
-                  {suggestion}
-                </button>
-              ))}
-              <span className="hidden shrink-0 items-center gap-1.5 font-mono text-[11px] text-zinc-600 lg:flex" aria-hidden="true">
-                <Keyboard className="size-3.5" />
-                / to search · ↑↓ to move · Enter to open · Esc to clear
-              </span>
-            </div>
-          ) : null}
-
-          {/* On mobile the controls scroll horizontally in one compact row
-              instead of wrapping into a tall stack on every scroll. The
-              negative margin lets the row bleed to the screen edges. */}
-          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 text-sm [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden">
             <button
               type="button"
               onClick={() => setMobileFiltersOpen((value) => !value)}
@@ -676,57 +643,50 @@ export function PinHubApp({
               <option value="recentlyAdded">Recently added</option>
               <option value="interfaceCount">Most interfaces</option>
             </select>
-            <span
-              className="shrink-0 font-mono text-xs tabular-nums text-zinc-400"
-              role="status"
-              aria-live="polite"
-            >
-              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
-              {hasActiveFilters ? "matches" : "boards"}
-              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
-              {paging ? " · loading more" : ""}
-            </span>
-            {catalogState.category.map((value) => (
-              <ActiveFilterChip key={`category-${value}`} label={value} onClear={() => clearArrayFilter("category", value)} />
-            ))}
-            {catalogState.interface.map((value) => (
-              <ActiveFilterChip key={`interface-${value}`} label={value} onClear={() => clearArrayFilter("interface", value)} />
-            ))}
-            {catalogState.vendor.map((value) => (
-              <ActiveFilterChip key={`vendor-${value}`} label={`Maker: ${value}`} onClear={() => clearArrayFilter("vendor", value)} />
-            ))}
-            {catalogState.family.map((value) => (
-              <ActiveFilterChip key={`family-${value}`} label={`Family: ${value}`} onClear={() => clearArrayFilter("family", value)} />
-            ))}
-            {catalogState.logic.map((value) => (
-              <ActiveFilterChip key={`logic-${value}`} label={value} onClear={() => clearArrayFilter("logic", value)} />
-            ))}
-            {catalogState.power.map((value) => (
-              <ActiveFilterChip key={`power-${value}`} label={value} onClear={() => clearArrayFilter("power", value)} />
-            ))}
-            {catalogState.form.map((value) => (
-              <ActiveFilterChip key={`form-${value}`} label={value} onClear={() => clearArrayFilter("form", value)} />
-            ))}
-            {catalogState.wirelessCapability !== "any" ? (
-              <ActiveFilterChip label={catalogState.wirelessCapability === "has" ? "Has wireless" : "No wireless"} onClear={() => setCatalogState((current) => ({ ...current, wirelessCapability: "any", page: 1 }))} />
-            ) : null}
-            {catalogState.officialDocumentation !== "any" ? (
-              <ActiveFilterChip label={catalogState.officialDocumentation === "has" ? "Official docs" : "No official docs"} onClear={() => setCatalogState((current) => ({ ...current, officialDocumentation: "any", page: 1 }))} />
-            ) : null}
-            {catalogState.pinoutOnly ? (
-              <ActiveFilterChip label="In-app pin map" onClear={() => setCatalogState((current) => ({ ...current, pinoutOnly: false, page: 1 }))} />
-            ) : null}
-            {hasActiveFilters ? (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="shrink-0 rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
-              >
-                Reset
-              </button>
-            ) : null}
           </div>
-        </div>
+          {hasActiveFilters ? (
+            <div className="border-t border-white/5">
+              <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-1.5 px-4 py-2 sm:px-6 lg:px-8">
+                {catalogState.category.map((value) => (
+                  <ActiveFilterChip key={`category-${value}`} label={value} onClear={() => clearArrayFilter("category", value)} />
+                ))}
+                {catalogState.interface.map((value) => (
+                  <ActiveFilterChip key={`interface-${value}`} label={value} onClear={() => clearArrayFilter("interface", value)} />
+                ))}
+                {catalogState.vendor.map((value) => (
+                  <ActiveFilterChip key={`vendor-${value}`} label={`Maker: ${value}`} onClear={() => clearArrayFilter("vendor", value)} />
+                ))}
+                {catalogState.family.map((value) => (
+                  <ActiveFilterChip key={`family-${value}`} label={`Family: ${value}`} onClear={() => clearArrayFilter("family", value)} />
+                ))}
+                {catalogState.logic.map((value) => (
+                  <ActiveFilterChip key={`logic-${value}`} label={value} onClear={() => clearArrayFilter("logic", value)} />
+                ))}
+                {catalogState.power.map((value) => (
+                  <ActiveFilterChip key={`power-${value}`} label={value} onClear={() => clearArrayFilter("power", value)} />
+                ))}
+                {catalogState.form.map((value) => (
+                  <ActiveFilterChip key={`form-${value}`} label={value} onClear={() => clearArrayFilter("form", value)} />
+                ))}
+                {catalogState.wirelessCapability !== "any" ? (
+                  <ActiveFilterChip label={catalogState.wirelessCapability === "has" ? "Has wireless" : "No wireless"} onClear={() => setCatalogState((current) => ({ ...current, wirelessCapability: "any", page: 1 }))} />
+                ) : null}
+                {catalogState.officialDocumentation !== "any" ? (
+                  <ActiveFilterChip label={catalogState.officialDocumentation === "has" ? "Official docs" : "No official docs"} onClear={() => setCatalogState((current) => ({ ...current, officialDocumentation: "any", page: 1 }))} />
+                ) : null}
+                {catalogState.pinoutOnly ? (
+                  <ActiveFilterChip label="In-app pin map" onClear={() => setCatalogState((current) => ({ ...current, pinoutOnly: false, page: 1 }))} />
+                ) : null}
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="shrink-0 rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          ) : null}
       </div>
 
       <ProjectShelf catalog={catalog} />
@@ -900,6 +860,22 @@ export function PinHubApp({
           className="min-w-0 scroll-mt-32"
           aria-label="Board results"
         >
+          <div className="mb-2 flex items-center justify-between gap-3 px-0.5">
+            <span
+              className="font-mono text-xs tabular-nums text-zinc-400"
+              role="status"
+              aria-live="polite"
+            >
+              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
+              {hasActiveFilters ? "matches" : "boards"}
+              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
+              {paging ? " · loading more" : ""}
+            </span>
+            <span className="hidden shrink-0 items-center gap-1.5 font-mono text-[11px] text-zinc-600 lg:flex" aria-hidden="true">
+              <Keyboard className="size-3.5" />
+              / to search · ↑↓ to move · Enter to open
+            </span>
+          </div>
           {!hasActiveFilters ? (
             <div className="surface-panel ph-card-in mb-3 rounded-xl p-3.5">
               <div className="flex items-center gap-2">
@@ -929,6 +905,25 @@ export function PinHubApp({
                   >
                     <span className="min-w-0 truncate">{popular.name}</span>
                     <ArrowRight className="size-3.5 shrink-0 text-zinc-600 transition group-hover:translate-x-0.5 group-hover:text-cyan-200" aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+              <div className="mt-2.5 flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-zinc-500">
+                  <Zap className="size-3.5 text-cyan-300/70" aria-hidden="true" />
+                  Try:
+                </span>
+                {quickQueries.map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => {
+                      changeQuery(suggestion);
+                      searchRef.current?.focus();
+                    }}
+                    className="ph-quick-chip shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
+                  >
+                    {suggestion}
                   </button>
                 ))}
               </div>
@@ -1126,7 +1121,7 @@ function GitHubButton() {
       rel="noopener noreferrer"
       aria-label="View PinHub source on GitHub (opens in a new tab)"
       title="View source on GitHub"
-      className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-xl border border-white/15 bg-gradient-to-b from-[#1a1e27] to-[#15181f] px-2.5 text-sm font-medium text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/60 hover:text-white active:scale-[0.97] sm:px-3"
+      className="ph-chrome-button group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-xl px-2.5 text-sm font-medium text-zinc-200 transition hover:text-white active:scale-[0.97] sm:px-3"
     >
       <svg
         viewBox="0 0 24 24"

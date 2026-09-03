@@ -187,7 +187,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           href={verifySource.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex items-center justify-between gap-3 rounded-xl border border-orange-300/30 bg-gradient-to-b from-[#211812] to-[#1b1410] px-3.5 py-3 text-sm text-orange-100/90 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-orange-300/60 hover:text-orange-50"
+          className="ph-verify group flex items-center justify-between gap-3 rounded-xl px-3.5 py-3 text-sm text-orange-100/90 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-orange-300/60 hover:text-orange-50"
         >
           <span className="flex min-w-0 items-center gap-2.5">
             <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-orange-300/30 bg-orange-400/10">
@@ -364,7 +364,7 @@ function InfoBlock({ title, icon, items, tone = "default" }: InfoBlockProps) {
       className={clsx(
         "rounded-xl p-4",
         tone === "warning"
-          ? "border border-orange-300/30 bg-gradient-to-b from-[#211812] to-[#1b1410] shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+          ? "ph-warn shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
           : "surface-panel",
       )}
     >

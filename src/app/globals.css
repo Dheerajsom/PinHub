@@ -137,10 +137,10 @@ body {
 }
 
 :root[data-theme="light"] :is(
-  .bg-\[\#090b10\], .bg-\[\#0a0c11\], .bg-\[\#0a0d12\],
-  .bg-\[\#0c0e13\], .bg-\[\#0c0f14\], .bg-\[\#0f1218\],
-  .bg-\[\#101319\], .bg-\[\#11141a\], .bg-\[\#12161d\],
-  .bg-\[\#13161c\], .bg-\[\#14161d\], .bg-\[\#15181f\],
+  .bg-\[\#080a0e\], .bg-\[\#090b10\], .bg-\[\#0a0c11\], .bg-\[\#0a0d12\],
+  .bg-\[\#0b0e13\], .bg-\[\#0c0e13\], .bg-\[\#0c0f14\], .bg-\[\#0e1118\],
+  .bg-\[\#0f1218\], .bg-\[\#101319\], .bg-\[\#10131a\], .bg-\[\#11141a\],
+  .bg-\[\#12161d\], .bg-\[\#13161c\], .bg-\[\#14161d\], .bg-\[\#15181f\],
   .bg-\[\#171b22\], .bg-\[\#191c24\], .bg-\[\#1c2029\],
   .bg-\[\#212734\], .bg-\[\#262c3a\]
 ) {
@@ -704,7 +704,26 @@ button {
   animation: ph-live-pulse 2.4s ease-in-out infinite;
 }
 
+/* Theme-aware chrome. These use var(--panel)/var(--well) directly so both
+   themes work by construction — no hex-override allowlist to drift out of
+   date (opacity variants like bg-[#0c0e13]/95 and gradient stops never
+   matched the allowlist, which is what left dark slabs in light mode). */
+.ph-header {
+  background-color: var(--panel);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.ph-commandbar {
+  background-color: var(--panel);
+  background-color: color-mix(in srgb, var(--panel) 90%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--panel-border);
+}
+
 .ph-search-shell {
+  background-color: var(--well);
+  border: 1px solid var(--panel-border);
   transition:
     border-color 0.18s ease,
     box-shadow 0.22s ease,
@@ -717,6 +736,77 @@ button {
     0 0 0 1px rgba(103, 232, 249, 0.35),
     0 0 24px -6px rgba(34, 211, 238, 0.45),
     inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="light"] .ph-search-shell:focus-within {
+  border-color: rgba(8, 145, 178, 0.6);
+  box-shadow:
+    0 0 0 1px rgba(8, 145, 178, 0.25),
+    0 0 20px -8px rgba(8, 145, 178, 0.5),
+    inset 0 1px 2px rgba(23, 32, 42, 0.06);
+}
+
+.ph-search-input {
+  color: var(--foreground);
+}
+
+.ph-search-input::placeholder {
+  color: #6b7a83;
+}
+
+:root[data-theme="light"] .ph-search-input::placeholder {
+  color: #75848d;
+}
+
+.ph-chrome-button {
+  background-color: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+:root[data-theme="light"] .ph-chrome-button {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 1px 2px rgba(23, 32, 42, 0.12);
+}
+
+.ph-chrome-button:hover {
+  border-color: rgba(103, 232, 249, 0.6);
+}
+
+:root[data-theme="light"] .ph-chrome-button:hover {
+  border-color: rgba(8, 145, 178, 0.55);
+  background-color: #f2f7f9;
+}
+
+/* Verify + warning surfaces. Solid theme-aware fills replace the old
+   dark-gradient slabs, whose gradient stops never matched the light-mode
+   hex allowlist and rendered as dark brown cards on paper. */
+.ph-verify {
+  background-color: #1b1410;
+  border: 1px solid rgba(253, 186, 116, 0.3);
+}
+
+:root[data-theme="light"] .ph-verify {
+  background-color: #fff7ed;
+  border-color: rgba(154, 52, 18, 0.3);
+}
+
+.ph-warn {
+  background-color: #1b1410;
+  border: 1px solid rgba(253, 186, 116, 0.3);
+}
+
+:root[data-theme="light"] .ph-warn {
+  background-color: #fff7ed;
+  border-color: rgba(154, 52, 18, 0.3);
 }
 
 .ph-kbd {
@@ -739,6 +829,7 @@ button {
 }
 
 .ph-row {
+  background-color: #14161d;
   transition:
     border-color 0.16s ease,
     background-color 0.16s ease,
@@ -748,6 +839,20 @@ button {
 
 .ph-row:hover {
   transform: translateY(-1px);
+  background-color: #191d26;
+}
+
+:root[data-theme="light"] .ph-row {
+  background-color: var(--panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(23, 32, 42, 0.08),
+    0 12px 28px -22px rgba(23, 32, 42, 0.35);
+}
+
+:root[data-theme="light"] .ph-row:hover {
+  background-color: #f0f5f7;
+  border-color: rgba(8, 145, 178, 0.35);
 }
 
 .ph-row-selected {
@@ -758,8 +863,13 @@ button {
 
 :root[data-theme="light"] .ph-row-selected {
   background:
-    linear-gradient(180deg, rgba(8, 145, 178, 0.1), transparent 46%),
-    var(--panel);
+    linear-gradient(180deg, rgba(8, 145, 178, 0.12), transparent 46%),
+    #ffffff;
+  border-color: rgba(8, 145, 178, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(23, 32, 42, 0.1),
+    0 16px 34px -20px rgba(8, 145, 178, 0.4);
 }
 
 .ph-row-accent {
@@ -811,6 +921,145 @@ button {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------------------
+   Protocol-tinted interface chips. Hues match the pin-role system so a bus
+   reads the same color in the row, the legend, and the pin map. Dark pills
+   carry light ink in both themes (they read as silkscreen); light mode only
+   firms up the border so they don't look washed on paper.
+   --------------------------------------------------------------------------- */
+.ph-iface {
+  border: 1px solid;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ph-iface[data-tone="gpio"] { color: #a7f3d0; background-color: #0d2a20; border-color: rgba(52, 211, 153, 0.4); }
+.ph-iface[data-tone="i2c"] { color: #a5f3fc; background-color: #0a2b33; border-color: rgba(34, 211, 238, 0.4); }
+.ph-iface[data-tone="spi"] { color: #fde68a; background-color: #2c2109; border-color: rgba(251, 191, 36, 0.4); }
+.ph-iface[data-tone="uart"] { color: #bae6fd; background-color: #0b2436; border-color: rgba(56, 189, 248, 0.4); }
+.ph-iface[data-tone="adc"] { color: #ddd6fe; background-color: #211a3c; border-color: rgba(167, 139, 250, 0.4); }
+.ph-iface[data-tone="dac"] { color: #fecdd3; background-color: #2c111c; border-color: rgba(251, 113, 133, 0.4); }
+.ph-iface[data-tone="pwm"] { color: #f5d0fe; background-color: #2b1230; border-color: rgba(232, 121, 249, 0.4); }
+.ph-iface[data-tone="can"] { color: #fed7aa; background-color: #2c1509; border-color: rgba(251, 146, 60, 0.4); }
+.ph-iface[data-tone="usb"] { color: #bfdbfe; background-color: #0e1e3a; border-color: rgba(96, 165, 250, 0.4); }
+.ph-iface[data-tone="ethernet"] { color: #99f6e4; background-color: #0a2b2a; border-color: rgba(45, 212, 191, 0.4); }
+.ph-iface[data-tone="wifi"] { color: #99f6e4; background-color: #0a2b2a; border-color: rgba(45, 212, 191, 0.4); }
+.ph-iface[data-tone="bluetooth"] { color: #c7d2fe; background-color: #1a1c3c; border-color: rgba(129, 140, 248, 0.4); }
+.ph-iface[data-tone="pinmap"] { color: #a7f3d0; background-color: #0d2a20; border-color: rgba(52, 211, 153, 0.45); }
+.ph-iface[data-tone="default"] { color: #e4e4e7; background-color: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
+
+:root[data-theme="light"] .ph-iface {
+  border-color: rgba(23, 32, 42, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Tinted washes (cyan/emerald/orange at 7–15% alpha) nearly vanish on paper.
+   Light mode densifies them so active filters, match badges, and caution
+   chips keep their meaning instead of looking like bare text. */
+:root[data-theme="light"] [class*="bg-cyan-300/"] {
+  background-color: rgba(8, 145, 178, 0.14);
+}
+
+:root[data-theme="light"] [class*="bg-emerald-400/"] {
+  background-color: rgba(6, 95, 70, 0.12);
+}
+
+:root[data-theme="light"] [class*="bg-orange-400/"] {
+  background-color: rgba(154, 52, 18, 0.12);
+}
+
+:root[data-theme="light"] :is(
+  [class*="border-cyan-300/40"], [class*="border-cyan-300/50"],
+  [class*="border-cyan-300/60"], [class*="border-cyan-300/70"]
+) {
+  border-color: rgba(8, 145, 178, 0.5);
+}
+
+:root[data-theme="light"] :is(
+  [class*="border-emerald-400/40"], [class*="border-orange-300/45"]
+) {
+  border-color: rgba(23, 32, 42, 0.3);
+}
+
+/* Hover-to-white predates the light theme, and the exact-class text
+   overrides never matched `hover:`/`group-hover:` variants — so hovering
+   turned labels white-on-white on paper. Substring matching repairs every
+   instance app-wide (catalog, compare, pinout inspector alike). */
+:root[data-theme="light"] :is([class*="hover:text-white"]:hover) {
+  color: #17202a;
+}
+
+:root[data-theme="light"] .group:hover :is([class*="group-hover:text-white"]) {
+  color: #17202a;
+}
+
+:root[data-theme="light"] :is([class*="hover:text-cyan-100"]:hover) {
+  color: #075b6b;
+}
+
+:root[data-theme="light"] :is([class*="hover:text-amber-50"]:hover) {
+  color: #854d0e;
+}
+
+:root[data-theme="light"] :is([class*="hover:text-orange-50"]:hover) {
+  color: #9a3412;
+}
+
+/* Alpha-suffixed warm text and pale cool icons never matched the plain-class
+   overrides either (e.g. `text-orange-100/90`, `text-cyan-300/70`), leaving
+   near-white text on cream or invisible icons on paper. */
+:root[data-theme="light"] :is(
+  [class*="text-orange-100/"], [class*="text-orange-200/"]
+) {
+  color: #9a3412;
+}
+
+:root[data-theme="light"] :is([class*="text-amber-300/"]) {
+  color: #b45309;
+}
+
+:root[data-theme="light"] :is([class*="text-cyan-300/"]) {
+  color: #0e7490;
+}
+
+:root[data-theme="light"] :is(
+  [class*="text-violet-200"], [class*="text-violet-300"]
+) {
+  color: #6d28d9;
+}
+
+/* Bright-bench depth for the new chrome: soft cool shadows instead of the
+   charcoal drops, and a paper-friendly inset for the search well. */
+:root[data-theme="light"] .ph-commandbar {
+  box-shadow: 0 12px 28px -20px rgba(23, 32, 42, 0.35);
+}
+
+:root[data-theme="light"] .ph-search-shell {
+  box-shadow: inset 0 1px 2px rgba(23, 32, 42, 0.08);
+}
+
+/* Dark-only hover fills: hover:bg-[#hex] variants never matched the light
+   hex allowlist, so hovering flashed a card dark on paper. Pin them back. */
+:root[data-theme="light"] :is(
+  .hover\:bg-\[\#171b22\]:hover, .hover\:bg-\[\#171b23\]:hover,
+  .hover\:bg-\[\#191c24\]:hover, .hover\:bg-\[\#1c2029\]:hover
+) {
+  background-color: #e9eff2;
+}
+
+/* Charcoal drop shadows read as mud on paper; light mode gets its own soft,
+   cool-tinted depth for raised panels. */
+:root[data-theme="light"] .surface-panel {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 1px 2px rgba(23, 32, 42, 0.08),
+    0 14px 30px -24px rgba(23, 32, 42, 0.35);
 }
 
 @media print {

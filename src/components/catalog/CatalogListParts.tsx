@@ -1,4 +1,4 @@
-import { memo, type CSSProperties, type ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowUpRight, CircuitBoard, GitCompareArrows, ShieldAlert, Star, X } from "lucide-react";
 import { clsx } from "clsx";
@@ -144,28 +144,26 @@ export function FilterSelect({
   );
 }
 
-// Protocol-tinted interface chips. Hues match the pin-role system in
-// board-visual/roles.ts so a bus reads the same color in the row, the legend,
-// and the pin map. Dark washes are intentional: they stay legible in both
-// themes as opaque pills.
-const interfaceTones: Record<string, CSSProperties> = {
-  GPIO: { color: "#a7f3d0", backgroundColor: "#0d2a20", borderColor: "rgba(52,211,153,0.4)" },
-  I2C: { color: "#a5f3fc", backgroundColor: "#0a2b33", borderColor: "rgba(34,211,238,0.4)" },
-  SPI: { color: "#fde68a", backgroundColor: "#2c2109", borderColor: "rgba(251,191,36,0.4)" },
-  UART: { color: "#bae6fd", backgroundColor: "#0b2436", borderColor: "rgba(56,189,248,0.4)" },
-  ADC: { color: "#ddd6fe", backgroundColor: "#211a3c", borderColor: "rgba(167,139,250,0.4)" },
-  DAC: { color: "#fecdd3", backgroundColor: "#2c111c", borderColor: "rgba(251,113,133,0.4)" },
-  PWM: { color: "#f5d0fe", backgroundColor: "#2b1230", borderColor: "rgba(232,121,249,0.4)" },
-  CAN: { color: "#fed7aa", backgroundColor: "#2c1509", borderColor: "rgba(251,146,60,0.4)" },
-  USB: { color: "#bfdbfe", backgroundColor: "#0e1e3a", borderColor: "rgba(96,165,250,0.4)" },
-  Ethernet: { color: "#99f6e4", backgroundColor: "#0a2b2a", borderColor: "rgba(45,212,191,0.4)" },
-  "Wi-Fi": { color: "#99f6e4", backgroundColor: "#0a2b2a", borderColor: "rgba(45,212,191,0.4)" },
-  Bluetooth: { color: "#c7d2fe", backgroundColor: "#1a1c3c", borderColor: "rgba(129,140,248,0.4)" },
-  default: { color: "#e4e4e7", backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.12)" },
+// Protocol-tinted interface chips. The tone key drives `.ph-iface[data-tone]`
+// in globals.css (same hues as the pin-role system), which keeps both themes
+// working — inline styles would bypass the light-mode rules entirely.
+const interfaceTones: Record<string, string> = {
+  GPIO: "gpio",
+  I2C: "i2c",
+  SPI: "spi",
+  UART: "uart",
+  ADC: "adc",
+  DAC: "dac",
+  PWM: "pwm",
+  CAN: "can",
+  USB: "usb",
+  Ethernet: "ethernet",
+  "Wi-Fi": "wifi",
+  Bluetooth: "bluetooth",
 };
 
-function interfaceStyle(item: string): CSSProperties {
-  return interfaceTones[item] ?? interfaceTones.default;
+function interfaceTone(item: string): string {
+  return interfaceTones[item] ?? "default";
 }
 
 function logicDot(logicLevel: string): string {
@@ -218,7 +216,7 @@ export const BoardResult = memo(function BoardResult({
         "ph-row ph-card-in group relative rounded-xl border [contain-intrinsic-block-size:9rem] [content-visibility:auto]",
         selected
           ? "ph-row-selected border-cyan-300/40 shadow-[inset_0_1px_0_rgba(103,232,249,0.14),0_2px_4px_rgba(0,0,0,0.5),0_18px_44px_-18px_rgba(34,211,238,0.35)]"
-          : "border-white/10 bg-[#14161d] shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] hover:border-cyan-300/25 hover:bg-[#171b23]",
+          : "border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] hover:border-cyan-300/25",
       )}
     >
       {/* Selected rail: the instrument in use is the one that is lit. Layout
@@ -282,7 +280,7 @@ export const BoardResult = memo(function BoardResult({
               <div className="flex min-w-0 flex-wrap items-center gap-1.5">
                 <h2 className="truncate text-[15px] font-semibold tracking-tight text-white">{board.name}</h2>
                 {board.hasPinout ? (
-                  <span className="flex shrink-0 items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em]" style={{ color: "#a7f3d0", backgroundColor: "#0d2a20", borderColor: "rgba(52,211,153,0.45)" }}>
+                  <span data-tone="pinmap" className="ph-iface flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.08em]">
                     <CircuitBoard className="size-3" aria-hidden="true" />
                     Pin map
                   </span>
@@ -337,8 +335,8 @@ export const BoardResult = memo(function BoardResult({
           {board.interfaces.slice(0, 7).map((item) => (
             <span
               key={item}
-              style={interfaceStyle(item)}
-              className="rounded-md border px-1.5 py-0.5 font-mono text-[11px] font-medium"
+              data-tone={interfaceTone(item)}
+              className="ph-iface"
             >
               {item}
             </span>
