@@ -278,8 +278,8 @@ body {
 }
 
 :root[data-theme="light"] .brand-title.text-transparent {
-  color: transparent;
-  background-image: linear-gradient(90deg, #164e63, #087f8c, #8a5b00);
+  color: #17202a;
+  background-image: none;
 }
 
 button,

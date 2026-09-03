@@ -18,7 +18,6 @@ import {
   Cpu,
   Database,
   Factory,
-  Flame,
   Keyboard,
   Layers3,
   LoaderCircle,
@@ -27,6 +26,7 @@ import {
   SlidersHorizontal,
   Sparkles,
   Star,
+  TrendingUp,
   X,
   Zap,
 } from "lucide-react";
@@ -461,15 +461,9 @@ export function PinHubApp({
               />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h1 className="brand-title bg-gradient-to-r from-white via-cyan-200 to-amber-200 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
-                  PinHub
-                </h1>
-                <span className="hidden items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-emerald-200 sm:flex">
-                  <span className="ph-live-dot size-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
-                  Live
-                </span>
-              </div>
+              <h1 className="brand-title bg-gradient-to-b from-white via-zinc-100 to-zinc-400 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
+                PinHub
+              </h1>
               <p className="mt-1 truncate text-xs text-zinc-400 sm:text-[13px]">
                 Source-backed pinouts for dev boards, SBCs, and
                 microcontrollers
@@ -877,23 +871,21 @@ export function PinHubApp({
             </span>
           </div>
           {!hasActiveFilters ? (
-            <div className="surface-panel ph-card-in mb-3 rounded-xl p-3.5">
-              <div className="flex items-center gap-2">
-                <span className="grid size-7 place-items-center rounded-md border border-orange-300/30 bg-orange-400/10">
-                  <Flame className="size-3.5 text-orange-200" aria-hidden="true" />
-                </span>
+            <div className="surface-panel ph-card-in mb-3 overflow-hidden rounded-xl">
+              <div className="flex items-center gap-2 border-b border-white/5 px-3.5 py-2.5">
+                <TrendingUp className="size-4 text-cyan-200" aria-hidden="true" />
                 <h2 className="text-[13px] font-semibold tracking-tight text-white">
                   Popular right now
                 </h2>
                 <span className="ml-auto hidden font-mono text-[11px] text-zinc-500 sm:inline">
-                  one tap to inspect
+                  preset slots · one tap to inspect
                 </span>
               </div>
-              <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+              <div className="flex gap-1.5 overflow-x-auto p-2.5 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:overflow-visible min-[1500px]:grid-cols-4 [&::-webkit-scrollbar]:hidden">
                 {popularBoardIds.flatMap((id) => {
                   const popular = catalog.find((board) => board.id === id);
                   return popular ? [popular] : [];
-                }).map((popular) => (
+                }).map((popular, index) => (
                   <button
                     key={popular.id}
                     type="button"
@@ -901,14 +893,28 @@ export function PinHubApp({
                       prefetchBoard(popular.id);
                       selectBoard(popular.id);
                     }}
-                    className="ph-quick-chip group flex min-h-10 items-center justify-between gap-2 rounded-lg border border-white/10 bg-[#0a0c11] px-2.5 py-2 text-left text-[13px] font-medium text-zinc-200 hover:border-cyan-300/40 hover:bg-cyan-300/[0.07] hover:text-white"
+                    aria-label={`Inspect ${popular.name}`}
+                    className="ph-quick-chip group flex min-w-56 shrink-0 items-center gap-3 rounded-lg border border-white/10 bg-[#0a0c11] px-3 py-2.5 text-left hover:border-cyan-300/40 hover:bg-cyan-300/[0.07] sm:min-w-0"
                   >
-                    <span className="min-w-0 truncate">{popular.name}</span>
-                    <ArrowRight className="size-3.5 shrink-0 text-zinc-600 transition group-hover:translate-x-0.5 group-hover:text-cyan-200" aria-hidden="true" />
+                    <span
+                      className="font-mono text-lg font-semibold tabular-nums text-zinc-600 transition group-hover:text-cyan-200"
+                      aria-hidden="true"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[13px] font-semibold text-zinc-100">
+                        {popular.name}
+                      </span>
+                      <span className="mt-0.5 block truncate font-mono text-[11px] text-zinc-500">
+                        {popular.vendor} · {popular.logicLevel}
+                      </span>
+                    </span>
+                    <ArrowRight className="size-4 shrink-0 text-zinc-600 transition group-hover:translate-x-0.5 group-hover:text-cyan-200" aria-hidden="true" />
                   </button>
                 ))}
               </div>
-              <div className="mt-2.5 flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex items-center gap-1.5 overflow-x-auto border-t border-white/5 px-3.5 py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-zinc-500">
                   <Zap className="size-3.5 text-cyan-300/70" aria-hidden="true" />
                   Try:
@@ -927,16 +933,6 @@ export function PinHubApp({
                   </button>
                 ))}
               </div>
-              <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500">
-                <span className="flex items-center gap-1.5">
-                  <Star className="size-3 text-amber-300/70" aria-hidden="true" />
-                  Star boards to build a shortlist
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Keyboard className="size-3 text-zinc-500" aria-hidden="true" />
-                  Full keyboard lookup: type, arrow, Enter
-                </span>
-              </p>
             </div>
           ) : null}
           <div className="grid gap-2.5">
