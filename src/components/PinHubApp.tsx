@@ -46,7 +46,7 @@ import { ActiveFilterChip, BoardResult, FilterPanel, FilterSelect } from "@/comp
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SectionNav } from "@/components/SectionNav";
-import { ProjectShelf } from "@/components/ProjectShelf";
+import { LibraryRail } from "@/components/ProjectShelf";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 import {
   activeCatalogFilterCount,
@@ -683,8 +683,6 @@ export function PinHubApp({
           ) : null}
       </div>
 
-      <ProjectShelf catalog={catalog} />
-
       <div className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
         <aside
           id="mobile-filters"
@@ -846,6 +844,7 @@ export function PinHubApp({
               Tip: star a board, then filter Favorites to keep a bench shortlist.
             </p>
           </section>
+          <LibraryRail catalog={catalog} />
         </aside>
 
         <section

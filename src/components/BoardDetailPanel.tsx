@@ -137,12 +137,10 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         <ArrowUp className="size-4" aria-hidden="true" />
         Back to results
       </button>
-      <section className="surface-panel overflow-hidden rounded-xl">
-        <div className="h-[3px] w-full bg-gradient-to-r from-cyan-300 via-cyan-400/60 to-amber-300/80" aria-hidden="true" />
+      <section className="surface-panel rounded-xl">
         <div className="p-5">
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-              <span className="ph-live-dot size-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
+            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
               Selected board
             </div>
             <span className="rounded-full border border-white/10 bg-[#0a0c11] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-zinc-400">

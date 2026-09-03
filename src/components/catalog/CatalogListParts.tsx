@@ -219,15 +219,6 @@ export const BoardResult = memo(function BoardResult({
           : "border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] hover:border-cyan-300/25",
       )}
     >
-      {/* Selected rail: the instrument in use is the one that is lit. Layout
-          stays stable — the rail fades, never reflows. */}
-      <span
-        aria-hidden="true"
-        className={clsx(
-          "absolute bottom-3 left-2 top-3 w-[3px] rounded-full transition-opacity",
-          selected ? "ph-row-accent opacity-100" : "opacity-0",
-        )}
-      />
       <button
         id={`board-result-action-${board.id}`}
         type="button"
@@ -267,7 +258,7 @@ export const BoardResult = memo(function BoardResult({
             })}
         className="absolute inset-0 z-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
       />
-      <div className="pointer-events-none relative z-10 p-4 pl-5">
+      <div className="pointer-events-none relative z-10 p-4">
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 pr-20">
           <div className="flex min-w-0 items-center gap-2.5">
             <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-[#0a0c11] text-sm font-bold text-zinc-300">
