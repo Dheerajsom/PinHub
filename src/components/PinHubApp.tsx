@@ -12,11 +12,13 @@ import {
   useTransition,
 } from "react";
 import {
+  ArrowRight,
   CircuitBoard,
   BookCheck,
   Cpu,
   Database,
   Factory,
+  Keyboard,
   Layers3,
   LoaderCircle,
   Radio,
@@ -24,6 +26,7 @@ import {
   SlidersHorizontal,
   Sparkles,
   Star,
+  TrendingUp,
   X,
   Zap,
 } from "lucide-react";
@@ -43,7 +46,7 @@ import { ActiveFilterChip, BoardResult, FilterPanel, FilterSelect } from "@/comp
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SectionNav } from "@/components/SectionNav";
-import { ProjectShelf } from "@/components/ProjectShelf";
+import { LibraryRail } from "@/components/ProjectShelf";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 import {
   activeCatalogFilterCount,
@@ -64,6 +67,18 @@ const allInterface = "All";
 const initialResultLimit = 16;
 const resultPageSize = 32;
 const desktopMediaQuery = "(min-width: 1024px)";
+
+// First-run invitation: one-tap lookups that show off the search index
+// (buses, silicon, safety text) plus the four boards newcomers reach for
+// first. Rendered only when the catalog is unfiltered so the workspace stays
+// dense once a task is underway.
+const quickQueries = ["ESP32", "I2C", "strap pins", "5V tolerant", "RP2040"];
+const popularBoardIds = [
+  "raspberry-pi-5",
+  "esp32-devkit-v1",
+  "arduino-uno-rev3",
+  "raspberry-pi-pico",
+];
 
 type PinHubAppProps = {
   catalog: BoardSummary[];
@@ -430,33 +445,34 @@ export function PinHubApp({
   return (
     <main className="relative isolate min-h-screen">
       <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#0a0d12] shadow-[0_1px_0_rgba(255,255,255,0.05)_inset,0_12px_30px_-24px_rgba(0,0,0,0.9)] pt-[env(safe-area-inset-top)]">
+      <header className="ph-header relative overflow-hidden pt-[env(safe-area-inset-top)]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" aria-hidden="true" />
         <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="relative size-12 shrink-0 sm:size-14">
+            <div className="relative grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-[#0e1118] shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] sm:size-14">
               <Image
                 src="/pinhub-logo.png"
                 alt=""
                 fill
                 sizes="(min-width: 640px) 56px, 48px"
-                className="object-contain"
+                className="object-contain p-1"
                 priority
                 aria-hidden="true"
               />
             </div>
             <div className="min-w-0">
-              <h1 className="brand-title bg-gradient-to-r from-white via-cyan-200 to-amber-200 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
+              <h1 className="brand-title bg-gradient-to-b from-white via-zinc-100 to-zinc-400 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
                 PinHub
               </h1>
-              <p className="mt-1 truncate text-xs text-zinc-400 sm:text-sm">
+              <p className="mt-1 truncate text-xs text-zinc-400 sm:text-[13px]">
                 Source-backed pinouts for dev boards, SBCs, and
                 microcontrollers
               </p>
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-3 sm:gap-5">
-            <dl className="hidden items-center gap-5 text-sm sm:flex">
+          <div className="flex shrink-0 items-center gap-2.5 sm:gap-5">
+            <dl className="hidden items-center gap-2 text-sm md:flex">
               <Metric label="Boards" value={catalog.length.toString()} />
               <Metric label="Interfaces" value={interfaceCount.toString()} />
               <Metric label="Sources" value={sourceCount.toString()} />
@@ -467,92 +483,87 @@ export function PinHubApp({
         </div>
       </header>
 
-      <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.95)]">
-        <div className="mx-auto flex max-w-[1560px] flex-col gap-2.5 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:px-6 lg:px-8">
+      <div className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
+        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6 lg:px-8">
           <SectionNav current="/" />
-          <label className="relative block w-full sm:min-w-56 sm:flex-1">
-            <Search
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
-              aria-hidden="true"
-            />
-            <input
-              ref={searchRef}
-              value={query}
-              maxLength={maxCatalogQueryLength}
-              onChange={(event) => changeQuery(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  changeQuery("");
-                  event.currentTarget.blur();
-                }
-                if (event.key === "Enter" && selectedBoard) {
-                  selectBoard(selectedBoard.id);
-                }
-                // Arrow keys walk the selection through the current results
-                // without leaving the search field, so a lookup can stay
-                // entirely on the keyboard: type, arrow, read the pin map.
-                if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-                  event.preventDefault();
-                  if (filteredBoards.length === 0) return;
-                  const index = filteredBoards.findIndex(
-                    (board) => board.id === selectedBoard.id,
-                  );
-                  const step = event.key === "ArrowDown" ? 1 : -1;
-                  const nextIndex = Math.min(
-                    Math.max(index + step, 0),
-                    filteredBoards.length - 1,
-                  );
-                  const next = filteredBoards[nextIndex];
-                  if (next) {
-                    setSelectedId(next.id);
-                    if (nextIndex >= visibleLimit) {
-                      setCatalogState((current) => ({
-                        ...current,
-                        page:
-                          Math.ceil(
-                            (nextIndex + 1 - initialResultLimit) /
-                              resultPageSize,
-                          ) + 1,
-                      }));
+          <label className="ph-search-shell relative block w-full min-w-44 flex-1 rounded-xl shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] max-sm:order-first sm:w-auto">
+              <Search
+                className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
+                aria-hidden="true"
+              />
+              <input
+                ref={searchRef}
+                value={query}
+                maxLength={maxCatalogQueryLength}
+                onChange={(event) => changeQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    changeQuery("");
+                    event.currentTarget.blur();
+                  }
+                  if (event.key === "Enter" && selectedBoard) {
+                    selectBoard(selectedBoard.id);
+                  }
+                  // Arrow keys walk the selection through the current results
+                  // without leaving the search field, so a lookup can stay
+                  // entirely on the keyboard: type, arrow, read the pin map.
+                  if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                    event.preventDefault();
+                    if (filteredBoards.length === 0) return;
+                    const index = filteredBoards.findIndex(
+                      (board) => board.id === selectedBoard.id,
+                    );
+                    const step = event.key === "ArrowDown" ? 1 : -1;
+                    const nextIndex = Math.min(
+                      Math.max(index + step, 0),
+                      filteredBoards.length - 1,
+                    );
+                    const next = filteredBoards[nextIndex];
+                    if (next) {
+                      setSelectedId(next.id);
+                      if (nextIndex >= visibleLimit) {
+                        setCatalogState((current) => ({
+                          ...current,
+                          page:
+                            Math.ceil(
+                              (nextIndex + 1 - initialResultLimit) /
+                                resultPageSize,
+                            ) + 1,
+                        }));
+                      }
                     }
                   }
-                }
-              }}
-              placeholder="Search boards, vendors, interfaces, warnings..."
-              aria-label="Search boards"
-              aria-controls="board-results"
-              className="h-11 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-16 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/40"
-            />
-            {query ? (
-              <button
-                type="button"
-                onClick={() => changeQuery("")}
-                aria-label="Clear search"
-                className="absolute right-0 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded text-zinc-500 transition hover:text-white"
-              >
-                <X className="size-4" aria-hidden="true" />
-              </button>
-            ) : (
-              <kbd
-                className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[11px] text-zinc-500 sm:block"
-                aria-hidden="true"
-              >
-                /
-              </kbd>
-            )}
-          </label>
-
-          {/* On mobile the controls scroll horizontally in one compact row
-              instead of wrapping into a tall stack on every scroll. The
-              negative margin lets the row bleed to the screen edges. */}
-          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 text-sm [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden">
+                }}
+                placeholder="Search boards, vendors, interfaces, warnings…"
+                aria-label="Search boards"
+                aria-controls="board-results"
+                className="ph-search-input h-10 w-full rounded-xl border-0 bg-transparent pl-10 pr-12 text-sm outline-none"
+              />
+              {query ? (
+                <button
+                  type="button"
+                  onClick={() => changeQuery("")}
+                  aria-label="Clear search"
+                  className="absolute right-1 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-lg text-zinc-500 transition hover:bg-white/[0.06] hover:text-white"
+                >
+                  <X className="size-4" aria-hidden="true" />
+                </button>
+              ) : (
+                <kbd
+                  className="ph-kbd pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 sm:block"
+                  aria-hidden="true"
+                >
+                  /
+                </kbd>
+              )}
+            </label>
             <button
               type="button"
               onClick={() => setMobileFiltersOpen((value) => !value)}
               aria-expanded={mobileFiltersOpen}
               aria-controls="mobile-filters"
               className={clsx(
-                "flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs transition lg:hidden",
+                "flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition lg:hidden",
                 mobileFiltersOpen || activeFilterCount > 0
                   ? "border-cyan-300/70 bg-cyan-300/10 text-cyan-50"
                   : "border-white/10 text-zinc-300 hover:border-white/25 hover:text-white",
@@ -578,7 +589,7 @@ export function PinHubApp({
               }}
               aria-pressed={showFavoritesOnly}
               className={clsx(
-                "fav-button inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1.5 text-xs font-semibold leading-none",
+                "fav-button inline-flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-xs font-semibold leading-none",
                 showFavoritesOnly
                   ? "bg-gradient-to-b from-amber-300 to-amber-400 text-zinc-950"
                   : "bg-amber-400/10 text-amber-200 hover:bg-amber-400/20 hover:text-amber-50",
@@ -617,7 +628,7 @@ export function PinHubApp({
                 }))
               }
               aria-label="Sort boards"
-              className="h-11 shrink-0 rounded-md border border-white/10 bg-[#15181f] px-2.5 text-xs text-zinc-200 outline-none transition focus:border-cyan-300/60"
+              className="h-10 shrink-0 cursor-pointer rounded-lg border border-white/10 bg-[#15181f] px-2.5 text-xs text-zinc-200 outline-none transition hover:border-white/20 focus:border-cyan-300/60"
             >
               {query ? <option value="relevance">Best match</option> : null}
               <option value="catalog">Catalog order</option>
@@ -626,60 +637,51 @@ export function PinHubApp({
               <option value="recentlyAdded">Recently added</option>
               <option value="interfaceCount">Most interfaces</option>
             </select>
-            <span
-              className="shrink-0 font-mono text-xs text-zinc-400"
-              role="status"
-              aria-live="polite"
-            >
-              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
-              {hasActiveFilters ? "matches" : "boards"}
-              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
-              {paging ? " · loading more" : ""}
-            </span>
-            {catalogState.category.map((value) => (
-              <ActiveFilterChip key={`category-${value}`} label={value} onClear={() => clearArrayFilter("category", value)} />
-            ))}
-            {catalogState.interface.map((value) => (
-              <ActiveFilterChip key={`interface-${value}`} label={value} onClear={() => clearArrayFilter("interface", value)} />
-            ))}
-            {catalogState.vendor.map((value) => (
-              <ActiveFilterChip key={`vendor-${value}`} label={`Maker: ${value}`} onClear={() => clearArrayFilter("vendor", value)} />
-            ))}
-            {catalogState.family.map((value) => (
-              <ActiveFilterChip key={`family-${value}`} label={`Family: ${value}`} onClear={() => clearArrayFilter("family", value)} />
-            ))}
-            {catalogState.logic.map((value) => (
-              <ActiveFilterChip key={`logic-${value}`} label={value} onClear={() => clearArrayFilter("logic", value)} />
-            ))}
-            {catalogState.power.map((value) => (
-              <ActiveFilterChip key={`power-${value}`} label={value} onClear={() => clearArrayFilter("power", value)} />
-            ))}
-            {catalogState.form.map((value) => (
-              <ActiveFilterChip key={`form-${value}`} label={value} onClear={() => clearArrayFilter("form", value)} />
-            ))}
-            {catalogState.wirelessCapability !== "any" ? (
-              <ActiveFilterChip label={catalogState.wirelessCapability === "has" ? "Has wireless" : "No wireless"} onClear={() => setCatalogState((current) => ({ ...current, wirelessCapability: "any", page: 1 }))} />
-            ) : null}
-            {catalogState.officialDocumentation !== "any" ? (
-              <ActiveFilterChip label={catalogState.officialDocumentation === "has" ? "Official docs" : "No official docs"} onClear={() => setCatalogState((current) => ({ ...current, officialDocumentation: "any", page: 1 }))} />
-            ) : null}
-            {catalogState.pinoutOnly ? (
-              <ActiveFilterChip label="In-app pin map" onClear={() => setCatalogState((current) => ({ ...current, pinoutOnly: false, page: 1 }))} />
-            ) : null}
-            {hasActiveFilters ? (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="shrink-0 rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
-              >
-                Reset
-              </button>
-            ) : null}
           </div>
-        </div>
+          {hasActiveFilters ? (
+            <div className="border-t border-white/5">
+              <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-1.5 px-4 py-2 sm:px-6 lg:px-8">
+                {catalogState.category.map((value) => (
+                  <ActiveFilterChip key={`category-${value}`} label={value} onClear={() => clearArrayFilter("category", value)} />
+                ))}
+                {catalogState.interface.map((value) => (
+                  <ActiveFilterChip key={`interface-${value}`} label={value} onClear={() => clearArrayFilter("interface", value)} />
+                ))}
+                {catalogState.vendor.map((value) => (
+                  <ActiveFilterChip key={`vendor-${value}`} label={`Maker: ${value}`} onClear={() => clearArrayFilter("vendor", value)} />
+                ))}
+                {catalogState.family.map((value) => (
+                  <ActiveFilterChip key={`family-${value}`} label={`Family: ${value}`} onClear={() => clearArrayFilter("family", value)} />
+                ))}
+                {catalogState.logic.map((value) => (
+                  <ActiveFilterChip key={`logic-${value}`} label={value} onClear={() => clearArrayFilter("logic", value)} />
+                ))}
+                {catalogState.power.map((value) => (
+                  <ActiveFilterChip key={`power-${value}`} label={value} onClear={() => clearArrayFilter("power", value)} />
+                ))}
+                {catalogState.form.map((value) => (
+                  <ActiveFilterChip key={`form-${value}`} label={value} onClear={() => clearArrayFilter("form", value)} />
+                ))}
+                {catalogState.wirelessCapability !== "any" ? (
+                  <ActiveFilterChip label={catalogState.wirelessCapability === "has" ? "Has wireless" : "No wireless"} onClear={() => setCatalogState((current) => ({ ...current, wirelessCapability: "any", page: 1 }))} />
+                ) : null}
+                {catalogState.officialDocumentation !== "any" ? (
+                  <ActiveFilterChip label={catalogState.officialDocumentation === "has" ? "Official docs" : "No official docs"} onClear={() => setCatalogState((current) => ({ ...current, officialDocumentation: "any", page: 1 }))} />
+                ) : null}
+                {catalogState.pinoutOnly ? (
+                  <ActiveFilterChip label="In-app pin map" onClear={() => setCatalogState((current) => ({ ...current, pinoutOnly: false, page: 1 }))} />
+                ) : null}
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="shrink-0 rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          ) : null}
       </div>
-
-      <ProjectShelf catalog={catalog} />
 
       <div className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
         <aside
@@ -816,7 +818,7 @@ export function PinHubApp({
               setMobileFiltersOpen(false);
             }}
           />
-          <label className="surface-panel flex cursor-pointer items-center justify-between gap-3 rounded-lg p-3 text-sm text-zinc-300">
+          <label className="surface-panel flex cursor-pointer items-center justify-between gap-3 rounded-xl p-3 text-sm text-zinc-300">
             Has in-app pin map
             <input
               type="checkbox"
@@ -828,17 +830,21 @@ export function PinHubApp({
               className="size-4 accent-cyan-300"
             />
           </label>
-          <section className="surface-panel hidden rounded-lg p-4 lg:block">
-            <div className="flex items-center gap-2 text-sm font-semibold text-white">
+          <section className="surface-panel hidden rounded-xl p-4 lg:block">
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
               <Sparkles className="size-4 text-amber-200" aria-hidden="true" />
               Curation notes
             </div>
-            <p className="mt-3 text-sm leading-6 text-zinc-400">
-              In-app maps are included where connector layouts are stable and
+            <p className="mt-2.5 text-[13px] leading-6 text-zinc-400">
+              In-app maps ship where connector layouts are stable and
               source-backed. Entries without maps still link to the official
-              pinout, manual, datasheet, or schematic.
+              pinout, manual, datasheet, or schematic — nothing is a dead end.
+            </p>
+            <p className="mt-2.5 border-t border-white/10 pt-2.5 font-mono text-[11px] leading-5 text-zinc-500">
+              Tip: star a board, then filter Favorites to keep a bench shortlist.
             </p>
           </section>
+          <LibraryRail catalog={catalog} />
         </aside>
 
         <section
@@ -847,6 +853,87 @@ export function PinHubApp({
           className="min-w-0 scroll-mt-32"
           aria-label="Board results"
         >
+          <div className="mb-2 flex items-center justify-between gap-3 px-0.5">
+            <span
+              className="font-mono text-xs tabular-nums text-zinc-400"
+              role="status"
+              aria-live="polite"
+            >
+              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
+              {hasActiveFilters ? "matches" : "boards"}
+              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
+              {paging ? " · loading more" : ""}
+            </span>
+            <span className="hidden shrink-0 items-center gap-1.5 font-mono text-[11px] text-zinc-600 lg:flex" aria-hidden="true">
+              <Keyboard className="size-3.5" />
+              / to search · ↑↓ to move · Enter to open
+            </span>
+          </div>
+          {!hasActiveFilters ? (
+            <div className="surface-panel ph-card-in mb-3 overflow-hidden rounded-xl">
+              <div className="flex items-center gap-2 border-b border-white/5 px-3.5 py-2.5">
+                <TrendingUp className="size-4 text-cyan-200" aria-hidden="true" />
+                <h2 className="text-[13px] font-semibold tracking-tight text-white">
+                  Popular right now
+                </h2>
+                <span className="ml-auto hidden font-mono text-[11px] text-zinc-500 sm:inline">
+                  preset slots · one tap to inspect
+                </span>
+              </div>
+              <div className="flex gap-1.5 overflow-x-auto p-2.5 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:overflow-visible min-[1500px]:grid-cols-4 [&::-webkit-scrollbar]:hidden">
+                {popularBoardIds.flatMap((id) => {
+                  const popular = catalog.find((board) => board.id === id);
+                  return popular ? [popular] : [];
+                }).map((popular, index) => (
+                  <button
+                    key={popular.id}
+                    type="button"
+                    onClick={() => {
+                      prefetchBoard(popular.id);
+                      selectBoard(popular.id);
+                    }}
+                    aria-label={`Inspect ${popular.name}`}
+                    className="ph-quick-chip group flex min-w-56 shrink-0 items-center gap-3 rounded-lg border border-white/10 bg-[#0a0c11] px-3 py-2.5 text-left hover:border-cyan-300/40 hover:bg-cyan-300/[0.07] sm:min-w-0"
+                  >
+                    <span
+                      className="font-mono text-lg font-semibold tabular-nums text-zinc-600 transition group-hover:text-cyan-200"
+                      aria-hidden="true"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[13px] font-semibold text-zinc-100">
+                        {popular.name}
+                      </span>
+                      <span className="mt-0.5 block truncate font-mono text-[11px] text-zinc-500">
+                        {popular.vendor} · {popular.logicLevel}
+                      </span>
+                    </span>
+                    <ArrowRight className="size-4 shrink-0 text-zinc-600 transition group-hover:translate-x-0.5 group-hover:text-cyan-200" aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-1.5 overflow-x-auto border-t border-white/5 px-3.5 py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-zinc-500">
+                  <Zap className="size-3.5 text-cyan-300/70" aria-hidden="true" />
+                  Try:
+                </span>
+                {quickQueries.map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => {
+                      changeQuery(suggestion);
+                      searchRef.current?.focus();
+                    }}
+                    className="ph-quick-chip shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
           <div className="grid gap-2.5">
             {visibleBoards.map((board) => (
               <Fragment key={board.id}>
@@ -908,7 +995,7 @@ export function PinHubApp({
               disabled={paging}
               aria-disabled={paging}
               aria-controls="board-results"
-              className="mt-3 flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#14161d] px-4 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/40 hover:bg-[#191c24] hover:text-white disabled:cursor-progress disabled:border-white/10 disabled:bg-[#14161d] disabled:text-zinc-500"
+              className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#14161d] px-4 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/40 hover:bg-[#191c24] hover:text-white disabled:cursor-progress disabled:border-white/10 disabled:bg-[#14161d] disabled:text-zinc-500"
             >
               {paging ? (
                 <>
@@ -933,12 +1020,12 @@ export function PinHubApp({
 
           {filteredBoards.length === 0 ? (
             favoritesEmpty ? (
-              <div className="rounded-lg border border-dashed border-amber-300/25 bg-[#15120c] p-8 text-center">
+              <div className="rounded-xl border border-dashed border-amber-300/25 bg-[#15120c] p-8 text-center">
                 <Star
                   className="mx-auto size-8 fill-amber-300/20 text-amber-300/80"
                   aria-hidden="true"
                 />
-                <h2 className="mt-4 text-lg font-semibold text-white">
+                <h2 className="mt-4 text-lg font-semibold tracking-tight text-white">
                   No saved boards yet
                 </h2>
                 <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-400">
@@ -956,27 +1043,39 @@ export function PinHubApp({
                     }));
                     resetResultView();
                   }}
-                  className="mt-4 min-h-10 rounded-md border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-medium text-amber-50 transition hover:bg-amber-300/20"
+                  className="mt-4 min-h-10 rounded-lg border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-medium text-amber-50 transition hover:bg-amber-300/20"
                 >
                   Browse the catalog
                 </button>
               </div>
             ) : (
-              <div className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-8 text-center">
+              <div className="rounded-xl border border-dashed border-white/15 bg-[#101319] p-8 text-center">
                 <Database
                   className="mx-auto size-8 text-zinc-500"
                   aria-hidden="true"
                 />
-                <h2 className="mt-4 text-lg font-semibold text-white">
+                <h2 className="mt-4 text-lg font-semibold tracking-tight text-white">
                   No boards match that filter
                 </h2>
                 <p className="mt-2 text-sm text-zinc-400">
                   Try a broader search term or clear one of the filters.
                 </p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+                  {quickQueries.slice(0, 4).map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => changeQuery(suggestion)}
+                      className="ph-quick-chip rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="mt-4 min-h-10 rounded-md border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50 transition hover:bg-cyan-300/20"
+                  className="mt-4 min-h-10 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-300/20"
                 >
                   Reset filters
                 </button>
@@ -1017,11 +1116,11 @@ function GitHubButton() {
       rel="noopener noreferrer"
       aria-label="View PinHub source on GitHub (opens in a new tab)"
       title="View source on GitHub"
-      className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-lg border border-white/15 bg-[#15181f] px-2.5 text-sm font-medium text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/60 hover:bg-[#1c2029] hover:text-white active:scale-[0.97] sm:px-3"
+      className="ph-chrome-button group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-xl px-2.5 text-sm font-medium text-zinc-200 transition hover:text-white active:scale-[0.97] sm:px-3"
     >
       <svg
         viewBox="0 0 24 24"
-        className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-105"
+        className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:text-cyan-200"
         fill="currentColor"
         aria-hidden="true"
       >
@@ -1041,11 +1140,11 @@ function Metric({ label, value }: MetricProps) {
   return (
     // flex-col-reverse keeps the value visually on top while preserving the
     // semantically correct <dt> before <dd> order in the DOM.
-    <div className="flex flex-col-reverse text-right">
-      <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-zinc-500">
+    <div className="flex flex-col-reverse rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-right transition hover:border-cyan-300/25">
+      <dt className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500">
         {label}
       </dt>
-      <dd className="font-mono text-lg font-semibold leading-none text-white">
+      <dd className="font-mono text-[15px] font-semibold leading-none tabular-nums text-white">
         {value}
       </dd>
     </div>

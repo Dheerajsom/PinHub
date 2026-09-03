@@ -37,7 +37,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={nextLabel}
       title={nextLabel}
-      className="grid size-10 shrink-0 place-items-center rounded-lg border border-white/15 bg-[#15181f] text-zinc-300 transition hover:border-cyan-300/60 hover:text-white"
+      className="ph-chrome-button grid size-10 shrink-0 place-items-center rounded-xl text-zinc-300 transition hover:text-white active:scale-[0.96]"
     >
       {theme === "dark" ? (
         <Sun className="size-4" aria-hidden="true" />
