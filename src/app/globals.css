@@ -15,6 +15,11 @@
   --panel: #14161d;
   --well: #0e1015;
   --panel-border: rgba(255, 255, 255, 0.08);
+  /* Tailwind's stock zinc-500/600 values fall below WCAG AA on the dark
+     workbench surfaces. Keep the same muted hierarchy while making labels,
+     counts, and helper copy readable at small sizes. */
+  --color-zinc-500: #9ca3af;
+  --color-zinc-600: #8b93a1;
 }
 
 :root[data-theme="light"] {

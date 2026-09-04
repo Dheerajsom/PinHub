@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   Fragment,
   useCallback,
@@ -8,7 +7,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
   useTransition,
 } from "react";
 import {
@@ -44,10 +42,14 @@ import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { ActiveFilterChip, BoardResult, FilterPanel, FilterSelect } from "@/components/catalog/CatalogListParts";
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { SectionNav } from "@/components/SectionNav";
 import { LibraryRail } from "@/components/ProjectShelf";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
+import { CatalogHeader } from "@/components/catalog/CatalogHeader";
+import {
+  isDesktopCatalogLayout,
+  useDesktopCatalogLayout,
+} from "@/components/catalog/useDesktopCatalogLayout";
 import {
   activeCatalogFilterCount,
   boundCatalogQuery,
@@ -66,7 +68,6 @@ const allInterface = "All";
 // pagination control and all records remain searchable client-side.
 const initialResultLimit = 16;
 const resultPageSize = 32;
-const desktopMediaQuery = "(min-width: 1024px)";
 
 // First-run invitation: one-tap lookups that show off the search index
 // (buses, silicon, safety text) plus the four boards newcomers reach for
@@ -93,23 +94,6 @@ function scrollBehavior(): ScrollBehavior {
     ? "auto"
     : "smooth";
 }
-
-function subscribeToDesktopLayout(listener: () => void): () => void {
-  const mediaQuery = window.matchMedia(desktopMediaQuery);
-  mediaQuery.addEventListener("change", listener);
-  return () => mediaQuery.removeEventListener("change", listener);
-}
-
-function getDesktopLayoutSnapshot(): boolean {
-  return window.matchMedia(desktopMediaQuery).matches;
-}
-
-function getServerDesktopLayoutSnapshot(): boolean {
-  // The server renders the desktop detail once for useful no-JS HTML. Mobile
-  // clients swap to the inline detail surface immediately after hydration.
-  return true;
-}
-
 export function PinHubApp({
   catalog,
   initialBoard,
@@ -134,19 +118,15 @@ export function PinHubApp({
     status: "ready",
     board: initialBoard,
   });
-  // On phones the filter sidebar is collapsed into a toggle so the catalog
-  // stays first; on lg+ it is always shown as a sticky column.
+  // Below the full three-column workspace the filter sidebar is collapsed
+  // into a toggle so the catalog stays wide enough to scan comfortably.
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   // Paging in 32 more result rows is the one interaction here that can take
   // long enough to look broken, so it runs as a transition: the button says it
   // is working and stops accepting clicks until the rows are committed.
   const [paging, startPaging] = useTransition();
   const storedFavorites = useFavorites();
-  const isDesktop = useSyncExternalStore(
-    subscribeToDesktopLayout,
-    getDesktopLayoutSnapshot,
-    getServerDesktopLayoutSnapshot,
-  );
+  const isDesktop = useDesktopCatalogLayout();
   const searchRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
   const [detailLoader] = useState(() =>
@@ -387,13 +367,13 @@ export function PinHubApp({
   // query or an unrelated row's state changes — which is why the layout and the
   // current selection are read at click time instead of being closed over. The
   // layout check must use the same query the layout does: a separate
-  // `(max-width: 1023px)` query disagrees at fractional widths, where neither
+  // `(max-width: 1279px)` query disagrees at fractional widths, where neither
   // matches and the detail would then render in neither column.
   const selectBoard = useCallback((id: string) => {
     const reselected = selectedIdRef.current === id;
     setSelectedId(id);
-    if (!getDesktopLayoutSnapshot()) {
-      // On phones the row is a disclosure for the inline detail below it, so
+    if (!isDesktopCatalogLayout()) {
+      // In the compact layout the row discloses its inline detail below it, so
       // tapping the open board closes it again — which is what `aria-expanded`
       // on that row promises.
       setMobileDetailOpen((open) => !(open && reselected));
@@ -445,43 +425,11 @@ export function PinHubApp({
   return (
     <main className="relative isolate min-h-screen">
       <CircuitBackground />
-      <header className="ph-header relative overflow-hidden pt-[env(safe-area-inset-top)]">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" aria-hidden="true" />
-        <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="relative grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-[#0e1118] shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] sm:size-14">
-              <Image
-                src="/pinhub-logo.png"
-                alt=""
-                fill
-                sizes="(min-width: 640px) 56px, 48px"
-                className="object-contain p-1"
-                priority
-                aria-hidden="true"
-              />
-            </div>
-            <div className="min-w-0">
-              <h1 className="brand-title bg-gradient-to-b from-white via-zinc-100 to-zinc-400 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
-                PinHub
-              </h1>
-              <p className="mt-1 truncate text-xs text-zinc-400 sm:text-[13px]">
-                Source-backed pinouts for dev boards, SBCs, and
-                microcontrollers
-              </p>
-            </div>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-2.5 sm:gap-5">
-            <dl className="hidden items-center gap-2 text-sm md:flex">
-              <Metric label="Boards" value={catalog.length.toString()} />
-              <Metric label="Interfaces" value={interfaceCount.toString()} />
-              <Metric label="Sources" value={sourceCount.toString()} />
-            </dl>
-            <ThemeToggle />
-            <GitHubButton />
-          </div>
-        </div>
-      </header>
+      <CatalogHeader
+        boardCount={catalog.length}
+        interfaceCount={interfaceCount}
+        sourceCount={sourceCount}
+      />
 
       <div className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6 lg:px-8">
@@ -563,7 +511,7 @@ export function PinHubApp({
               aria-expanded={mobileFiltersOpen}
               aria-controls="mobile-filters"
               className={clsx(
-                "flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition lg:hidden",
+                "flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition xl:hidden",
                 mobileFiltersOpen || activeFilterCount > 0
                   ? "border-cyan-300/70 bg-cyan-300/10 text-cyan-50"
                   : "border-white/10 text-zinc-300 hover:border-white/25 hover:text-white",
@@ -683,14 +631,14 @@ export function PinHubApp({
           ) : null}
       </div>
 
-      <div className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)] lg:px-8">
+      <div id="catalog-workspace" className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:px-8 xl:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)]">
         <aside
           id="mobile-filters"
           className={clsx(
-            "space-y-4 lg:sticky lg:top-[5.25rem] lg:max-h-[calc(100vh-6.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2",
-            // Collapsed on phones until the Filters toggle is tapped; the
-            // sidebar is always visible from lg up.
-            mobileFiltersOpen ? "block" : "hidden lg:block",
+            "space-y-4 xl:sticky xl:top-[5.25rem] xl:max-h-[calc(100vh-6.25rem)] xl:self-start xl:overflow-y-auto xl:pb-2",
+            // Collapsed until the full desktop workspace fits; the sidebar is
+            // always visible from xl up.
+            mobileFiltersOpen ? "block" : "hidden xl:block",
           )}
         >
           <FilterPanel
@@ -830,7 +778,7 @@ export function PinHubApp({
               className="size-4 accent-cyan-300"
             />
           </label>
-          <section className="surface-panel hidden rounded-xl p-4 lg:block">
+          <section className="surface-panel hidden rounded-xl p-4 xl:block">
             <div className="flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
               <Sparkles className="size-4 text-amber-200" aria-hidden="true" />
               Curation notes
@@ -960,7 +908,7 @@ export function PinHubApp({
                     role="region"
                     aria-label={`${board.name} details`}
                     tabIndex={-1}
-                    className="min-w-0 scroll-mt-32 outline-none lg:hidden"
+                    className="min-w-0 scroll-mt-32 outline-none xl:hidden"
                   >
                     <BoardDetailPanel
                       expectedBoard={board}
@@ -1101,52 +1049,5 @@ export function PinHubApp({
         ) : null}
       </div>
     </main>
-  );
-}
-
-const repoUrl = "https://github.com/Dheerajsom/PinHub";
-
-// Official GitHub "Octocat" mark, inlined as an SVG path so it renders crisply
-// at any size and inherits the current text color on hover.
-function GitHubButton() {
-  return (
-    <a
-      href={repoUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="View PinHub source on GitHub (opens in a new tab)"
-      title="View source on GitHub"
-      className="ph-chrome-button group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-xl px-2.5 text-sm font-medium text-zinc-200 transition hover:text-white active:scale-[0.97] sm:px-3"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:text-cyan-200"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-      </svg>
-      <span className="relative hidden sm:inline">GitHub</span>
-    </a>
-  );
-}
-
-type MetricProps = {
-  label: string;
-  value: string;
-};
-
-function Metric({ label, value }: MetricProps) {
-  return (
-    // flex-col-reverse keeps the value visually on top while preserving the
-    // semantically correct <dt> before <dd> order in the DOM.
-    <div className="flex flex-col-reverse rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-right transition hover:border-cyan-300/25">
-      <dt className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500">
-        {label}
-      </dt>
-      <dd className="font-mono text-[15px] font-semibold leading-none tabular-nums text-white">
-        {value}
-      </dd>
-    </div>
   );
 }

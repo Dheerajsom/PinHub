@@ -255,7 +255,13 @@ function Pad({
   onToggle: () => void;
 }) {
   const colors = roleColors[anchor.pin.role];
-  const gradientId = `pad-${anchor.pin.role}-${uid}`;
+  // Every pad emits its own gradient definition, so include the stable anchor
+  // key as well as the role. Repeated power/GPIO roles must not create
+  // duplicate SVG IDs or ambiguous url(#...) references.
+  const gradientId = `pad-${anchor.pin.role}-${anchor.key}-${uid}`.replace(
+    /[^a-zA-Z0-9_-]/g,
+    "-",
+  );
 
   return (
     <g

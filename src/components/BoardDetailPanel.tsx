@@ -66,13 +66,13 @@ export function BoardDetailPanel({
         <BoardDetail board={board} onBackToResults={onBackToResults} />
       ) : (
         <aside
-          className="min-w-0 space-y-4 lg:sticky lg:top-[5.25rem] lg:self-start"
+          className="min-w-0 space-y-4 xl:sticky xl:top-[5.25rem] xl:self-start"
           aria-busy={!failed}
         >
           <button
             type="button"
             onClick={onBackToResults}
-            className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white lg:hidden"
+            className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white xl:hidden"
           >
             <ArrowUp className="size-4" aria-hidden="true" />
             Back to results
@@ -126,13 +126,13 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   ).length;
   const isFiveVoltTolerant = /5\s?v/i.test(board.logicLevel) && /tolerant/i.test(board.warnings.join(" ") + board.logicLevel);
   return (
-    <aside className="min-w-0 space-y-4 lg:sticky lg:top-[5.25rem] lg:max-h-[calc(100vh-6.25rem)] lg:self-start lg:overflow-y-auto lg:pb-2 lg:pr-1">
+    <aside className="min-w-0 space-y-4 xl:sticky xl:top-[5.25rem] xl:max-h-[calc(100vh-6.25rem)] xl:self-start xl:overflow-y-auto xl:pb-2 xl:pr-1">
       {/* Stacked-layout escape hatch: the detail panel sits below the result
-          list on phones, so offer a quick way back up. Hidden on lg+. */}
+          list below the desktop workspace, so offer a quick way back up. */}
       <button
         type="button"
         onClick={onBackToResults}
-        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] lg:hidden"
+        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] xl:hidden"
       >
         <ArrowUp className="size-4" aria-hidden="true" />
         Back to results
@@ -242,7 +242,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         {revisionNotes.length ? <ul className="mt-2 grid gap-2 text-sm leading-6 text-zinc-400">{revisionNotes.map((note) => <li key={note} className="flex gap-2"><span className="mt-2.5 size-1 shrink-0 rounded-full bg-cyan-300/70" aria-hidden="true" />{note}</li>)}</ul> : <p className="mt-2 text-[13px] leading-6 text-zinc-500">No revision-specific note is documented in PinHub. Verify your exact board revision against the linked sources.</p>}
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
         <InfoBlock
           title="Why it matters"
           icon={<Zap className="size-3.5 text-emerald-200" aria-hidden="true" />}

@@ -28,3 +28,7 @@ yarn-error.log*
 
 # local analysis tool output
 /graphify-out
+
+# browser test artifacts
+/playwright-report
+/test-results
