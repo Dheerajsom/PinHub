@@ -56,7 +56,7 @@ const catalog = [pi5, hat, ...extras].map(summarizeBoard);
 
 function setViewport(desktop: boolean) {
   window.matchMedia = ((query: string) => ({
-    matches: query.includes("min-width: 1024px") ? desktop : false,
+    matches: query.includes("min-width: 1280px") ? desktop : false,
     media: query,
     onchange: null,
     addEventListener: () => {},

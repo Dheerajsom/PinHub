@@ -41,6 +41,23 @@ describe("personal project library", () => {
     ]);
   });
 
+  it("restores a removed collection to its original shelf position", async () => {
+    const library = await loadLibrary();
+    const firstId = library.createCollection("First", ["pico"]);
+    library.createCollection("Second", ["uno"]);
+    const first = library.getPersonalLibrarySnapshot().collections[0]!;
+
+    library.removeCollection(firstId!);
+    expect(
+      library.getPersonalLibrarySnapshot().collections.map(({ name }) => name),
+    ).toEqual(["Second"]);
+
+    library.restoreCollection(first, 0);
+    expect(
+      library.getPersonalLibrarySnapshot().collections.map(({ name }) => name),
+    ).toEqual(["First", "Second"]);
+  });
+
   it("defensively normalizes malformed collection records", async () => {
     const library = await loadLibrary();
     const normalized = library.normalizePersonalLibrary({
@@ -82,4 +99,5 @@ describe("personal project library", () => {
     expect(listener).toHaveBeenCalledTimes(1);
     expect(library.getPersonalLibrarySnapshot().recentBoardIds).toEqual(["uno"]);
   });
+
 });

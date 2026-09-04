@@ -191,6 +191,22 @@ export function removeCollection(collectionId: string): void {
   });
 }
 
+export function restoreCollection(
+  collection: LocalBoardCollection,
+  originalIndex: number,
+): void {
+  const current = getPersonalLibrarySnapshot();
+  const collections = current.collections.filter(
+    (item) => item.id !== collection.id,
+  );
+  const index = Math.min(Math.max(originalIndex, 0), collections.length);
+  collections.splice(index, 0, collection);
+  persist({
+    ...current,
+    collections: collections.slice(0, 24),
+  });
+}
+
 export function usePersonalLibrary(): PersonalLibrarySnapshot {
   return useSyncExternalStore(
     subscribeToPersonalLibrary,

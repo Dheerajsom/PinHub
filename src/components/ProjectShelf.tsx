@@ -2,21 +2,31 @@
 
 import Link from "next/link";
 import { Check, Clock3, Copy, Folder, Trash2, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { BoardSummary } from "@/lib/board-summary";
 import { collectionSharePath } from "@/lib/collection-params";
 import {
   removeCollection,
+  restoreCollection,
   setBoardInCollection,
   usePersonalLibrary,
+  type LocalBoardCollection,
 } from "@/lib/personal-library";
+
+type RemovedCollection = {
+  collection: LocalBoardCollection;
+  index: number;
+};
 
 // Personal library as left-rail sections instead of a full-width strip: the
 // bench history and named sets sit with the other lookup-scoping controls,
-// always visible on desktop and one Filters tap away on phones.
+// always visible on desktop and one Filters tap away on compact layouts.
 export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
   const library = usePersonalLibrary();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [removed, setRemoved] = useState<RemovedCollection | null>(null);
+  const undoTimer = useRef<number | null>(null);
   const boardsById = useMemo(
     () => new Map(catalog.map((board) => [board.id, board])),
     [catalog],
@@ -26,8 +36,38 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
     return board ? [board] : [];
   });
 
+  useEffect(
+    () => () => {
+      if (undoTimer.current) window.clearTimeout(undoTimer.current);
+    },
+    [],
+  );
+
+  function deleteCollection(collection: LocalBoardCollection) {
+    if (undoTimer.current) window.clearTimeout(undoTimer.current);
+    const index = library.collections.findIndex(
+      (item) => item.id === collection.id,
+    );
+    removeCollection(collection.id);
+    setRemoved({ collection, index: Math.max(index, 0) });
+    undoTimer.current = window.setTimeout(() => {
+      setRemoved(null);
+      undoTimer.current = null;
+    }, 6000);
+  }
+
+  function undoDelete() {
+    if (!removed) return;
+    if (undoTimer.current) window.clearTimeout(undoTimer.current);
+    restoreCollection(removed.collection, removed.index);
+    setRemoved(null);
+    undoTimer.current = null;
+  }
+
   async function share(collectionId: string) {
-    const collection = library.collections.find((item) => item.id === collectionId);
+    const collection = library.collections.find(
+      (item) => item.id === collectionId,
+    );
     if (!collection) return;
     try {
       await navigator.clipboard.writeText(
@@ -95,11 +135,11 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
                     <p className="mt-0.5 font-mono text-[11px] tabular-nums text-zinc-500">{collection.boardIds.length} boards</p>
                   </div>
                   <div className="flex shrink-0">
-                    <button type="button" onClick={() => share(collection.id)} aria-label={`Copy share link for ${collection.name}`} className="grid size-8 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-cyan-100">
-                      {copiedId === collection.id ? <Check className="size-3.5 text-emerald-300" /> : <Copy className="size-3.5" />}
+                    <button type="button" onClick={() => share(collection.id)} aria-label={`Copy share link for ${collection.name}`} className="grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-cyan-100">
+                      {copiedId === collection.id ? <Check className="size-3.5 text-emerald-300" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
                     </button>
-                    <button type="button" onClick={() => removeCollection(collection.id)} aria-label={`Delete ${collection.name}`} className="grid size-8 place-items-center rounded-md text-zinc-500 transition hover:bg-red-400/10 hover:text-red-200">
-                      <Trash2 className="size-3.5" />
+                    <button type="button" onClick={() => deleteCollection(collection)} aria-label={`Delete ${collection.name}`} className="grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-red-400/10 hover:text-red-200">
+                      <Trash2 className="size-3.5" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -111,8 +151,8 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
                       return (
                         <li key={id} className="flex items-center gap-1 rounded-md bg-white/[0.025] pl-2">
                           <Link href={`/boards/${id}`} className="min-w-0 flex-1 truncate py-1.5 text-xs text-zinc-300 hover:text-white">{board.name}</Link>
-                          <button type="button" onClick={() => setBoardInCollection(collection.id, id, false)} aria-label={`Remove ${board.name} from ${collection.name}`} className="grid size-7 place-items-center rounded text-zinc-600 hover:text-red-200">
-                            <X className="size-3" />
+                          <button type="button" onClick={() => setBoardInCollection(collection.id, id, false)} aria-label={`Remove ${board.name} from ${collection.name}`} className="grid size-11 place-items-center rounded text-zinc-600 hover:text-red-200">
+                            <X className="size-3" aria-hidden="true" />
                           </button>
                         </li>
                       );
@@ -131,6 +171,28 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
           </p>
         )}
       </section>
+
+      {removed
+        ? createPortal(
+            <div
+              role="region"
+              aria-label="Collection deletion"
+              className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-50 flex max-w-[calc(100vw-2rem)] items-center gap-4 rounded-xl border border-white/15 bg-[#1c2029] px-4 py-3 text-sm text-zinc-200 shadow-2xl"
+            >
+              <span className="min-w-0 truncate" role="status" aria-live="polite">
+                Deleted <span className="font-semibold text-white">{removed.collection.name}</span>
+              </span>
+              <button
+                type="button"
+                onClick={undoDelete}
+                className="min-h-11 shrink-0 rounded-lg bg-cyan-300/15 px-3 font-semibold text-cyan-100 transition hover:bg-cyan-300/25 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
+              >
+                Undo
+              </button>
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }

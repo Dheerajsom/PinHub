@@ -58,6 +58,15 @@ function renderSheet() {
 }
 
 describe("InspectorBody sheet", () => {
+  it("uses unique IDs for every SVG definition", () => {
+    const { container } = renderSheet();
+    const ids = [...container.querySelectorAll("[id]")].map(
+      (element) => element.id,
+    );
+
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it("explains the horizontal scroll and describes it to the drawing", () => {
     renderSheet();
 

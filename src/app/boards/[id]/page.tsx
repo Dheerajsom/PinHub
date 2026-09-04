@@ -77,6 +77,14 @@ export default async function BoardPage({
   const board = boards.find((item) => item.id === id);
   if (!board) notFound();
   const profile = getBoardDiscoveryProfile(board);
+  const classification = [
+    ...new Map(
+      [profile.computeClass, board.category].map((label) => [
+        label.toLocaleLowerCase(),
+        label,
+      ]),
+    ).values(),
+  ].join(" · ");
   const verifySource = verificationSourceFor(board);
   const related = similarBoards(board);
   const revisionNotes = [
@@ -108,7 +116,7 @@ export default async function BoardPage({
           <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
             <div className="max-w-3xl">
               <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200">
-                <Cpu className="size-3.5" /> {profile.computeClass} · {board.category}
+                <Cpu className="size-3.5" /> {classification}
               </div>
               <h1 className="mt-3 flex items-center gap-3 text-3xl font-semibold text-white sm:text-4xl">
                 <VendorLogo vendor={board.vendor} size={34} />
