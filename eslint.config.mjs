@@ -10,6 +10,8 @@ export default defineConfig([
     ".claude/worktrees/**",
     "out/**",
     "build/**",
+    "test-results/**",
+    "playwright-report/**",
     "next-env.d.ts",
   ]),
 ]);

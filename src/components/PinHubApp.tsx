@@ -882,7 +882,7 @@ export function PinHubApp({
               </div>
             </div>
           ) : null}
-          <div className="grid gap-2.5">
+          <div className="grid grid-cols-1 gap-2.5">
             {visibleBoards.map((board) => (
               <Fragment key={board.id}>
                 <BoardResult

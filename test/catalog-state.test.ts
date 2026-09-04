@@ -15,6 +15,11 @@ import { boards, type BoardInterface } from "@/lib/boards";
 import { summarizeBoard } from "@/lib/board-summary";
 
 describe("catalog URL state", () => {
+  it.each(["constructor", "__proto__", "toString", "hasOwnProperty"])("ignores inherited sort key %s", (sort) => {
+    expect(parseCatalogState(`?sort=${sort}`).sort).toBe("catalog");
+    expect(parseCatalogState(`?q=pico&sort=${sort}`).sort).toBe("relevance");
+  });
+
   it("round-trips filters, sort, and pagination", () => {
     const state = {
       ...defaultCatalogState,

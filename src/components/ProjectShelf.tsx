@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import type { BoardSummary } from "@/lib/board-summary";
 import { collectionSharePath } from "@/lib/collection-params";
 import {
+  collectionLimit,
   removeCollection,
   restoreCollection,
   setBoardInCollection,
@@ -27,6 +28,7 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [removed, setRemoved] = useState<RemovedCollection | null>(null);
   const undoTimer = useRef<number | null>(null);
+  const copyTimer = useRef<number | null>(null);
   const boardsById = useMemo(
     () => new Map(catalog.map((board) => [board.id, board])),
     [catalog],
@@ -39,6 +41,7 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
   useEffect(
     () => () => {
       if (undoTimer.current) window.clearTimeout(undoTimer.current);
+      if (copyTimer.current) window.clearTimeout(copyTimer.current);
     },
     [],
   );
@@ -58,8 +61,8 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
 
   function undoDelete() {
     if (!removed) return;
+    if (!restoreCollection(removed.collection, removed.index)) return;
     if (undoTimer.current) window.clearTimeout(undoTimer.current);
-    restoreCollection(removed.collection, removed.index);
     setRemoved(null);
     undoTimer.current = null;
   }
@@ -74,7 +77,8 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
         `${location.origin}${collectionSharePath(collection)}`,
       );
       setCopiedId(collectionId);
-      window.setTimeout(() => setCopiedId(null), 1600);
+      if (copyTimer.current) window.clearTimeout(copyTimer.current);
+      copyTimer.current = window.setTimeout(() => setCopiedId(null), 1600);
     } catch {
       setCopiedId(null);
     }
@@ -185,9 +189,10 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
               <button
                 type="button"
                 onClick={undoDelete}
+                disabled={library.collections.length >= collectionLimit}
                 className="min-h-11 shrink-0 rounded-lg bg-cyan-300/15 px-3 font-semibold text-cyan-100 transition hover:bg-cyan-300/25 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
               >
-                Undo
+                {library.collections.length >= collectionLimit ? "Library full" : "Undo"}
               </button>
             </div>,
             document.body,

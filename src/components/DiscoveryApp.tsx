@@ -150,9 +150,9 @@ export function DiscoveryApp({
       matchedBy: BoardMatchField | null;
     }[] = [];
     for (const entry of searchIndex) {
+      if (!matchesCatalogFilters(entry.board, state, favorites)) continue;
       const match = matchBoardSearchEntry(entry, tokens);
       if (!match) continue;
-      if (!matchesCatalogFilters(entry.board, state, favorites)) continue;
       scored.push({ board: entry.board, ...match });
     }
     scored.sort((a, b) =>

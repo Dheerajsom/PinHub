@@ -5,6 +5,7 @@ import { useSyncExternalStore } from "react";
 export const personalLibraryStorageKey = "pinhub.library.v1";
 export const recentBoardLimit = 8;
 export const collectionBoardLimit = 24;
+export const collectionLimit = 24;
 
 export type LocalBoardCollection = {
   id: string;
@@ -30,14 +31,13 @@ let snapshot: PersonalLibrarySnapshot | null = null;
 
 function uniqueIds(value: unknown, limit: number): string[] {
   if (!Array.isArray(value)) return [];
-  return [
-    ...new Set(
-      value.filter(
-        (item): item is string =>
-          typeof item === "string" && item.length > 0 && item.length <= 128,
-      ),
-    ),
-  ].slice(0, limit);
+  const ids = new Set<string>();
+  for (const item of value) {
+    if (typeof item !== "string" || !item.length || item.length > 128) continue;
+    ids.add(item);
+    if (ids.size === limit) break;
+  }
+  return [...ids];
 }
 
 function validDate(value: unknown, fallback: string): string {
@@ -52,30 +52,32 @@ export function normalizePersonalLibrary(
 ): PersonalLibrarySnapshot {
   if (!value || typeof value !== "object") return { ...emptySnapshot };
   const record = value as Record<string, unknown>;
-  const collections = Array.isArray(record.collections)
-    ? record.collections.flatMap((item): LocalBoardCollection[] => {
-        if (!item || typeof item !== "object") return [];
-        const candidate = item as Record<string, unknown>;
-        const name = typeof candidate.name === "string" ? candidate.name.trim() : "";
-        const id = typeof candidate.id === "string" ? candidate.id.trim() : "";
-        if (!id || !name) return [];
-        const createdAt = validDate(candidate.createdAt, now);
-        return [
-          {
-            id: id.slice(0, 128),
-            name: name.slice(0, 60),
-            boardIds: uniqueIds(candidate.boardIds, collectionBoardLimit),
-            createdAt,
-            updatedAt: validDate(candidate.updatedAt, createdAt),
-          },
-        ];
-      })
-    : [];
+  const collections: LocalBoardCollection[] = [];
+  const collectionIds = new Set<string>();
+  if (Array.isArray(record.collections)) {
+    for (const item of record.collections) {
+      if (!item || typeof item !== "object") continue;
+      const candidate = item as Record<string, unknown>;
+      const name = typeof candidate.name === "string" ? candidate.name.trim() : "";
+      const id = typeof candidate.id === "string" ? candidate.id.trim().slice(0, 128) : "";
+      if (!id || !name || collectionIds.has(id)) continue;
+      collectionIds.add(id);
+      const createdAt = validDate(candidate.createdAt, now);
+      collections.push({
+        id,
+        name: name.slice(0, 60),
+        boardIds: uniqueIds(candidate.boardIds, collectionBoardLimit),
+        createdAt,
+        updatedAt: validDate(candidate.updatedAt, createdAt),
+      });
+      if (collections.length === collectionLimit) break;
+    }
+  }
 
   return {
     version: 1,
     recentBoardIds: uniqueIds(record.recentBoardIds, recentBoardLimit),
-    collections: collections.slice(0, 24),
+    collections,
   };
 }
 
@@ -129,6 +131,7 @@ export function getServerPersonalLibrarySnapshot(): PersonalLibrarySnapshot {
 
 export function recordRecentBoard(id: string): void {
   const current = getPersonalLibrarySnapshot();
+  if (!id || id.length > 128 || current.recentBoardIds[0] === id) return;
   persist({
     ...current,
     recentBoardIds: [id, ...current.recentBoardIds.filter((item) => item !== id)].slice(
@@ -142,6 +145,7 @@ export function createCollection(name: string, boardIds: string[] = []): string 
   const cleanName = name.trim().slice(0, 60);
   if (!cleanName) return null;
   const current = getPersonalLibrarySnapshot();
+  if (current.collections.length >= collectionLimit) return null;
   const now = new Date().toISOString();
   const id = globalThis.crypto?.randomUUID?.() ?? `collection-${Date.now()}`;
   persist({
@@ -166,6 +170,9 @@ export function setBoardInCollection(
   included: boolean,
 ): void {
   const current = getPersonalLibrarySnapshot();
+  const target = current.collections.find((collection) => collection.id === collectionId);
+  if (!target || target.boardIds.includes(boardId) === included) return;
+  if (included && (!boardId || boardId.length > 128 || target.boardIds.length >= collectionBoardLimit)) return;
   const now = new Date().toISOString();
   persist({
     ...current,
@@ -185,6 +192,7 @@ export function setBoardInCollection(
 
 export function removeCollection(collectionId: string): void {
   const current = getPersonalLibrarySnapshot();
+  if (!current.collections.some((collection) => collection.id === collectionId)) return;
   persist({
     ...current,
     collections: current.collections.filter((item) => item.id !== collectionId),
@@ -194,17 +202,20 @@ export function removeCollection(collectionId: string): void {
 export function restoreCollection(
   collection: LocalBoardCollection,
   originalIndex: number,
-): void {
+): boolean {
   const current = getPersonalLibrarySnapshot();
   const collections = current.collections.filter(
     (item) => item.id !== collection.id,
   );
+  // Undo must never evict a different collection created in the meantime.
+  if (collections.length >= collectionLimit) return false;
   const index = Math.min(Math.max(originalIndex, 0), collections.length);
   collections.splice(index, 0, collection);
   persist({
     ...current,
-    collections: collections.slice(0, 24),
+    collections,
   });
+  return true;
 }
 
 export function usePersonalLibrary(): PersonalLibrarySnapshot {

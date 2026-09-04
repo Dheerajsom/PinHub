@@ -135,11 +135,19 @@ export function InspectorBody({
     const node = scrollRef.current;
     if (!node) return;
     const slack = node.scrollWidth - node.clientWidth;
-    setScroll({
+    const next = {
       scrollable: slack > 1,
       atStart: node.scrollLeft <= 1,
       atEnd: node.scrollLeft >= slack - 1,
-    });
+    };
+    // Scrolling within the same region does not change the edge hints. Keep
+    // the snapshot stable instead of rebuilding the SVG and table per pixel.
+    setScroll((current) =>
+      current.scrollable === next.scrollable &&
+      current.atStart === next.atStart && current.atEnd === next.atEnd
+        ? current
+        : next,
+    );
   }, []);
 
   useEffect(() => {

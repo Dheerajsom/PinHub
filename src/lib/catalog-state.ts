@@ -246,7 +246,7 @@ export function parseCatalogState(
     wirelessCapability,
     officialDocumentation,
     sort:
-      sort && sortAliases[sort]
+      sort && Object.hasOwn(sortAliases, sort)
         ? sortAliases[sort]
         : query.trim()
           ? "relevance"

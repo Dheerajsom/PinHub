@@ -11,6 +11,73 @@ async function loadLibrary(): Promise<LibraryModule> {
 beforeEach(() => window.localStorage.clear());
 
 describe("personal project library", () => {
+  it("rejects collections that would disappear after reloading", async () => {
+    let library = await loadLibrary();
+    for (let index = 0; index < library.collectionLimit; index++) {
+      expect(library.createCollection(`Project ${index}`)).toBeTruthy();
+    }
+    const before = library.getPersonalLibrarySnapshot();
+    expect(library.createCollection("Overflow")).toBeNull();
+    expect(library.getPersonalLibrarySnapshot()).toBe(before);
+    library = await loadLibrary();
+    expect(library.getPersonalLibrarySnapshot().collections).toEqual(before.collections);
+  });
+
+  it("does not evict another collection when undoing into a full library", async () => {
+    const library = await loadLibrary();
+    for (let index = 0; index < library.collectionLimit; index++) library.createCollection(`Project ${index}`);
+    const removed = library.getPersonalLibrarySnapshot().collections[0];
+    library.removeCollection(removed.id);
+    library.createCollection("Replacement");
+    const before = library.getPersonalLibrarySnapshot();
+    expect(library.restoreCollection(removed, 0)).toBe(false);
+    expect(library.getPersonalLibrarySnapshot()).toBe(before);
+    library.removeCollection(before.collections[1].id);
+    expect(library.restoreCollection(removed, 0)).toBe(true);
+  });
+
+  it("skips writes and subscriber updates when the library is unchanged", async () => {
+    const library = await loadLibrary();
+    const id = library.createCollection("Robotics", ["pico"])!;
+    library.recordRecentBoard("pico");
+    const before = library.getPersonalLibrarySnapshot();
+    const listener = vi.fn();
+    const unsubscribe = library.subscribeToPersonalLibrary(listener);
+    const write = vi.spyOn(Storage.prototype, "setItem");
+    library.recordRecentBoard("pico");
+    library.setBoardInCollection(id, "pico", true);
+    library.setBoardInCollection(id, "uno", false);
+    library.setBoardInCollection("missing", "uno", true);
+    library.removeCollection("missing");
+    expect(library.getPersonalLibrarySnapshot()).toBe(before);
+    expect(write).not.toHaveBeenCalled();
+    expect(listener).not.toHaveBeenCalled();
+    unsubscribe();
+    write.mockRestore();
+  });
+
+  it("deduplicates normalized collection IDs and stops at capacity", async () => {
+    const library = await loadLibrary();
+    const normalized = library.normalizePersonalLibrary({ collections: [
+      { id: "one", name: "First" }, { id: " one ", name: "Duplicate" },
+      ...Array.from({ length: 40 }, (_, index) => ({ id: `item-${index}`, name: "Valid" })),
+    ] });
+    expect(normalized.collections).toHaveLength(library.collectionLimit);
+    expect(normalized.collections.filter(({ id }) => id === "one")).toHaveLength(1);
+  });
+
+  it("leaves a full collection unchanged when another board is added", async () => {
+    const library = await loadLibrary();
+    const ids = Array.from({ length: library.collectionBoardLimit }, (_, index) => `board-${index}`);
+    const id = library.createCollection("Full", ids)!;
+    const before = library.getPersonalLibrarySnapshot();
+    library.setBoardInCollection(id, "overflow", true);
+    expect(library.getPersonalLibrarySnapshot()).toBe(before);
+    library.setBoardInCollection(id, ids[0], false);
+    library.setBoardInCollection(id, "replacement", true);
+    expect(library.getPersonalLibrarySnapshot().collections[0].boardIds).toContain("replacement");
+  });
+
   it("recovers from corrupt storage and bounds recent boards", async () => {
     window.localStorage.setItem("pinhub.library.v1", "{broken");
     let library = await loadLibrary();

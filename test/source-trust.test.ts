@@ -2,6 +2,11 @@ import { describe, expect, it } from "vitest";
 import { classifySource, isSafeExternalUrl } from "@/lib/source-trust";
 
 describe("external source trust", () => {
+  it.each(["constructor", "__proto__", "toString"])("treats unknown vendor %s as third-party", (vendor) => {
+    expect(classifySource(vendor, "https://www.arduino.cc/docs")).toBe("third-party");
+    expect(classifySource(vendor, "https://github.com/arduino/Arduino")).toBe("third-party");
+  });
+
   it("accepts credential-free public HTTPS URLs", () => {
     expect(isSafeExternalUrl("https://docs.arduino.cc/hardware/uno-rev3/"))
       .toBe(true);

@@ -19,7 +19,7 @@ export function SectionNav({ current, className }: { current: string; className?
               active
                 ? "bg-cyan-300/12 text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.35)]"
                 : href === "/prices"
-                  ? "text-amber-200/90 hover:bg-amber-300/10 hover:text-amber-100"
+                  ? "text-amber-200 hover:bg-amber-300/10 hover:text-amber-100"
                   : "text-zinc-500 hover:bg-white/[0.06] hover:text-white")}>
             <Icon className="size-3.5" aria-hidden="true" />{label}
           </Link>

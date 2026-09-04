@@ -5,6 +5,7 @@ test.describe("catalog workspace", () => {
     await page.setViewportSize({ width: 1024, height: 900 });
     await page.goto("/");
 
+    await expect(page.locator("#catalog-workspace")).toBeVisible();
     await expect(page.getByRole("button", { name: /filters/i })).toBeVisible();
     const columns = await page.locator("#catalog-workspace").evaluate((element) =>
       getComputedStyle(element).gridTemplateColumns.split(" "),
@@ -16,6 +17,7 @@ test.describe("catalog workspace", () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
 
+    await expect(page.locator("#catalog-workspace")).toBeVisible();
     await expect(page.getByRole("button", { name: /filters/i })).toBeHidden();
     const columns = await page.locator("#catalog-workspace").evaluate((element) =>
       getComputedStyle(element).gridTemplateColumns.split(" "),
@@ -35,6 +37,17 @@ test("dark-theme muted labels use the accessible contrast token", async ({ page 
     .first()
     .evaluate((element) => getComputedStyle(element).color);
   expect(color).toBe("rgb(156, 163, 175)");
+});
+
+test("light-theme price navigation uses readable amber ink", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("html").evaluate((element) => {
+    element.setAttribute("data-theme", "light");
+  });
+  const color = await page.getByRole("navigation", { name: "PinHub sections" })
+    .getByRole("link", { name: "Prices", exact: true })
+    .evaluate((element) => getComputedStyle(element).color);
+  expect(color).toBe("rgb(133, 77, 14)");
 });
 
 test("pinout SVG definitions have unique IDs", async ({ page }) => {

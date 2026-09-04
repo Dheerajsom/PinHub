@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Board } from "@/lib/boards";
-import { createBoardDetailLoader } from "@/lib/board-detail-loader";
+import { boardDetailTimeoutMs, createBoardDetailLoader } from "@/lib/board-detail-loader";
 
 function board(id: string): Board {
   return {
@@ -29,6 +29,32 @@ function board(id: string): Board {
 }
 
 describe("createBoardDetailLoader", () => {
+  it("aborts a stalled response body and allows a fresh retry", async () => {
+    vi.useFakeTimers();
+    try {
+      const fetched = board("stalled");
+      const fetchBoard = vi.fn((_input: string | URL | Request, init?: RequestInit) =>
+        Promise.resolve({
+          ok: true,
+          json: () => new Promise((_resolve, reject) => {
+            init?.signal?.addEventListener("abort", () => reject(new Error("aborted")), { once: true });
+          }),
+        } as Response),
+      );
+      const loader = createBoardDetailLoader([], fetchBoard);
+      const failure = expect(loader.load(fetched.id)).rejects.toThrow("aborted");
+      await vi.advanceTimersByTimeAsync(boardDetailTimeoutMs);
+      await failure;
+      expect(loader.peek(fetched.id)).toBeUndefined();
+      fetchBoard.mockResolvedValueOnce(Response.json(fetched));
+      await expect(loader.load(fetched.id)).resolves.toEqual(fetched);
+      expect(fetchBoard).toHaveBeenCalledTimes(2);
+      expect(vi.getTimerCount()).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("serves initial and fetched records from cache", async () => {
     const initial = board("initial");
     const fetched = board("needs-fetch");
@@ -60,7 +86,7 @@ describe("createBoardDetailLoader", () => {
     expect(fetchBoard).toHaveBeenCalledOnce();
     expect(fetchBoard).toHaveBeenCalledWith(
       "/api/boards/board%20with%2Fslash",
-      { headers: { Accept: "application/json" } },
+      { headers: { Accept: "application/json" }, signal: expect.any(AbortSignal) },
     );
 
     resolveResponse?.(Response.json(fetched));

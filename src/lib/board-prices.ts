@@ -12,6 +12,11 @@ export const priceFreshForMs = 14 * day;
 export const priceStaleAfterMs = 45 * day;
 export type PriceFreshness = "fresh" | "aging" | "stale";
 
+// These options are identical for every listing. Reuse the expensive Intl
+// instances across rows and filter updates instead of constructing per cell.
+const priceFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
 function age(price: Pick<BoardPrice, "checkedAt">, now: number): number {
   const checked = Date.parse(price.checkedAt);
   return !Number.isFinite(now) || !Number.isFinite(checked) || checked > now
@@ -32,12 +37,12 @@ export function hasRecentStockCheck(price: Pick<BoardPrice, "checkedAt">, now: n
 }
 
 export function formatPrice(price: Pick<BoardPrice, "amount" | "currency">): string {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: price.currency }).format(price.amount / 100);
+  return priceFormatter.format(price.amount / 100);
 }
 
 export function formatPriceDate(checkedAt: string): string {
   if (!Number.isFinite(Date.parse(checkedAt))) return "Unknown check date";
-  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(checkedAt));
+  return dateFormatter.format(new Date(checkedAt));
 }
 
 export function pricesForBoard(boardId: string): BoardPrice[] {

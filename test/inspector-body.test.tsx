@@ -9,8 +9,11 @@ import { PinDetails } from "@/components/board-visual/PinDetails";
 
 // A drawing only exists for a board with both a source-backed pinout and a
 // curated visual, so the sheet is tested against a real catalog entry.
-const board = boards.find((item) => item.id === "raspberry-pi-5");
-if (!board) throw new Error("raspberry-pi-5 missing from the catalog");
+const board = (() => {
+  const found = boards.find((item) => item.id === "raspberry-pi-5");
+  if (!found) throw new Error("raspberry-pi-5 missing from the catalog");
+  return found;
+})();
 
 // jsdom reports every box as zero-sized, so the sheet is told it overflows —
 // which is the state the phone layout is built for.

@@ -10,9 +10,9 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 describe("compact board actions", () => {
   it("keeps collection and comparison visible and moves secondary tools behind a disclosure", () => {
     render(<BoardActions board={board} />);
-    expect(screen.queryByRole("button", { name: "Favorite", exact: true })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Favorite" })).toBeNull();
     expect(screen.getByRole("link", { name: "Compare" }).getAttribute("href")).toContain(board.id);
-    expect(screen.getByRole("button", { name: "Collection", exact: true })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Collection" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Copy link" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "More board actions" }));
     expect(screen.getByRole("button", { name: "Copy board ID" })).toBeTruthy();
@@ -45,7 +45,7 @@ describe("compact board actions", () => {
 
   it("keeps only one panel open and resets it when the selected board changes", () => {
     const { rerender } = render(<BoardActions board={board} />);
-    fireEvent.click(screen.getByRole("button", { name: "Collection", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Collection" }));
     expect(screen.getByRole("dialog")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "More board actions" }));
     expect(screen.queryByRole("dialog")).toBeNull();

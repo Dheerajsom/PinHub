@@ -60,6 +60,8 @@ type BoardFetcher = (
   init?: RequestInit,
 ) => Promise<Response>;
 
+export const boardDetailTimeoutMs = 15_000;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -251,9 +253,13 @@ export function createBoardDetailLoader(
     const inFlight = pending.get(id);
     if (inFlight) return inFlight;
 
-    const request = fetchBoard(`/api/boards/${encodeURIComponent(id)}`, {
-      headers: { Accept: "application/json" },
-    })
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), boardDetailTimeoutMs);
+    const request = (async () =>
+      fetchBoard(`/api/boards/${encodeURIComponent(id)}`, {
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+      }))()
       .then(async (response) => {
         if (!response.ok) {
           throw new Error(`Board request failed (${response.status})`);
@@ -268,6 +274,7 @@ export function createBoardDetailLoader(
         return payload;
       })
       .finally(() => {
+        clearTimeout(timer);
         pending.delete(id);
       });
 

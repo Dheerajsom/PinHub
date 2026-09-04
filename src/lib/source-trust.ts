@@ -170,14 +170,14 @@ export function classifySource(
   if (!parsed) return "third-party";
   const host = parsed.hostname.toLowerCase();
 
-  const domains = vendorDomains[vendor];
+  const domains = Object.hasOwn(vendorDomains, vendor) ? vendorDomains[vendor] : undefined;
   if (domains?.some((domain) => hostMatchesDomain(host, domain))) {
     return "official";
   }
 
   if (host === "github.com") {
     const org = parsed.pathname.split("/").filter(Boolean)[0]?.toLowerCase();
-    const orgs = vendorGitHubOrgs[vendor];
+    const orgs = Object.hasOwn(vendorGitHubOrgs, vendor) ? vendorGitHubOrgs[vendor] : undefined;
     if (org && orgs?.includes(org)) {
       return "official";
     }
