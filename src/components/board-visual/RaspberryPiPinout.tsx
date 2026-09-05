@@ -6,18 +6,15 @@ import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardStage } from "@/components/board-visual/BoardStage";
-import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinDetails } from "@/components/board-visual/PinDetails";
-import { CopyPinTable } from "@/components/CopyPinTable";
-import { CopyPinButton } from "@/components/CopyPinButton";
 import { countRoles, roleLabels, roleColors } from "@/components/board-visual/roles";
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 import { classifySource } from "@/lib/source-trust";
 
 /** The same source pin objects drive the board, selector, readout and schedule. */
-export function RaspberryPiPinout({ board, mode }: { board: Board; mode: "static" | "dynamic" }) {
+export function RaspberryPiPinout({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [hoverKey, setHoverKey] = useState<string | null>(null);
@@ -36,7 +33,6 @@ export function RaspberryPiPinout({ board, mode }: { board: Board; mode: "static
   if (!geometry || !board.pinout) return null;
   const model = raspberryPiModel(board.id)!;
   const liveAnchor = anchors.find((anchor) => anchor.key === liveKey) ?? null;
-  const dynamic = mode === "dynamic";
   const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const visible = anchors.filter(({ pin }) =>
     (!activeRole || pin.role === activeRole) && terms.every((term) =>
@@ -45,59 +41,51 @@ export function RaspberryPiPinout({ board, mode }: { board: Board; mode: "static
   const select = (key: string | null) => { setSelectedKey(key); setHoverKey(null); };
 
   return (
-    <section className="pi-workbench" aria-label={`${board.name} ${mode} pinout`} onKeyDown={(event) => {
+    <section className="pi-workbench" aria-label={`${board.name} dynamic pinout`} onKeyDown={(event) => {
       if (event.key === "Escape" && !expanded) { select(null); setActiveRole(null); }
     }}>
       <header className="pi-workbench-heading">
         <div>
           <h3>{board.name}</h3>
-          <p>{dynamic ? "Component view" : "Connector reference"} / {board.pinout.connector}</p>
+          <p>Component view / {board.pinout.connector}</p>
         </div>
         <div className="pi-tools">
-          {dynamic ? <button ref={expandRef} type="button" onClick={() => setExpanded(true)}><Expand size={14} aria-hidden="true" /> Inspect</button> : <CopyPinTable pinout={board.pinout} />}
+          <button ref={expandRef} type="button" onClick={() => setExpanded(true)}><Expand size={14} aria-hidden="true" /> Inspect</button>
           <a href={`/pinout/${board.id}`} aria-label={`Open the ${board.name} full pinout`}><ExternalLink size={14} aria-hidden="true" /><span>Full view</span></a>
         </div>
       </header>
 
-      {dynamic ? <div className="pi-role-bar"><PinRoleLegend counts={roleCounts} activeRole={activeRole} onToggle={setActiveRole} />
+      <div className="pi-role-bar"><PinRoleLegend counts={roleCounts} activeRole={activeRole} onToggle={setActiveRole} />
         {activeRole ? <button className="pi-clear" type="button" onClick={() => setActiveRole(null)}>Show all roles</button> : null}
-      </div> : null}
+      </div>
 
-      <div className={`pi-component-layout ${!dynamic ? "pi-reference-layout" : ""}`}>
+      <div className="pi-component-layout">
         <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
           <div className="pi-canvas-scroll" tabIndex={zoomed ? 0 : undefined} aria-label={zoomed ? "Scrollable board detail" : undefined}>
-            {dynamic ? <div className={zoomed ? "pi-board-frame is-zoomed" : "pi-board-frame"} style={{ aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}` }}>
+            <div className={zoomed ? "pi-board-frame is-zoomed" : "pi-board-frame"} style={{ aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}` }}>
               <BoardStage geometry={geometry} title={`${board.name} — ${board.pinout.connector}`} sheetLabel={board.name}
                 compact selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={false} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
-            </div> : <svg className="pi-static-board" viewBox={`${geometry.body.x - 24} ${geometry.body.y - 24} ${geometry.body.w + 48} ${geometry.body.h + 55}`} role="img" aria-label={`${board.name} component illustration; use the pin schedule below for wiring`}>
-              <BoardArtwork geometry={geometry} label={board.name} />
-              {anchors.map((anchor) => <rect key={anchor.key} x={anchor.cx - geometry.padR * 0.65} y={anchor.cy - geometry.padR * 0.65} width={geometry.padR * 1.3} height={geometry.padR * 1.3} rx="1" fill="#d6bc6e" stroke="#efd78f" />)}
-            </svg>}
+            </div>
           </div>
           <div className="pi-canvas-footer">
             <span>{model.family === "keyboard" ? "Connector schematic" : "Component side"}</span>
-            {dynamic ? <button type="button" onClick={() => setZoomed(!zoomed)}>{zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Fit board" : "Zoom board"}</button> : <span>{anchors.length} contacts</span>}
+            <button type="button" onClick={() => setZoomed(!zoomed)}>{zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Fit board" : "Zoom board"}</button>
           </div>
         </div>
 
         <aside className="pi-readout">
-          {dynamic ? <>
-            <label className="pi-pin-picker">Select a pin
-              <select aria-label="Select physical pin" value={selectedKey ?? ""} onChange={(event) => select(event.target.value || null)}>
-                <option value="">Choose pin…</option>
-                {anchors.map(({ key, pin }) => <option key={key} value={key}>{pin.position} · {pin.label}{pin.aliases?.length ? ` / ${pin.aliases.join(", ")}` : ""}</option>)}
-              </select>
-            </label>
-            <div className="pi-live-heading" aria-hidden="true">
-              <span>Physical pin</span><strong>{liveAnchor ? String(liveAnchor.pin.position).padStart(2, "0") : "—"}</strong>
-            </div>
-            <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} net={probe.net} netSize={probe.keys.size} />
-            {selectedKey ? <button className="pi-clear" type="button" onClick={() => select(null)}><RotateCcw size={13} aria-hidden="true" /> Clear selection</button> : null}
-          </> : <>
-            <h4>Read before connecting</h4>
-            <p>{geometry.orientation}.</p>
-            <p>Numbers in the schedule are physical contacts. Signal names and alternate functions are listed separately.</p>
-          </>}
+          <label className="pi-pin-picker">Select a pin
+            <select aria-label="Select physical pin" value={selectedKey ?? ""} onChange={(event) => select(event.target.value || null)}>
+              <option value="">Choose pin…</option>
+              {anchors.map(({ key, pin }) => <option key={key} value={key}>{pin.position} · {pin.label}{pin.aliases?.length ? ` / ${pin.aliases.join(", ")}` : ""}</option>)}
+            </select>
+          </label>
+          <div className="pi-live-heading" aria-hidden="true">
+            <span>Physical pin</span><strong>{liveAnchor ? String(liveAnchor.pin.position).padStart(2, "0") : "—"}</strong>
+          </div>
+          <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} net={probe.net} netSize={probe.keys.size} />
+          {selectedKey ? <button className="pi-clear" type="button" onClick={() => select(null)}><RotateCcw size={13} aria-hidden="true" /> Clear selection</button> : null}
+
           <div className="pi-electrical-note"><strong>{board.logicLevel}</strong><p>{model.family === "pico" ? "Check power and ADC limits in the notes below." : "GPIO is not 5 V tolerant. Power rails are separate from signal pins."}</p></div>
           {sourceInfo ? <a className="pi-source" href={sourceInfo.url} target="_blank" rel="noopener noreferrer">Verify in {sourceInfo.provenance === "official" ? "official" : "linked"} documentation <ExternalLink size={12} aria-hidden="true" /></a> : null}
         </aside>
@@ -105,8 +93,8 @@ export function RaspberryPiPinout({ board, mode }: { board: Board; mode: "static
 
       <p className="pi-illustration-note">{geometry.revisionNote} Decorative traces do not represent electrical connections.</p>
 
-      <details className="pi-schedule" open={!dynamic}>
-        <summary>{dynamic ? `All ${anchors.length} pins (table)` : "Pin schedule"}</summary>
+      <details className="pi-schedule">
+        <summary>{`All ${anchors.length} pins (table)`}</summary>
         <div className="pi-schedule-tools">
           <label><Search size={16} aria-hidden="true" /><input aria-label="Search reference pins" value={query} maxLength={100} onChange={(event) => setQuery(event.target.value)} placeholder="Pin number, signal, or function" /></label>
           <span role="status">{visible.length} / {anchors.length} pins</span>
@@ -119,7 +107,7 @@ export function RaspberryPiPinout({ board, mode }: { board: Board; mode: "static
               <th scope="row"><span className="pi-pin-number" style={{ borderColor: roleColors[pin.role].edge }}>{pin.position}</span></th>
               <td><strong>{pin.label}</strong><small>{roleLabels[pin.role]}</small></td>
               <td>{pin.aliases?.length ? <span>{pin.aliases.join(" / ")}</span> : <span className="pi-muted">{roleLabels[pin.role]}</span>}{pin.note ? <p>{pin.note}</p> : null}</td>
-              <td>{dynamic ? <button className="pi-row-select" type="button" aria-label={`Select pin ${pin.position}, ${pin.label}`} aria-pressed={selectedKey === key} onClick={() => select(selectedKey === key ? null : key)}>Select</button> : <CopyPinButton pin={pin} />}</td>
+              <td><button className="pi-row-select" type="button" aria-label={`Select pin ${pin.position}, ${pin.label}`} aria-pressed={selectedKey === key} onClick={() => select(selectedKey === key ? null : key)}>Select</button></td>
             </tr>)}</tbody>
           </table>
         </div>

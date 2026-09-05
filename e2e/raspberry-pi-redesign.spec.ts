@@ -1,4 +1,5 @@
 import { devices, expect, test, type Page } from "@playwright/test";
+import { boards } from "../src/lib/boards";
 
 const viewports = [
   { width: 360, height: 800 },
@@ -24,6 +25,41 @@ async function fitsViewport(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
 }
 
+async function selectStatic(page: Page) {
+  const tab = page.getByRole("tab", { name: "Static", exact: true });
+  // A cold streamed page can expose tabs before their handlers hydrate.
+  await expect(async () => {
+    await tab.tap();
+    await expect(tab).toHaveAttribute("aria-selected", "true");
+  }).toPass();
+}
+
+async function expectStaticPinMap(page: Page, id: string) {
+  const reference = page.getByRole("tabpanel", { name: "Static", exact: true });
+  const pins = boards.find((board) => board.id === id)!.pinout!.pins!;
+  const ordered = pins.left.flatMap((left, index) => [left, pins.right[index]]);
+  const pads = reference.locator('span[aria-label^="Pin "]');
+  await expect(pads).toHaveCount(ordered.length);
+  await expect(pads).toHaveText(ordered.map((pin) => String(pin.position)));
+  expect(await pads.evaluateAll((elements) => elements.every((element) => element.classList.contains("rounded-full")))).toBe(true);
+  await expect(reference.locator(".pi-workbench, .pi-canvas, .bv-stage-wrap, svg[role='img']")).toHaveCount(0);
+  await expect(reference.getByLabel("Pin role legend")).toBeVisible();
+  const signals = reference.locator("span.font-mono");
+  await expect(signals).toHaveText(ordered.map((pin) => pin.label));
+  expect(await signals.evaluateAll((elements) => elements.every((element) => element.scrollWidth <= element.clientWidth))).toBe(true);
+  // Preserve physical pairs: Pico is 1/40, 2/39; GPIO is 1/2, 3/4.
+  const bounds = await pads.evaluateAll((elements) => elements.map((element) => {
+    const rect = element.getBoundingClientRect();
+    return { x: rect.x, y: rect.y };
+  }));
+  for (let index = 0; index < bounds.length; index += 2) {
+    expect(bounds[index].x).toBeLessThan(bounds[index + 1].x);
+    expect(Math.abs(bounds[index].y - bounds[index + 1].y)).toBeLessThan(1);
+    if (index > 0) expect(bounds[index].y).toBeGreaterThan(bounds[index - 2].y);
+  }
+  return reference;
+}
+
 for (const viewport of viewports) {
   test.describe(`Raspberry Pi at ${viewport.width}x${viewport.height}`, () => {
     test.use({ viewport, isMobile: true, hasTouch: true, userAgent: devices["Pixel 5"].userAgent,
@@ -34,18 +70,11 @@ for (const viewport of viewports) {
         const errors: string[] = [];
         page.on("pageerror", (error) => errors.push(error.message));
         await page.goto(`/boards/${model.id}`);
-        await page.getByRole("tab", { name: "Static", exact: true }).tap();
-        const reference = page.getByRole("region", { name: `${model.name} static pinout`, exact: true });
-        await expect(reference.getByRole("table")).toBeVisible();
-        await expect(reference.getByRole("row")).toHaveCount(41);
+        await selectStatic(page);
+        const reference = await expectStaticPinMap(page, model.id);
         await fitsViewport(page);
         await reference.scrollIntoViewIfNeeded();
         await page.screenshot({ path: testInfo.outputPath("static.png"), scale: "css", animations: "disabled" });
-        await reference.getByRole("textbox", { name: "Search reference pins" }).fill("not-a-real-pin-xyz");
-        await expect(reference.getByText("No matching pins.")).toBeVisible();
-        await reference.getByRole("button", { name: "Clear filters", exact: true }).tap();
-        await reference.locator("thead").scrollIntoViewIfNeeded();
-        await page.screenshot({ path: testInfo.outputPath("pin-schedule.png"), scale: "css", animations: "disabled" });
         await reference.getByRole("button", { name: `Copy pin 1, ${model.firstPin}`, exact: true }).tap();
         await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain(`Pin 1: ${model.firstPin}`);
         await reference.getByRole("button", { name: "Copy pin table as Markdown" }).tap();
@@ -91,8 +120,8 @@ test.describe("remaining Raspberry Pi models", () => {
   for (const id of otherModels) {
     test(`${id} has source-derived static and dynamic pins`, async ({ page }) => {
       await page.goto(`/boards/${id}`);
-      await page.getByRole("tab", { name: "Static", exact: true }).tap();
-      await expect(page.locator(".pi-workbench tbody tr")).toHaveCount(40);
+      await selectStatic(page);
+      await expectStaticPinMap(page, id);
       await fitsViewport(page);
       await page.getByRole("tab", { name: "Dynamic", exact: true }).tap();
       await expect(page.getByRole("combobox", { name: "Select physical pin" }).locator("option")).toHaveCount(41);
@@ -103,10 +132,21 @@ test.describe("remaining Raspberry Pi models", () => {
   }
 });
 
+test("compact non-Pi physical pin map keeps signal names readable", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/boards/esp32-devkit-v1");
+  await page.getByRole("tab", { name: "Static", exact: true }).click();
+  await expectStaticPinMap(page, "esp32-devkit-v1");
+  await fitsViewport(page);
+});
+
 test("catalog inline Pi pinout and full inspector share the artwork", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByRole("button", { name: "Show Raspberry Pi 5 details", exact: true }).click();
+  await page.getByRole("tab", { name: "Static", exact: true }).click();
+  await expectStaticPinMap(page, "raspberry-pi-5");
+  await fitsViewport(page);
   await page.getByRole("tab", { name: "Dynamic", exact: true }).click();
   await expect(page.getByRole("combobox", { name: "Select physical pin" })).toBeVisible();
   await fitsViewport(page);

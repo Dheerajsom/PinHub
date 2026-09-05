@@ -1,14 +1,17 @@
 # Raspberry Pi Static and Dynamic redesign
 
-This preview implements the Raspberry Pi component-view concept across all 15
+The Dynamic view implements the Raspberry Pi component-view concept across all 15
 Raspberry Pi entries currently in the catalog. It uses original vector artwork,
 not a generated raster image, so the board stays sharp at different sizes and
 the contacts remain interactive.
 
 ## Experience
 
-- Static: component overview, orientation and voltage guidance, searchable
-  physical-pin schedule, per-pin copy, and full-table Markdown copy.
+- Static: original compact circular pin map, paired in source connector order,
+  with role colors, signal labels, per-pin copy, and full-table Markdown copy.
+  All boards use the shared `PinoutDiagram`; Static contains no board artwork.
+  In narrow panels, signal names occupy their own line above the copy control;
+  the shared legend and pad colors identify roles without crowding the labels.
 - Dynamic: component illustration, source-backed contact selection, role
   highlighting, pin readout, native physical-pin selector, board zoom, and the
   existing expanded inspector and full-page pinout.
@@ -43,19 +46,20 @@ there are no remote image requests, canvas render loops, or added dependencies.
 
 ## Verification
 
-- Lint, TypeScript checking, all 255 unit/component tests, and production build.
+- Lint, TypeScript checking, all 256 unit/component tests, and production build.
 - New geometry regressions verify catalog coverage, original pin-object identity,
   contact count, row ordering, and keyboard schematic caveats.
 - New browser coverage exercises Pi 4, Pi 5, Zero 2 W, Pico 2 W, and Pi 500 at
   360 × 800, 390 × 844, 412 × 915, and 844 × 390; all other Pi variants receive
-  additional coverage. Flows include Static search/copy, Dynamic contact and
-  native-selector selection, role highlighting, zoom, modal focus/dismissal,
+  additional coverage. Flows include Static physical ordering, circular pads,
+  label readability, legend, and copy; Dynamic contact and native-selector
+  selection, role highlighting, zoom, modal focus/dismissal,
   inline catalog details, full-view navigation, and desktop themes/keyboard use.
 - Mobile-mojo review uses Chromium phone emulation and screenshot inspection.
   This is browser emulation, not testing on physical iOS or Android devices.
-- Final mobile-mojo approval: all 59 browser cases passed (32 new, 27 existing).
-  The final typography and keyboard-orientation copy were rechecked at 360px;
-  no confirmed mobile blockers remained before publishing the preview branch.
+- Final mobile-mojo approval: all 60 browser cases passed (33 redesign cases,
+  27 existing). The restored Static view and compact signal-label fix were
+  rechecked across all four phone sizes, with an additional ESP32 smoke test.
 
 The generated concept was an art-direction reference. This implementation is a
 vector interpretation, not a pixel-identical reproduction or certified board

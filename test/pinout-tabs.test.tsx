@@ -11,6 +11,9 @@ vi.mock("@/components/PinoutDiagram", () => ({
 vi.mock("@/components/board-visual/BoardPinoutVisualization", () => ({
   BoardPinoutVisualization: () => <div>Dynamic pin map</div>,
 }));
+vi.mock("@/components/board-visual/RaspberryPiPinout", () => ({
+  RaspberryPiPinout: () => <div>Raspberry Pi component view</div>,
+}));
 
 const board: Board = {
   id: "test-board",
@@ -53,6 +56,19 @@ afterEach(() => {
 });
 
 describe("PinoutTabs", () => {
+  it("uses the original pin-only Static view for Raspberry Pi boards", () => {
+    render(<PinoutTabs board={{ ...board, id: "raspberry-pi-4-model-b" }} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Dynamic" }));
+    expect(screen.getByText("Raspberry Pi component view")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("tab", { name: "Static" }));
+    expect(screen.getByText("Static pin map")).toBeTruthy();
+    expect(screen.queryByText("Raspberry Pi component view")).toBeNull();
+
+    fireEvent.click(screen.getByRole("tab", { name: "Dynamic" }));
+    expect(screen.getByText("Raspberry Pi component view")).toBeTruthy();
+  });
+
   it("supports keyboard navigation, persistence, and cross-tab updates", () => {
     render(<PinoutTabs board={board} />);
 

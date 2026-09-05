@@ -124,12 +124,12 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
   // right-aligned to meet the pad; the right column mirrors it.
   const towardCenter = side === "left";
   const label = (
-    <span className="min-w-0 truncate font-mono text-sm font-semibold text-white">
+    <span className="order-first min-w-0 basis-full wrap-anywhere font-mono text-sm font-semibold text-white @sm:order-none @sm:basis-auto @sm:truncate">
       {pin.label}
     </span>
   );
   const role = (
-    <span className="shrink-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+    <span className="hidden shrink-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500 @sm:inline">
       {roleLabels[pin.role]}
     </span>
   );
@@ -138,7 +138,7 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
     <div className={clsx("group min-w-0", towardCenter ? "text-right" : "text-left")}>
       <div
         className={clsx(
-          "flex min-w-0 items-baseline gap-1.5",
+          "flex min-w-0 flex-wrap items-baseline gap-1.5 @sm:flex-nowrap",
           towardCenter ? "justify-end" : "justify-start",
         )}
       >

@@ -146,7 +146,7 @@ export function PinoutTabs({ board }: { board: Board }) {
         aria-labelledby={`${instanceId}-pinout-tab-static`}
         hidden={tab !== "static"}
       >
-        {tab === "static" ? isRaspberryPi ? <RaspberryPiPinout key={`${board.id}-static`} board={board} mode="static" /> : <PinoutDiagram pinout={board.pinout} /> : null}
+        {tab === "static" ? <PinoutDiagram pinout={board.pinout} /> : null}
       </div>
       <div
         role="tabpanel"
@@ -155,7 +155,7 @@ export function PinoutTabs({ board }: { board: Board }) {
         hidden={tab !== "dynamic"}
       >
         {tab === "dynamic" ? (
-          isRaspberryPi ? <RaspberryPiPinout key={`${board.id}-dynamic`} board={board} mode="dynamic" /> : <BoardPinoutVisualization key={board.id} board={board} />
+          isRaspberryPi ? <RaspberryPiPinout key={`${board.id}-dynamic`} board={board} /> : <BoardPinoutVisualization key={board.id} board={board} />
         ) : null}
       </div>
     </section>
