@@ -1,6 +1,6 @@
 import { memo, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowUpRight, CircuitBoard, GitCompareArrows, ShieldAlert, Star, X } from "lucide-react";
+import { GitCompareArrows, Star, X } from "lucide-react";
 import { clsx } from "clsx";
 import type { BoardSummary } from "@/lib/board-summary";
 import {
@@ -166,13 +166,6 @@ function interfaceTone(item: string): string {
   return interfaceTones[item] ?? "default";
 }
 
-function logicDot(logicLevel: string): string {
-  const normalized = logicLevel.toLowerCase();
-  if (normalized.includes("5")) return "bg-amber-300 shadow-[0_0_6px_rgba(251,191,36,0.7)]";
-  if (normalized.includes("1.8")) return "bg-violet-300 shadow-[0_0_6px_rgba(196,181,253,0.7)]";
-  return "bg-cyan-300 shadow-[0_0_6px_rgba(103,232,249,0.7)]";
-}
-
 type BoardResultProps = {
   board: BoardSummary;
   selected: boolean;
@@ -270,28 +263,12 @@ export const BoardResult = memo(function BoardResult({
             <div className="min-w-0">
               <div className="flex min-w-0 flex-wrap items-center gap-1.5">
                 <h2 className="truncate text-[15px] font-semibold tracking-tight text-white">{board.name}</h2>
-                {board.hasPinout ? (
-                  <span data-tone="pinmap" className="ph-iface flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.08em]">
-                    <CircuitBoard className="size-3" aria-hidden="true" />
-                    Pin map
-                  </span>
-                ) : null}
-                {board.warningCount > 0 ? (
-                  <span
-                    className="flex shrink-0 items-center gap-1 rounded-md border border-orange-300/45 bg-orange-400/10 px-1.5 py-0.5 text-[11px] font-medium text-orange-100"
-                    title={`${board.warningCount} wiring caution${board.warningCount === 1 ? "" : "s"} — see “Check before wiring”`}
-                  >
-                    <ShieldAlert className="size-3" aria-hidden="true" />
-                    {board.warningCount}
-                  </span>
-                ) : null}
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="rounded border border-white/10 bg-[#0a0c11] px-1.5 py-px text-[10px] font-medium uppercase tracking-[0.1em] text-zinc-400">
                   {board.category}
                 </span>
                 <span className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-500">
-                  <span className={clsx("size-1.5 rounded-full", logicDot(board.logicLevel))} aria-hidden="true" />
                   {board.vendor} · {board.logicLevel}
                 </span>
                 {matchedBy ? (
@@ -307,10 +284,6 @@ export const BoardResult = memo(function BoardResult({
               </div>
             </div>
           </div>
-          <span className="hidden items-center gap-1 text-xs font-medium text-cyan-200/0 transition group-hover:text-cyan-200/90 sm:flex" aria-hidden="true">
-            Open
-            <ArrowUpRight className="size-3.5" />
-          </span>
         </div>
 
         <p
