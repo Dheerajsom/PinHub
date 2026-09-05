@@ -256,7 +256,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   );
 }
 
-function ExpandedInspector({
+export function ExpandedInspector({
   board,
   geometry,
   selectedKey,

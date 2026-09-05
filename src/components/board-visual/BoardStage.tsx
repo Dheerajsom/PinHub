@@ -37,6 +37,8 @@ type BoardStageProps = {
   onSelect: (key: string | null) => void;
   onActiveKey: (key: string | null) => void;
   className?: string;
+  /** Board-only framing for the compact component viewer; labels live in its readout. */
+  compact?: boolean;
 };
 
 export function BoardStage({
@@ -51,6 +53,7 @@ export function BoardStage({
   onSelect,
   onActiveKey,
   className,
+  compact = false,
 }: BoardStageProps) {
   const padRefs = useRef<Array<SVGGElement | null>>([]);
   const [focusIndex, setFocusIndex] = useState(0);
@@ -72,7 +75,9 @@ export function BoardStage({
   // A 40-pin header shown at phone width leaves each pad about 16 physical
   // pixels across, so the invisible hit area is grown to tile the row: as much
   // of the gap as can be claimed without a tap landing on two pins at once.
-  const hitR = Math.max(padR + 9, geometry.pitch * 0.48);
+  const hitR = geometry.artworkId
+    ? geometry.pitch * 0.48
+    : Math.max(padR + 9, geometry.pitch * 0.48);
 
   function focusPad(index: number) {
     const next = (index + anchors.length) % anchors.length;
@@ -82,7 +87,9 @@ export function BoardStage({
 
   return (
     <svg
-      viewBox={`0 0 ${vbw} ${vbh}`}
+      viewBox={compact
+        ? `${geometry.body.x - 24} ${geometry.body.y - 24} ${geometry.body.w + 48} ${geometry.body.h + 55}`
+        : `0 0 ${vbw} ${vbh}`}
       role="group"
       aria-label={title}
       className={clsx("bv-stage h-full w-full", className)}
@@ -111,7 +118,7 @@ export function BoardStage({
 
       {/* The net: a hairline stitched between every pad on the probed pin's net,
           drawn beneath the pads so it reads as wiring rather than as chrome. */}
-      {netPath ? (
+      {netPath && !compact ? (
         <path
           className="bv-net-path"
           d={netPath}
@@ -129,7 +136,7 @@ export function BoardStage({
       <g>
         {anchors.map((anchor) => {
           const active = anchor.key === activeKey;
-          if (!labelled && !active) return null;
+          if (compact || (!labelled && !active)) return null;
           return (
             <LeaderLabel
               key={`lbl-${anchor.key}`}
@@ -145,7 +152,7 @@ export function BoardStage({
           );
         })}
         {anchors.map((anchor) =>
-          anchor.key === activeKey && !stacked ? (
+          anchor.key === activeKey && !stacked && !compact ? (
             <line
               key={`lead-${anchor.key}`}
               x1={anchor.cx}
@@ -196,6 +203,7 @@ export function BoardStage({
             dimmed={activeRole !== null && anchor.pin.role !== activeRole}
             tabIndex={index === focusIndex ? 0 : -1}
             uid={uid}
+            realistic={Boolean(geometry.artworkId)}
             onFocus={() => {
               setFocusIndex(index);
               onActiveKey(anchor.key);
@@ -230,6 +238,7 @@ function Pad({
   dimmed,
   tabIndex,
   uid,
+  realistic,
   onFocus,
   onBlur,
   onPointerEnter,
@@ -248,6 +257,7 @@ function Pad({
   dimmed: boolean;
   tabIndex: number;
   uid: string;
+  realistic?: boolean;
   onFocus: () => void;
   onBlur: () => void;
   onPointerEnter: () => void;
@@ -284,13 +294,13 @@ function Pad({
         }
       }}
     >
-      <defs>
+      {!realistic ? <defs>
         <radialGradient id={gradientId} cx="0.35" cy="0.3" r="0.85">
           <stop offset="0" stopColor={colors.edge} stopOpacity={0.45} />
           <stop offset="0.55" stopColor={colors.fill} />
           <stop offset="1" stopColor={colors.fill} />
         </radialGradient>
-      </defs>
+      </defs> : null}
 
       {/* Generous invisible hit area for touch and mouse. */}
       <circle cx={anchor.cx} cy={anchor.cy} r={hitR} fill="transparent" />
@@ -318,7 +328,13 @@ function Pad({
         />
       ) : null}
 
-      {square ? (
+      {realistic ? (
+        <g pointerEvents="none">
+          <rect className="bv-pad-body" x={anchor.cx - padR - 2} y={anchor.cy - padR - 2} width={padR * 2 + 4} height={padR * 2 + 4} rx="2" fill="#171f18" stroke={active || selected ? PROBE_COLOR : "#69735b"} />
+          <rect x={anchor.cx - padR * 0.66} y={anchor.cy - padR * 0.66} width={padR * 1.32} height={padR * 1.32} rx={square ? 0 : 1} fill={active || selected ? "#97eff5" : "#d6bc6e"} stroke="#efdb9b" strokeWidth="1" />
+          <path d={`M${anchor.cx - padR * 0.6} ${anchor.cy - padR * 0.45}h${padR * 1.1}`} stroke="#fff1b4" strokeWidth="1" />
+        </g>
+      ) : square ? (
         <rect
           className="bv-pad-body"
           x={anchor.cx - padR}
@@ -350,7 +366,7 @@ function Pad({
         fontSize={padR * 0.95}
         fontFamily="var(--font-mono, monospace)"
         fontWeight={700}
-        fill={colors.ink}
+        fill={realistic ? "#15241b" : colors.ink}
         pointerEvents="none"
       >
         {anchor.pin.position}

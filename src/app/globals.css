@@ -1,5 +1,101 @@
 @import "tailwindcss";
 
+/* Raspberry Pi component viewer: quiet chrome, detailed board, one probe color. */
+.pi-workbench {
+  --pi-panel: #131a1d;
+  --pi-well: #0e1417;
+  --pi-rule: #2b373b;
+  --pi-text: #e1e8e8;
+  --pi-muted: #9eafb3;
+  --pi-accent: #74dfeb;
+  container-type: inline-size;
+  min-width: 0;
+  color: var(--pi-text);
+  background: var(--pi-panel);
+  border: 1px solid var(--pi-rule);
+  border-radius: 12px;
+  overflow: hidden;
+}
+[data-theme="light"] .pi-workbench {
+  --pi-panel: #f5f8f6;
+  --pi-well: #eaf0ec;
+  --pi-rule: #c5d1ca;
+  --pi-text: #17362b;
+  --pi-muted: #506b60;
+  --pi-accent: #087480;
+}
+.pi-workbench-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 18px; border-bottom: 1px solid var(--pi-rule); }
+.pi-workbench-heading h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.025em; }
+.pi-workbench-heading p { margin: 4px 0 0; font-size: 12px; color: var(--pi-muted); }
+.pi-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.pi-tools > button, .pi-tools > a { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 11px; border: 1px solid var(--pi-rule); border-radius: 6px; font-size: 12px; background: var(--pi-well); }
+.pi-workbench button, .pi-workbench a { cursor: pointer; }
+.pi-workbench :is(button, a, select, input, summary, [tabindex]):focus-visible { outline: 2px solid var(--pi-accent); outline-offset: 3px; }
+.pi-role-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--pi-rule); }
+.pi-role-bar button { min-height: 36px; }
+.pi-component-layout { display: grid; grid-template-columns: minmax(0, 1fr); }
+.pi-canvas { min-width: 0; background: radial-gradient(ellipse at 45% 35%, #1d2927, #0c1316 78%); color: #aebfbc; }
+.pi-canvas-scroll { overflow: auto; overscroll-behavior: contain; scrollbar-color: #4d6457 #101b16; }
+.pi-board-frame { width: 100%; padding: 15px; }
+.pi-board-frame.is-zoomed { min-width: 1050px; }
+.pi-canvas-pico .pi-board-frame { max-width: 265px; margin: auto; }
+.pi-canvas-pico .pi-board-frame.is-zoomed { min-width: 520px; }
+.pi-static-board { width: 100%; height: 210px; padding: 15px; }
+.pi-canvas-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 0 16px; min-height: 45px; border-top: 1px solid #26352e; font-size: 11px; }
+.pi-canvas-footer button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #bce9e3; }
+.pi-readout { min-width: 0; padding: 17px; background: var(--pi-well); border-top: 1px solid var(--pi-rule); }
+.pi-pin-picker { display: grid; gap: 7px; font-size: 12px; color: var(--pi-muted); }
+.pi-pin-picker select { width: 100%; min-width: 0; min-height: 44px; padding: 7px; border: 1px solid var(--pi-rule); border-radius: 5px; background: var(--pi-panel); color: var(--pi-text); font-size: 16px; }
+.pi-live-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 16px 0; }
+.pi-live-heading span { font-size: 12px; color: var(--pi-muted); }
+.pi-live-heading strong { color: var(--pi-accent); font-family: var(--font-mono), monospace; font-size: 35px; font-weight: 400; line-height: 1; }
+.pi-readout h4 { margin-bottom: 10px; font-weight: 600; font-size: 14px; }
+.pi-readout > p, .pi-electrical-note p { font-size: 12px; line-height: 1.7; color: var(--pi-muted); margin-top: 6px; }
+.pi-electrical-note { margin-top: 17px; padding-top: 12px; border-top: 1px solid var(--pi-rule); }
+.pi-electrical-note strong { font-size: 12px; color: var(--pi-text); }
+.pi-source { display: flex; gap: 7px; align-items: center; min-height: 44px; margin-top: 7px; color: var(--pi-accent); font-size: 11px; }
+.pi-source svg { flex-shrink: 0; }
+.pi-clear { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--pi-accent); font-size: 12px; }
+.pi-illustration-note { padding: 11px 18px; border-top: 1px solid var(--pi-rule); color: var(--pi-muted); font-size: 11px; line-height: 1.65; }
+.pi-schedule { border-top: 1px solid var(--pi-rule); }
+.pi-schedule summary { padding: 13px 18px; min-height: 46px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.pi-schedule-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 0 18px 12px; }
+.pi-schedule-tools label { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 150px; color: var(--pi-muted); }
+.pi-schedule-tools input { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--pi-rule); border-radius: 5px; background: var(--pi-well); color: var(--pi-text); padding: 7px; font-size: 16px; }
+.pi-schedule-tools > span { font-size: 11px; color: var(--pi-muted); }
+.pi-schedule-scroll { overflow-x: auto; }
+.pi-schedule table { table-layout: fixed; border-collapse: collapse; width: 100%; font-size: 12px; }
+.pi-schedule thead { text-align: left; color: var(--pi-muted); background: var(--pi-well); }
+.pi-schedule :is(th, td) { padding: 9px 8px; border-top: 1px solid var(--pi-rule); vertical-align: top; overflow-wrap: anywhere; }
+.pi-schedule th:first-child { width: 49px; padding-left: 13px; }
+.pi-schedule th:nth-child(2) { width: 26%; }
+.pi-schedule th:last-child { width: 63px; }
+.pi-schedule tbody tr:nth-child(even) { background: var(--pi-well); }
+.pi-schedule tbody tr[data-selected] { box-shadow: inset 3px 0 var(--pi-accent); }
+.pi-pin-number { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid; border-radius: 4px; font-family: var(--font-mono), monospace; font-weight: 500; }
+.pi-schedule td strong { display: block; font-family: var(--font-mono), monospace; font-size: 12px; font-weight: 500; }
+.pi-schedule td small, .pi-muted { color: var(--pi-muted); font-size: 10px; }
+.pi-schedule td p { margin-top: 5px; font-size: 11px; line-height: 1.55; color: var(--pi-muted); }
+.pi-row-select { min-height: 44px; font-size: 11px; color: var(--pi-accent); }
+.pi-empty { padding: 16px; font-size: 13px; }
+.pi-empty button { min-height: 44px; color: var(--pi-accent); text-decoration: underline; }
+.pi-wiring-notes { margin: 0; padding: 14px 18px 14px 32px; border-top: 1px solid var(--pi-rule); list-style: disc; color: var(--pi-muted); font-size: 12px; line-height: 1.75; }
+.pi-wiring-notes li + li { margin-top: 4px; }
+@container (min-width: 650px) {
+  .pi-component-layout { grid-template-columns: minmax(0, 1fr) 210px; }
+  .pi-readout { border-top: 0; border-left: 1px solid var(--pi-rule); }
+  .pi-board-frame { padding: 20px; }
+  .pi-canvas { display: flex; flex-direction: column; justify-content: center; }
+  .pi-canvas-scroll { flex: 1; display: grid; align-items: center; }
+  .pi-static-board { height: 260px; }
+}
+@media print {
+  .pi-workbench { overflow: visible; --pi-panel: #fff; --pi-well: #fff; --pi-rule: #bbb; --pi-text: #111; --pi-muted: #444; }
+  .pi-tools, .pi-schedule-tools, .pi-canvas-footer button { display: none; }
+  .pi-schedule-scroll { overflow: visible; }
+  .pi-schedule tr { break-inside: avoid; }
+}
+
 @theme inline {
   --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, "SF Mono",

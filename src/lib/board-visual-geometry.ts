@@ -3,16 +3,13 @@
 // anchor per electrical pin. No pin labels live here — pins are read straight
 // from the board data, so this file never becomes a second source of truth.
 //
-// The drawing is a fabrication drawing, not a picture of a board, and that
-// constrains what this file is allowed to emit. Only three things about a board
-// are actually known: the connector rows and their pin data (source-backed),
-// the board's rough proportions, and which edge the USB port is on (both
-// curated per form factor). Component positions, port positions, and mounting
-// hole positions are not known for any board in the catalog, so no coordinates
-// are produced for them — a drawing that invents where the regulator sits
-// teaches the reader to distrust the pins too.
+// Generic boards use schematic outlines. Raspberry Pi variants add illustrative
+// component artwork and header placement through raspberryPiGeometry. Neither
+// drawing is a fabrication template: electrical labels stay source-backed,
+// while decorative components and traces must never imply verified circuitry.
 
 import type { Board, Pin } from "@/lib/boards";
+import { raspberryPiGeometry } from "@/lib/raspberry-pi-models";
 import {
   stackedFontSize,
   stackedLabelExtent,
@@ -67,6 +64,8 @@ export type SilkLine = {
 };
 
 export type BoardGeometry = {
+  /** Selects a model-specific decorative illustration without changing pin data. */
+  artworkId?: string;
   kind: BoardVisual["headerKind"];
   vbw: number;
   vbh: number;
@@ -872,5 +871,5 @@ export function buildBoardGeometry(board: Board): BoardGeometry | null {
   if (!board.pinout) return null;
   const visual = boardVisuals[board.id];
   if (!visual) return null;
-  return { kind: visual.headerKind, ...builders[visual.headerKind](board, visual) };
+  return raspberryPiGeometry(board, { kind: visual.headerKind, ...builders[visual.headerKind](board, visual) });
 }
