@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+/* A paper release sticker; normal flow keeps it clear of card names and tools. */
+.ph-render-sticker {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  margin: 5px 4px 7px auto;
+  padding: 5px 16px 7px 12px;
+  border: 2px solid #fff8cf;
+  border-radius: 6px 7px 13px 5px;
+  background: linear-gradient(165deg, #fff09b, #f5d65f 75%, #d6b244);
+  color: #302a13;
+  box-shadow: 1px 3px 0 #00000024, 2px 5px 9px #00000030, inset 0 1px #ffffffb3;
+  transform: rotate(-6deg);
+  line-height: 1.15;
+}
+.ph-render-sticker > span { font-size: 10px; font-weight: 600; }
+.ph-render-sticker > strong { font-size: 12px; font-weight: 750; letter-spacing: -0.02em; }
+.ph-render-sticker::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px 0 10px 0;
+  background: linear-gradient(135deg, #b99a39 0%, #fff9dc 48%, #d2b859 51%, #eed574 100%);
+  box-shadow: -1px -1px 2px #7b602833;
+}
+
 /* Raspberry Pi component viewer: quiet chrome, detailed board, one probe color. */
 .pi-workbench {
   --pi-panel: #131a1d;

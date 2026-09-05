@@ -8,6 +8,7 @@ import {
   type BoardMatchField,
 } from "@/lib/board-search";
 import { VendorLogo } from "@/components/VendorLogo";
+import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 
 type ActiveFilterChipProps = {
   label: string;
@@ -284,6 +285,12 @@ export const BoardResult = memo(function BoardResult({
               </div>
             </div>
           </div>
+          {raspberryPiModel(board.id) ? (
+            <span className="ph-render-sticker">
+              <span>New</span>
+              <strong>Dynamic render</strong>
+            </span>
+          ) : null}
         </div>
 
         <p
