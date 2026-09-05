@@ -16,7 +16,6 @@ import {
   Cpu,
   Database,
   Factory,
-  Keyboard,
   Layers3,
   LoaderCircle,
   Radio,
@@ -812,21 +811,14 @@ export function PinHubApp({
               {hasActiveFilters ? ` · ${catalog.length} total` : ""}
               {paging ? " · loading more" : ""}
             </span>
-            <span className="hidden shrink-0 items-center gap-1.5 font-mono text-[11px] text-zinc-600 lg:flex" aria-hidden="true">
-              <Keyboard className="size-3.5" />
-              / to search · ↑↓ to move · Enter to open
-            </span>
           </div>
           {!hasActiveFilters ? (
             <div className="surface-panel ph-card-in mb-3 overflow-hidden rounded-xl">
               <div className="flex items-center gap-2 border-b border-white/5 px-3.5 py-2.5">
                 <TrendingUp className="size-4 text-cyan-200" aria-hidden="true" />
                 <h2 className="text-[13px] font-semibold tracking-tight text-white">
-                  Popular right now
+                  Trending Boards
                 </h2>
-                <span className="ml-auto hidden font-mono text-[11px] text-zinc-500 sm:inline">
-                  preset slots · one tap to inspect
-                </span>
               </div>
               <div className="flex gap-1.5 overflow-x-auto p-2.5 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:overflow-visible min-[1500px]:grid-cols-4 [&::-webkit-scrollbar]:hidden">
                 {popularBoardIds.flatMap((id) => {

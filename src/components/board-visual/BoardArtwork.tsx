@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { RaspberryPiArtwork } from "@/components/board-visual/RaspberryPiArtwork";
 import type {
   BoardGeometry,
   Hole,
@@ -40,6 +41,8 @@ export function BoardArtwork({
 
   const { body, headerZones, ports, holes, anchors, padR, accent, kind, silk } =
     geometry;
+
+  if (geometry.artworkId) return <RaspberryPiArtwork geometry={geometry} label={label} />;
 
   // The function-grouped sheet makes no claim about a board's shape, so it gets
   // no outline — just a frame around each block of pads.

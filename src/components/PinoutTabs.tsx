@@ -6,6 +6,8 @@ import { CircuitBoard, Rows3 } from "lucide-react";
 import type { Board } from "@/lib/boards";
 import { PinoutDiagram } from "@/components/PinoutDiagram";
 import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutVisualization";
+import { RaspberryPiPinout } from "@/components/board-visual/RaspberryPiPinout";
+import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 
 type PinoutTab = "static" | "dynamic";
 const storageKey = "pinhub.pinoutTab";
@@ -62,6 +64,7 @@ function setTabPreference(next: PinoutTab) {
 // Wraps the two pinout presentations behind a small segmented control. "Static"
 // is the dense, scannable list map; "Dynamic" is the interactive board diagram.
 export function PinoutTabs({ board }: { board: Board }) {
+  const isRaspberryPi = Boolean(raspberryPiModel(board.id));
   const instanceId = useId();
   const tab = useSyncExternalStore(
     subscribeTab,
@@ -152,7 +155,7 @@ export function PinoutTabs({ board }: { board: Board }) {
         hidden={tab !== "dynamic"}
       >
         {tab === "dynamic" ? (
-          <BoardPinoutVisualization key={board.id} board={board} />
+          isRaspberryPi ? <RaspberryPiPinout key={`${board.id}-dynamic`} board={board} /> : <BoardPinoutVisualization key={board.id} board={board} />
         ) : null}
       </div>
     </section>
