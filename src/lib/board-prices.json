@@ -10,8 +10,8 @@
     "url": "https://www.adafruit.com/product/5812",
     "amount": 13000,
     "currency": "USD",
-    "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:15.282Z"
+    "stock": "out-of-stock",
+    "checkedAt": "2026-09-07T12:03:13.976Z"
   },
   {
     "id": "arduino-abx00087",
@@ -25,7 +25,7 @@
     "amount": 2200,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:15.641Z"
+    "checkedAt": "2026-09-07T12:03:14.261Z"
   },
   {
     "id": "adafruit-6087",
@@ -39,7 +39,7 @@
     "amount": 700,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:15.795Z"
+    "checkedAt": "2026-09-07T12:03:14.673Z"
   },
   {
     "id": "adafruit-5336",
@@ -53,7 +53,7 @@
     "amount": 1995,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:15.932Z"
+    "checkedAt": "2026-09-07T12:03:14.913Z"
   },
   {
     "id": "arduino-abx00092",
@@ -67,7 +67,7 @@
     "amount": 1830,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:16.200Z"
+    "checkedAt": "2026-09-07T12:03:15.118Z"
   },
   {
     "id": "adafruit-6006",
@@ -81,7 +81,7 @@
     "amount": 625,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:16.337Z"
+    "checkedAt": "2026-09-07T12:03:15.541Z"
   },
   {
     "id": "adafruit-4884",
@@ -95,7 +95,7 @@
     "amount": 1195,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:16.468Z"
+    "checkedAt": "2026-09-07T12:03:15.776Z"
   },
   {
     "id": "arduino-abx00080",
@@ -109,7 +109,7 @@
     "amount": 2000,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:16.779Z"
+    "checkedAt": "2026-09-07T12:03:16.048Z"
   },
   {
     "id": "adafruit-5291",
@@ -123,7 +123,7 @@
     "amount": 1905,
     "currency": "USD",
     "stock": "out-of-stock",
-    "checkedAt": "2026-09-02T20:33:16.924Z"
+    "checkedAt": "2026-09-07T12:03:16.241Z"
   },
   {
     "id": "adafruit-5526",
@@ -137,7 +137,7 @@
     "amount": 600,
     "currency": "USD",
     "stock": "in-stock",
-    "checkedAt": "2026-09-02T20:33:17.069Z"
+    "checkedAt": "2026-09-07T12:03:16.429Z"
   },
   {
     "id": "adafruit-4864",
@@ -151,6 +151,6 @@
     "amount": 400,
     "currency": "USD",
     "stock": "out-of-stock",
-    "checkedAt": "2026-09-02T20:33:17.211Z"
+    "checkedAt": "2026-09-07T12:03:16.623Z"
   }
 ]
