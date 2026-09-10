@@ -36,13 +36,19 @@ describe("shared price boundaries", () => {
   it("conditionally replaces exactly the version read, rejecting a cached or concurrent version", async () => {
     vi.mocked(get).mockResolvedValue(stored() as Awaited<ReturnType<typeof get>>);
     const result = await readStoredPrices();
-    expect(get).toHaveBeenCalledWith("prices/latest-v1.json", expect.objectContaining({ access: "public" }));
+    expect(get).toHaveBeenCalledWith("prices/latest-v1.json", expect.objectContaining({ access: "public", headers: { "Accept-Encoding": "identity" } }));
     await writeStoredPrices(result!.snapshot, result!.etag);
     expect(put).toHaveBeenCalledWith("prices/latest-v1.json", expect.any(String), expect.objectContaining({ ifMatch: "version-1", cacheControlMaxAge: 60 }));
     await writeStoredPrices(snapshot());
     expect(put).toHaveBeenLastCalledWith(expect.any(String), expect.any(String), expect.objectContaining({ allowOverwrite: false }));
     vi.mocked(put).mockRejectedValue(new Error("Precondition failed"));
     await expect(writeStoredPrices(snapshot(), "old-etag")).rejects.toThrow("Precondition");
+  });
+
+  it("never uses a weak compressed-response ETag for a conditional write", async () => {
+    await expect(writeStoredPrices(snapshot(), 'W/"compressed-version"')).rejects.toThrow("strong storage ETag");
+    await expect(writeStoredPrices(snapshot(), "")).rejects.toThrow("strong storage ETag");
+    expect(put).not.toHaveBeenCalled();
   });
 
   it("serves shared observations from the read-only API with a bounded cache", async () => {

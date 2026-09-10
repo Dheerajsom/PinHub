@@ -7,7 +7,12 @@ export function priceStoreConfigured(): boolean {
 }
 
 export async function readStoredPrices() {
-  const result = await get(priceSnapshotPath, { access: "public", abortSignal: AbortSignal.timeout(8000) });
+  const result = await get(priceSnapshotPath, {
+    access: "public", abortSignal: AbortSignal.timeout(8000),
+    // Blob's compressed CDN responses carry W/ ETags that cannot be used for
+    // conditional writes. Read the identity representation and its strong ETag.
+    headers: { "Accept-Encoding": "identity" },
+  });
   if (!result) return null;
   if (result.statusCode !== 200) throw new Error("Unexpected price storage response");
   const snapshot = await readPriceSnapshot(result.stream);
@@ -15,6 +20,7 @@ export async function readStoredPrices() {
 }
 
 export async function writeStoredPrices(snapshot: PriceSnapshot, etag?: string) {
+  if (etag !== undefined && (!etag || etag.startsWith("W/"))) throw new Error("Price publication requires a strong storage ETag");
   const body = JSON.stringify(parsePriceSnapshot(snapshot));
   if (new TextEncoder().encode(body).length > maxPriceSnapshotBytes) throw new Error("Price snapshot exceeds size limit");
   return put(priceSnapshotPath, body, {
