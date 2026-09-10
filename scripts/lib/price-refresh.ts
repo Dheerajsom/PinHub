@@ -61,23 +61,25 @@ function exactAdafruitUrl(value: unknown, sku: string): boolean {
   } catch { return false; }
 }
 
-export function parseAdafruit(html: string, listing: BoardPrice): Observation {
+function parseRetailerHtml(html: string, listing: BoardPrice): Observation {
   const nodes: RecordValue[] = [];
   for (const match of html.matchAll(/<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script\s*>/gi)) {
     // Fail closed on malformed JSON-LD rather than accidentally choosing a related product.
     nodes.push(...graphNodes(JSON.parse(match[1])));
   }
   const products = nodes.filter((node) => schemaType(node["@type"], "Product") && String(node.sku) === listing.sku);
-  if (products.length !== 1) throw new Error("Expected exactly one Product matching the Adafruit SKU");
+  if (products.length !== 1) throw new Error("Expected exactly one Product matching the retailer SKU");
   const product = products[0];
   if (typeof product.name !== "string" || !product.name.trim()) throw new Error("Missing product name");
   const rawOffers = Array.isArray(product.offers) ? product.offers : [product.offers];
   const offers = rawOffers.map((offer) => object(offer, "Offer")).filter((offer) =>
-    schemaType(offer["@type"], "Offer") && exactAdafruitUrl(offer.url, listing.sku));
-  if (offers.length !== 1) throw new Error("Expected exactly one Offer for the selected Adafruit product");
+    schemaType(offer["@type"], "Offer") && (listing.retailer === "Adafruit"
+      ? exactAdafruitUrl(offer.url, listing.sku) : offer.url === listing.url));
+  if (offers.length !== 1) throw new Error("Expected exactly one Offer for the selected retailer variant");
   const offer = offers[0];
   if (offer.priceCurrency !== listing.currency) throw new Error("Retailer currency is not USD");
-  if (!schemaType(offer.itemCondition, "NewCondition")) throw new Error("Offer is not a confirmed new board");
+  if ((listing.retailer === "Adafruit" || offer.itemCondition !== undefined)
+    && !schemaType(offer.itemCondition, "NewCondition")) throw new Error("Offer is not a confirmed new board");
   if (offer.eligibleQuantity !== undefined) {
     const quantity = object(offer.eligibleQuantity, "eligible quantity");
     for (const key of ["value", "minValue", "maxValue"]) {
@@ -96,17 +98,13 @@ export function parseAdafruit(html: string, listing: BoardPrice): Observation {
   return { amount: dollarsToCents(offer.price), stock };
 }
 
-export function parseArduino(productJson: unknown, listing: BoardPrice, currency: unknown): Observation {
-  if (currency !== listing.currency) throw new Error("Arduino store currency is not USD");
-  const url = new URL(listing.url);
-  const product = object(productJson, "Arduino product");
-  if (product.handle !== url.pathname.split("/").at(-1)) throw new Error("Arduino product handle mismatch");
-  if (!Array.isArray(product.variants)) throw new Error("Missing Arduino variants");
-  const variants = product.variants.map((v) => object(v, "variant")).filter((v) => String(v.id) === url.searchParams.get("variant"));
-  if (variants.length !== 1 || variants[0].sku !== listing.sku) throw new Error("Arduino variant ID/SKU mismatch");
-  const variant = variants[0];
-  if (typeof variant.available !== "boolean") throw new Error("Missing variant availability");
-  return { amount: cents(variant.price), stock: variant.available ? "in-stock" : "out-of-stock" };
+export function parseAdafruit(html: string, listing: BoardPrice): Observation {
+  return parseRetailerHtml(html, listing);
+}
+
+/** The selected public product page exposes exact SKU, variant URL and currency. */
+export function parseArduino(html: string, listing: BoardPrice): Observation {
+  return parseRetailerHtml(html, listing);
 }
 
 class HttpError extends Error {
@@ -146,18 +144,14 @@ export async function refreshListings(listings: BoardPrice[], options: RefreshOp
   }
   const updated: BoardPrice[] = [];
   const results: RefreshResult[] = [];
-  // Deliberately sequential: this tiny weekly catalog does not need concurrent retailer traffic.
+  // Keep retailer traffic sequential and bounded, independently of visitor traffic.
   for (const listing of listings) {
     try {
       let observation: Observation;
       if (listing.retailer === "Adafruit") {
         observation = parseAdafruit(await fetchRetailerText(listing.url, options), listing);
       } else {
-        const url = new URL(listing.url);
-        // Both requests are anonymous, same store/locale, with no customer cookies.
-        const cart = object(JSON.parse(await fetchRetailerText(`${url.origin}/cart.js`, options)), "store currency");
-        const product = JSON.parse(await fetchRetailerText(`${url.origin}${url.pathname}.js`, options));
-        observation = parseArduino(product, listing, cart.currency);
+        observation = parseArduino(await fetchRetailerText(listing.url, options), listing);
       }
       const accepted = options.acceptedPrices?.get(listing.id);
       if (accepted !== undefined && accepted !== observation.amount) throw new Error(`Price no longer matches the manually accepted ${accepted} cents`);

@@ -1,10 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, Tags } from "lucide-react";
-import { formatPrice, formatPriceDate, priceForBoard } from "@/lib/board-prices";
+import { formatPrice, priceForBoard } from "@/lib/board-prices";
+import { useLivePrices } from "./useLivePrices";
+import { PriceCheckTime } from "./PriceCheckTime";
 
-/** Absolute check dates are safe on static pages; never imply current stock. */
 export function BoardPriceLink({ boardId }: { boardId: string }) {
-  const price = priceForBoard(boardId);
+  const { prices } = useLivePrices();
+  const price = prices?.find((item) => item.boardId === boardId && item.primary) ?? priceForBoard(boardId);
   if (!price) return null;
   return (
     <Link href={`/prices?board=${encodeURIComponent(boardId)}#${price.id}`}
@@ -12,7 +16,7 @@ export function BoardPriceLink({ boardId }: { boardId: string }) {
       <span className="flex min-w-0 items-start gap-2"><Tags className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span className="min-w-0">
         <span className="block font-medium">{formatPrice(price)} · {price.retailer}</span>
         <span className="mt-1 block text-xs leading-5 text-zinc-400">{price.variant}</span>
-        <span className="block text-xs leading-5 text-zinc-400">USD reference · <time dateTime={price.checkedAt}>{formatPriceDate(price.checkedAt)}</time> · tax/shipping extra</span>
+        <span className="block text-xs leading-5 text-zinc-400">USD · Checked <PriceCheckTime checkedAt={price.checkedAt} /> · tax/shipping extra</span>
       </span></span>
       <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
     </Link>

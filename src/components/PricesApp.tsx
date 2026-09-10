@@ -4,17 +4,26 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, CircuitBoard, Search, X } from "lucide-react";
 import { clsx } from "clsx";
-import { formatPrice, formatPriceDate, hasRecentStockCheck, priceFreshness } from "@/lib/board-prices";
+import { formatPrice, hasRecentStockCheck, priceFreshness } from "@/lib/board-prices";
 import { defaultPriceFilters, filterPrices, type PriceListing } from "@/lib/price-filters";
 import { VendorLogo } from "@/components/VendorLogo";
 import { usePriceUrlState } from "@/components/usePriceUrlState";
+import { useLivePrices } from "@/components/useLivePrices";
+import { PriceCheckTime } from "@/components/PriceCheckTime";
 
 const categories = [{ value: "all", label: "All boards" }, { value: "Microcontroller", label: "Microcontrollers" }, { value: "SBC", label: "SBCs" }];
 
-export function PricesApp({ listings, now }: {
+export function PricesApp({ listings: initialListings, now, initialSource = "fallback" }: {
   listings: PriceListing[];
   now: number;
+  initialSource?: "shared" | "fallback";
 }) {
+  const feed = useLivePrices();
+  const source = feed.source === "loading" ? initialSource : feed.source;
+  const listings = initialListings.map((listing) => {
+    const updated = feed.prices?.find((price) => price.id === listing.id);
+    return updated && Date.parse(updated.checkedAt) >= Date.parse(listing.checkedAt) ? { ...listing, ...updated } : listing;
+  });
   const [filters, update] = usePriceUrlState();
   const [clock, setClock] = useState(now);
 
@@ -39,7 +48,7 @@ export function PricesApp({ listings, now }: {
         <div className="border-l-2 border-amber-300/60 pl-3 text-xs leading-5 text-zinc-400">
           <div className="font-medium text-zinc-200">US stores · USD · one board</div>
           <div>Shipping and tax excluded.</div>
-          <a href="#price-notes" className="inline-flex min-h-6 items-center text-amber-200 underline underline-offset-4">Dated checks, not live prices</a>
+          <a href="#price-notes" className="inline-flex min-h-6 items-center text-amber-200 underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
         </div>
       </div>
 
@@ -83,7 +92,7 @@ export function PricesApp({ listings, now }: {
         {filtered ? <button type="button" onClick={() => update(defaultPriceFilters)} className="inline-flex min-h-11 items-center gap-1.5 text-cyan-200 hover:text-white"><X className="size-3.5" aria-hidden="true" /> Show all boards</button> : <span className="text-zinc-400">Price &amp; stock as of the date shown</span>}
       </div>
       {olderCount > 0 ? <p className="mb-4 rounded-lg border border-amber-300/30 bg-amber-300/10 p-3 text-sm text-amber-100">{olderCount} {olderCount === 1 ? "listing has" : "listings have"} an older check. These prices remain available for reference; confirm price and stock with the retailer.</p> : null}
-      {filters.inStock ? <p className="mb-3 text-xs text-zinc-400">Showing listings checked in stock less than seven days ago. Current availability can change.</p> : null}
+      {filters.inStock ? <p className="mb-3 text-xs text-zinc-400">Showing listings checked in stock less than two hours ago. Current availability can change.</p> : null}
 
       <section aria-label="Board price listings" className="surface-panel overflow-hidden rounded-xl">
         <div aria-hidden="true" className="price-grid hidden border-b border-white/10 px-5 py-3 font-mono text-[11px] uppercase tracking-wider text-zinc-400 lg:grid">
@@ -101,7 +110,7 @@ export function PricesApp({ listings, now }: {
       <details id="price-notes" className="surface-panel mt-5 scroll-mt-24 rounded-xl px-4 sm:px-5">
         <summary className="cursor-pointer py-4 text-sm font-medium text-zinc-200">How to read these prices</summary>
         <div className="grid gap-4 border-t border-white/10 py-4 text-sm leading-6 text-zinc-400 md:grid-cols-3">
-          <p><strong className="font-medium text-zinc-200">A checked snapshot.</strong> A weekly refresh checks retailer data. Failed checks keep the previous date. Prices checked within 14 days are recent; after 14 days they say “Older check”, and after 45 days “Needs new check”. Stock checks expire separately after seven days.</p>
+          <p><strong className="font-medium text-zinc-200">Automatic checks.</strong> Retailer checks are scheduled hourly; this page retrieves updates every minute while visible. Schedules can be delayed. Failed checks keep the previous price and date. After three hours prices say “Older check”, and after 24 hours “Needs new check”. Stock checks expire after two hours.</p>
           <p><strong className="font-medium text-zinc-200">The exact board matters.</strong> Prices apply to the named variant at quantity one. Memory, headers, and bundles can change the cost. Shipping, taxes, and import charges are extra.</p>
           <p><strong className="font-medium text-zinc-200">Confirm before buying.</strong> These are selected US listings, not a lowest-price guarantee. The retailer sets the final price and availability. PinHub does not sell boards.</p>
         </div>
@@ -133,7 +142,7 @@ function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
         <div className="mt-1 font-mono text-[11px] text-zinc-400">SKU {listing.sku}</div>
       </div>
       <div className="price-checked text-xs leading-5 text-zinc-400">
-        <span className="mr-1 lg:hidden">Checked</span><time dateTime={listing.checkedAt} title={listing.checkedAt}>{formatPriceDate(listing.checkedAt)}</time>
+        <span className="mr-1 lg:hidden">Checked</span><PriceCheckTime checkedAt={listing.checkedAt} showAgeWarning={false} />
         <div className={clsx("text-[11px]", freshness !== "fresh" ? "text-amber-200" : "text-zinc-400")}>{freshness === "stale" ? "Needs new check" : freshness === "aging" ? "Older check" : "Recent check"}</div>
       </div>
       <div className="price-actions flex gap-2 lg:flex-col">

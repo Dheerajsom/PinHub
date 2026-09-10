@@ -6,10 +6,10 @@ export type { BoardPrice } from "./board-price-schema";
 /** Dated US retailer snapshots. Builds must never advance checkedAt. */
 export const boardPrices = parseBoardPrices(snapshots);
 
-const day = 24 * 60 * 60 * 1000;
-export const stockValidForMs = 7 * day;
-export const priceFreshForMs = 14 * day;
-export const priceStaleAfterMs = 45 * day;
+const hour = 60 * 60 * 1000;
+export const stockValidForMs = 2 * hour;
+export const priceFreshForMs = 3 * hour;
+export const priceStaleAfterMs = 24 * hour;
 export type PriceFreshness = "fresh" | "aging" | "stale";
 
 // These options are identical for every listing. Reuse the expensive Intl

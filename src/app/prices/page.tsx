@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { boards } from "@/lib/boards";
-import { boardPrices } from "@/lib/board-prices";
+import { getLivePrices } from "@/lib/server/price-store";
 import { PricesApp } from "@/components/PricesApp";
 import { SectionNav } from "@/components/SectionNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -13,16 +13,16 @@ export const metadata: Metadata = {
   alternates: { canonical: "/prices" },
 };
 
-const listings = boardPrices.map((price) => {
-  const board = boards.find((item) => item.id === price.boardId);
-  if (!board) throw new Error(`Price listing refers to missing board: ${price.boardId}`);
-  return { ...price, name: board.name, vendor: board.vendor, category: board.category };
-});
-
 export default async function PricesPage({ searchParams }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   await searchParams;
+  const data = await getLivePrices();
+  const listings = data.snapshot.prices.map((price) => {
+    const board = boards.find((item) => item.id === price.boardId);
+    if (!board) throw new Error(`Price listing refers to missing board: ${price.boardId}`);
+    return { ...price, name: board.name, vendor: board.vendor, category: board.category };
+  });
   // This dynamic server route captures request time after awaiting searchParams.
   // eslint-disable-next-line react-hooks/purity -- Server-only freshness snapshot, serialized for hydration.
   const now = Date.now();
@@ -47,7 +47,7 @@ export default async function PricesPage({ searchParams }: {
           <span className="hidden font-mono text-xs text-zinc-400 sm:block">US listings / USD / quantity 1</span>
         </div>
       </div>
-      <PricesApp listings={listings} now={now} />
+      <PricesApp listings={listings} now={now} initialSource={data.source} />
     </main>
   );
 }

@@ -7,7 +7,7 @@ import { defaultPriceFilters, filterPrices, parsePriceFilters, pricesUrl, type P
 const now = Date.parse("2026-09-03T00:00:00Z");
 const listings: PriceListing[] = boardPrices.map((price) => {
   const board = boards.find((item) => item.id === price.boardId)!;
-  return { ...price, checkedAt: "2026-09-02T14:00:00Z", stock: price.boardId === "raspberry-pi-pico" ? "out-of-stock" : "in-stock", name: board.name, vendor: board.vendor, category: board.category };
+  return { ...price, checkedAt: "2026-09-02T23:00:00Z", stock: price.boardId === "raspberry-pi-pico" ? "out-of-stock" : "in-stock", name: board.name, vendor: board.vendor, category: board.category };
 });
 
 describe("price source integrity", () => {

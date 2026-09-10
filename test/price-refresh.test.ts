@@ -33,10 +33,16 @@ function retailerFetcher(failureId?: string): typeof fetch {
       const item = boardPrices.find((candidate) => candidate.sku === url.pathname.split("/").at(-1))!;
       return new Response(adafruitHtml(item.sku, item.amount / 100), { status: 200 });
     }
-    if (url.pathname === "/cart.js") return Response.json({ currency: "USD" });
-    const item = boardPrices.find((candidate) => new URL(candidate.url).pathname === url.pathname.replace(/\.js$/, ""))!;
-    return Response.json({ handle: url.pathname.split("/").at(-1)!.replace(/\.js$/, ""), variants: [{ id: Number(new URL(item.url).searchParams.get("variant")), sku: item.sku, price: item.amount, available: item.stock === "in-stock" }] });
+    const item = boardPrices.find((candidate) => candidate.url === url.href)!;
+    return new Response(arduinoHtml(item));
   }) as typeof fetch;
+}
+
+function arduinoHtml(listing: typeof boardPrices[number], price = listing.amount / 100, availability = "InStock") {
+  return `<script type="application/ld+json">${JSON.stringify({
+    "@type": "Product", name: "Arduino board", sku: listing.sku,
+    offers: { "@type": "Offer", url: listing.url, priceCurrency: "USD", price, availability: `http://schema.org/${availability}` },
+  })}</script>`;
 }
 
 describe("retailer price parsers", () => {
@@ -53,7 +59,7 @@ describe("retailer price parsers", () => {
     expect(parseAdafruit(adafruitHtml(listing.sku, "130.00"), listing)).toEqual({ amount: 13000, stock: "in-stock" });
     expect(parseAdafruit(adafruitHtml(listing.sku, "130", "OutOfStock"), listing).stock).toBe("out-of-stock");
     expect(parseAdafruit(adafruitHtml(listing.sku, "130", "PreOrder"), listing).stock).toBe("unknown");
-    expect(() => parseAdafruit(adafruitHtml("9999", "130"), listing)).toThrow("matching the Adafruit SKU");
+    expect(() => parseAdafruit(adafruitHtml("9999", "130"), listing)).toThrow("matching the retailer SKU");
     expect(() => parseAdafruit(adafruitHtml(listing.sku, "130").replace('"USD"', '"EUR"'), listing)).toThrow("currency");
     expect(() => parseAdafruit(adafruitHtml(listing.sku, "130").replace("NewCondition", "UsedCondition"), listing)).toThrow("new board");
     expect(() => parseAdafruit(adafruitHtml(listing.sku, "130", "Unexpected"), listing)).toThrow("availability");
@@ -72,13 +78,21 @@ describe("retailer price parsers", () => {
 
   it("selects an exact Arduino variant and verifies USD", () => {
     const listing = boardPrices.find((item) => item.retailer === "Arduino")!;
-    const id = Number(new URL(listing.url).searchParams.get("variant"));
-    const product = { handle: new URL(listing.url).pathname.split("/").at(-1), variants: [{ id: 1, sku: "wrong", price: 100, available: true }, { id, sku: listing.sku, price: 2200, available: false }] };
-    expect(parseArduino(product, listing, "USD")).toEqual({ amount: 2200, stock: "out-of-stock" });
-    expect(() => parseArduino(product, listing, "CAD")).toThrow("currency");
-    expect(() => parseArduino({ ...product, variants: [{ id, sku: "wrong", price: 2200, available: true }] }, listing, "USD")).toThrow("variant ID/SKU");
-    expect(() => parseArduino({ ...product, variants: [{ id, sku: listing.sku, price: 2200 }] }, listing, "USD")).toThrow("availability");
-    expect(() => parseArduino({ ...product, variants: [{ id, sku: listing.sku, price: 22.5, available: true }] }, listing, "USD")).toThrow("integer cents");
+    const html = arduinoHtml(listing, 22, "OutOfStock");
+    expect(parseArduino(html, listing)).toEqual({ amount: 2200, stock: "out-of-stock" });
+    expect(() => parseArduino(html.replace('"USD"', '"CAD"'), listing)).toThrow("currency");
+    expect(() => parseArduino(html.replace(listing.sku, "wrong"), listing)).toThrow("SKU");
+    expect(() => parseArduino(html.replace("?variant=", "?wrong="), listing)).toThrow("variant");
+    expect(() => parseArduino(html.replace("OutOfStock", "Unexpected"), listing)).toThrow("availability");
+    expect(() => parseArduino(arduinoHtml(listing, 22.001), listing)).toThrow("decimal");
+  });
+
+  it("checks Arduino only through the exact public variant page", async () => {
+    const listing = boardPrices.find((item) => item.retailer === "Arduino")!;
+    const fetcher = retailerFetcher();
+    expect((await refreshListings([listing], { fetcher })).failed).toBe(0);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fetcher).toHaveBeenCalledWith(listing.url, expect.any(Object));
   });
 
   it("retries transient HTTP failures but not other non-200 responses", async () => {

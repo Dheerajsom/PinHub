@@ -1,69 +1,60 @@
-# Board price snapshots
+# Automatic board prices
 
-`src/lib/board-prices.json` stores dated, single-unit US retailer listings in USD. `board-price-schema.ts` validates data at runtime; `board-prices.ts` provides display and lookup helpers. Hardware data stays in `boards.ts`. This feature uses public retailer data without API keys, a database, affiliate links, or a claim of live prices.
+PinHub checks 11 curated Adafruit/Arduino offers on an hourly target schedule. Successful observations are stored in the public Vercel Blob object `prices/latest-v1.json`; they do not require a Git commit or deployment. Hardware and listing identities remain in the repository. `src/lib/board-prices.json` is the dated fallback when shared storage is unavailable.
 
-## Listing identity and manual updates
+## Data flow
 
-Every offer has a unique, stable `id` based on its retailer and SKU. Each priced board has exactly one `primary: true` listing. `priceForBoard` returns that explicit default, while `pricesForBoard` returns all offers. A default is curated, not an implied cheapest price. Keep distinct memory sizes, headers, kits, and revisions explicit in `variant`; never substitute an equivalent-looking product.
+1. `.github/workflows/update-prices.yml` runs at minute 17 each hour on `main`, or through manual dispatch. GitHub may delay or drop scheduled runs. Inactive public repositories can have schedules disabled after 60 days.
+2. After audit, lint, typecheck, tests and build, `npm run publish-prices` reads the shared snapshot and merges observations into the curated listings. A storage error aborts; only a confirmed missing object permits initialization from the bundled data.
+3. Sequential retailer requests validate exact SKU, variant URL, USD, quantity and stock. Successful checks replace amount, stock and timestamp together. Failed checks retain the last verified observation, including its timestamp. A change exceeding 50% needs explicit reviewed-price acceptance.
+4. The complete validated snapshot is uploaded with the ETag of the version read. A stale cached read or competing writer causes a conditional-write failure; the publisher does not retry with a blind overwrite. Initial creation refuses to overwrite an existing object. Public Blob reads can be cached for 60 seconds; wait at least that long before retrying a conflict.
+5. `/api/prices` validates the shared snapshot and serves it with a 30-second CDN cache and browser revalidation. Failures return the dated bundled fallback with `no-store`. The endpoint never calls retailers and never accepts caller-provided source URLs.
+6. One shared browser feed serves the prices page, board detail links and both comparison layouts. It fetches on mount and every minute while visible, pauses in hidden tabs, and deduplicates subscribers and React Strict Mode remounts. It preserves newer observations when the server falls back or a request fails. Filters, focus and navigation are independent of refreshes.
 
-Before adding or manually updating a listing, open its exact retailer URL and verify the title, memory, headers, SKU, currency, single-unit price, and availability. Arduino URLs must select an exact variant ID. Adafruit URLs must select an exact product ID/SKU. Record integer cents and the actual UTC check time. Unknown availability is `unknown`, never implicitly in stock. A failed check must not advance the timestamp.
+Hourly is a target, not an instantaneous-price guarantee. Delivery can additionally take up to the Blob cache interval, API cache interval and browser polling interval. The UI always shows the actual successful check time; generating a snapshot, building or deploying never makes an old check fresh.
 
-The seed selection was manually checked September 2, 2026. Adafruit is labeled as retailer for other manufacturers' boards and manufacturer for its own Feather. These are curated references, not a popularity ranking or a lowest-price guarantee. The current selection has one offer per board; adding different regions/currencies requires explicit filtering and variant equivalence rules first.
+## Storage setup and credentials
+
+Create a **public** Vercel Blob store for the PinHub project, scoped to production. Blob pricing/usage depends on the account plan. Current store: `pinhub-prices` (`store_B8xtFJiYqirs6AZv`, region `iad1`). The initial snapshot was published and read back on September 10, 2026 UTC.
+
+- Vercel runtime: connected `BLOB_STORE_ID` and Vercel-managed OIDC, or `BLOB_READ_WRITE_TOKEN`.
+- GitHub repository: Actions secret `PINHUB_PRICES_BLOB_TOKEN`, containing the token for this dedicated store. The workflow maps it to `BLOB_READ_WRITE_TOKEN` only in the publication step. This grants the workflow read/write access to the price store; never put it in a public variable or commit it.
+- Local scripts: credentials must be provided through the environment. `tsx` scripts do not automatically load `.env.local`. With supported Node versions, use `node --env-file=.env.prices.local --import tsx scripts/publish-prices.ts --dry-run`. Keep that file ignored.
+- Preview/development without credentials: dated fallback mode works, including builds and tests. Browser tests mock the API for deterministic update/failure scenarios.
+
+Activation requires the GitHub secret as well as the published workflow on the default branch with Actions enabled. Missing credentials cause a visible failed publication, never a success or a fresh timestamp. Store credentials must be explicitly authorized before being copied to GitHub. At implementation time that transfer remained pending approval; the scheduled uploader had not been activated.
+
+## Listing identity and safety
+
+Each offer has a stable ID, exact SKU, variant, retailer URL, currency and one explicit primary selection per priced board. Keep memory sizes, headers, bundles and revisions separate. A primary listing is curated, not an implied cheapest offer. Shared observations can only replace amount, stock and check time for matching identities. Removed remote offers are ignored; newly curated offers retain their bundled fallback until checked.
+
+Runtime validation applies at the writer, storage reader and browser boundary. Snapshots have schema version 1, at most 500 listings, at most 256 KiB of encoded JSON and string fields capped at 2,000 characters. Future observation times, unsafe retailer URLs, invalid cents/currency/stock and mismatched identities are rejected. Stream reads enforce byte limits even without Content-Length. Reads and requests have timeouts. Credentials and raw upstream errors are not returned to the browser.
+
+Adafruit parsing matches Product JSON-LD by SKU and exact Offer URL, verifies USD/new condition/single-unit eligibility and parses decimal dollars without rounding. Arduino now reads the exact public variant page's Product/Offer JSON-LD, matching both SKU and variant URL and verifying currency, price and availability. It does not use the `/cart.js` endpoint disallowed by the store's crawler rules. Manufacturer listings with no condition field are accepted; an explicit non-new condition is rejected. Ambiguous stock/preorders become `unknown`; missing/unrecognized availability fails the check.
+
+The Adafruit and Arduino robots files were inspected September 10, 2026 UTC. Both allowed the selected public product pages and specified no cadence for this user agent. Requests are anonymous and sequential, at most one scheduled pass per hour. This is public storefront parsing, not a vendor API SLA; review retailer access rules if policies change. There are at most three attempts per request, with 15-second timeouts including bodies, backoff for network failures/429/5xx, and no redirects to another product/store.
 
 ## Freshness and display
 
-`/prices` evaluates freshness per request and passes the server time to the client for consistent hydration. An open page updates its clock every minute. Price age and stock confidence are separate:
+- Recent price: zero through three hours.
+- Older check: over three hours through 24 hours.
+- Needs new check: over 24 hours, invalid dates or future dates.
+- Stock confidence expires at exactly two hours; expired/unknown stock says `Check with seller` and is excluded from the recent-stock filter.
 
-- Fresh: age from zero through exactly 14 days, labeled `Recent check`.
-- Aging: over 14 days through exactly 45 days, labeled `Older check`.
-- Stale: over 45 days, invalid dates, or future dates, labeled `Needs new check`.
-- Stock confidence: expires at exactly seven days, independently of price age. The `In stock at recent check` filter includes only in-stock snapshots less than seven days old. Older/unknown availability says `Check with seller`.
+Reference amounts remain visible at every age. Relative check times appear after hydration, with exact UTC timestamps in the time element/title. The prices page reports unavailable updates when the API or shared snapshot cannot be used. Tax, shipping and import costs are excluded; the seller determines final price and availability.
 
-Reference amounts remain visible at every age. Board details and both comparison layouts show the exact variant, retailer, absolute date, and USD reference amount, with tax/shipping excluded. They make no current-stock claim and remain safe to pre-render. Builds/deployments never advance timestamps.
-
-Search, board selection, category, recent-stock filtering, and sorting are URL-backed. A synchronous React external store updates controlled inputs without waiting for a router transition. Search replaces history; deliberate filters push history. Back/Forward and Next.js navigation restore filters. The board chip removes only the board constraint. Search keeps the board constraint and explicitly identifies its scope, including unknown board IDs.
-
-## Refresh command
-
-Install dependencies with `npm ci`, then:
+## Manual operation
 
 ```sh
-npm run refresh-prices -- --dry-run
-npm run refresh-prices
+npm run publish-prices -- --dry-run
+npm run publish-prices -- --report=price-report.json
+npm run publish-prices -- --accept-price=adafruit-5812:13000
 ```
 
-The pinned `tsx` dependency runs `scripts/refresh-prices.ts`. Fetches are sequential, with a descriptive User-Agent, a 15-second timeout per attempt (including body), and at most three attempts for network errors, timeouts, HTTP 429, or server errors. Other non-200 responses fail immediately. Redirects are rejected rather than following a changed store/product.
+Credentials must already be in the environment. Acceptance authorizes only the exact reviewed cent amount for that listing and does not bypass identity/currency/stock checks. Both partial success and total failure return a nonzero exit status; partial success publishes verified entries and retains failed entries, while total failure leaves the shared object untouched. A dry run never uploads. Publication conflicts and storage errors fail visibly.
 
-Adafruit parsing matches Product JSON-LD by SKU and the exact Offer URL, verifies USD/new condition/single-unit eligibility, and converts decimal dollars to cents without rounding. Arduino parsing checks the exact product handle, variant ID and SKU, integer-cent price, and boolean availability. Anonymous requests to the same US store's `/cart.js` verify its presentment currency before the product check. Preorders and ambiguous stock categories are `unknown`; missing or unrecognized availability fails the check.
-
-The refresher updates amount, stock, and timestamp together only after a successful check. Failed listings retain all three previous fields. Changes over 50% require manual review. After verifying the exact listing in the store, accept only the observed amount:
-
-```sh
-npm run refresh-prices -- --accept-price=adafruit-5812:13000
-```
-
-This example authorizes 13000 cents for that listing only. Repeat the flag for multiple reviewed listings. It rejects a changed observed amount and does not bypass SKU, currency, or availability validation. Update a source URL/SKU manually if the retailer has genuinely replaced the product; do not override identity checks.
-
-Writes use a temporary JSON file and atomic rename, after re-validating the complete data. The writer refuses to overwrite a file edited during the fetch. A dry run fetches and validates but never changes snapshot data. `--report=<path>` optionally writes a per-listing JSON report, including in dry-run mode. The command exits nonzero if any check fails, even when other listings were refreshed successfully.
-
-## Weekly GitHub Actions job
-
-`.github/workflows/update-prices.yml` is scheduled Mondays at **06:00 UTC** (01:00 Chicago during daylight time, midnight during standard time). GitHub may delay scheduled jobs; timestamps always record actual checks. The workflow also supports manual dispatch and a `dry_run` input. It operates only on `main` and serializes overlapping refresh runs.
-
-The job checks out `main`, sets up Node 22 and the declared npm version, installs the lockfile with `npm ci`, runs the refresher, and puts its per-listing report in the Actions summary. It then runs audit, lint, typecheck, tests, and the production build. Only after those gates pass does it commit the snapshot JSON as `github-actions[bot]` and push normally to `main` with `chore: update weekly board price snapshots`. It never force-pushes or rebases already-tested changes. If `main` advances during the run, the push fails and the job must be rerun.
-
-Valid checks can be committed even when some retailers fail; failed listings remain unchanged and a final failing step makes the incomplete check visible. A total fetch failure produces no data commit. Dry-run dispatches never commit. The job has `contents: write`; repository rules must permit this bot to update `main`. No additional secret is required for fetching or the GitHub push.
-
-The schedule becomes active after this workflow is published to the repository's default `main` branch with Actions enabled. `GITHUB_TOKEN` pushes do not trigger the separate push-based Web CI, so the refresh job runs its own complete validation. No `[skip ci]` marker is used. The existing Vercel Git integration must accept bot commits for the changed snapshots to deploy; creating the workflow locally does not itself activate the schedule or verify deployment settings.
+The legacy `npm run refresh-prices` command remains available for deliberately updating the bundled fallback file, with the same parsers and validation. It supports `--dry-run`, `--report` and `--accept-price` too. Its local file writer uses an atomic rename and rejects concurrent local edits. The scheduled workflow no longer writes or commits that file.
 
 ## Verification
 
-```sh
-npm run test -- test/board-prices.test.ts test/price-controls.test.tsx test/compare-table.test.tsx test/price-refresh.test.ts
-npm run lint
-npm run typecheck
-npm run build
-npm run refresh-prices -- --dry-run
-```
-
-Parser/writer tests use deterministic retailer-shaped fixtures and cover invalid identity/currency, malformed responses, bounded retries, price-change rejection, exact manual acceptance, dry-run immutability, and partial-success writes. Browser verification additionally checks typing, filter chips, history restoration, and both comparison layouts; a build alone cannot establish that hydration and interaction work.
+Run `npm run lint`, `npm run typecheck`, `npm test`, `npm run build` and `npm run test:e2e`. Price coverage includes parser identities/currencies, changed prices, partial/total failures, dry runs, storage failures, conditional-write rejection, invalid/oversized snapshots, fallback timestamps, shared polling, hidden tabs, Strict Mode, unchanged filters/focus, and board-detail/comparison updates. UI publication also requires the repository's mobile-mojo subagent review; see the accompanying mobile audit report for coverage and limits.

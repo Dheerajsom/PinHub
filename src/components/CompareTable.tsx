@@ -11,6 +11,7 @@ import { compareUrl } from "@/lib/compare-params";
 import { VendorLogo } from "@/components/VendorLogo";
 import { BoardPriceReference } from "@/components/BoardPriceReference";
 import { priceForBoard } from "@/lib/board-prices";
+import { useLivePrices } from "@/components/useLivePrices";
 
 type Row = { label: string; values: string[]; kind?: "price" };
 type OptionalBoardData = Board & {
@@ -66,6 +67,7 @@ function documentationValue(board: Board): string {
 }
 
 export function CompareTable({ boards }: { boards: Board[] }) {
+  const { prices } = useLivePrices();
   const [differencesOnly, setDifferencesOnly] = useState(true);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -76,7 +78,7 @@ export function CompareTable({ boards }: { boards: Board[] }) {
     const profiles = boards.map(getBoardDiscoveryProfile);
     return [
       { label: "Reference price", kind: "price", values: boards.map((board) => {
-        const price = priceForBoard(board.id);
+        const price = prices?.find((item) => item.boardId === board.id && item.primary) ?? priceForBoard(board.id);
         return price ? JSON.stringify([price.amount, price.currency, price.variant, price.retailer, price.checkedAt]) : "No price recorded";
       }) },
       { label: "Manufacturer", values: boards.map((item) => item.vendor) },
@@ -97,7 +99,7 @@ export function CompareTable({ boards }: { boards: Board[] }) {
       { label: "Revision notes", values: boards.map(revisionValue) },
       { label: "Documentation", values: boards.map(documentationValue) },
     ];
-  }, [boards]);
+  }, [boards, prices]);
   const visibleRows = differencesOnly ? rows.filter((row) => row.kind === "price" || uniqueValues(row.values) > 1) : rows;
   const conflicts = useMemo(() => analyzePinConflicts(boards), [boards]);
 
