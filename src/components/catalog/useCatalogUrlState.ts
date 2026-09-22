@@ -74,6 +74,7 @@ export function useCatalogUrlState(
       setState(parseCatalogState(location.search, defaults));
     };
     const frame = requestAnimationFrame(() => {
+      if (ready.current) return;
       restore();
       ready.current = true;
     });
@@ -99,9 +100,19 @@ export function useCatalogUrlState(
   const updateState = useCallback(
     (update: SetStateAction<CatalogState>, mode: HistoryMode = "push") => {
       historyMode.current = mode;
-      setState(update);
+      if (!ready.current) {
+        // An interaction can beat the first animation frame on a newly
+        // hydrated page. Apply it to the URL state instead of letting that
+        // frame restore the old URL over the user's input.
+        ready.current = true;
+        const restored = parseCatalogState(location.search, defaults);
+        restoreOwnedSearchParams?.(new URLSearchParams(location.search));
+        setState(typeof update === "function" ? update(restored) : update);
+      } else {
+        setState(update);
+      }
     },
-    [],
+    [defaults, restoreOwnedSearchParams],
   );
 
   return [state, updateState] as const;

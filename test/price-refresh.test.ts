@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { boardPrices as snapshots } from "@/lib/board-prices";
-import { dollarsToCents, fetchRetailerText, parseAdafruit, parseArduino, refreshListings, refreshPriceFile } from "../scripts/lib/price-refresh";
+import { dollarsToCents, fetchRetailerText, maxRetailerResponseBytes, parseAdafruit, parseArduino, refreshListings, refreshPriceFile } from "../scripts/lib/price-refresh";
 
 // Real refreshes can change every price/date/stock; parser fixtures stay deterministic.
 const boardPrices = snapshots.map((price) => ({ ...price, checkedAt: "2026-09-02T14:00:00Z" }));
@@ -105,6 +105,17 @@ describe("retailer price parsers", () => {
     const exhausted = vi.fn().mockImplementation(async () => new Response("", { status: 429 }));
     await expect(fetchRetailerText("https://example.test/a", { fetcher: exhausted as typeof fetch, sleep: async () => undefined })).rejects.toThrow("HTTP 429");
     expect(exhausted).toHaveBeenCalledTimes(3);
+  });
+
+  it("rejects an oversized retailer body and leaves the listing unchanged", async () => {
+    const listing = boardPrices[0];
+    const oversized = new Response("x".repeat(maxRetailerResponseBytes + 1));
+    const fetcher = vi.fn(async () => oversized) as typeof fetch;
+    const result = await refreshListings([listing], { fetcher });
+    expect(result.failed).toBe(1);
+    expect(result.updated[0]).toEqual(listing);
+    expect(result.results[0].error).toMatch(/size limit/);
+    expect(fetcher).toHaveBeenCalledOnce();
   });
 });
 

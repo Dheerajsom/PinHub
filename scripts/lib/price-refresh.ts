@@ -111,6 +111,31 @@ class HttpError extends Error {
   constructor(readonly status: number) { super(`HTTP ${status}`); }
 }
 
+export const maxRetailerResponseBytes = 4 * 1024 * 1024;
+
+async function readRetailerText(response: Response): Promise<string> {
+  if (!response.body) return "";
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let length = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      length += value.byteLength;
+      if (length > maxRetailerResponseBytes) throw new Error("Retailer response exceeds size limit");
+      chunks.push(value);
+    }
+  } finally {
+    await reader.cancel().catch(() => undefined);
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(length);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  return new TextDecoder().decode(bytes);
+}
+
 /** Three total attempts, 15s including body per attempt; no redirects to another SKU/store. */
 export async function fetchRetailerText(url: string, options: RefreshOptions = {}): Promise<string> {
   const fetcher = options.fetcher ?? fetch;
@@ -126,7 +151,7 @@ export async function fetchRetailerText(url: string, options: RefreshOptions = {
         throw new HttpError(response.status);
       }
       if (response.url && response.url !== url) throw new Error("Retailer response URL changed");
-      return await response.text();
+      return await readRetailerText(response);
     } catch (error) {
       const retryable = error instanceof HttpError ? error.status === 429 || error.status >= 500
         : error instanceof TypeError || (error instanceof Error && ["TimeoutError", "AbortError"].includes(error.name));

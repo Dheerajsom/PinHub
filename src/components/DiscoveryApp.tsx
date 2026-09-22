@@ -39,7 +39,7 @@ import {
   tokenizeQuery,
   type BoardMatchField,
 } from "@/lib/board-search";
-import { toggleFavorite, useFavorites } from "@/lib/favorites";
+import { favoriteLimit, toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { VendorLogo } from "@/components/VendorLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -104,6 +104,10 @@ export function DiscoveryApp({
   const [paging, startPaging] = useTransition();
   const searchRef = useRef<HTMLInputElement>(null);
   const storedFavorites = useFavorites();
+  const [favoriteMessage, setFavoriteMessage] = useState("");
+  const onToggleFavorite = useCallback((id: string) => {
+    setFavoriteMessage(toggleFavorite(id) ? "" : `Favorite limit reached (${favoriteLimit}). Remove one to add another.`);
+  }, []);
   const favorites = useMemo(
     () => new Set([...storedFavorites].filter((id) => ids.has(id))),
     [ids, storedFavorites],
@@ -321,6 +325,7 @@ export function DiscoveryApp({
         </aside>
 
         <section id="board-results" aria-label="Board results" className="min-w-0">
+          {favoriteMessage ? <p role="status" className="favorite-limit-toast fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 mx-auto max-w-md rounded-lg border border-amber-300/30 bg-[#24201a] p-3 text-sm text-amber-100 shadow-xl">{favoriteMessage}</p> : null}
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200"><Sparkles className="size-3.5" /> Discovery workspace</div>
@@ -330,7 +335,7 @@ export function DiscoveryApp({
           </div>
           <div className="grid gap-3 xl:grid-cols-2">
             {filtered.slice(0, visible).map(({ board, matchedBy }, index) => (
-              <BoardCard key={board.id} board={board} matchedBy={matchedBy} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === maxComparedBoards} onFavorite={toggleFavorite} onCompare={toggleCompare} index={index} />
+              <BoardCard key={board.id} board={board} matchedBy={matchedBy} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === maxComparedBoards} onFavorite={onToggleFavorite} onCompare={toggleCompare} index={index} />
             ))}
           </div>
           {visible < filtered.length ? (

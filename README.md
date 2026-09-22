@@ -32,7 +32,7 @@ Orange Pi, usually means opening several vendor pages and holding the
 differences in your head. Compare puts them in one table.
 
 Select boards from the discovery view — the tray at the bottom of the screen
-tracks the set — then open the comparison. Up to **three boards** can be
+tracks the set — then open the comparison. Up to **four boards** can be
 compared at once, across twelve attributes:
 
 - **Silicon and power** — compute class, processor, logic level, 5 V tolerance,

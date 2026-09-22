@@ -1248,3 +1248,8 @@ button {
     transform: none;
   }
 }
+
+:root .favorite-limit-toast,
+:root[data-theme="light"] .favorite-limit-toast {
+  color: #fef3c7;
+}

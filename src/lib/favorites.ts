@@ -8,24 +8,35 @@ import { useSyncExternalStore } from "react";
 // snapshot, so they stay in sync within a tab and across tabs.
 
 const storageKey = "pinhub.favorites";
+export const favoriteLimit = 256;
+const maxStoredFavoritesLength = 64 * 1024;
 const emptyFavorites: ReadonlySet<string> = new Set();
 const listeners = new Set<() => void>();
 let snapshot: ReadonlySet<string> | null = null;
 
 function readStoredFavorites(): ReadonlySet<string> {
   try {
-    const parsed: unknown = JSON.parse(
-      window.localStorage.getItem(storageKey) ?? "[]",
-    );
-    return new Set(
-      Array.isArray(parsed)
-        ? parsed.filter((item): item is string => typeof item === "string")
-        : [],
-    );
+    const raw = window.localStorage.getItem(storageKey) ?? "[]";
+    if (raw.length > maxStoredFavoritesLength) return new Set();
+    const parsed: unknown = JSON.parse(raw);
+    const ids = new Set<string>();
+    if (Array.isArray(parsed)) {
+      for (const item of parsed) {
+        if (!isFavoriteId(item)) continue;
+        ids.add(item);
+        if (ids.size === favoriteLimit) break;
+      }
+    }
+    return ids;
   } catch {
     // Unavailable or corrupt storage simply means "no favorites yet".
     return new Set();
   }
+}
+
+function isFavoriteId(value: unknown): value is string {
+  return typeof value === "string" && value.length <= 128 &&
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
 }
 
 function notifyListeners() {
@@ -63,11 +74,14 @@ export function getServerFavoritesSnapshot(): ReadonlySet<string> {
   return emptyFavorites;
 }
 
-export function toggleFavorite(id: string): void {
+/** False means the ID is invalid or storage is already at capacity. */
+export function toggleFavorite(id: string): boolean {
+  if (!isFavoriteId(id)) return false;
   const next = new Set(getFavoritesSnapshot());
   if (next.has(id)) {
     next.delete(id);
   } else {
+    if (next.size >= favoriteLimit) return false;
     next.add(id);
   }
   snapshot = next;
@@ -77,6 +91,7 @@ export function toggleFavorite(id: string): void {
     // Persisting is best-effort; the in-memory snapshot still updates.
   }
   notifyListeners();
+  return true;
 }
 
 /** Read the favorite ids, re-rendering whenever they change. */

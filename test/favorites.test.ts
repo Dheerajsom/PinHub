@@ -108,6 +108,29 @@ describe("favorites store", () => {
     ]);
   });
 
+  it("bounds stored favorites and rejects additions at capacity without losing existing IDs", async () => {
+    const ids = Array.from({ length: 300 }, (_, index) => `board-${index}`);
+    window.localStorage.setItem("pinhub.favorites", JSON.stringify([...ids, "bad/id", "x".repeat(129)]));
+    const favorites = await loadFavorites();
+    expect(favorites.getFavoritesSnapshot().size).toBe(favorites.favoriteLimit);
+    expect(favorites.toggleFavorite("another-board")).toBe(false);
+    expect(favorites.getFavoritesSnapshot().size).toBe(favorites.favoriteLimit);
+    expect(favorites.toggleFavorite("board-0")).toBe(true);
+    expect(favorites.toggleFavorite("another-board")).toBe(true);
+    expect(favorites.getFavoritesSnapshot().has("another-board")).toBe(true);
+    expect(favorites.getFavoritesSnapshot().size).toBe(favorites.favoriteLimit);
+  });
+
+  it("rejects invalid IDs and oversized local storage before parsing", async () => {
+    window.localStorage.setItem("pinhub.favorites", "x".repeat(64 * 1024 + 1));
+    const favorites = await loadFavorites();
+    expect(favorites.getFavoritesSnapshot().size).toBe(0);
+    const before = favorites.getFavoritesSnapshot();
+    expect(favorites.toggleFavorite("bad/id")).toBe(false);
+    expect(favorites.getFavoritesSnapshot()).toBe(before);
+    expect(window.localStorage.getItem("pinhub.favorites")).toHaveLength(64 * 1024 + 1);
+  });
+
   it("renders nothing as favorited on the server", async () => {
     const favorites = await loadFavorites();
     expect(favorites.getServerFavoritesSnapshot().size).toBe(0);

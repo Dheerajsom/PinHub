@@ -3,6 +3,7 @@
 import {
   act,
   cleanup,
+  fireEvent,
   render,
   screen,
   waitFor,
@@ -18,9 +19,9 @@ function Harness({ compareIds }: { compareIds: string[] }) {
   const ownedSearch = compareIds.length
     ? new URLSearchParams({ boards: compareIds.join(",") }).toString()
     : "";
-  const [state] = useCatalogUrlState("/compare", undefined, ownedSearch);
+  const [state, update] = useCatalogUrlState("/compare", undefined, ownedSearch);
 
-  return <output>{state.query}</output>;
+  return <><output>{state.query}</output><button onClick={() => update((current) => ({ ...current, query: "typed" }), "replace")}>Type search</button></>;
 }
 
 let scheduledFrame: FrameRequestCallback | undefined;
@@ -41,6 +42,14 @@ afterEach(() => {
 });
 
 describe("useCatalogUrlState owned parameters", () => {
+  it("keeps a user edit made before the first URL restore frame", async () => {
+    render(<Harness compareIds={["board-a"]} />);
+    fireEvent.click(screen.getByRole("button", { name: "Type search" }));
+    await act(async () => scheduledFrame?.(0));
+    await waitFor(() => expect(screen.getByText("typed")).toBeTruthy());
+    expect(new URLSearchParams(location.search).get("q")).toBe("typed");
+    expect(new URLSearchParams(location.search).get("boards")).toBe("board-a");
+  });
   it("retains a one-board deep link and removes the parameter when cleared", async () => {
     const view = render(<Harness compareIds={["board-a"]} />);
 

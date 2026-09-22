@@ -37,7 +37,7 @@ import {
   type BoardMatchField,
 } from "@/lib/board-search";
 import { createBoardDetailLoader } from "@/lib/board-detail-loader";
-import { toggleFavorite, useFavorites } from "@/lib/favorites";
+import { favoriteLimit, toggleFavorite, useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { ActiveFilterChip, BoardResult, FilterPanel, FilterSelect } from "@/components/catalog/CatalogListParts";
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
@@ -125,6 +125,10 @@ export function PinHubApp({
   // is working and stops accepting clicks until the rows are committed.
   const [paging, startPaging] = useTransition();
   const storedFavorites = useFavorites();
+  const [favoriteMessage, setFavoriteMessage] = useState("");
+  const onToggleFavorite = useCallback((id: string) => {
+    setFavoriteMessage(toggleFavorite(id) ? "" : `Favorite limit reached (${favoriteLimit}). Remove one to add another.`);
+  }, []);
   const isDesktop = useDesktopCatalogLayout();
   const searchRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
@@ -800,6 +804,7 @@ export function PinHubApp({
           className="min-w-0 scroll-mt-32"
           aria-label="Board results"
         >
+          {favoriteMessage ? <p role="status" className="favorite-limit-toast fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 mx-auto max-w-md rounded-lg border border-amber-300/30 bg-[#24201a] p-3 text-sm text-amber-100 shadow-xl">{favoriteMessage}</p> : null}
           <div className="mb-2 flex items-center justify-between gap-3 px-0.5">
             <span
               className="font-mono text-xs tabular-nums text-zinc-400"
@@ -890,7 +895,7 @@ export function PinHubApp({
                   onSelect={selectBoard}
                   onNavigate={navigateBoard}
                   onPrefetch={prefetchBoard}
-                  onToggleFavorite={toggleFavorite}
+                  onToggleFavorite={onToggleFavorite}
                 />
                 {!isDesktop &&
                   mobileDetailOpen &&

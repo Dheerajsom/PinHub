@@ -145,3 +145,25 @@ for (const viewport of viewports) {
     });
   });
 }
+
+test.describe("favorite capacity feedback", () => {
+  test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, userAgent: devices["Pixel 5"].userAgent });
+
+  test("explains a full favorites store on both catalog surfaces", async ({ page }) => {
+    await page.addInitScript(() => {
+      if (!localStorage.getItem("pinhub.favorites")) {
+        localStorage.setItem("pinhub.favorites", JSON.stringify(Array.from({ length: 256 }, (_, index) => `saved-board-${index}`)));
+      }
+    });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Add Raspberry Pi 5 to favorites" }).tap();
+    await expect(page.getByRole("status").filter({ hasText: "Favorite limit reached (256)" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Add Raspberry Pi 5 to favorites" })).toHaveAttribute("aria-pressed", "false");
+    await expectPageFits(page);
+
+    await page.goto("/compare");
+    await page.getByRole("button", { name: "Add Adafruit ESP32-S3 Feather to favorites" }).tap();
+    await expect(page.getByRole("status").filter({ hasText: "Favorite limit reached (256)" })).toBeVisible();
+    await expectPageFits(page);
+  });
+});
