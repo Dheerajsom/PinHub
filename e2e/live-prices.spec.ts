@@ -48,7 +48,8 @@ test("prices refresh without resetting filters, focus, or the last successful ob
 test("board detail and comparison prices update through one shared feed per page", async ({ page }) => {
   const feed = await mockPrices(page);
   await page.goto("/boards/raspberry-pi-5");
-  await expect(page.getByText("$120.00 · Adafruit", { exact: true })).toBeVisible();
+  await expect.poll(feed.requests, { timeout: 15_000 }).toBeGreaterThan(0);
+  await expect(page.getByText("$120.00 · Adafruit", { exact: true })).toBeVisible({ timeout: 15_000 });
   feed.update();
   await page.clock.fastForward(60_000);
   await expect(page.getByText("$119.00 · Adafruit", { exact: true })).toBeVisible();
