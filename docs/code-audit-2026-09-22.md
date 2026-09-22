@@ -12,6 +12,7 @@ Reviewed the Next.js routes and API responses, catalog source validation and laz
 | Comparison guide | The README said three boards while the app permits four. | Correct the documented limit. |
 | Light-theme feedback | The new fixed capacity message inherited dark amber text on a dark background. | Give the message an explicit pale text color in both themes. |
 | Dependency alerts | GitHub reported two moderate alerts (#24 and #25) for web Vitest 3.2.7 and @vitest/mocker 3.2.7. | Pin the web test runner to patched Vitest 5.0.0, which resolves @vitest/mocker 5.0.0. |
+| Linux CI compatibility | Vitest 5 loaded the TypeScript config through CommonJS on the Node 20.17 CI runner, which failed to require an ESM-only package. | Use a .mts config and update TypeScript and CI path references so the config loads as ESM. |
 
 Regression coverage was added for stored favorites at capacity, invalid/oversized favorite input, early catalog URL edits, oversized retailer bodies, and browser-visible favorite capacity feedback.
 
