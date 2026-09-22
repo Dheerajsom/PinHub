@@ -11,6 +11,7 @@ Reviewed the Next.js routes and API responses, catalog source validation and laz
 | Retailer checks | A retailer response body could be buffered without a size limit before JSON-LD parsing. | Stop reading beyond 4 MiB and preserve the prior listing when that check fails. |
 | Comparison guide | The README said three boards while the app permits four. | Correct the documented limit. |
 | Light-theme feedback | The new fixed capacity message inherited dark amber text on a dark background. | Give the message an explicit pale text color in both themes. |
+| Dependency alerts | GitHub reported two moderate alerts (#24 and #25) for web Vitest 3.2.7 and @vitest/mocker 3.2.7. | Pin the web test runner to patched Vitest 5.0.0, which resolves @vitest/mocker 5.0.0. |
 
 Regression coverage was added for stored favorites at capacity, invalid/oversized favorite input, early catalog URL edits, oversized retailer bodies, and browser-visible favorite capacity feedback.
 
@@ -28,4 +29,4 @@ Regression coverage was added for stored favorites at capacity, invalid/oversize
 
 This was a code and consistency audit, not an independent electrical verification of every physical board pin against current datasheets or hardware. Mobile coverage used Chrome emulation; physical devices and software keyboards were not available. Network restrictions required Google Font fallbacks during browser review.
 
-An npm advisory query was blocked by automatic approval review because it would send dependency manifest and lockfile metadata to the external npm service. The existing GitHub workflows run npm audit, but this local audit cannot claim a current advisory result without authorization for that query.
+An explicit npm audit query was blocked by automatic approval review because it would send dependency manifest and lockfile metadata to the external npm service. The dependency install performed its standard advisory check and reported zero vulnerabilities after the upgrade; GitHub Dependabot alerts may take time to refresh. The existing GitHub workflows also run npm audit.
