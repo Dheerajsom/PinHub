@@ -146,7 +146,7 @@ export function PinoutTabs({ board }: { board: Board }) {
         aria-labelledby={`${instanceId}-pinout-tab-static`}
         hidden={tab !== "static"}
       >
-        {tab === "static" ? <PinoutDiagram pinout={board.pinout} /> : null}
+        {tab === "static" ? <PinoutDiagram pinout={board.pinout} board={board} /> : null}
       </div>
       <div
         role="tabpanel"

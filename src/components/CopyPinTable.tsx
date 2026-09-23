@@ -3,8 +3,58 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Copy, Download, X } from "lucide-react";
 import { clsx } from "clsx";
-import type { Pin, Pinout } from "@/lib/boards";
+import type { Board, Pin, Pinout, SourceLink } from "@/lib/boards";
 import { roleLabels } from "@/components/board-visual/roles";
+import { siteUrl } from "@/lib/site";
+import { classifySource } from "@/lib/source-trust";
+
+/**
+ * The board an exported table belongs to. Connector maps are shared between
+ * boards (every 40-pin Raspberry Pi uses one), so an export without this is
+ * ambiguous once it leaves PinHub: the table no longer says which board or
+ * which source it was transcribed from.
+ */
+export type PinExportBoard = Pick<Board, "id" | "name" | "vendor" | "sourceLinks">;
+
+// The reference an exported table cites: an official pinout first, then any
+// official document, then whatever the record lists first.
+export function primaryExportSource(board: PinExportBoard): SourceLink | undefined {
+  const official = board.sourceLinks.filter(
+    (source) => classifySource(board.vendor, source.url) === "official",
+  );
+  return (
+    official.find((source) => source.type === "Pinout") ??
+    official[0] ??
+    board.sourceLinks[0]
+  );
+}
+
+export function pinoutPageUrl(boardId: string): string {
+  return new URL(`/pinout/${encodeURIComponent(boardId)}`, siteUrl).toString();
+}
+
+function markdownLinkLabel(value: string): string {
+  return markdownCell(value).replace(/\[/g, "\\[").replace(/\]/g, "\\]");
+}
+
+function markdownLinkTarget(url: string): string {
+  // Catalog URLs are validated HTTPS links; percent-encode the characters
+  // that would end a Markdown link target early.
+  return url.replace(/[()<>\s]/g, (character) =>
+    `%${character.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0")}`,
+  );
+}
+
+export function pinExportFilename(pinout: Pinout, board?: PinExportBoard): string {
+  const slug = (value: string) =>
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  const connector = slug(pinout.connector) || "pinout";
+  const boardSlug = board ? slug(board.id) : "";
+  return `${boardSlug ? `${boardSlug}-` : ""}${connector}.csv`;
+}
 
 // Serializes a connector map to a Markdown table so engineers can paste the
 // pinout into notes, issues, or firmware docs without retyping it.
@@ -26,9 +76,12 @@ function pinRow(pin: Pin): string {
   return `| ${cells.join(" | ")} |`;
 }
 
-export function pinoutToMarkdown(pinout: Pinout): string {
+export function pinoutToMarkdown(pinout: Pinout, board?: PinExportBoard): string {
+  const title = board
+    ? `${markdownCell(board.name)} — ${markdownCell(pinout.connector)}`
+    : markdownCell(pinout.connector);
   const header = [
-    `### ${markdownCell(pinout.connector)}`,
+    `### ${title}`,
     "",
     "| Pin | Signal | Role | Aliases | Note |",
     "| --- | --- | --- | --- | --- |",
@@ -51,7 +104,22 @@ export function pinoutToMarkdown(pinout: Pinout): string {
     ? ["", ...pinout.notes.map((note) => `> ${markdownCell(note)}`)]
     : [];
 
-  return [...header, ...rows, ...notes].join("\n");
+  const source = board ? primaryExportSource(board) : undefined;
+  const provenance = board
+    ? [
+        "",
+        [
+          source
+            ? `Source: [${markdownLinkLabel(source.label)}](${markdownLinkTarget(source.url)})`
+            : null,
+          `PinHub: ${pinoutPageUrl(board.id)}`,
+        ]
+          .filter(Boolean)
+          .join(" · "),
+      ]
+    : [];
+
+  return [...header, ...rows, ...notes, ...provenance].join("\n");
 }
 
 function csvCell(value: string): string {
@@ -67,7 +135,7 @@ function csvCell(value: string): string {
   return `"${literal.replace(/"/g, '""')}"`;
 }
 
-export function pinoutToCsv(pinout: Pinout): string {
+export function pinoutToCsv(pinout: Pinout, board?: PinExportBoard): string {
   const rows = [["Connector", "Group", "Pin", "Signal", "Role", "Aliases", "Note"]];
   if (pinout.pins) {
     for (const pin of [...pinout.pins.left, ...pinout.pins.right].sort(
@@ -108,10 +176,28 @@ export function pinoutToCsv(pinout: Pinout): string {
       `Connector note: ${note}`,
     ]);
   }
+  if (board) {
+    const source = primaryExportSource(board);
+    rows.push([
+      pinout.connector,
+      "",
+      "",
+      "",
+      "",
+      "",
+      `Board: ${board.name}${source ? ` \u00B7 Source: ${source.label} <${source.url}>` : ""} \u00B7 PinHub: ${pinoutPageUrl(board.id)}`,
+    ]);
+  }
   return `\uFEFF${rows.map((row) => row.map(csvCell).join(",")).join("\r\n")}`;
 }
 
-export function CopyPinTable({ pinout }: { pinout: Pinout }) {
+export function CopyPinTable({
+  pinout,
+  board,
+}: {
+  pinout: Pinout;
+  board?: PinExportBoard;
+}) {
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
     "idle",
   );
@@ -125,7 +211,7 @@ export function CopyPinTable({ pinout }: { pinout: Pinout }) {
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(pinoutToMarkdown(pinout));
+      await navigator.clipboard.writeText(pinoutToMarkdown(pinout, board));
       setCopyState("copied");
     } catch {
       setCopyState("failed");
@@ -137,11 +223,8 @@ export function CopyPinTable({ pinout }: { pinout: Pinout }) {
   const copied = copyState === "copied";
   const failed = copyState === "failed";
 
-  const csvFilename = `${pinout.connector
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "") || "pinout"}.csv`;
-  const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(pinoutToCsv(pinout))}`;
+  const csvFilename = pinExportFilename(pinout, board);
+  const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(pinoutToCsv(pinout, board))}`;
 
   return (
     <div className="flex shrink-0 flex-wrap gap-1.5">

@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   createBoardSearchIndex,
   matchBoardSearchEntry,
+  canonicalizeUnits,
   scoreBoardSearchEntry,
   tokenizeQuery,
 } from "@/lib/board-search";
-import type { BoardSummary } from "@/lib/board-summary";
+import { summarizeBoard, type BoardSummary } from "@/lib/board-summary";
+import { boards } from "@/lib/boards";
 
 function summary(overrides: Partial<BoardSummary> = {}): BoardSummary {
   return {
@@ -60,7 +62,10 @@ describe("tokenizeQuery", () => {
     // The longest catalog-shaped query anyone types is a few words; the caps
     // must never reach down into that range.
     const realistic = "raspberry pi 5 not 5 v tolerant gpio header";
-    expect(tokenizeQuery(realistic)).toEqual(realistic.split(" "));
+    // Only the spaced unit collapses ("5 v" -> "5v"); nothing is truncated.
+    expect(tokenizeQuery(realistic)).toEqual(
+      "raspberry pi 5 not 5v tolerant gpio header".split(" "),
+    );
   });
 
   it("bounds a pasted wall of text so scoring stays linear and small", () => {
@@ -193,5 +198,60 @@ describe("matchBoardSearchEntry", () => {
     expect(index.map((entry) => entry.board.id)).toEqual(["a", "b"]);
     expect(index[0].nameWords).toEqual(["board", "a"]);
     expect(index[0].text).toContain("board a");
+  });
+});
+
+describe("engineer shorthand against the real catalog", () => {
+  const index = createBoardSearchIndex(
+    boards.map((board, position) => summarizeBoard(board, position)),
+  );
+
+  function ranked(query: string): string[] {
+    const tokens = tokenizeQuery(query);
+    return index
+      .map((entry) => ({ id: entry.board.id, name: entry.board.name, score: scoreBoardSearchEntry(entry, tokens) }))
+      .filter((hit) => hit.score > 0)
+      .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
+      .map((hit) => hit.id);
+  }
+
+  it("collapses spaced units in both the query and the catalog", () => {
+    expect(canonicalizeUnits("not 5 v tolerant, 3.3 v gpio, 240 mhz")).toBe(
+      "not 5v tolerant, 3.3v gpio, 240mhz",
+    );
+    expect(canonicalizeUnits("5 via")).toBe("5 via");
+  });
+
+  it("returns results for the \"5V tolerant\" quick query offered on the first screen", () => {
+    // Regression: catalog text says "5 V tolerant", so the glued spelling the
+    // suggestion chip types used to land on an empty result list.
+    const hits = ranked("5V tolerant");
+    expect(hits.length).toBeGreaterThan(10);
+    expect(ranked("5 V tolerant")).toEqual(hits);
+  });
+
+  it("finds boards by part numbers typed without separators", () => {
+    // "pi5" is genuinely ambiguous between the two "Pi 5" boards.
+    expect(ranked("pi5").slice(0, 2).sort()).toEqual([
+      "orange-pi-5",
+      "raspberry-pi-5",
+    ]);
+    expect(ranked("rpi5")[0]).toBe("raspberry-pi-5");
+    expect(ranked("picow")[0]).toBe("raspberry-pi-pico-w");
+    expect(ranked("nucleof401re")[0]).toBe("stm32-nucleo-f401re");
+    expect(ranked("nano33").slice(0, 2).sort()).toEqual([
+      "arduino-nano-33-ble-sense",
+      "arduino-nano-33-iot",
+    ]);
+    const s3 = ranked("esp32s3");
+    expect(s3).toContain("esp32-s3-devkitc-1");
+    expect(s3).not.toContain("esp32-c3-devkitm-1");
+  });
+
+  it("does not let shorthand splitting widen interface lookups", () => {
+    // "i2c" is a real token; it must not fall through to letter/digit runs.
+    expect(ranked("i2c").length).toBe(
+      index.filter((entry) => entry.text.includes("i2c")).length,
+    );
   });
 });

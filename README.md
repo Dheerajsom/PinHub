@@ -12,14 +12,17 @@ one clean interface.
 
 - Next.js App Router with TypeScript and Tailwind CSS
 - Static board catalog in `src/lib/boards.ts`
-- Search by board name, vendor, processor, tag, interface, or warning text
+- Search by board name, vendor, processor, tag, interface, or warning text;
+  part numbers work without separators (`pi5`, `rpi5`, `esp32s3`, `picow`) and
+  units match either spelling (`5V` or `5 V`)
 - Filters for category and common interfaces
 - Local favorites with cross-tab sync and a favorites-only filter
 - Detail view with specs, wiring warnings, source references, and in-app pin maps
 - Interactive pin maps with pin-function filtering, so selecting a role such as
   `I2C` or `PWM` dims every pin that does not serve it
 - Side-by-side board comparison at `/compare`
-- Read-only JSON API at `/api/boards/[id]`
+- Read-only JSON API: `/api/boards` index and `/api/boards/[id]` records
+- Pin table export as Markdown or CSV, labelled with the board and its source
 - Source-backed catalog for Raspberry Pi, Arduino, ESP32, STM32 Nucleo,
   BeagleBone, Jetson, Radxa, Orange Pi, Teensy, Adafruit, Seeed, SparkFun,
   and micro:bit boards
@@ -89,15 +92,23 @@ options, troubleshooting, board aliases, development, and release instructions.
 | `/compare` | Board discovery and side-by-side comparison |
 | `/boards/[id]` | Board overview, specs, warnings, and sources |
 | `/pinout/[id]` | Full interactive connector map |
+| `/api/boards` | Index of every board as JSON |
 | `/api/boards/[id]` | Board record as JSON |
 
 ## JSON API
 
-Every board is also served as a static JSON record:
+List every board, then fetch the one you need:
 
 ```bash
+curl https://pinhub-mauve.vercel.app/api/boards
 curl https://pinhub-mauve.vercel.app/api/boards/raspberry-pi-5
 ```
+
+The index returns `{ count, boards }`, where each entry carries `id`, `name`,
+`vendor`, `category`, `processor`, `logicLevel`, `interfaces`, `hasPinout`,
+`warningCount`, and the `url` of its full record. Pin maps, sources, and
+warnings stay out of the index; read them from the per-board record. It uses
+the same shared-CDN cache policy and `400`/`405` rules as the per-board route.
 
 The response is the board object described under [Data Model](#data-model).
 Unknown ids return `{"error":"Board not found"}` with a `404`. Records are

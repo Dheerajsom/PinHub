@@ -211,4 +211,23 @@ describe("board catalog integrity", () => {
     expect(byId("raspberry-pi-pico-2")).toBe(byId("raspberry-pi-pico"));
     expect(byId("stm32-nucleo-f103rb")).toBe(byId("stm32-nucleo-f401re"));
   });
+
+  it("names the bus line on shared Nucleo-64 and ESP32-DevKitC bus pins", () => {
+    // A pin that only says "I2C" or "SPI" does not tell someone wiring a
+    // sensor which wire goes where. These maps previously left it implicit.
+    const busLine = /\b(SDA|SCL|MOSI|MISO|SCK|CLK|CS|RX|TX)\b/;
+    for (const id of ["stm32-nucleo-f401re", "esp32-devkitc"]) {
+      const pins = boards
+        .find((board) => board.id === id)
+        ?.pinout?.groups?.flatMap((group) => group.pins) ?? [];
+      const busPins = pins.filter((pin) => ["i2c", "spi", "uart"].includes(pin.role));
+      expect(busPins.length, id).toBeGreaterThan(0);
+      for (const pin of busPins) {
+        expect(
+          [pin.label, ...(pin.aliases ?? [])].join(" "),
+          `${id} ${pin.label}`,
+        ).toMatch(busLine);
+      }
+    }
+  });
 });

@@ -1720,6 +1720,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "GPIO16 and GPIO17 are available on ESP32-WROOM/SOLO modules but reserved on ESP32-WROVER modules."
+      },
+      {
+        "severity": "info",
+        "text": "Espressif lists IO16-IO23 as plain GPIO; the VSPI, UART2, and SDA/SCL names are the ESP32 IO_MUX and Arduino-ESP32 defaults, and the GPIO matrix can route these buses to other pins."
       }
     ],
     "sources": [
@@ -2040,7 +2044,8 @@ export const generatedBoards: Board[] = [
             "label": "IO23",
             "category": "communication",
             "functions": [
-              "GPIO23"
+              "GPIO23",
+              "VSPI MOSI"
             ]
           },
           {
@@ -2052,7 +2057,8 @@ export const generatedBoards: Board[] = [
             "label": "IO22",
             "category": "communication",
             "functions": [
-              "GPIO22"
+              "GPIO22",
+              "SCL"
             ]
           },
           {
@@ -2090,7 +2096,8 @@ export const generatedBoards: Board[] = [
             "label": "IO21",
             "category": "communication",
             "functions": [
-              "GPIO21"
+              "GPIO21",
+              "SDA"
             ]
           },
           {
@@ -2111,7 +2118,8 @@ export const generatedBoards: Board[] = [
             "label": "IO19",
             "category": "communication",
             "functions": [
-              "GPIO19"
+              "GPIO19",
+              "VSPI MISO"
             ]
           },
           {
@@ -2123,7 +2131,8 @@ export const generatedBoards: Board[] = [
             "label": "IO18",
             "category": "communication",
             "functions": [
-              "GPIO18"
+              "GPIO18",
+              "VSPI CLK"
             ]
           },
           {
@@ -2150,7 +2159,8 @@ export const generatedBoards: Board[] = [
             "label": "IO17",
             "category": "communication",
             "functions": [
-              "GPIO17"
+              "GPIO17",
+              "UART2 TX"
             ],
             "notes": [
               "Reserved on ESP32-WROVER modules"
@@ -2165,7 +2175,8 @@ export const generatedBoards: Board[] = [
             "label": "IO16",
             "category": "communication",
             "functions": [
-              "GPIO16"
+              "GPIO16",
+              "UART2 RX"
             ],
             "notes": [
               "Reserved on ESP32-WROVER modules"
@@ -2356,7 +2367,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D0",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 2,
@@ -2365,7 +2382,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D1",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 3,
@@ -2446,7 +2469,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D10",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
           },
           {
             "physical": 12,
@@ -2455,7 +2481,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D11",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
           },
           {
             "physical": 13,
@@ -2464,7 +2493,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D12",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
           },
           {
             "physical": 14,
@@ -2473,7 +2505,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D13",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
           },
           {
             "physical": 15,
@@ -45389,7 +45427,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D0",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 2,
@@ -45398,7 +45442,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D1",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 3,
@@ -45479,7 +45529,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D10",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
           },
           {
             "physical": 12,
@@ -45488,7 +45541,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D11",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
           },
           {
             "physical": 13,
@@ -45497,7 +45553,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D12",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
           },
           {
             "physical": 14,
@@ -45506,7 +45565,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D13",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
           },
           {
             "physical": 15,
@@ -45755,7 +45820,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D0",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 2,
@@ -45764,7 +45835,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D1",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 3,
@@ -45845,7 +45922,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D10",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
           },
           {
             "physical": 12,
@@ -45854,7 +45934,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D11",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
           },
           {
             "physical": 13,
@@ -45863,7 +45946,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D12",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
           },
           {
             "physical": 14,
@@ -45872,7 +45958,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D13",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
           },
           {
             "physical": 15,
@@ -46117,7 +46209,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D0",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 2,
@@ -46126,7 +46224,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D1",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
           },
           {
             "physical": 3,
@@ -46207,7 +46311,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D10",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
           },
           {
             "physical": 12,
@@ -46216,7 +46323,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D11",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
           },
           {
             "physical": 13,
@@ -46225,7 +46335,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D12",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
           },
           {
             "physical": 14,
@@ -46234,7 +46347,13 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D13",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
           },
           {
             "physical": 15,

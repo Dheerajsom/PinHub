@@ -44,6 +44,8 @@ export type BoardSearchEntry = {
   normalizedName: string;
   /** Lowercased name split on non-alphanumerics, for word hits. */
   nameWords: string[];
+  /** Name with separators removed, plus shorthand spellings ("rpi5"). */
+  compactNames: string[];
   /** Per-field haystacks, lowercased, in match-reason order. */
   fields: Record<Exclude<BoardMatchField, "name">, string>;
   /** Everything worth matching, lowercased and joined. */
@@ -77,19 +79,61 @@ const fieldOrder = Object.keys(fieldScores) as Exclude<
 >[];
 
 function normalize(value: string): string {
-  return value
-    .toLowerCase()
+  return canonicalizeUnits(value.toLowerCase())
     .replace(/[^a-z0-9+]+/g, " ")
     .trim();
 }
+
+// Board data writes quantities with a space ("5 V tolerant", "3.3 V GPIO") but
+// engineers type them glued together ("5V tolerant", "3.3v"). Both the index
+// and the query collapse the space so either spelling finds the other.
+const spacedUnit = /(\d)\s+(v|mv|ma|mhz|ghz|kb|mb|gb)(?![a-z0-9])/g;
+
+export function canonicalizeUnits(value: string): string {
+  return value.replace(spacedUnit, "$1$2");
+}
+
+// Part numbers are typed without their separators ("esp32s3", "pi5",
+// "picow"), so names are also compared with every separator removed.
+function compact(value: string): string {
+  return value.replace(/[^a-z0-9]+/g, "");
+}
+
+// Shorthand engineers use for a name prefix. Kept to spellings that are
+// unambiguous across the whole catalog; this is not a general synonym list.
+const namePrefixShorthand: ReadonlyArray<readonly [string, string]> = [
+  ["raspberry pi ", "rpi"],
+];
+
+function compactNameVariants(name: string): string[] {
+  const variants = [compact(name)];
+  for (const [prefix, shorthand] of namePrefixShorthand) {
+    if (name.startsWith(prefix)) {
+      variants.push(shorthand + compact(name.slice(prefix.length)));
+    }
+  }
+  return variants;
+}
+
+// Compact comparison needs enough characters to mean something; "a1" would
+// otherwise match half the catalog's names by accident.
+const minCompactTokenLength = 3;
 
 export function createBoardSearchIndex(
   catalog: readonly BoardSummary[],
 ): BoardSearchEntry[] {
   return catalog.map((board) => {
-    const name = board.name.toLowerCase();
+    const name = canonicalizeUnits(board.name.toLowerCase());
     const fields = {
-      vendor: [board.vendor, board.family].join(" ").toLowerCase(),
+      vendor: [
+        board.vendor,
+        board.family,
+        ...namePrefixShorthand
+          .filter(([prefix]) => `${board.vendor.toLowerCase()} `.startsWith(prefix))
+          .map(([, shorthand]) => shorthand),
+      ]
+        .join(" ")
+        .toLowerCase(),
       spec: [
         board.processor,
         board.category,
@@ -110,11 +154,16 @@ export function createBoardSearchIndex(
       description: board.description.toLowerCase(),
     };
 
+    for (const field of Object.keys(fields) as (keyof typeof fields)[]) {
+      fields[field] = canonicalizeUnits(fields[field]);
+    }
+
     return {
       board,
       name,
       normalizedName: normalize(board.name),
       nameWords: name.split(/[^a-z0-9+]+/).filter(Boolean),
+      compactNames: compactNameVariants(name),
       fields,
       text: [name, ...Object.values(fields)].join(" "),
     };
@@ -131,10 +180,7 @@ const maxQueryLength = 256;
 const maxQueryTokens = 32;
 
 export function tokenizeQuery(query: string): string[] {
-  return query
-    .slice(0, maxQueryLength)
-    .trim()
-    .toLowerCase()
+  return canonicalizeUnits(query.slice(0, maxQueryLength).trim().toLowerCase())
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, maxQueryTokens);
@@ -167,6 +213,16 @@ function scoreToken(
   if (entry.name.includes(token)) {
     return { score: scoreNameSubstring, matchedBy: "name" };
   }
+  // Part numbers typed without (or with different) separators: "esp32s3",
+  // "picow", "esp32-s3", and shorthand such as "rpi5". A compact hit is as
+  // strong as a name prefix, since the token spells out part of the name.
+  const compactToken = compact(token);
+  if (
+    compactToken.length >= minCompactTokenLength &&
+    entry.compactNames.some((name) => name.includes(compactToken))
+  ) {
+    return { score: scoreNamePrefix, matchedBy: "name" };
+  }
   for (const field of fieldOrder) {
     if (hasWordPrefix(entry.fields[field], token)) {
       return { score: fieldScores[field], matchedBy: field };
@@ -178,6 +234,33 @@ function scoreToken(
     }
   }
   return null;
+}
+
+// Glued shorthand such as "nano33" names a board as letters then a number.
+// When the whole token finds nothing, retry it as its letter and digit runs.
+// Every run must hit the board name (or its vendor), and at least one must hit
+// the name itself, so this widens recall for model shorthand without letting a
+// stray digit match specs or prose. The weakest run sets the score.
+function scoreSplitToken(
+  entry: BoardSearchEntry,
+  token: string,
+): BoardSearchMatch | null {
+  // Exactly one letter run and one number run ("nano33", "rpi5"). Longer
+  // part numbers such as "esp32s3" are handled by the compact name match;
+  // splitting them would let single letters match almost any name.
+  const parts = token.match(/^([a-z]{2,})([0-9]+)$/)?.slice(1);
+  if (!parts) return null;
+  let weakest = Number.POSITIVE_INFINITY;
+  let nameHit = false;
+  for (const part of parts) {
+    const hit = scoreToken(entry, part);
+    if (!hit || (hit.matchedBy !== "name" && hit.matchedBy !== "vendor")) {
+      return null;
+    }
+    if (hit.matchedBy === "name") nameHit = true;
+    weakest = Math.min(weakest, hit.score);
+  }
+  return nameHit ? { score: weakest, matchedBy: "name" } : null;
 }
 
 /**
@@ -196,14 +279,17 @@ export function matchBoardSearchEntry(
   let total = 0;
   let best: BoardSearchMatch | null = null;
   for (const token of tokens) {
-    const hit = scoreToken(entry, token);
+    const hit = scoreToken(entry, token) ?? scoreSplitToken(entry, token);
     if (!hit) return null;
     total += hit.score;
     if (!best || hit.score > best.score) best = hit;
   }
 
   const query = normalize(tokens.join(" "));
-  if (query === entry.normalizedName) {
+  if (
+    query === entry.normalizedName ||
+    entry.compactNames.includes(compact(query))
+  ) {
     total += bonusExactName;
   } else if (entry.normalizedName.startsWith(query)) {
     total += bonusNamePrefix;

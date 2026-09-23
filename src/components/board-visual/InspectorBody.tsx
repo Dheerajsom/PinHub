@@ -369,7 +369,7 @@ export function InspectorBody({
               ? `All ${geometry.anchors.length} pins`
               : `Showing ${filteredAnchors.length} of ${geometry.anchors.length} pins`}
           </h4>
-          {board.pinout ? <CopyPinTable pinout={board.pinout} /> : null}
+          {board.pinout ? <CopyPinTable pinout={board.pinout} board={board} /> : null}
         </div>
         {filteredAnchors.length ? (
           <PinoutTable

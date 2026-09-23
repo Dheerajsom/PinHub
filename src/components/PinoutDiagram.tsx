@@ -4,14 +4,16 @@ import {
   roleChipStyle,
   roleLabels,
 } from "@/components/board-visual/roles";
-import { CopyPinTable } from "@/components/CopyPinTable";
+import { CopyPinTable, type PinExportBoard } from "@/components/CopyPinTable";
 import { CopyPinButton } from "@/components/CopyPinButton";
 
 type PinoutDiagramProps = {
   pinout?: Pinout;
+  /** Board the map belongs to, so exports name their board and source. */
+  board?: PinExportBoard;
 };
 
-export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
+export function PinoutDiagram({ pinout, board }: PinoutDiagramProps) {
   if (!pinout) {
     return (
       <section className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-4">
@@ -44,7 +46,7 @@ export function PinoutDiagram({ pinout }: PinoutDiagramProps) {
             {pinout.connector}
           </h3>
         </div>
-        <CopyPinTable pinout={pinout} />
+        <CopyPinTable pinout={pinout} board={board} />
         <div
           className="flex w-full flex-wrap gap-1.5"
           aria-label="Pin role legend"
