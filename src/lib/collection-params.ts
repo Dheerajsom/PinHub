@@ -1,6 +1,8 @@
 import type { LocalBoardCollection } from "@/lib/personal-library";
 
 const maxSharedBoards = 24;
+/** Collection names are trimmed to this many characters everywhere. */
+export const collectionNameLimit = 60;
 const maxValueLength = 2_048;
 
 export function parseSharedCollectionIds(

@@ -12,7 +12,7 @@ import {
 } from "@/components/board-visual/PinoutTable";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteHeader } from "@/components/SiteHeader";
 
 // Standalone, full-viewport pinout sheet served at /pinout/[id]. Built for the
 // dense expansion headers whose drawings are cramped inside the catalog's narrow
@@ -47,7 +47,7 @@ export function PinoutFullView({ board }: { board: Board }) {
 
   return (
     <main
-      className="relative isolate min-h-screen px-4 py-5 sm:px-6 lg:px-8"
+      className="relative isolate min-h-screen"
       onKeyDown={(event) => {
         if (event.key !== "Escape") return;
         if (selectedKey) {
@@ -59,29 +59,27 @@ export function PinoutFullView({ board }: { board: Board }) {
       }}
     >
       <CircuitBackground />
-      <div className="relative mx-auto max-w-[1400px]">
+      <SiteHeader width="wide" />
+      <div className="relative mx-auto max-w-[1560px] px-4 py-5 sm:px-6 lg:px-8">
         <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-white/10 pb-4">
           <div className="min-w-0">
             <Link
               href={`/boards/${board.id}`}
-              className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-zinc-500 transition hover:text-cyan-200"
+              className="inline-flex min-h-10 items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-zinc-500 transition hover:text-cyan-200"
             >
               <ArrowLeft className="size-3" aria-hidden="true" />
               Board overview
             </Link>
-            <h1 className="mt-2 flex items-center gap-2.5 text-2xl font-semibold tracking-tight text-white">
+            <h1 className="mt-1 flex items-center gap-2.5 text-2xl font-semibold tracking-tight text-white">
               <VendorLogo vendor={board.vendor} size={24} />
               {board.name}
             </h1>
           </div>
-          <div className="flex items-center gap-3">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">
-              {[board.vendor, board.family]
-                .filter((part, index, all) => all.indexOf(part) === index)
-                .join(" · ")}
-            </p>
-            <ThemeToggle />
-          </div>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">
+            {[board.vendor, board.family]
+              .filter((part, index, all) => all.indexOf(part) === index)
+              .join(" · ")}
+          </p>
         </header>
 
         {geometry ? (

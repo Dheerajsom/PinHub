@@ -42,3 +42,16 @@ it("propagates conditional publication failures without a blind overwrite", asyn
   await expect(publishPrices({ fetcher: fetcher(), now: () => now })).rejects.toThrow("concurrent writer");
   expect(writeStoredPrices).toHaveBeenCalledTimes(1);
 });
+
+it("recovers when the stored snapshot predates a curated listing correction", async () => {
+  // Regression: merging a stored observation whose identity no longer matches
+  // the curated listing used to throw, so every hourly run failed until the
+  // blob was reset by hand. The stale observation is now skipped and the
+  // listing is re-observed under its curated identity.
+  const stale = previous.map((price, index) => index === 0 ? { ...price, variant: `${price.variant} (old)`, amount: 1 } : price);
+  vi.mocked(readStoredPrices).mockResolvedValue({ snapshot: { schemaVersion: 1, generatedAt: "2026-09-10T01:00:00.000Z", prices: stale }, etag: "origin-version" });
+  const result = await publishPrices({ fetcher: fetcher(), now: () => now });
+  expect(result).toMatchObject({ published: true, failed: 0 });
+  const [snapshot] = vi.mocked(writeStoredPrices).mock.calls[0];
+  expect(snapshot.prices[0]).toMatchObject({ variant: boardPrices[0].variant, amount: boardPrices[0].amount, checkedAt: new Date(now).toISOString() });
+});

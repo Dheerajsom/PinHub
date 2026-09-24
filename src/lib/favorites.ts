@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { isBoardId } from "@/lib/board-id";
 
 // Favorites are persisted in localStorage and exposed to React through one
 // tiny external store. Every surface that shows a star — the catalog rows, the
@@ -22,7 +23,7 @@ function readStoredFavorites(): ReadonlySet<string> {
     const ids = new Set<string>();
     if (Array.isArray(parsed)) {
       for (const item of parsed) {
-        if (!isFavoriteId(item)) continue;
+        if (!isBoardId(item)) continue;
         ids.add(item);
         if (ids.size === favoriteLimit) break;
       }
@@ -32,11 +33,6 @@ function readStoredFavorites(): ReadonlySet<string> {
     // Unavailable or corrupt storage simply means "no favorites yet".
     return new Set();
   }
-}
-
-function isFavoriteId(value: unknown): value is string {
-  return typeof value === "string" && value.length <= 128 &&
-    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
 }
 
 function notifyListeners() {
@@ -76,7 +72,7 @@ export function getServerFavoritesSnapshot(): ReadonlySet<string> {
 
 /** False means the ID is invalid or storage is already at capacity. */
 export function toggleFavorite(id: string): boolean {
-  if (!isFavoriteId(id)) return false;
+  if (!isBoardId(id)) return false;
   const next = new Set(getFavoritesSnapshot());
   if (next.has(id)) {
     next.delete(id);

@@ -23,15 +23,28 @@ export function parsePriceSnapshot(value: unknown, now = Date.now()): PriceSnaps
   return { schemaVersion: 1, generatedAt: p.generatedAt, prices };
 }
 
-/** Only observations can change remotely; catalog identity and defaults stay curated. */
+const listingIdentityKeys = ["boardId", "variant", "sku", "retailer", "sellerType", "url", "currency"] as const;
+
+/** True when an observation describes exactly the curated listing it claims to update. */
+export function isSameListing(curated: BoardPrice, observed: BoardPrice): boolean {
+  return listingIdentityKeys.every((key) => curated[key] === observed[key]);
+}
+
+/**
+ * Only observations can change remotely; catalog identity and defaults stay
+ * curated. An observation whose identity no longer matches the curated listing
+ * (for example after a deploy corrects a listing's URL) is ignored rather than
+ * failing the whole merge: the curated listing keeps its own dated price until
+ * the next publisher run observes the new identity. Throwing here used to make
+ * every shared snapshot unusable after any such edit, and the hourly publisher
+ * could never recover because it merges the same stale snapshot first.
+ */
 export function mergePriceObservations(catalog: BoardPrice[], observations: BoardPrice[]): BoardPrice[] {
   const byId = new Map(observations.map((price) => [price.id, price]));
   return catalog.map((price) => {
     const latest = byId.get(price.id);
     if (!latest || Date.parse(latest.checkedAt) < Date.parse(price.checkedAt)) return price;
-    for (const key of ["boardId", "variant", "sku", "retailer", "sellerType", "url", "currency"] as const) {
-      if (price[key] !== latest[key]) throw new Error("Price listing identity changed");
-    }
+    if (!isSameListing(price, latest)) return price;
     return { ...price, amount: latest.amount, stock: latest.stock, checkedAt: latest.checkedAt };
   });
 }

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { get, put } from "@vercel/blob";
 import { boardPrices } from "@/lib/board-prices";
-import { getLivePrices, readStoredPrices, writeStoredPrices } from "@/lib/server/price-store";
+import { getLivePrices, readStoredPrices, resetLivePriceCache, writeStoredPrices } from "@/lib/server/price-store";
 import { maxPriceSnapshotBytes, mergePriceObservations, parsePriceSnapshot, readPriceSnapshot } from "@/lib/price-snapshot";
 import { GET } from "@/app/api/prices/route";
 
@@ -10,7 +10,7 @@ const time = "2026-09-10T02:00:00.000Z";
 const snapshot = () => ({ schemaVersion: 1 as const, generatedAt: time, prices: boardPrices.map((price) => ({ ...price, checkedAt: time })) });
 const stored = () => ({ statusCode: 200, stream: new Response(JSON.stringify(snapshot())).body!, blob: { etag: "version-1" } });
 
-beforeEach(() => { vi.setSystemTime(new Date(time)); vi.stubEnv("BLOB_READ_WRITE_TOKEN", "test-only"); });
+beforeEach(() => { vi.setSystemTime(new Date(time)); vi.stubEnv("BLOB_READ_WRITE_TOKEN", "test-only"); resetLivePriceCache(); });
 afterEach(() => { vi.useRealTimers(); vi.unstubAllEnvs(); vi.restoreAllMocks(); vi.resetAllMocks(); });
 
 describe("shared price boundaries", () => {
@@ -29,8 +29,26 @@ describe("shared price boundaries", () => {
     expect(mergePriceObservations(current, boardPrices)).toEqual(current);
     const changed = [{ ...current[0], amount: 12345, primary: false }, ...current.slice(1)];
     expect(mergePriceObservations(boardPrices, changed)[0]).toMatchObject({ amount: 12345, primary: true });
-    expect(() => mergePriceObservations(boardPrices, [{ ...current[0], boardId: "wrong" }])).toThrow("identity");
-    expect(() => mergePriceObservations(boardPrices, [{ ...current[0], variant: "different kit" }])).toThrow("identity");
+    // A mismatched identity is never applied, and it must not discard the
+    // other listings' valid observations either.
+    const mismatched = [{ ...current[0], boardId: "wrong", amount: 1 }, ...current.slice(1)];
+    const merged = mergePriceObservations(boardPrices, mismatched);
+    expect(merged[0]).toEqual(boardPrices[0]);
+    expect(merged.slice(1)).toEqual(current.slice(1));
+    expect(mergePriceObservations(boardPrices, [{ ...current[0], variant: "different kit", amount: 1 }])[0]).toEqual(boardPrices[0]);
+  });
+
+  it("keeps publishing after a curated listing identity changes", async () => {
+    // The stored snapshot still carries the listing's old URL; the deploy has
+    // since corrected it. The API must keep serving shared observations for
+    // every other listing instead of falling back for the whole catalog.
+    const stale = snapshot();
+    stale.prices[0] = { ...stale.prices[0], sku: `${stale.prices[0].sku}9`, url: stale.prices[0].url.replace(/\d+(?=$|\?)/, (sku) => `${sku}9`), amount: 1 };
+    vi.mocked(get).mockResolvedValue({ ...stored(), stream: new Response(JSON.stringify(stale)).body! } as Awaited<ReturnType<typeof get>>);
+    const result = await getLivePrices();
+    expect(result.source).toBe("shared");
+    expect(result.snapshot.prices[0]).toEqual(boardPrices[0]);
+    expect(result.snapshot.prices[1]).toMatchObject({ checkedAt: time });
   });
 
   it("conditionally replaces exactly the version read, rejecting a cached or concurrent version", async () => {
@@ -65,7 +83,20 @@ describe("shared price boundaries", () => {
     const response = await GET();
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(await response.json()).toMatchObject({ source: "fallback", snapshot: { prices: boardPrices } });
+    resetLivePriceCache();
     vi.mocked(get).mockResolvedValue({ ...stored(), stream: new Response('{"bad":true}').body! } as Awaited<ReturnType<typeof get>>);
     expect((await getLivePrices()).source).toBe("fallback");
+  });
+
+  it("reads storage once per reuse window, including while storage is failing", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    vi.mocked(get).mockRejectedValue(new Error("offline"));
+    const results = await Promise.all([getLivePrices(), getLivePrices(), GET(), GET()]);
+    expect(get).toHaveBeenCalledTimes(1);
+    expect(results[0]).toMatchObject({ source: "fallback" });
+    vi.setSystemTime(new Date(Date.parse(time) + 31_000));
+    vi.mocked(get).mockResolvedValue(stored() as Awaited<ReturnType<typeof get>>);
+    expect((await getLivePrices()).source).toBe("shared");
+    expect(get).toHaveBeenCalledTimes(2);
   });
 });

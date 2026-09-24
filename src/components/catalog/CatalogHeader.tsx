@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { repoUrl } from "@/lib/site";
 
-const repoUrl = "https://github.com/Dheerajsom/PinHub";
 
 type CatalogHeaderProps = {
   boardCount: number;

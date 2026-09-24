@@ -6,6 +6,7 @@ import {
   createCollection,
   collectionBoardLimit,
   collectionLimit,
+  collectionNameLimit,
   setBoardInCollection,
   usePersonalLibrary,
 } from "@/lib/personal-library";
@@ -112,7 +113,7 @@ export function CollectionButton({ id, name, open, onOpenChange }: {
               <input
                 value={collectionName}
                 onChange={(event) => setCollectionName(event.target.value)}
-                maxLength={60}
+                maxLength={collectionNameLimit}
                 placeholder="Robotics boards"
                 className="h-11 w-full rounded-md border border-white/10 bg-[#0a0c11] px-3 text-base text-white outline-none focus:border-cyan-300/60 sm:text-sm"
               />

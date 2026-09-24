@@ -2,15 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   ArrowUpRight,
   BadgeCheck,
   BookOpen,
-  Cable,
-  CircuitBoard,
-  Cpu,
   GitBranch,
-  ShieldAlert,
   Sparkles,
 } from "lucide-react";
 import { boards, type Board } from "@/lib/boards";
@@ -21,13 +16,15 @@ import {
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { siteName } from "@/lib/site";
 import { boardVisuals } from "@/lib/board-visuals";
-import { revisionNotesFor } from "@/lib/board-utilities";
+import { fiveVoltCaution, revisionNotesFor } from "@/lib/board-utilities";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
 import { BoardActions } from "@/components/BoardActions";
 import { BoardPriceLink } from "@/components/BoardPriceLink";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteHeader } from "@/components/SiteHeader";
+import { WiringCautions } from "@/components/WiringCautions";
+import { InterfaceChip } from "@/components/InterfaceChip";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -68,6 +65,8 @@ function similarBoards(board: Board) {
     .slice(0, 4);
 }
 
+const sourceTypeOrder = ["Pinout", "Schematic", "Datasheet", "Manual", "Docs"] as const;
+
 export default async function BoardPage({
   params,
 }: {
@@ -93,135 +92,119 @@ export default async function BoardPage({
       ? [boardVisuals[board.id].revisionNote]
       : []),
   ].filter((note, index, all) => all.indexOf(note) === index);
+  const logicCaution = fiveVoltCaution(board);
 
   return (
     <main className="relative isolate min-h-screen pb-10">
       <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#0a0d12] px-4 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-cyan-200">
-            <ArrowLeft className="size-4" /> Back to discovery
-          </Link>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <Link href="/" className="brand-title text-xl text-white">PinHub</Link>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
-      <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8">
-        <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#12161d] p-5 shadow-2xl sm:p-7">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/80 to-transparent" />
-          <div className="pointer-events-none absolute -right-16 -top-20 size-72 rounded-full bg-cyan-300/[0.07] blur-3xl" />
-          <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
-            <div className="max-w-3xl">
-              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200">
-                <Cpu className="size-3.5" /> {classification}
-              </div>
-              <h1 className="mt-3 flex items-center gap-3 text-3xl font-semibold text-white sm:text-4xl">
-                <VendorLogo vendor={board.vendor} size={34} />
-                {board.name}
+      <div className="relative mx-auto max-w-[1280px] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+        {/* Title block: identity and the four characteristics people check
+            first, laid out as a ruled key/value table like a datasheet's
+            front page rather than as four floating tiles. */}
+        <section className="surface-panel overflow-hidden rounded-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_24rem]">
+            <div className="min-w-0 p-5 sm:p-6">
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-cyan-200">
+                {classification}
+              </p>
+              <h1 className="mt-2.5 flex items-start gap-3 text-[1.75rem] font-semibold leading-tight tracking-tight text-white sm:text-4xl">
+                <span className="mt-0.5 grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-[#0a0c11] sm:size-11">
+                  <VendorLogo vendor={board.vendor} size={26} />
+                </span>
+                <span className="min-w-0 break-words">{board.name}</span>
               </h1>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-400">{board.description}</p>
+              <p className="mt-2 font-mono text-xs text-zinc-500">
+                {board.vendor} / {board.family}
+              </p>
+              <p className="mt-3 max-w-2xl text-[15px] leading-7 text-zinc-400">
+                {board.description}
+              </p>
+              <ul
+                aria-label={`${board.interfaces.length} interfaces`}
+                className="mt-4 flex flex-wrap gap-1.5"
+              >
+                {board.interfaces.map((item) => (
+                  <li key={item}>
+                    <InterfaceChip name={item} />
+                  </li>
+                ))}
+              </ul>
               <div className="mt-5">
                 <BoardActions board={board} />
               </div>
             </div>
-            <div className="grid min-w-0 gap-2 sm:grid-cols-2 lg:w-[25rem] lg:grid-cols-1">
-              <HeroSpec label="Processor" value={board.processor} />
-              <HeroSpec label="Logic" value={board.logicLevel} />
-              <HeroSpec label="Power" value={board.power} />
-              <HeroSpec label="Format" value={board.formFactor} />
-            </div>
+            <dl className="ph-spec-table border-t border-white/10 bg-[#0e1118] px-5 py-1 lg:border-l lg:border-t-0">
+              <SpecRow label="Processor" value={board.processor} />
+              <SpecRow label="Logic" value={board.logicLevel} caution={logicCaution} />
+              <SpecRow label="Power" value={board.power} />
+              <SpecRow label="Format" value={board.formFactor} />
+            </dl>
           </div>
         </section>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(19rem,0.7fr)]">
-          <div className="min-w-0 space-y-5">
-            {board.warnings.length ? (
-              <section className="rounded-xl border border-orange-300/30 bg-[#1b1410] p-4 sm:p-5">
-                <div className="flex items-center gap-2 font-semibold text-orange-100">
-                  <ShieldAlert className="size-4" /> Check before wiring
-                </div>
-                <ul className="mt-3 grid gap-2 text-sm leading-6 text-orange-50/70">
-                  {board.warnings.map((warning) => (
-                    <li key={warning} className="flex gap-2"><span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-orange-300" />{warning}</li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
+        {/* Pin map leads the page; the wiring cautions sit beside it on wide
+            screens and before it on phones (DOM order), so a hazard is always
+            read before the map it applies to. */}
+        <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+          <WiringCautions
+            warnings={board.warnings}
+            verifySource={verifySource}
+            verifySourceOfficial={
+              verifySource
+                ? classifySource(board.vendor, verifySource.url) === "official"
+                : false
+            }
+            className="lg:col-start-2 lg:row-start-1"
+          />
 
-            <section className="surface-panel rounded-xl p-4 sm:p-5">
-              <div className="flex items-center gap-2 font-semibold text-white">
-                <Cable className="size-4 text-cyan-200" aria-hidden="true" />
-                Interfaces
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {board.interfaces.map((item) => (
-                  <span key={item} className="surface-well rounded-md px-2.5 py-1.5 font-mono text-xs text-zinc-300">{item}</span>
-                ))}
-              </div>
-            </section>
+          {/* The pin map widget carries its own "Pin map" label, view tabs,
+              and a Full view link, so it needs no second header here. */}
+          <section
+            aria-label="Pin map"
+            className="surface-panel min-w-0 rounded-xl p-4 sm:p-5 lg:col-start-1 lg:row-span-3 lg:row-start-1"
+          >
+            <PinoutTabs board={board} />
+          </section>
 
-            <section className="surface-panel rounded-xl p-4 sm:p-5">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Source-backed connector</div>
-                  <h2 className="mt-1 text-lg font-semibold text-white">Interactive pin map</h2>
-                </div>
-                {board.pinout ? (
-                  <Link href={`/pinout/${board.id}`} className="inline-flex items-center gap-2 rounded-lg border border-cyan-300/40 bg-cyan-300/10 px-3 py-2 text-sm text-cyan-50 transition hover:bg-cyan-300/20">
-                    <CircuitBoard className="size-4" /> Open full inspector
-                  </Link>
-                ) : null}
-              </div>
-              <PinoutTabs board={board} />
-            </section>
-
-            <section className="surface-panel rounded-xl p-4 sm:p-5">
-              <div className="flex items-center gap-2 font-semibold text-white"><Sparkles className="size-4 text-emerald-200" /> Why it matters</div>
-              <ul className="mt-3 grid gap-2 text-sm leading-6 text-zinc-400 sm:grid-cols-2">
-                {board.highlights.map((item) => <li key={item} className="surface-well rounded-lg p-3">{item}</li>)}
-              </ul>
-            </section>
-          </div>
-
-          <aside className="min-w-0 space-y-5">
+          <div className="min-w-0 space-y-5 lg:col-start-2 lg:row-start-2">
             <BoardPriceLink boardId={board.id} />
-            {verifySource ? (
-              <a href={verifySource.url} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-3 rounded-xl border border-orange-300/30 bg-[#1b1410] p-4 text-sm text-orange-100 transition hover:border-orange-300/60">
-                <span><span className="block text-[10px] uppercase tracking-[0.15em] text-orange-200/60">Verify before wiring</span><span className="mt-1 block font-medium">{verifySource.label}</span></span>
-                <ArrowUpRight className="size-4 shrink-0 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </a>
-            ) : null}
 
             <section className="surface-panel rounded-xl p-4">
-              <div className="flex items-center gap-2 font-semibold text-white"><GitBranch className="size-4 text-amber-200" /> Revision notes</div>
+              <h2 className="flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
+                <GitBranch className="size-4 text-amber-200" aria-hidden="true" /> Revision notes
+              </h2>
               {revisionNotes.length ? (
                 <ul className="mt-3 grid gap-2 text-sm leading-6 text-zinc-400">
                   {revisionNotes.map((note) => <li key={note} className="surface-well rounded-lg p-3">{note}</li>)}
                 </ul>
               ) : (
-                <p className="mt-3 text-sm leading-6 text-zinc-500">No revision-specific differences are documented in PinHub for this board. Check the linked vendor material for your exact hardware revision.</p>
+                <p className="mt-2 text-[13px] leading-6 text-zinc-500">No revision-specific differences are documented in PinHub for this board. Check the linked vendor material for your exact hardware revision.</p>
               )}
             </section>
 
             <section className="surface-panel rounded-xl p-4">
-              <div className="mb-3 flex items-center gap-2 font-semibold text-white"><BookOpen className="size-4 text-cyan-200" /> Source references</div>
+              <h2 className="mb-3 flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
+                <BookOpen className="size-4 text-cyan-200" aria-hidden="true" /> Source references
+              </h2>
               <div className="grid gap-4">
-                {(["Docs", "Datasheet", "Schematic", "Manual", "Pinout"] as const).map((type) => {
+                {sourceTypeOrder.map((type) => {
                   const sources = board.sourceLinks.filter((source) => source.type === type);
                   if (!sources.length) return null;
                   return (
                     <div key={type}>
-                      <h3 className="mb-1.5 text-[10px] uppercase tracking-[0.14em] text-zinc-600">{type}</h3>
+                      <h3 className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">{type}</h3>
                       <div className="grid gap-2">
                         {sources.map((source) => {
                           const official = classifySource(board.vendor, source.url) === "official";
                           return (
-                            <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="surface-well group flex items-start justify-between gap-2 rounded-lg p-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
-                              <span className="min-w-0">{source.label}</span>
-                              {official ? <BadgeCheck className="mt-1 size-4 shrink-0 text-emerald-300" aria-label="Official source" /> : <ArrowUpRight className="mt-1 size-4 shrink-0 text-zinc-600" />}
+                            <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="surface-well group flex min-h-11 items-start justify-between gap-2 rounded-lg p-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
+                              <span className="min-w-0 break-words">
+                                {source.label}
+                                <span className="sr-only">{official ? " (official source)" : " (third-party source)"}, opens in a new tab</span>
+                              </span>
+                              {official ? <BadgeCheck className="mt-0.5 size-4 shrink-0 text-emerald-300" aria-hidden="true" /> : <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-zinc-500" aria-hidden="true" />}
                             </a>
                           );
                         })}
@@ -231,17 +214,31 @@ export default async function BoardPage({
                 })}
               </div>
             </section>
-          </aside>
+          </div>
+
+          {board.highlights.length ? (
+            <section className="surface-panel min-w-0 rounded-xl p-4 sm:p-5 lg:col-start-1">
+              <h2 className="flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
+                <Sparkles className="size-4 text-emerald-200" aria-hidden="true" /> Why it matters
+              </h2>
+              <ul className="mt-3 grid gap-2 text-sm leading-6 text-zinc-400 sm:grid-cols-2">
+                {board.highlights.map((item) => <li key={item} className="surface-well rounded-lg p-3">{item}</li>)}
+              </ul>
+            </section>
+          ) : null}
         </div>
 
         {related.length ? (
-          <section className="mt-5">
-            <div className="mb-3"><div className="text-xs uppercase tracking-[0.18em] text-cyan-200">Keep exploring</div><h2 className="mt-1 text-xl font-semibold text-white">Similar boards</h2></div>
+          <section className="mt-6" aria-labelledby="similar-heading">
+            <h2 id="similar-heading" className="mb-3 text-lg font-semibold text-white">Similar boards</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {related.map(({ board: item, reasons }) => (
-                <Link key={item.id} href={`/boards/${item.id}`} className="surface-panel group rounded-xl p-4 transition duration-300 hover:-translate-y-1 hover:border-cyan-300/35">
-                  <div className="flex items-center gap-2 font-semibold text-white"><VendorLogo vendor={item.vendor} />{item.name}</div>
-                  <p className="mt-2 text-xs leading-5 text-zinc-500">{reasons.join(" · ")}</p>
+                <Link key={item.id} href={`/boards/${item.id}`} className="surface-panel group min-w-0 rounded-xl p-4 transition hover:border-cyan-300/35">
+                  <span className="flex items-center gap-2 font-semibold text-white">
+                    <VendorLogo vendor={item.vendor} />
+                    <span className="min-w-0 truncate">{item.name}</span>
+                  </span>
+                  <span className="mt-2 block text-xs leading-5 text-zinc-500">{reasons.join(" · ")}</span>
                 </Link>
               ))}
             </div>
@@ -252,6 +249,26 @@ export default async function BoardPage({
   );
 }
 
-function HeroSpec({ label, value }: { label: string; value: string }) {
-  return <div className="surface-well rounded-lg p-3"><div className="text-[10px] uppercase tracking-[0.15em] text-zinc-600">{label}</div><div className="mt-1 text-sm text-zinc-200">{value}</div></div>;
+function SpecRow({
+  label,
+  value,
+  caution,
+}: {
+  label: string;
+  value: string;
+  caution?: string | null;
+}) {
+  return (
+    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 py-3">
+      <dt className="pt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+        {label}
+      </dt>
+      <dd className="min-w-0 text-sm leading-6 text-zinc-200">
+        {value}
+        {caution ? (
+          <span className="mt-1 block text-xs font-medium text-amber-200">{caution}</span>
+        ) : null}
+      </dd>
+    </div>
+  );
 }

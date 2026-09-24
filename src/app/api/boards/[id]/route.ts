@@ -1,21 +1,20 @@
 import { boards } from "@/lib/boards";
+import {
+  catalogCacheHeaders,
+  methodNotAllowed,
+  noStoreHeaders,
+  readOnlyOptions,
+  rejectQuery,
+} from "@/lib/server/read-only-route";
 
 const boardsById = new Map(boards.map((board) => [board.id, board]));
-const readOnlyAllow = "GET, HEAD, OPTIONS";
-const noStoreHeaders = { "Cache-Control": "no-store" };
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if (new URL(request.url).search) {
-    // The record is identified entirely by the path. Caching arbitrary query
-    // variants would let one board populate an unbounded number of CDN keys.
-    return Response.json(
-      { error: "Query parameters are not supported" },
-      { status: 400, headers: noStoreHeaders },
-    );
-  }
+  const rejected = rejectQuery(request);
+  if (rejected) return rejected;
 
   const { id } = await params;
   const board = boardsById.get(id);
@@ -30,45 +29,11 @@ export async function GET(
     );
   }
 
-  return Response.json(board, {
-    headers: {
-      // Let the deployment CDN retain generated records while browsers
-      // revalidate, since the stable URL may contain newer data after deploys.
-      "Cache-Control":
-        "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
-    },
-  });
+  return Response.json(board, { headers: catalogCacheHeaders });
 }
 
-function methodNotAllowed() {
-  return Response.json(
-    { error: "Method not allowed" },
-    {
-      status: 405,
-      headers: { ...noStoreHeaders, Allow: readOnlyAllow },
-    },
-  );
-}
-
-export function POST() {
-  return methodNotAllowed();
-}
-
-export function PUT() {
-  return methodNotAllowed();
-}
-
-export function PATCH() {
-  return methodNotAllowed();
-}
-
-export function DELETE() {
-  return methodNotAllowed();
-}
-
-export function OPTIONS() {
-  return new Response(null, {
-    status: 204,
-    headers: { ...noStoreHeaders, Allow: readOnlyAllow },
-  });
-}
+export const POST = methodNotAllowed;
+export const PUT = methodNotAllowed;
+export const PATCH = methodNotAllowed;
+export const DELETE = methodNotAllowed;
+export const OPTIONS = readOnlyOptions;

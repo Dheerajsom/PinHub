@@ -1,11 +1,18 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { isBoardId } from "@/lib/board-id";
+import { collectionNameLimit } from "@/lib/collection-params";
+
+export { collectionNameLimit };
 
 export const personalLibraryStorageKey = "pinhub.library.v1";
 export const recentBoardLimit = 8;
 export const collectionBoardLimit = 24;
 export const collectionLimit = 24;
+// A full library (24 collections of 24 ids, names, and timestamps) serializes
+// to well under this; anything larger is not something PinHub wrote.
+const maxStoredLibraryLength = 128 * 1024;
 
 export type LocalBoardCollection = {
   id: string;
@@ -33,7 +40,7 @@ function uniqueIds(value: unknown, limit: number): string[] {
   if (!Array.isArray(value)) return [];
   const ids = new Set<string>();
   for (const item of value) {
-    if (typeof item !== "string" || !item.length || item.length > 128) continue;
+    if (!isBoardId(item)) continue;
     ids.add(item);
     if (ids.size === limit) break;
   }
@@ -65,7 +72,7 @@ export function normalizePersonalLibrary(
       const createdAt = validDate(candidate.createdAt, now);
       collections.push({
         id,
-        name: name.slice(0, 60),
+        name: name.slice(0, collectionNameLimit),
         boardIds: uniqueIds(candidate.boardIds, collectionBoardLimit),
         createdAt,
         updatedAt: validDate(candidate.updatedAt, createdAt),
@@ -83,9 +90,9 @@ export function normalizePersonalLibrary(
 
 function readStoredLibrary(): PersonalLibrarySnapshot {
   try {
-    return normalizePersonalLibrary(
-      JSON.parse(window.localStorage.getItem(personalLibraryStorageKey) ?? "{}"),
-    );
+    const raw = window.localStorage.getItem(personalLibraryStorageKey) ?? "{}";
+    if (raw.length > maxStoredLibraryLength) return { ...emptySnapshot };
+    return normalizePersonalLibrary(JSON.parse(raw));
   } catch {
     return { ...emptySnapshot };
   }
@@ -131,7 +138,7 @@ export function getServerPersonalLibrarySnapshot(): PersonalLibrarySnapshot {
 
 export function recordRecentBoard(id: string): void {
   const current = getPersonalLibrarySnapshot();
-  if (!id || id.length > 128 || current.recentBoardIds[0] === id) return;
+  if (!isBoardId(id) || current.recentBoardIds[0] === id) return;
   persist({
     ...current,
     recentBoardIds: [id, ...current.recentBoardIds.filter((item) => item !== id)].slice(
@@ -142,7 +149,7 @@ export function recordRecentBoard(id: string): void {
 }
 
 export function createCollection(name: string, boardIds: string[] = []): string | null {
-  const cleanName = name.trim().slice(0, 60);
+  const cleanName = name.trim().slice(0, collectionNameLimit);
   if (!cleanName) return null;
   const current = getPersonalLibrarySnapshot();
   if (current.collections.length >= collectionLimit) return null;
@@ -172,7 +179,7 @@ export function setBoardInCollection(
   const current = getPersonalLibrarySnapshot();
   const target = current.collections.find((collection) => collection.id === collectionId);
   if (!target || target.boardIds.includes(boardId) === included) return;
-  if (included && (!boardId || boardId.length > 128 || target.boardIds.length >= collectionBoardLimit)) return;
+  if (included && (!isBoardId(boardId) || target.boardIds.length >= collectionBoardLimit)) return;
   const now = new Date().toISOString();
   persist({
     ...current,

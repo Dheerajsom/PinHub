@@ -25,7 +25,6 @@ import {
 import { clsx } from "clsx";
 import {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -34,12 +33,10 @@ import {
 import type { BoardSummary } from "@/lib/board-summary";
 import {
   createBoardSearchIndex,
-  matchBoardSearchEntry,
   matchFieldLabels,
-  tokenizeQuery,
   type BoardMatchField,
 } from "@/lib/board-search";
-import { favoriteLimit, toggleFavorite, useFavorites } from "@/lib/favorites";
+import { useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { VendorLogo } from "@/components/VendorLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -47,10 +44,8 @@ import { SectionNav } from "@/components/SectionNav";
 import {
   activeCatalogFilterCount,
   boundCatalogQuery,
-  compareCatalogBoards,
   defaultCatalogState,
   maxCatalogQueryLength,
-  matchesCatalogFilters,
   type CatalogFilterKey,
   type CatalogSort,
 } from "@/lib/catalog-state";
@@ -60,6 +55,9 @@ import {
   parseComparedIds,
 } from "@/lib/compare-params";
 import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
+import { useCatalogResults } from "@/components/catalog/useCatalogResults";
+import { FavoriteLimitToast, useFavoriteToggle } from "@/components/catalog/useFavoriteToggle";
+import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
 
 const discoveryDefaultState = { ...defaultCatalogState, sort: "name" as const };
 
@@ -104,29 +102,12 @@ export function DiscoveryApp({
   const [paging, startPaging] = useTransition();
   const searchRef = useRef<HTMLInputElement>(null);
   const storedFavorites = useFavorites();
-  const [favoriteMessage, setFavoriteMessage] = useState("");
-  const onToggleFavorite = useCallback((id: string) => {
-    setFavoriteMessage(toggleFavorite(id) ? "" : `Favorite limit reached (${favoriteLimit}). Remove one to add another.`);
-  }, []);
+  const { onToggleFavorite, favoriteMessage } = useFavoriteToggle();
+  useSlashToFocus(searchRef);
   const favorites = useMemo(
     () => new Set([...storedFavorites].filter((id) => ids.has(id))),
     [ids, storedFavorites],
   );
-
-  useEffect(() => {
-    const focusSearch = (event: KeyboardEvent) => {
-      if (
-        event.key === "/" &&
-        !(event.target instanceof HTMLInputElement) &&
-        !(event.target instanceof HTMLTextAreaElement)
-      ) {
-        event.preventDefault();
-        searchRef.current?.focus();
-      }
-    };
-    document.addEventListener("keydown", focusSearch);
-    return () => document.removeEventListener("keydown", focusSearch);
-  }, []);
 
   const options = useMemo(
     () => ({
@@ -146,24 +127,7 @@ export function DiscoveryApp({
     [catalog],
   );
   const searchIndex = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
-  const filtered = useMemo(() => {
-    const tokens = tokenizeQuery(state.query);
-    const scored: {
-      board: BoardSummary;
-      score: number;
-      matchedBy: BoardMatchField | null;
-    }[] = [];
-    for (const entry of searchIndex) {
-      if (!matchesCatalogFilters(entry.board, state, favorites)) continue;
-      const match = matchBoardSearchEntry(entry, tokens);
-      if (!match) continue;
-      scored.push({ board: entry.board, ...match });
-    }
-    scored.sort((a, b) =>
-      compareCatalogBoards(a.board, b.board, state.sort, a.score, b.score),
-    );
-    return scored;
-  }, [favorites, searchIndex, state]);
+  const filtered = useCatalogResults(searchIndex, state, favorites);
   // Favorites-only with nothing starred is its own state, not a failed filter.
   const favoritesEmpty = state.favoritesOnly && favorites.size === 0;
   const activeCount = activeCatalogFilterCount(state);
@@ -325,7 +289,7 @@ export function DiscoveryApp({
         </aside>
 
         <section id="board-results" aria-label="Board results" className="min-w-0">
-          {favoriteMessage ? <p role="status" className="favorite-limit-toast fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 mx-auto max-w-md rounded-lg border border-amber-300/30 bg-[#24201a] p-3 text-sm text-amber-100 shadow-xl">{favoriteMessage}</p> : null}
+          <FavoriteLimitToast message={favoriteMessage} />
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200"><Sparkles className="size-3.5" /> Discovery workspace</div>
@@ -398,22 +362,15 @@ export function DiscoveryApp({
               <div className="flex flex-wrap gap-1.5">
                 {compareIds.map((id) => {
                   const board = catalog.find((item) => item.id === id);
-                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} className="inline-flex max-w-full items-center gap-1 rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" /></button> : null;
+                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} aria-label={`Remove ${board.name} from comparison`} className="inline-flex min-h-9 max-w-full items-center gap-1 rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200 transition hover:border-white/25 hover:text-white"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" aria-hidden="true" /></button> : null;
                 })}
               </div>
               <p className="mt-1 text-[11px] text-zinc-500">{compareIds.length < 2 ? "Choose one more board." : compareIds.length === maxComparedBoards ? "Comparison set is full." : "Ready to compare."}</p>
             </div>
-            <Link href={compareIds.length > 1 ? compareUrl(compareIds) : "#board-results"} aria-disabled={compareIds.length < 2} className={clsx("inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition sm:w-auto", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
+            <Link href={compareIds.length > 1 ? compareUrl(compareIds) : "#board-results"} aria-disabled={compareIds.length < 2} tabIndex={compareIds.length < 2 ? -1 : undefined} className={clsx("inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition sm:w-auto", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
           </div>
         </div>
       ) : null}
-
-      <footer className="relative border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
-        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-zinc-500 sm:px-6 lg:px-8">
-          <span>Always verify against linked official documentation before wiring.</span>
-          <span className="font-mono">{catalog.length} boards · {sourceCount} sources</span>
-        </div>
-      </footer>
     </main>
   );
 }

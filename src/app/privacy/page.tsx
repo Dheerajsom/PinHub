@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import { CircuitBackground } from "@/components/CircuitBackground";
+import { SiteHeader } from "@/components/SiteHeader";
+import { repoUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy & disclaimer",
@@ -11,25 +12,12 @@ export const metadata: Metadata = {
 };
 
 const lastUpdated = "2026-07-24";
-const repoUrl = "https://github.com/Dheerajsom/PinHub";
 
 export default function PrivacyPage() {
   return (
     <main className="relative isolate min-h-screen pb-10">
       <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#0a0d12] px-4 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-[860px] items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-cyan-200"
-          >
-            <ArrowLeft className="size-4" /> Back to discovery
-          </Link>
-          <Link href="/" className="brand-title text-xl text-white">
-            PinHub
-          </Link>
-        </div>
-      </header>
+      <SiteHeader width="narrow" />
 
       <div className="relative mx-auto max-w-[860px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200">

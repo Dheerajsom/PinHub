@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { clsx } from "clsx";
 import {
   ArrowUp,
   ArrowUpRight,
@@ -13,6 +12,7 @@ import {
   ShieldAlert,
   Zap,
 } from "lucide-react";
+import { WiringCautions } from "@/components/WiringCautions";
 import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import { VendorLogo } from "@/components/VendorLogo";
@@ -20,7 +20,7 @@ import { PinoutTabs } from "@/components/PinoutTabs";
 import { BoardActions } from "@/components/BoardActions";
 import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
-import { revisionNotesFor } from "@/lib/board-utilities";
+import { fiveVoltCaution, revisionNotesFor } from "@/lib/board-utilities";
 
 export type DetailState =
   | { status: "ready"; board: Board }
@@ -124,7 +124,6 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   const officialCount = board.sourceLinks.filter(
     (source) => classifySource(board.vendor, source.url) === "official",
   ).length;
-  const isFiveVoltTolerant = /5\s?v/i.test(board.logicLevel) && /tolerant/i.test(board.warnings.join(" ") + board.logicLevel);
   return (
     <aside className="min-w-0 space-y-4 xl:sticky xl:top-[5.25rem] xl:max-h-[calc(100vh-6.25rem)] xl:self-start xl:overflow-y-auto xl:pb-2 xl:pr-1">
       {/* Stacked-layout escape hatch: the detail panel sits below the result
@@ -167,7 +166,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
               icon={<Zap className="size-3.5 text-amber-200" aria-hidden="true" />}
               label="Logic"
               value={board.logicLevel}
-              accent={isFiveVoltTolerant ? undefined : board.logicLevel.includes("3.3") ? "3V3 · not 5V tolerant" : undefined}
+              accent={fiveVoltCaution(board) ?? undefined}
             />
             <SpecTile icon={<PlugZap className="size-3.5 text-emerald-200" aria-hidden="true" />} label="Power" value={board.power} />
             <SpecTile icon={<Ruler className="size-3.5 text-violet-200" aria-hidden="true" />} label="Format" value={board.formFactor} />
@@ -180,45 +179,15 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
 
       <BoardPriceLink boardId={board.id} />
 
-      {verifySource ? (
-        <a
-          href={verifySource.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ph-verify group flex items-center justify-between gap-3 rounded-xl px-3.5 py-3 text-sm text-orange-100/90 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-orange-300/60 hover:text-orange-50"
-        >
-          <span className="flex min-w-0 items-center gap-2.5">
-            <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-orange-300/30 bg-orange-400/10">
-              <ShieldAlert
-                className="size-4 text-orange-200"
-                aria-hidden="true"
-              />
-            </span>
-            <span className="min-w-0">
-              <span className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-orange-200/80">
-                Verify before wiring
-              </span>
-              <span className="mt-0.5 block truncate font-medium">
-                {verifySource.label}
-              </span>
-            </span>
-            <span
-              className={clsx(
-                "shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium",
-                verifySourceOfficial
-                  ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-100"
-                  : "border-white/15 bg-white/[0.05] text-zinc-300",
-              )}
-            >
-              {verifySourceOfficial ? "Official" : "3rd-party"}
-            </span>
-          </span>
-          <ArrowUpRight
-            className="size-4 shrink-0 text-orange-200/60 transition group-hover:translate-x-0.5 group-hover:text-orange-100"
-            aria-hidden="true"
-          />
-        </a>
-      ) : null}
+      {/* Hazards and the document to check them against come before the
+          map. Long lists fold after three so the map stays near the top of
+          this narrow column. */}
+      <WiringCautions
+        warnings={board.warnings}
+        verifySource={verifySource}
+        verifySourceOfficial={verifySourceOfficial}
+        collapseAfter={3}
+      />
 
       <section className="surface-panel rounded-xl p-4">
         <PinoutTabs board={board} />
@@ -242,21 +211,13 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         {revisionNotes.length ? <ul className="mt-2 grid gap-2 text-sm leading-6 text-zinc-400">{revisionNotes.map((note) => <li key={note} className="flex gap-2"><span className="mt-2.5 size-1 shrink-0 rounded-full bg-cyan-300/70" aria-hidden="true" />{note}</li>)}</ul> : <p className="mt-2 text-[13px] leading-6 text-zinc-500">No revision-specific note is documented in PinHub. Verify your exact board revision against the linked sources.</p>}
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
+      {board.highlights.length ? (
         <InfoBlock
           title="Why it matters"
           icon={<Zap className="size-3.5 text-emerald-200" aria-hidden="true" />}
           items={board.highlights}
         />
-        <InfoBlock
-          title="Check before wiring"
-          icon={
-            <ShieldAlert className="size-3.5 text-orange-200" aria-hidden="true" />
-          }
-          items={board.warnings}
-          tone="warning"
-        />
-      </section>
+      ) : null}
 
       <section className="surface-panel rounded-xl p-4">
         <div className="mb-3 flex items-center gap-2">
@@ -340,7 +301,7 @@ function SpecTile({ icon, label, value, accent }: SpecTileProps) {
         {value}
       </dd>
       {accent ? (
-        <dd className="mt-1 truncate text-[11px] font-medium text-amber-200/90" title={accent}>
+        <dd className="mt-1 truncate text-[11px] font-medium text-amber-200" title={accent}>
           {accent}
         </dd>
       ) : null}
@@ -352,45 +313,27 @@ type InfoBlockProps = {
   title: string;
   icon: ReactNode;
   items: string[];
-  tone?: "default" | "warning";
 };
 
-function InfoBlock({ title, icon, items, tone = "default" }: InfoBlockProps) {
-  const count = items.length;
+function InfoBlock({ title, icon, items }: InfoBlockProps) {
   return (
-    <section
-      className={clsx(
-        "rounded-xl p-4",
-        tone === "warning"
-          ? "ph-warn shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
-          : "surface-panel",
-      )}
-    >
+    <section className="surface-panel rounded-xl p-4">
       <div className="mb-3 flex items-center gap-2">
-        <span className={clsx(
-          "grid size-7 place-items-center rounded-md border",
-          tone === "warning" ? "border-orange-300/30 bg-orange-400/10" : "border-white/10 bg-[#0a0c11]",
-        )}>
+        <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-[#0a0c11]">
           {icon}
         </span>
-        <span className="text-[13px] font-semibold tracking-tight text-white">
+        <h2 className="text-[13px] font-semibold tracking-tight text-white">
           {title}
-        </span>
-        <span className={clsx(
-          "ml-auto rounded-full px-2 py-0.5 font-mono text-[10px] tabular-nums",
-          tone === "warning" ? "bg-orange-400/10 text-orange-200" : "bg-white/[0.05] text-zinc-400",
-        )}>
-          {count}
+        </h2>
+        <span className="ml-auto rounded-full bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] tabular-nums text-zinc-400">
+          {items.length}
         </span>
       </div>
       <ul className="space-y-2 text-[13px] leading-6 text-zinc-400">
         {items.map((item) => (
           <li key={item} className="flex gap-2">
             <span
-              className={clsx(
-                "mt-2.5 size-1 shrink-0 rounded-full",
-                tone === "warning" ? "bg-orange-300/70" : "bg-emerald-300/60",
-              )}
+              className="mt-2.5 size-1 shrink-0 rounded-full bg-emerald-300/60"
               aria-hidden="true"
             />
             {item}
