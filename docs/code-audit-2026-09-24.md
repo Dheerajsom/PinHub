@@ -118,10 +118,18 @@ Flagged, not changed:
   Favorites chips, the footer chips, the single footer on `/compare`, the
   compare tray, light theme, keyboard focus, and console errors. It found no
   regressions.
-- Follow-up found by the mobile pass (not introduced here): on bare
-  `/compare` at 360 px, the discovery toolbar's horizontally scrolling row
-  starts with the section links, so Filters and Favorites begin off-screen
-  (right edges at about 399 px and 525 px) until you scroll the row.
+- Follow-up found by the mobile pass, fixed on `fix/compare-toolbar-wrap`
+  (this issue predates the cleanup). On bare `/compare` below 640 px, the
+  discovery toolbar was one horizontally scrolling row, so Filters was
+  clipped and Favorites sat past the right edge (right edges at about 399 px
+  and 525 px on a 360 px screen). The toolbar now wraps like the catalog
+  command bar: search; the section links; Filters, Favorites, and the match
+  count; then the sort select on its own row. A first version shared the
+  sort's row with Filters and Favorites, and the second mobile pass caught its
+  labels clipping at 360 px ("Best matcl"). A new Playwright test checks each
+  control's box, because the page-width check could not catch a row that
+  clips its own overflow. It also measures every sort label against the
+  select's width.
 
 ## Limits
 
