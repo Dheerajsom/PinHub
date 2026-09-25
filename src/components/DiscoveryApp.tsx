@@ -203,11 +203,16 @@ export function DiscoveryApp({
       </header>
 
       <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.95)]">
-        {/* Below sm this is two rows — search, then one horizontally scrolling
-            control row — because wrapping all six controls cost 219px of an
-            844px viewport. From sm up the wrapper below becomes `contents`,
-            so the toolbar lays out exactly as it always has. */}
-        <div className="mx-auto flex max-w-[1560px] flex-col gap-2.5 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:px-6 lg:px-8">
+        {/* Below sm the controls wrap into full-width rows, like the catalog
+            command bar and SiteHeader: search; the section links; Filters,
+            Favorites, and the match count; then the sort select on its own
+            row, because its longer labels ("Recently added", "Most
+            interfaces") need ~130px that a shared row at 360px cannot give.
+            A single horizontally scrolling row used to hide Filters and
+            Favorites past the right edge of a 360px screen. From sm up the
+            wrapper below becomes `contents` and the sm: spacing applies, so
+            the toolbar lays out exactly as it always has. */}
+        <div className="mx-auto flex max-w-[1560px] flex-col gap-2 px-4 py-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2.5 sm:px-6 sm:py-3 lg:px-8">
           <label className="relative order-first min-w-0 sm:order-2 sm:flex-1 sm:basis-80">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
             <input
@@ -233,8 +238,8 @@ export function DiscoveryApp({
               <kbd className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 px-1.5 py-0.5 font-mono text-[11px] text-zinc-500 sm:block">/</kbd>
             )}
           </label>
-          <div className="-mx-4 flex items-center gap-2.5 overflow-x-auto px-4 sm:contents">
-            <SectionNav current="/compare" className="sm:order-1" />
+          <div className="flex min-w-0 flex-wrap items-center gap-2 sm:contents">
+            <SectionNav current="/compare" className="max-sm:w-full max-sm:justify-between sm:order-1" />
             <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 sm:order-3 sm:shrink lg:hidden">
               <SlidersHorizontal className="size-4 text-cyan-200" /> Filters
               {activeCount ? <span className="rounded bg-cyan-300/15 px-1.5 font-mono text-xs text-cyan-100">{activeCount}</span> : null}
@@ -242,7 +247,7 @@ export function DiscoveryApp({
             <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: !current.favoritesOnly }))} aria-pressed={state.favoritesOnly} className={clsx("inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm transition sm:order-4 sm:shrink", state.favoritesOnly ? "fav-button border-amber-300/60 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
               <Star className={clsx("fav-star size-4", state.favoritesOnly && "fill-amber-300")} /> Favorites
             </button>
-            <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as CatalogSort, page: 1 }))} aria-label="Sort boards" className="h-10 shrink-0 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none sm:order-5 sm:shrink">
+            <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as CatalogSort, page: 1 }))} aria-label="Sort boards" className="h-10 min-w-0 shrink-0 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none max-sm:order-last max-sm:basis-full sm:order-5 sm:shrink">
               {state.query ? <option value="relevance">Best match</option> : null}
               <option value="name">Name A–Z</option>
               <option value="vendor">Vendor A–Z</option>
