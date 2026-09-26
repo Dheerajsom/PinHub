@@ -233,3 +233,42 @@ describe("PinHubApp result list", () => {
     );
   });
 });
+
+describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
+  it("shows a removable chip for every facet a shared URL applies", async () => {
+    // Discovery-only facets (connector, platform, wireless) used to filter
+    // the home results with no chip, so only a full Reset could clear them.
+    setViewport(true);
+    const qwiic = board({ id: "qwiic-board", name: "Qwiic Board", formFactor: "Feather with Qwiic connector", tags: ["Qwiic"] });
+    const withQwiic = [qwiic, pi5, hat].map(summarizeBoard);
+    const connector = withQwiic.find((item) => item.id === "qwiic-board")!.discovery.connectorEcosystems[0];
+    expect(connector).toBeTruthy();
+    history.replaceState(null, "", `/?connector=${encodeURIComponent(connector)}`);
+    render(<PinHubApp catalog={withQwiic} initialBoard={pi5} sourceCount={2} />);
+
+    const chip = await screen.findByRole("button", { name: `Remove Connector: ${connector} filter` });
+    fireEvent.click(chip);
+    expect(screen.queryByRole("button", { name: `Remove Connector: ${connector} filter` })).toBeNull();
+    expect(screen.getByRole("button", { name: "Select Sensor HAT" })).toBeTruthy();
+  });
+
+  it("opens, and never closes, the selected board's details on Enter", () => {
+    setViewport(false);
+    renderApp();
+    const search = screen.getByLabelText("Search boards");
+    fireEvent.change(search, { target: { value: "sensor" } });
+    fireEvent.keyDown(search, { key: "Enter" });
+    expect(screen.getByRole("region", { name: "Sensor HAT details" })).toBeTruthy();
+    fireEvent.keyDown(search, { key: "Enter" });
+    expect(screen.getByRole("region", { name: "Sensor HAT details" })).toBeTruthy();
+  });
+
+  it("labels the first-screen shortcuts as common boards without a ranking", () => {
+    setViewport(true);
+    renderApp();
+    const section = screen.getByRole("region", { name: "Common boards" });
+    expect(within(section).getByRole("button", { name: "Inspect Raspberry Pi 5" })).toBeTruthy();
+    expect(within(section).queryByText("01")).toBeNull();
+    expect(screen.queryByText(/Trending/i)).toBeNull();
+  });
+});

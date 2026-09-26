@@ -11,6 +11,27 @@ async function loadLibrary(): Promise<LibraryModule> {
 beforeEach(() => window.localStorage.clear());
 
 describe("personal project library", () => {
+  it("applies the board-id and size limits to stored data, as writes do", async () => {
+    window.localStorage.setItem("pinhub.library.v1", JSON.stringify({
+      version: 1,
+      recentBoardIds: ["raspberry-pi-5", "<img src=x>", "Not A Board", "a".repeat(129)],
+      collections: [{ id: "c1", name: "Bench", boardIds: ["arduino-uno-rev3", "../../etc", 42], createdAt: "2026-09-01T00:00:00.000Z", updatedAt: "2026-09-01T00:00:00.000Z" }],
+    }));
+    let library = await loadLibrary();
+    let snapshot = library.getPersonalLibrarySnapshot();
+    expect(snapshot.recentBoardIds).toEqual(["raspberry-pi-5"]);
+    expect(snapshot.collections[0].boardIds).toEqual(["arduino-uno-rev3"]);
+
+    library.recordRecentBoard("Not A Board");
+    library.setBoardInCollection("c1", "<script>", true);
+    expect(library.getPersonalLibrarySnapshot()).toBe(snapshot);
+
+    window.localStorage.setItem("pinhub.library.v1", JSON.stringify({ recentBoardIds: ["esp32-devkit-v1"], pad: "x".repeat(200_000) }));
+    library = await loadLibrary();
+    snapshot = library.getPersonalLibrarySnapshot();
+    expect(snapshot).toEqual({ version: 1, recentBoardIds: [], collections: [] });
+  });
+
   it("rejects collections that would disappear after reloading", async () => {
     let library = await loadLibrary();
     for (let index = 0; index < library.collectionLimit; index++) {

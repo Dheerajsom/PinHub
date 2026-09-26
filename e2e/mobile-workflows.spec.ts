@@ -143,6 +143,49 @@ for (const viewport of viewports) {
       await expect(page.getByRole("button", { name: "SBCs", exact: true })).toHaveAttribute("aria-pressed", "true");
       await expectPageFits(page);
     });
+
+    test("discovery toolbar wraps every control on screen", async ({ page }) => {
+      // Regression: below 640px these controls sat in one horizontally
+      // scrolling row that clipped Filters and hid Favorites past the right
+      // edge. The page itself never overflowed (the row clipped its content),
+      // so expectPageFits alone could not catch it; check each control's box.
+      await page.goto("/compare");
+      await expectPageFits(page);
+      const toolbar = page.locator("main .sticky").first();
+      const controls = [
+        toolbar.getByRole("link", { name: "Pin Maps", exact: true }),
+        toolbar.getByRole("link", { name: "Compare", exact: true }),
+        toolbar.getByRole("link", { name: "Prices", exact: true }),
+        toolbar.getByRole("button", { name: /^Favorites/ }),
+        toolbar.getByRole("combobox", { name: "Sort boards" }),
+      ];
+      // Filters collapses into the sidebar from lg up; landscape phones below
+      // that still show it.
+      if (viewport.width < 1024) controls.push(toolbar.getByRole("button", { name: /^Filters/ }));
+      for (const control of controls) {
+        await expect(control).toBeVisible();
+        const box = await control.boundingBox();
+        expect(box!.x).toBeGreaterThanOrEqual(0);
+        expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width);
+      }
+      // Every sort label must fit the select, including the longest ones and
+      // "Best match" (shown once a query exists). A native select does not
+      // report clipped text through scrollWidth, so measure each label in the
+      // control's own font; 44px covers the side padding, border, and arrow.
+      await toolbar.getByRole("searchbox", { name: "Search boards" }).or(toolbar.getByRole("textbox", { name: "Search boards" })).fill("esp32");
+      const sort = toolbar.getByRole("combobox", { name: "Sort boards" });
+      await expect(sort).toHaveValue("relevance");
+      const fit = await sort.evaluate((select: HTMLSelectElement) => {
+        const style = getComputedStyle(select);
+        const context = document.createElement("canvas").getContext("2d")!;
+        context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        const widest = Math.max(...[...select.options].map((option) => context.measureText(option.text).width));
+        return { widest, width: select.getBoundingClientRect().width };
+      });
+      expect(fit.widest + 44).toBeLessThanOrEqual(fit.width);
+      await toolbar.getByRole("button", { name: /^Filters/ }).tap();
+      await expect(page.getByText("Discovery facets", { exact: true })).toBeVisible();
+    });
   });
 }
 

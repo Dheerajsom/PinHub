@@ -40,7 +40,27 @@ export function fallbackPrices(): PriceResponse {
   } };
 }
 
-export async function getLivePrices(): Promise<PriceResponse> {
+// The CDN only caches the shared response, so a slow or failing store would
+// otherwise hold every uncached request open for the full read timeout. One
+// read per instance serves concurrent requests, and its result is reused
+// briefly so an outage costs one storage read per window, not one per visitor.
+const livePriceReuseMs = 30_000;
+let recent: { at: number; result: Promise<PriceResponse> } | null = null;
+
+/** Test hook: forget the reused result so each case reads storage again. */
+export function resetLivePriceCache() {
+  recent = null;
+}
+
+export function getLivePrices(): Promise<PriceResponse> {
+  const now = Date.now();
+  if (recent && now - recent.at < livePriceReuseMs && now >= recent.at) return recent.result;
+  const result = readLivePrices();
+  recent = { at: now, result };
+  return result;
+}
+
+async function readLivePrices(): Promise<PriceResponse> {
   if (priceStoreConfigured()) {
     try {
       const stored = await readStoredPrices();

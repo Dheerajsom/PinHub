@@ -9,6 +9,7 @@ import {
 } from "@/lib/board-search";
 import { VendorLogo } from "@/components/VendorLogo";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
+import { InterfaceChip } from "@/components/InterfaceChip";
 
 type ActiveFilterChipProps = {
   label: string;
@@ -143,28 +144,6 @@ export function FilterSelect({
       </select>
     </label>
   );
-}
-
-// Protocol-tinted interface chips. The tone key drives `.ph-iface[data-tone]`
-// in globals.css (same hues as the pin-role system), which keeps both themes
-// working — inline styles would bypass the light-mode rules entirely.
-const interfaceTones: Record<string, string> = {
-  GPIO: "gpio",
-  I2C: "i2c",
-  SPI: "spi",
-  UART: "uart",
-  ADC: "adc",
-  DAC: "dac",
-  PWM: "pwm",
-  CAN: "can",
-  USB: "usb",
-  Ethernet: "ethernet",
-  "Wi-Fi": "wifi",
-  Bluetooth: "bluetooth",
-};
-
-function interfaceTone(item: string): string {
-  return interfaceTones[item] ?? "default";
 }
 
 type BoardResultProps = {
@@ -304,13 +283,7 @@ export const BoardResult = memo(function BoardResult({
 
         <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
           {board.interfaces.slice(0, 7).map((item) => (
-            <span
-              key={item}
-              data-tone={interfaceTone(item)}
-              className="ph-iface"
-            >
-              {item}
-            </span>
+            <InterfaceChip key={item} name={item} />
           ))}
           {board.interfaces.length > 7 ? (
             <span className="rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[11px] text-zinc-400">

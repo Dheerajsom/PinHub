@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SquareTerminal, Braces } from "lucide-react";
 import { boards } from "@/lib/boards";
+import { cliGuideUrl } from "@/lib/site";
 
 const sourceCount = boards.reduce(
   (total, board) => total + board.sourceLinks.length,
@@ -29,18 +30,30 @@ export function Footer() {
             Privacy
           </Link>
         </span>
+        {/* Both chips lead where their label says: the terminal client's
+            install guide, and the JSON index that lists every board record. */}
         <span className="flex flex-wrap items-center gap-1.5">
-          <Link
-            href="/compare"
-            className="ph-quick-chip inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
+          <a
+            href={cliGuideUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="PinHub terminal client: ph rpi5 (opens the install guide in a new tab)"
+            className="ph-quick-chip inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
           >
             <SquareTerminal className="size-3" aria-hidden="true" />
             ph rpi5
-          </Link>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-zinc-500">
+          </a>
+          {/* A JSON route handler, not a page: client-side navigation and
+              prefetching have nothing to render, so use a plain document link. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
+            href="/api/boards"
+            aria-label="Board JSON API index"
+            className="ph-quick-chip inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
+          >
             <Braces className="size-3" aria-hidden="true" />
-            /api/boards/[id]
-          </span>
+            /api/boards
+          </a>
         </span>
         <span className="font-mono tabular-nums text-zinc-500">
           {boards.length} boards · {sourceCount} source links

@@ -32,11 +32,12 @@ test("dark-theme muted labels use the accessible contrast token", async ({ page 
     element.setAttribute("data-theme", "dark");
   });
 
-  const color = await page
-    .getByText("Boards", { exact: true })
-    .first()
-    .evaluate((element) => getComputedStyle(element).color);
-  expect(color).toBe("rgb(156, 163, 175)");
+  // toHaveCSS retries: elements with a color `transition` report interpolated
+  // values for a moment after the theme flips.
+  await expect(page.getByText("Boards", { exact: true }).first()).toHaveCSS(
+    "color",
+    "rgb(156, 163, 175)",
+  );
 });
 
 test("light-theme price navigation uses readable amber ink", async ({ page }) => {
@@ -44,10 +45,10 @@ test("light-theme price navigation uses readable amber ink", async ({ page }) =>
   await page.locator("html").evaluate((element) => {
     element.setAttribute("data-theme", "light");
   });
-  const color = await page.getByRole("navigation", { name: "PinHub sections" })
-    .getByRole("link", { name: "Prices", exact: true })
-    .evaluate((element) => getComputedStyle(element).color);
-  expect(color).toBe("rgb(133, 77, 14)");
+  await expect(
+    page.getByRole("navigation", { name: "PinHub sections" })
+      .getByRole("link", { name: "Prices", exact: true }),
+  ).toHaveCSS("color", "rgb(133, 77, 14)");
 });
 
 test("pinout SVG definitions have unique IDs", async ({ page }) => {

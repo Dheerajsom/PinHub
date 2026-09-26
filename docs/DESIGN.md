@@ -33,9 +33,9 @@ encodes a real electrical or provenance fact.
 ├──────────────┬───────────────────────┬───────────────────────┤
 │ Filter rail  │ Board catalog (list)  │ Board detail panel    │
 │ · Category   │ · dense result rows   │ · identity + specs    │
-│ · Interface  │ · relevance-ranked    │ · Verify-before-wiring│
+│ · Interface  │ · relevance-ranked    │ · Before you wire     │
 │ · (Voltage)  │                       │ · Pin map (tabs)      │
-│ · (Sources)  │                       │ · Highlights/Warnings │
+│ · (Sources)  │                       │ · Highlights          │
 │ · Curation   │                       │ · Source references   │
 └──────────────┴───────────────────────┴───────────────────────┘
   Footer: disclaimer + catalog stats
@@ -52,8 +52,8 @@ encodes a real electrical or provenance fact.
 - **Catalog** (center, fluid) — single-column list of compact result rows,
   relevance-ranked when a query is present.
 - **Detail panel** (right, `clamp(21rem, 30vw, 32rem)`, sticky, scrolls
-  independently) — identity, specs, verify affordance, pin map tabs,
-  highlights, warnings, sources. Container-query driven: it adapts to its own width, never the
+  independently) — identity, specs, "Before you wire" cautions with the
+  verify link, pin map tabs, highlights, sources. Container-query driven: it adapts to its own width, never the
   viewport.
 - **Full pinout page** (`/pinout/[id]`) — the pin map at full width for
   deep inspection, shareable/bookmarkable per board.
@@ -85,14 +85,13 @@ The first screen **is** the catalog. No hero, no marketing copy.
   Warnings are therefore visible **at scan time**, before selection.
 - **Selected board panel**: identity block (vendor mark, name, family),
   4-row spec sheet (Processor / Logic / Power / Format), then the
-  **Verify before wiring** strip — an orange affordance linking directly to
-  the highest-authority source (Pinout > Datasheet > Schematic > Manual >
-  Docs) — then the pin map tabs, highlights, warnings, and the source list
-  with per-link provenance badges.
+  **Before you wire** panel — the board's cautions with, as its footer, a
+  link to the highest-authority source (Pinout > Schematic > Datasheet >
+  Manual > Docs); lists longer than four fold after three — then the pin map
+  tabs, highlights, and the source list with per-link provenance badges.
 - **Trust communication**: green = data present and vendor-official
-  (Pin map chip, Official badge); orange = caution (warning chips, verify
-  strip, "Check before wiring" block); neutral zinc = third-party or
-  metadata. The footer repeats the disclaimer on every screen.
+  (Pin map chip, Official badge); orange = caution (warning chips, the
+  "Before you wire" panel); neutral zinc = third-party or metadata. The footer repeats the disclaimer on every screen.
 
 ## 4. Visual Design System
 
@@ -174,11 +173,11 @@ Ordered by decision priority — identity → safety → pin map → context:
 1. **Identity**: vendor mark, name, vendor/family, category.
 2. **Spec sheet**: Processor, Logic level, Power, Format — four rows, no
    more; everything else lives in description/tags.
-3. **Verify before wiring**: one orange strip linking the single
-   highest-authority source. This is the panel's only imperative.
+3. **Before you wire**: the warnings and the one source to verify them
+   against, as a single orange-ruled panel. This is the panel's only
+   imperative, and it comes before the map it applies to.
 4. **Pin map tabs** (the centerpiece, above the fold on desktop).
-5. **Why it matters** (highlights) and **Check before wiring** (warnings,
-   orange-tinted panel) side-by-side where width allows.
+5. **Why it matters** (highlights).
 6. **Source references**: every link typed (Docs/Pinout/Datasheet/
    Schematic/Manual) and badged **Official** (host or GitHub org belongs to
    the board vendor) or **3rd-party** (anything else — including
@@ -225,11 +224,12 @@ Pinout data can destroy hardware; provenance is a first-class UI concern.
   voltage tolerance ("GPIO is 3.3V, not 5V tolerant"), boot-strap pins,
   reserved pins (HAT EEPROM, flash lines), alternate-function caveats,
   revision risk ("Rev 1.x swaps I2C pins — check your silkscreen").
-- **Surfacing tiers**: count chip on the result row → orange "Check before
-  wiring" panel in detail → per-pin notes in the map/inspector → connector
+- **Surfacing tiers**: count chip on the result row → orange "Before you
+  wire" panel in detail → per-pin notes in the map/inspector → connector
   notes under the map.
-- **Verify affordance**: the orange strip makes "open the vendor doc" a
-  one-click ritual rather than fine print.
+- **Verify affordance**: the "Before you wire" panel ends in the verify
+  link, so opening the vendor doc is part of reading the cautions rather
+  than a separate strip.
 - **Disclaimer**: one calm footer line on every screen; not repeated
   per-component.
 - **Planned**: `lastVerified` date on boards and per-pinout `source` refs
@@ -353,3 +353,22 @@ and keyboard speed over decoration. Sections 2–4 are the layout spec,
 - **Phase 4 — scale**: result virtualization past ~200 boards; per-board
   pinout code-splitting; query field prefixes (`voltage:`, `vendor:`);
   mobile bottom-sheet detail.
+
+## 14. Board page and shared header (2026-09-24)
+
+- **Shared header**: board, pinout, comparison, collection, privacy, and 404
+  pages share `SiteHeader`: the wordmark (home), the three section links, and
+  the theme toggle. Below 640 px the section links take their own row.
+- **Board page** (`/boards/[id]`): a title block (identity, description,
+  protocol-tinted interface chips, actions) beside a ruled key/value spec
+  table like a datasheet's front page. The pin map then leads the page, with
+  the "Before you wire" panel beside it (before it on phones, by DOM order).
+  Price, revision notes, and sources follow in the side column.
+- **Home first screen**: "Common boards" lists four widely used reference
+  boards with vendor mark and logic level. It does not rank them or claim
+  popularity, because PinHub has no usage data.
+- **Logic caption**: under a 3.3 V logic level the UI quotes an explicit
+  "Not 5 V tolerant" from the record (logic level, warnings, or connector
+  notes), says "Treat as not 5 V tolerant" when the record is silent, and
+  shows nothing when the record describes any 5 V tolerance itself
+  (`fiveVoltCaution`).
