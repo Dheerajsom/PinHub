@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-const lastUpdated = "2026-07-24";
+const lastUpdated = "2026-09-26";
 
 export default function PrivacyPage() {
   return (
@@ -65,6 +65,31 @@ export default function PrivacyPage() {
                 Vercel&apos;s analytics privacy policy
               </a>{" "}
               for details.
+            </p>
+          </section>
+
+          <section className="surface-panel rounded-xl p-5">
+            <h2 className="text-lg font-semibold text-white">Reporting a data error</h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-400">
+              The <strong className="font-medium text-zinc-300">Report</strong>{" "}
+              links open a pre-filled issue form on GitHub in a new tab. The link
+              carries only catalog details: the board id, the pin and connector,
+              and the source PinHub cites. PinHub stores nothing about the
+              report and sends nothing itself.
+            </p>
+            <p className="mt-2 text-sm leading-6 text-zinc-400">
+              Filing the issue needs a GitHub account. You review the form and
+              submit it under that account, so it is public on GitHub and
+              covered by{" "}
+              <a
+                href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-white"
+              >
+                GitHub&apos;s privacy statement
+              </a>
+              . Closing the tab without submitting sends nothing.
             </p>
           </section>
 

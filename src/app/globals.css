@@ -115,8 +115,12 @@
   .pi-component-layout { grid-template-columns: minmax(0, 1fr) 210px; }
   .pi-readout { border-top: 0; border-left: 1px solid var(--pi-rule); }
   .pi-board-frame { padding: 20px; }
-  .pi-canvas { display: flex; flex-direction: column; justify-content: center; }
-  .pi-canvas-scroll { flex: 1; display: grid; align-items: center; }
+  /* The readout column sets this row's height, and it changes as soon as a
+     finger lands on a pad (the readout switches to that pin). A vertically
+     centred board would slide under the finger before the tap's click fired,
+     so the board stays anchored to the top of the canvas. */
+  .pi-canvas { display: flex; flex-direction: column; }
+  .pi-canvas-scroll { flex: 1; display: grid; align-items: start; }
 }
 @media print {
   .pi-workbench { overflow: visible; --pi-panel: #fff; --pi-well: #fff; --pi-rule: #bbb; --pi-text: #111; --pi-muted: #444; }
@@ -961,6 +965,25 @@ button {
 
 :root[data-theme="light"] .ph-cautions-verify:hover {
   background-color: #fed7aa;
+}
+
+/* "Report a data error": the panel's last row. It shares the caution surface
+   and rule but stays neutral ink, because reporting is a utility action, not a
+   hazard. */
+.ph-cautions-report {
+  border-color: rgba(253, 186, 116, 0.2);
+}
+
+.ph-cautions-report:hover {
+  background-color: #22170f;
+}
+
+:root[data-theme="light"] .ph-cautions-report {
+  border-color: rgba(154, 52, 18, 0.2);
+}
+
+:root[data-theme="light"] .ph-cautions-report:hover {
+  background-color: #ffedd5;
 }
 
 /* Datasheet-style key characteristics: one ruled table instead of four

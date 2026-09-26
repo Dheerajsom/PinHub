@@ -17,6 +17,7 @@ import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { siteName } from "@/lib/site";
 import { boardVisuals } from "@/lib/board-visuals";
 import { fiveVoltCaution, revisionNotesFor } from "@/lib/board-utilities";
+import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { VendorLogo } from "@/components/VendorLogo";
@@ -156,6 +157,7 @@ export default async function BoardPage({
                 ? classifySource(board.vendor, verifySource.url) === "official"
                 : false
             }
+            reportUrl={pinReportUrl(pinReportContextFor(board))}
             className="lg:col-start-2 lg:row-start-1"
           />
 

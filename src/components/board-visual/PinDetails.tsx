@@ -1,10 +1,11 @@
 "use client";
 
-import { ArrowUpRight, BadgeCheck, TriangleAlert } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Flag, TriangleAlert } from "lucide-react";
 import type { SourceLink } from "@/lib/boards";
 import type { PinAnchor } from "@/lib/board-visual-geometry";
 import type { PinNet } from "@/lib/pin-nets";
 import { netDescription } from "@/lib/pin-nets";
+import { pinReportUrl, type PinReportContext } from "@/lib/pin-report";
 import { roleChipStyle, roleLabels } from "@/components/board-visual/roles";
 import { CopyPinButton } from "@/components/CopyPinButton";
 
@@ -23,6 +24,7 @@ export function PinDetails({
   net,
   netSize,
   source,
+  report,
 }: {
   anchor: PinAnchor | null;
   pinned: boolean;
@@ -30,7 +32,17 @@ export function PinDetails({
   /** How many pins on this connector share the net, including this one. */
   netSize: number;
   source?: PinoutSource;
+  /** Board, connector, and cited source for the "Report" link on a pinned pin. */
+  report?: PinReportContext;
 }) {
+  const reportUrl =
+    anchor && pinned && report
+      ? pinReportUrl({
+          ...report,
+          pin: { ...anchor.pin, group: anchor.group },
+        })
+      : null;
+
   return (
     <div className="surface-well rounded-md px-3 py-2.5 text-sm" aria-live="polite">
       {anchor ? (
@@ -43,6 +55,19 @@ export function PinDetails({
               {anchor.pin.label}
             </span>
             {pinned ? <CopyPinButton pin={anchor.pin} /> : null}
+            {reportUrl ? (
+              <a
+                href={reportUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Report an error in pin ${anchor.pin.position} ${anchor.pin.label} (opens GitHub in a new tab)`}
+                title="Report an error in this pin on GitHub"
+                className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded px-1.5 text-[11px] font-medium text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
+              >
+                <Flag className="size-3.5" aria-hidden="true" />
+                Report
+              </a>
+            ) : null}
             <span
               className="rounded border px-1.5 py-0.5 text-[11px] font-medium"
               style={roleChipStyle(anchor.pin.role)}
@@ -109,7 +134,7 @@ export function PinDetails({
             />
           )}
           <span className="min-w-0 truncate">
-            <span className="text-zinc-500">Mapped source · </span>
+            <span className="text-zinc-500">Verify against · </span>
             {source.label}
           </span>
           <span className="shrink-0 rounded border border-white/10 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] text-zinc-500">

@@ -115,6 +115,36 @@ for (const viewport of viewports) {
   });
 }
 
+test.describe("Raspberry Pi workbench in landscape", () => {
+  test.use({ viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true, userAgent: devices["Pixel 5"].userAgent });
+
+  // A tap's pointerdown switches the readout to that pin before the click is
+  // dispatched. When the board was centred against the readout column it slid
+  // under the finger, so the click landed on another element and the pad never
+  // pinned. The pad's page position must not depend on what the readout shows.
+  test("pads stay put while the readout changes", async ({ page }) => {
+    await page.goto("/boards/raspberry-pi-5");
+    const tab = page.getByRole("tab", { name: "Dynamic", exact: true });
+    await expect(async () => {
+      await tab.tap();
+      await expect(tab).toHaveAttribute("aria-selected", "true");
+    }).toPass();
+    const interactive = page.getByRole("region", { name: "Raspberry Pi 5 dynamic pinout", exact: true });
+    const pad = interactive.getByRole("button", { name: /^Pin 1,/ });
+    const padTop = () => pad.evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+    const empty = await padTop();
+
+    await interactive.getByRole("combobox", { name: "Select physical pin" }).selectOption({ index: 1 });
+    await expect(interactive.getByRole("button", { name: "Copy pin 1, 3V3", exact: true })).toBeVisible();
+    expect(await padTop()).toBeCloseTo(empty, 0);
+
+    await interactive.getByRole("button", { name: "Clear selection", exact: true }).tap();
+    expect(await padTop()).toBeCloseTo(empty, 0);
+    await pad.tap();
+    await expect(pad).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
 test.describe("remaining Raspberry Pi models", () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, userAgent: devices["Pixel 5"].userAgent });
   for (const id of otherModels) {

@@ -11,7 +11,8 @@ import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { countRoles, roleLabels, roleColors } from "@/components/board-visual/roles";
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
-import { classifySource } from "@/lib/source-trust";
+import { classifySource, verificationSourceFor } from "@/lib/source-trust";
+import { pinReportContextFor } from "@/lib/pin-report";
 
 /** The same source pin objects drive the board, selector, readout and schedule. */
 export function RaspberryPiPinout({ board }: { board: Board }) {
@@ -28,8 +29,9 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
   const probe = probedNet(nets, liveKey);
   const anchors = useMemo(() => [...(geometry?.anchors ?? [])].sort((a, b) => a.pin.position - b.pin.position), [geometry]);
   const roleCounts = useMemo(() => countRoles(anchors.map(({ pin }) => pin)), [anchors]);
-  const source = board.sourceLinks.find((link) => link.type === "Pinout") ?? board.sourceLinks[0];
+  const source = verificationSourceFor(board);
   const sourceInfo = source ? { ...source, provenance: classifySource(board.vendor, source.url) } : undefined;
+  const report = useMemo(() => pinReportContextFor(board), [board]);
   if (!geometry || !board.pinout) return null;
   const model = raspberryPiModel(board.id)!;
   const liveAnchor = anchors.find((anchor) => anchor.key === liveKey) ?? null;
@@ -83,7 +85,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
           <div className="pi-live-heading" aria-hidden="true">
             <span>Physical pin</span><strong>{liveAnchor ? String(liveAnchor.pin.position).padStart(2, "0") : "—"}</strong>
           </div>
-          <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} net={probe.net} netSize={probe.keys.size} />
+          <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} net={probe.net} netSize={probe.keys.size} report={report} />
           {selectedKey ? <button className="pi-clear" type="button" onClick={() => select(null)}><RotateCcw size={13} aria-hidden="true" /> Clear selection</button> : null}
 
           <div className="pi-electrical-note"><strong>{board.logicLevel}</strong><p>{model.family === "pico" ? "Check power and ADC limits in the notes below." : "GPIO is not 5 V tolerant. Power rails are separate from signal pins."}</p></div>
