@@ -11,7 +11,14 @@ export function pinToText(pin: Pin): string {
   return `Pin ${pin.position}: ${pin.label}${functions} [${roleLabels[pin.role]}]${note}`;
 }
 
-export function CopyPinButton({ pin }: { pin: Pin }) {
+export function CopyPinButton({
+  pin,
+  withLabel = false,
+}: {
+  pin: Pin;
+  /** Show a "Copy" text label beside the icon (the pin readout's action row). */
+  withLabel?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -39,13 +46,18 @@ export function CopyPinButton({ pin }: { pin: Pin }) {
       onClick={copyPin}
       aria-label={`Copy pin ${pin.position}, ${pin.label}`}
       title={copied ? "Pin copied" : "Copy this pin"}
-      className="touch-target grid size-7 shrink-0 place-items-center rounded text-zinc-600 opacity-70 transition hover:bg-white/[0.06] hover:text-cyan-100 focus-visible:opacity-100 group-hover:opacity-100"
+      className={
+        withLabel
+          ? "pin-action"
+          : "touch-target grid size-7 shrink-0 place-items-center rounded text-zinc-600 opacity-70 transition hover:bg-white/[0.06] hover:text-cyan-100 focus-visible:opacity-100 group-hover:opacity-100"
+      }
     >
       {copied ? (
         <Check className="size-3.5 text-emerald-300" aria-hidden="true" />
       ) : (
         <Copy className="size-3.5" aria-hidden="true" />
       )}
+      {withLabel ? (copied ? "Copied" : "Copy") : null}
     </button>
   );
 }

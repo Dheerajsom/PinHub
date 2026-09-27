@@ -198,6 +198,10 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           net={probe.net}
           netSize={probe.keys.size}
           report={report}
+          onClear={() => {
+            setSelectedKey(null);
+            setActiveKey(null);
+          }}
         />
       </div>
 

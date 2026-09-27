@@ -347,6 +347,7 @@ export function InspectorBody({
             netSize={probe.keys.size}
             source={source}
             report={report}
+            onClear={() => onSelect(null)}
           />
         </div>
 

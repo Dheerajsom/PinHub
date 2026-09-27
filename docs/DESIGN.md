@@ -372,3 +372,15 @@ and keyboard speed over decoration. Sections 2–4 are the layout spec,
   notes), says "Treat as not 5 V tolerant" when the record is silent, and
   shows nothing when the record describes any 5 V tolerance itself
   (`fiveVoltCaution`).
+
+## 15. Pin readout (2026-09-26)
+
+- One card for the pin under the probe (`PinDetails`, shared by every
+  readout): a "Pin" eyebrow and the role chip, the physical position in large
+  light mono beside the signal label and aliases, then the net line and any
+  orange pin note. The card's left rule uses the role hue.
+- Actions (Copy, Report, Clear) appear only for a pinned pin, in one ruled
+  row. Narrow cards (below 280 px, such as the Pi workbench sidebar) show a
+  three-up icon-over-label tray instead.
+- The Raspberry Pi workbench's logic line quotes `fiveVoltCaution`, like the
+  board page, rather than fixed copy.

@@ -123,3 +123,76 @@ reporting is a utility action, so it is neither the caution orange nor the probe
   internal `JSON.parse`, no PinHub frame) on cold compiles under parallel e2e
   load. It surfaced as one failed e2e case on the first run of two suites and
   never on a warm server. Not changed here.
+
+---
+
+# Pin readout redesign — 2026-09-26
+
+Same branch. The readout under the dynamic pin map (`PinDetails`, shared by
+all three readouts) had grown into a wrapped row of seven items: number chip,
+label, copy icon, Report, role chip, net chip, and "Pinned · Esc to clear".
+The Raspberry Pi workbench added a separate "Physical pin 08" heading, a
+separate "Clear selection" link, and a two-sentence logic note. The redesign
+keeps the same facts with less text and more space.
+
+## What changed
+
+| Piece | Before | After |
+| --- | --- | --- |
+| Identity | Number chip, label, and chips on one wrapping row; the Pi's large number sat in its own heading above the card. | One block: a "Pin" eyebrow (plus the group on grouped boards) with the role chip on the right, then the position in 32 px light mono beside the label, with aliases underneath. |
+| Role | Role chip only. | The chip plus the card's 3 px left rule in the role's `edge` hue, so the card matches the pad it describes. |
+| Aliases | "Aliases: TXD0 / …" | Mono aliases listed under the label with no prefix (screen readers hear "Also:"). They wrap as whole items, so no separator dangles. |
+| Net | Cyan-bordered chip. | A plain line with a cyan waypoints icon: "UART0 bus · 2 pins". |
+| Actions | Copy icon and Report inline with the chips; "Pinned · Esc to clear"; Pi-only "Clear selection" link below the card. | Once pinned, a ruled action row inside the card with Copy, Report, and Clear. Every readout gets Clear (`onClear`), with the accessible name "Clear selection" and the title "Clear selection (Esc)". Container query: below 280 px the row is a three-up tray with the icon over the label (52 px tall); from 280 px it is one line with Clear at the end (44 px). |
+| Empty state | "Hover, tap, or focus a pad to inspect a pin. Use arrow keys to move between pins." | A "—" numeral and "Hover, tap, or arrow to a pad to inspect it." |
+| Pi logic note | "3.3 V GPIO" heading, "GPIO is not 5 V tolerant. Power rails are separate from signal pins.", then "Verify in official documentation". | One line: a shield icon and "3.3 V GPIO · Not 5 V tolerant", followed by "Verify in official docs". |
+| Pi picker | Visible "Select a pin" label. | The select alone (`aria-label` unchanged, first option "Choose a pin…"). |
+
+## Bug fixed
+
+| Area | Finding | Change |
+| --- | --- | --- |
+| Pi logic caption | The workbench hard-coded "GPIO is not 5 V tolerant" for every non-Pico model instead of quoting the record, which breaks the rule that safety text never states more than the record does. Pico models showed "Check power and ADC limits" and no 5 V caution. All 15 current Pi records do state it, so no board showed wrong text today, but new records would have inherited the claim. | The caption uses `fiveVoltCaution(board)`, the same rule as the board page. `test/pin-details.test.tsx` renders every Pi workbench and fails on the hard-coded sentence. |
+
+## Design notes
+
+- Colors keep their meanings: the rule and chip use the role hue, cyan marks
+  only the net (the probe's color), orange marks only the shield and pin
+  notes, and the actions use neutral ink.
+- The action styles are real CSS (`.pin-action`, `.pin-readout-actions`) with
+  light-theme counterparts, not `hover:bg-white/…` utilities. The light theme
+  matches `bg-white/` as a substring, so those utilities would tint the button
+  at rest. Resting ink is Tailwind's `--color-zinc-400`, as the existing
+  report-ink e2e assertion expects. Inside the Pi workbench, `--pi-*` tokens
+  drive the ink and rules, and the new `--pi-caution` token has a light
+  value.
+- Transitions are off under `prefers-reduced-motion`.
+
+## Verification
+
+- `npm run lint`, `npm run typecheck`: clean.
+- `npm test`: 40 files, 343 tests. New `test/pin-details.test.tsx`: Clear
+  appears only when a pin is pinned and calls the handler, Copy is labelled,
+  the left rule uses the role hue, the empty state renders, and every Pi
+  workbench caption comes from `fiveVoltCaution`.
+- `npm run build`: passes. `npm run test:e2e`: 74 passed. The existing
+  workbench, landscape anchoring, and report specs cover Clear, the picker,
+  and the report link.
+- Desktop: the Pi Zero 2 W and Pi 4 workbench in both themes, and the ESP32
+  full view readout.
+- Mobile gate (mobile-mojo, production build, Playwright viewports with
+  touch): 360 × 800, 390 × 844, 412 × 915, and 844 × 390 in dark, and
+  390 × 844 and 844 × 390 in light. Journeys: Pi Zero 2 W pin 8 (picker and
+  pad), Copy, Report, and Clear; Pi 5 pin 27; Pico; ESP32 D12 (long aliases
+  and a boot-strap note); and `/pinout/esp32-devkit-v1`. Result: 205 checks
+  passed with no defects. There was no overflow, every action measured at
+  least 44 px, focus stayed visible, and the console showed no errors. In
+  landscape, the three-up tray fits the 169 px card, and pads held position
+  across readout changes. The alias wrapping change was rechecked after the
+  first pass.
+
+## Limits
+
+- The role chip keeps the existing inline `roleChipStyle`, which stays dark
+  in the light theme, as it did before.
+- Not covered: a real screen reader and a physical device.
