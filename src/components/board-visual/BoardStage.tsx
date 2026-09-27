@@ -39,6 +39,13 @@ type BoardStageProps = {
   className?: string;
   /** Board-only framing for the compact component viewer; labels live in its readout. */
   compact?: boolean;
+  /**
+   * Pads assigned by the pin planner, keyed by anchor, with the role hue of
+   * the function each carries. Planned pads get a dashed ring in that hue and
+   * the rest of the board recedes. Never the probe's cyan: the ring uses the
+   * role's lighter ink step and a dash, so the probe stays unmistakable.
+   */
+  planned?: ReadonlyMap<string, PinRole>;
 };
 
 export function BoardStage({
@@ -54,6 +61,7 @@ export function BoardStage({
   onActiveKey,
   className,
   compact = false,
+  planned,
 }: BoardStageProps) {
   const padRefs = useRef<Array<SVGGElement | null>>([]);
   const [focusIndex, setFocusIndex] = useState(0);
@@ -200,7 +208,14 @@ export function BoardStage({
             selected={anchor.key === selectedKey}
             active={anchor.key === activeKey}
             onNet={netKeys.has(anchor.key)}
-            dimmed={activeRole !== null && anchor.pin.role !== activeRole}
+            dimmed={
+              (activeRole !== null && anchor.pin.role !== activeRole) ||
+              (Boolean(planned?.size) &&
+                !planned?.has(anchor.key) &&
+                anchor.key !== activeKey &&
+                anchor.key !== selectedKey)
+            }
+            plannedRole={planned?.get(anchor.key)}
             tabIndex={index === focusIndex ? 0 : -1}
             uid={uid}
             realistic={Boolean(geometry.artworkId)}
@@ -236,6 +251,7 @@ function Pad({
   active,
   onNet,
   dimmed,
+  plannedRole,
   tabIndex,
   uid,
   realistic,
@@ -255,6 +271,7 @@ function Pad({
   active: boolean;
   onNet: boolean;
   dimmed: boolean;
+  plannedRole?: PinRole;
   tabIndex: number;
   uid: string;
   realistic?: boolean;
@@ -314,6 +331,18 @@ function Pad({
           stroke={PROBE_COLOR}
           strokeOpacity={0.45}
           strokeWidth={1.5}
+        />
+      ) : null}
+      {plannedRole ? (
+        <circle
+          className="bv-planned-ring"
+          cx={anchor.cx}
+          cy={anchor.cy}
+          r={padR + 4.5}
+          fill="none"
+          stroke={roleColors[plannedRole].ink}
+          strokeWidth={2.5}
+          strokeDasharray="3.5 2.5"
         />
       ) : null}
       {active || selected ? (

@@ -145,6 +145,15 @@ optional `note` covers per-pin caveats.
 Roles drive the colour coding and the pin-function filter, so pick the role a
 user would filter by to find that pin.
 
+## Adding pin function data (pin planner)
+
+The pin planner only plans boards whose peripheral mux is recorded from a
+machine-readable source (an SDK pin header, a core variant file, or an HTML
+pin table), pinned to a release or commit. See
+[docs/pin-planner-2026-09-26.md](docs/pin-planner-2026-09-26.md#adding-functions-data-for-a-new-board)
+for the schema, the rules, and the checklist. A board without that data is
+better left out of the planner than filled in from memory.
+
 ## Reporting a pinout error
 
 If PinHub disagrees with your hardware, that is the most important kind of

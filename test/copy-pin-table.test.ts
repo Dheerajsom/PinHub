@@ -108,12 +108,12 @@ describe("board-aware pin table exports", () => {
 
   it("gives boards that share a connector map distinct CSV filenames", () => {
     const pi4 = byId("raspberry-pi-4-model-b");
-    const pi5 = byId("raspberry-pi-5");
-    expect(pi4.pinout).toBe(pi5.pinout);
+    const zero = byId("raspberry-pi-zero-2-w");
+    expect(pi4.pinout).toBe(zero.pinout);
     expect(pinExportFilename(pi4.pinout!, pi4)).not.toBe(
-      pinExportFilename(pi5.pinout!, pi5),
+      pinExportFilename(zero.pinout!, zero),
     );
-    expect(pinExportFilename(pi5.pinout!, pi5)).toMatch(/^raspberry-pi-5-.+\.csv$/);
+    expect(pinExportFilename(zero.pinout!, zero)).toMatch(/^raspberry-pi-zero-2-w-.+\.csv$/);
   });
 
   it("prefers an official pinout reference over other sources", () => {

@@ -384,3 +384,20 @@ and keyboard speed over decoration. Sections 2–4 are the layout spec,
   three-up icon-over-label tray instead.
 - The Raspberry Pi workbench's logic line quotes `fiveVoltCaution`, like the
   board page, rather than fixed copy.
+
+## 16. Pin planner (2026-09-26)
+
+- A full-width "Plan pins" section on the board page and under the full
+  pinout sheet, never in the catalog detail panel: the panel is too narrow
+  for a stepper grid, results table, and export preview without pushing the
+  pin map out of view.
+- Planned pads get a dashed ring in the function's role hue, drawn with the
+  role's lighter `ink` step, and the rest of the board recedes. The probe
+  keeps its solid cyan ring, so "planned" and "probed" never look alike (the
+  I2C role `edge` and the probe share `#22d3ee`, so the ring must not use
+  `edge`).
+- Results are a Geist Mono table. "default" (the source's default pin) and
+  "routed" (placed through a GPIO matrix) are neutral zinc chips. Every
+  caution is an orange row quoting the source.
+- A board without source-backed pin functions shows one neutral line and the
+  data-error report link, never a guessed plan.

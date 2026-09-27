@@ -1,3 +1,15 @@
+import {
+  esp32DevKitCFunctionData,
+  esp32DevKitCFunctionTable,
+  picoFunctionData,
+  picoFunctionTable,
+  raspberryPi5FunctionData,
+  raspberryPi5FunctionTable,
+  unoRev3FunctionData,
+  unoRev3FunctionTable,
+  withPinFunctions,
+} from "./pin-function-data";
+
 export type BoardCategory =
   | "SBC"
   | "Microcontroller"
@@ -45,6 +57,88 @@ export type Pin = {
   role: PinRole;
   aliases?: string[];
   note?: string;
+  /**
+   * The chip's own name for this pin, as its SDK or core names it. Recorded
+   * explicitly (never derived from the silkscreen label) so exports and the
+   * pin planner name pins the way the source does.
+   */
+  mcu?: PinMcu;
+  /** Peripheral signals this pin can carry, each backed by `pinFunctions.sources`. */
+  functions?: PinFunction[];
+  /** Hardware risks a source states for this pin; each has a quoted note. */
+  flags?: PinFlag[];
+};
+
+/** Peripherals the pin planner can assign. */
+export type PinPeripheral = "I2C" | "SPI" | "UART" | "PWM" | "ADC" | "DAC" | "CAN";
+
+export type PinFunction = {
+  peripheral: PinPeripheral;
+  /** Controller, timer, or converter as the source names it: "I2C0", "SPI1", "PWM3", "ADC1". */
+  instance: string;
+  /**
+   * The signal on that instance: SDA/SCL, SCK/MOSI/MISO/CS (or CS0, CS1…),
+   * TX/RX, a PWM output such as A/B or CH2, or an ADC/DAC channel such as CH3.
+   */
+  signal: string;
+  /** The source names this pin as the default for this signal. */
+  default?: true;
+};
+
+export type PinFlag =
+  | "strapping"
+  | "boot"
+  | "onboard-led"
+  | "usb"
+  | "input-only"
+  | "adc-unavailable-with-wifi"
+  | "module-memory"
+  | "jtag";
+
+export type PinMcu = {
+  /** GPIO or port-pin name as the chip's SDK writes it: "GPIO4", "PD2". */
+  name: string;
+  /** Numeric id, only where the SDK addresses pins by number (pico-sdk, ESP-IDF, Linux GPIO). */
+  gpio?: number;
+  /** Arduino core pin name, only where the board's core variant file defines it. */
+  arduino?: string;
+};
+
+/** A peripheral a GPIO matrix can route to any capable pin. */
+export type RoutablePeripheral = {
+  peripheral: PinPeripheral;
+  /** Instances in preference order, as the source names them. */
+  instances: string[];
+  /**
+   * The signals each instance carries. For PWM, each entry is an independent
+   * channel (any one of them serves one PWM output).
+   */
+  signals: string[];
+};
+
+export type PinPlanExportFormat = "c-header" | "micropython" | "arduino" | "json";
+
+/** Board-level data behind `Pin.functions`, `Pin.flags`, and `Pin.mcu`. */
+export type PinFunctionData = {
+  /** The exact machine-readable files or pages the pin data was taken from. */
+  sources: SourceLink[];
+  mux: {
+    /**
+     * "fixed": each signal is available only on the pins its functions list.
+     * "matrix": a GPIO matrix can route `routable` peripherals to any capable
+     * pin; functions still pin down fixed signals (ADC, DAC) and defaults.
+     */
+    model: "fixed" | "matrix";
+    /** Quoted from the sources, shown with every plan for this board. */
+    note: string;
+    routable?: RoutablePeripheral[];
+  };
+  /** The source's wording for each flag used on this board, shown as the caution. */
+  flagNotes: Partial<Record<PinFlag, string>>;
+  /** Export formats whose pin naming this data supports. */
+  exports: PinPlanExportFormat[];
+  /** MicroPython bus ids by instance, where the MicroPython port defines them. */
+  micropythonBusIds?: Record<string, number>;
 };
 
 export type PinoutGroup = {
@@ -86,6 +180,8 @@ export type Board = {
   warnings: string[];
   sourceLinks: SourceLink[];
   pinout?: Pinout;
+  /** Peripheral mux data for the pin planner, on boards whose sources support it. */
+  pinFunctions?: PinFunctionData;
 };
 
 const raspberryPi40Pin: Pinout = {
@@ -5381,7 +5477,8 @@ const baseBoards: Board[] = [
         type: "Datasheet",
       },
     ],
-    pinout: raspberryPi40Pin,
+    pinout: withPinFunctions(raspberryPi40Pin, raspberryPi5FunctionTable),
+    pinFunctions: raspberryPi5FunctionData,
   },
   {
     id: "raspberry-pi-4-model-b",
@@ -5492,7 +5589,8 @@ const baseBoards: Board[] = [
         type: "Pinout",
       },
     ],
-    pinout: picoPinout,
+    pinout: withPinFunctions(picoPinout, picoFunctionTable),
+    pinFunctions: picoFunctionData,
   },
   {
     id: "arduino-uno-r4-wifi",
@@ -5652,7 +5750,8 @@ const baseBoards: Board[] = [
         type: "Docs",
       },
     ],
-    pinout: esp32DevKitCHeaders,
+    pinout: withPinFunctions(esp32DevKitCHeaders, esp32DevKitCFunctionTable),
+    pinFunctions: esp32DevKitCFunctionData,
   },
   {
     id: "stm32-nucleo-f401re",
@@ -7456,7 +7555,8 @@ const additionalBoards: Board[] = [
         type: "Datasheet",
       },
     ],
-    pinout: arduinoUnoHeaders,
+    pinout: withPinFunctions(arduinoUnoHeaders, unoRev3FunctionTable),
+    pinFunctions: unoRev3FunctionData,
   },
   {
     id: "arduino-pro-mini",
