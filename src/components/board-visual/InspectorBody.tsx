@@ -19,7 +19,8 @@ import {
 } from "@/components/board-visual/PinoutTable";
 import { countRoles } from "@/components/board-visual/roles";
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
-import { classifySource } from "@/lib/source-trust";
+import { classifySource, verificationSourceFor } from "@/lib/source-trust";
+import { pinReportContextFor } from "@/lib/pin-report";
 import { CopyPinTable } from "@/components/CopyPinTable";
 
 // Shared drawing + readout + schedule layout used by both the Inspect modal and
@@ -76,10 +77,10 @@ export function InspectorBody({
       }),
     [connector, explorerCategories, explorerQuery, geometry.anchors],
   );
+  // The same document "Before you wire" says to verify against, so the pin
+  // readout, the board panel, and a filed report all cite one source.
   const source = useMemo<PinoutSource | undefined>(() => {
-    const link =
-      board.sourceLinks.find((item) => item.type === "Pinout") ??
-      board.sourceLinks[0];
+    const link = verificationSourceFor(board);
     return link
       ? {
           ...link,
@@ -87,6 +88,7 @@ export function InspectorBody({
         }
       : undefined;
   }, [board]);
+  const report = useMemo(() => pinReportContextFor(board), [board]);
   const clearExplorerFilters = useCallback(() => {
     setExplorerQuery("");
     setExplorerCategories([]);
@@ -344,6 +346,8 @@ export function InspectorBody({
             net={probe.net}
             netSize={probe.keys.size}
             source={source}
+            report={report}
+            onClear={() => onSelect(null)}
           />
         </div>
 

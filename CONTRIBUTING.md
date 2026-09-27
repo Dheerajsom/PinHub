@@ -148,7 +148,12 @@ user would filter by to find that pin.
 ## Reporting a pinout error
 
 If PinHub disagrees with your hardware, that is the most important kind of
-issue you can file. Please include:
+issue you can file. The fastest route is the **Report** link in the app: click
+or tap a pin on any interactive pin map to select it, then choose **Report**, or
+use **Report a data error** under "Before you wire" for a board-level problem.
+Either opens the [pin data error form](https://github.com/Dheerajsom/PinHub/issues/new?template=pin-data-error.yml)
+with the board, pin, connector, and cited source already filled in. However you
+file it, please include:
 
 1. The board id or URL (for example `/pinout/raspberry-pi-5`)
 2. The specific pin and what PinHub currently says

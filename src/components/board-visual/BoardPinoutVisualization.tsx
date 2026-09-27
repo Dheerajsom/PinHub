@@ -17,6 +17,7 @@ import { PinoutTable } from "@/components/board-visual/PinoutTable";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
 import { countRoles } from "@/components/board-visual/roles";
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
+import { pinReportContextFor } from "@/lib/pin-report";
 
 export function BoardPinoutVisualization({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
@@ -42,6 +43,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const nets = useBoardNets(geometry?.anchors);
   const liveKey = activeKey ?? selectedKey;
   const probe = probedNet(nets, liveKey);
+  const report = useMemo(() => pinReportContextFor(board), [board]);
 
   if (!board.pinout || !geometry) {
     return (
@@ -195,6 +197,11 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           pinned={selectedKey !== null}
           net={probe.net}
           netSize={probe.keys.size}
+          report={report}
+          onClear={() => {
+            setSelectedKey(null);
+            setActiveKey(null);
+          }}
         />
       </div>
 

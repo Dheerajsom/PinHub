@@ -1,0 +1,88 @@
+name: Pin data error
+description: Report a wrong pin label, role, position, alias, hardware warning, or source link in the PinHub catalog.
+title: "Pin data: "
+labels: ["data-error"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for checking PinHub against your hardware. A wrong pin can damage a board, so these reports come first.
+
+        If you opened this form from a **Report** link in PinHub, the board, pin, connector, and cited source are already filled in. Check them, then describe what is wrong.
+
+  # Field ids are part of PinHub's prefill contract (src/lib/pin-report.ts).
+  # GitHub fills a field from the URL query parameter with the same id, and a
+  # unit test fails if an id the app sends is missing here. Rename both
+  # together.
+  - type: input
+    id: board
+    attributes:
+      label: Board id
+      description: The PinHub board id, as it appears in the page URL.
+      placeholder: raspberry-pi-5
+    validations:
+      required: true
+
+  - type: input
+    id: pin
+    attributes:
+      label: Pin
+      description: Physical position and label. Leave empty when the problem concerns the whole board.
+      placeholder: "12 · GPIO18"
+
+  - type: input
+    id: connector
+    attributes:
+      label: Connector
+      description: The header or connector the pin belongs to.
+      placeholder: J8 40-pin GPIO header
+
+  - type: dropdown
+    id: problem
+    attributes:
+      label: What is wrong?
+      options:
+        - Wrong label
+        - Wrong role
+        - Wrong position
+        - Wrong or missing alias
+        - Missing or wrong hardware warning
+        - Broken or wrong source link
+        - Revision/variant difference
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Correct value
+      description: What PinHub should say instead. If it differs between board revisions, say which revision each value applies to.
+    validations:
+      required: true
+
+  - type: input
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        A link to an official datasheet, schematic, or vendor pinout that shows
+        the correct value. Label third-party sources as third-party (for example
+        "third-party: CircuitPython pins.c"). If you measured it on hardware and
+        have no document, describe the measurement here instead.
+      placeholder: https://
+    validations:
+      required: true
+
+  - type: input
+    id: revision
+    attributes:
+      label: Your board revision
+      description: The revision or variant printed on your board's silkscreen, if you know it.
+      placeholder: Rev 1.0
+
+  - type: input
+    id: pinhub_source
+    attributes:
+      label: Source PinHub cites
+      description: The document PinHub currently links for this pin map. Filled in automatically from the Report link.

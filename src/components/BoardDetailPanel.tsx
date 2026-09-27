@@ -21,6 +21,7 @@ import { BoardActions } from "@/components/BoardActions";
 import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { fiveVoltCaution, revisionNotesFor } from "@/lib/board-utilities";
+import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
 
 export type DetailState =
   | { status: "ready"; board: Board }
@@ -186,6 +187,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         warnings={board.warnings}
         verifySource={verifySource}
         verifySourceOfficial={verifySourceOfficial}
+        reportUrl={pinReportUrl(pinReportContextFor(board))}
         collapseAfter={3}
       />
 

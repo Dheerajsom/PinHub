@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { ArrowUpRight, BadgeCheck, ShieldAlert } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Flag, ShieldAlert } from "lucide-react";
 import { clsx } from "clsx";
 import type { SourceLink } from "@/lib/boards";
 
@@ -10,6 +10,8 @@ type WiringCautionsProps = {
   /** The single most useful source for checking the physical map. */
   verifySource?: SourceLink;
   verifySourceOfficial?: boolean;
+  /** Pre-filled GitHub issue for reporting a data error on this board. */
+  reportUrl?: string | null;
   /**
    * Show only this many warnings until expanded. Omit to always list every
    * warning (the standalone board page has the room; the catalog's side panel
@@ -29,6 +31,7 @@ export function WiringCautions({
   warnings,
   verifySource,
   verifySourceOfficial = false,
+  reportUrl,
   collapseAfter,
   className,
 }: WiringCautionsProps) {
@@ -41,7 +44,7 @@ export function WiringCautions({
       : warnings.length;
   const hidden = warnings.length - limit;
 
-  if (!warnings.length && !verifySource) return null;
+  if (!warnings.length && !verifySource && !reportUrl) return null;
 
   return (
     <section
@@ -108,7 +111,10 @@ export function WiringCautions({
           // `relative` gives the visually hidden suffix a containing block
           // inside the link; without it that absolutely positioned text sat
           // past the truncated label and widened the page on phones.
-          className="ph-cautions-verify group relative flex min-h-12 items-center justify-between gap-3 rounded-b-xl border-t px-4 py-2.5 text-sm transition"
+          className={clsx(
+            "ph-cautions-verify group relative flex min-h-12 items-center justify-between gap-3 border-t px-4 py-2.5 text-sm transition",
+            !reportUrl && "rounded-b-xl",
+          )}
         >
           <span className="min-w-0">
             <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-orange-200/80">
@@ -137,6 +143,29 @@ export function WiringCautions({
               className="size-4 text-orange-200/70 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-orange-100"
               aria-hidden="true"
             />
+          </span>
+        </a>
+      ) : null}
+
+      {/* The next step when the verify source disagrees with the map. A
+          neutral utility action: it is neither a caution nor the probe. */}
+      {reportUrl ? (
+        <a
+          href={reportUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ph-cautions-report relative flex min-h-11 items-center gap-2 rounded-b-xl border-t px-4 py-2 text-xs text-zinc-400 transition hover:text-white"
+        >
+          <Flag className="size-3.5 shrink-0" aria-hidden="true" />
+          <span className="min-w-0">
+            Report a data error
+            <span className="sr-only"> on GitHub (opens in a new tab)</span>
+          </span>
+          <span
+            className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500"
+            aria-hidden="true"
+          >
+            GitHub
           </span>
         </a>
       ) : null}
