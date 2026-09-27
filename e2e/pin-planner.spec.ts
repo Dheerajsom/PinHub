@@ -18,6 +18,23 @@ async function setCount(section: Locator, peripheral: string, target: number) {
 }
 
 test.describe("pin planner", () => {
+  test("a phone reaches the planner from the catalog panel", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Show Raspberry Pi Pico details", exact: true }).click();
+    const panel = page.getByRole("complementary").filter({
+      has: page.getByRole("heading", { name: "Raspberry Pi Pico", exact: true }),
+    });
+    const open = panel.getByRole("link", { name: /Open full board page/ });
+    await expect(open).toContainText("Plan pins for your circuit");
+    const box = await open.boundingBox();
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+
+    await open.click();
+    await expect(page).toHaveURL(/\/boards\/raspberry-pi-pico#plan$/);
+    await expect(await planner(page)).toBeInViewport();
+  });
+
   test("builds a Pico plan, shares it by URL, highlights it, and exports it", async ({ page, context }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     const errors: string[] = [];

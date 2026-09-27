@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import {
+  ArrowRight,
   ArrowUp,
   ArrowUpRight,
   BadgeCheck,
@@ -116,6 +118,31 @@ export function BoardDetailPanel({
     </>
   );
 }
+/**
+ * The catalog panel is a preview; the pin planner and the rest of the board
+ * reference live on the board page. Only boards with source-backed pin
+ * functions are promised a planner, and they land on it directly.
+ */
+function FullBoardPageLink({ board }: { board: Board }) {
+  const plannable = Boolean(board.pinFunctions && board.pinout);
+  return (
+    <Link
+      href={plannable ? `/boards/${board.id}#plan` : `/boards/${board.id}`}
+      className="mt-2 flex min-h-11 items-center sm:max-w-sm justify-between gap-3 rounded-lg border border-white/10 bg-[#15181f] px-3 py-2 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white"
+    >
+      <span className="min-w-0">
+        <span className="block font-medium">Open full board page</span>
+        {plannable ? (
+          <span className="block text-xs leading-5 text-zinc-500">
+            Plan pins for your circuit
+          </span>
+        ) : null}
+      </span>
+      <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
+    </Link>
+  );
+}
+
 function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   const verifySource = verificationSourceFor(board);
   const verifySourceOfficial = verifySource
@@ -174,6 +201,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           </dl>
           <div className="mt-4 border-t border-white/10 pt-4">
             <BoardActions board={board} />
+            <FullBoardPageLink board={board} />
           </div>
         </div>
       </section>

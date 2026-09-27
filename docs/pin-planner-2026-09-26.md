@@ -286,6 +286,18 @@ outline. Export code blocks scroll inside their own box, as intended.
 Not covered: planner flows on the ESP32, UNO, and Pi 5 at phone sizes
 (desktop and e2e coverage only), and screen-reader testing.
 
-Open question: the catalog's inline `BoardDetailPanel` has no planner and
-no link to `/boards/[id]` or `/pinout/[id]`, so the planner cannot be
-reached from the catalog's main browsing flow.
+Follow-up (resolved 2026-09-27): the catalog's inline `BoardDetailPanel`
+had no planner and no link to `/boards/[id]`, so the planner could not be
+reached from the catalog's main browsing flow. The panel now has an "Open
+full board page" link under its action toolbar. For boards with pin
+function data it goes to `/boards/[id]#plan` and adds "Plan pins for your
+circuit"; other boards get the plain board page link and no planner
+promise. Covered by `test/board-detail-panel.test.tsx` and the phone case
+in `e2e/pin-planner.spec.ts`.
+
+While verifying it, `a board without pin function data` in
+`e2e/pin-planner.spec.ts` failed 3 of 6 runs on `main` against the dev
+server (`Unexpected end of JSON input` while compiling
+`/boards/raspberry-pi-4-model-b`). It passed 6 of 6 with one worker and
+10 of 10 against the production build, so it is a dev-server compile race
+under parallel workers, not an app bug. Filed as a separate task.
