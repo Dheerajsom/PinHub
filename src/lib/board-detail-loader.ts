@@ -1,4 +1,10 @@
 import type { Board } from "@/lib/boards";
+import {
+  isPinFlagList,
+  isPinFunctionData,
+  isPinFunctionList,
+  isPinMcu,
+} from "@/lib/pin-function-schema";
 import { isSafeExternalUrl } from "@/lib/source-trust";
 
 const boardCategories = new Set([
@@ -88,6 +94,9 @@ type PayloadPin = {
   role: string;
   aliases?: string[];
   note?: string;
+  mcu?: unknown;
+  functions?: unknown;
+  flags?: unknown;
 };
 
 function isPin(value: unknown): value is PayloadPin {
@@ -102,7 +111,24 @@ function isPin(value: unknown): value is PayloadPin {
     pinRoles.has(value.role) &&
     (value.aliases === undefined || isCleanStringArray(value.aliases)) &&
     (value.note === undefined ||
-      (typeof value.note === "string" && value.note.trim().length > 0))
+      (typeof value.note === "string" && value.note.trim().length > 0)) &&
+    (value.mcu === undefined || isPinMcu(value.mcu)) &&
+    (value.functions === undefined || isPinFunctionList(value.functions)) &&
+    (value.flags === undefined || isPinFlagList(value.flags))
+  );
+}
+
+function hasPlannerFields(pinout: unknown): boolean {
+  if (!isRecord(pinout)) return false;
+  const pins: unknown[] = isRecord(pinout.pins)
+    ? [pinout.pins.left, pinout.pins.right].flat()
+    : Array.isArray(pinout.groups)
+      ? pinout.groups.flatMap((group) => (isRecord(group) && Array.isArray(group.pins) ? group.pins : []))
+      : [];
+  return pins.some(
+    (pin) =>
+      isRecord(pin) &&
+      (pin.mcu !== undefined || pin.functions !== undefined || pin.flags !== undefined),
   );
 }
 
@@ -228,7 +254,11 @@ export function isBoardPayload(value: unknown, expectedId: string): value is Boa
     return false;
   }
 
-  return value.pinout === undefined || isPinout(value.pinout);
+  if (value.pinout !== undefined && !isPinout(value.pinout)) return false;
+  // Planner fields on pins are only meaningful with the board-level sources
+  // that back them; a record carrying one without the other is malformed.
+  if (value.pinFunctions === undefined) return !hasPlannerFields(value.pinout);
+  return value.pinout !== undefined && isPinFunctionData(value.pinFunctions);
 }
 
 /**

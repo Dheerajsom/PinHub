@@ -13,6 +13,7 @@ import {
 import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { SiteHeader } from "@/components/SiteHeader";
+import { PinPlannerSection } from "@/components/planner/PinPlannerSection";
 
 // Standalone, full-viewport pinout sheet served at /pinout/[id]. Built for the
 // dense expansion headers whose drawings are cramped inside the catalog's narrow
@@ -160,6 +161,9 @@ export function PinoutFullView({ board }: { board: Board }) {
                 activeCategories={activeCategories}
                 onActiveCategoriesChange={setActiveCategories}
               />
+            </div>
+            <div className="mt-5">
+              <PinPlannerSection board={board} />
             </div>
           </div>
         ) : (

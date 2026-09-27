@@ -26,6 +26,7 @@ import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WiringCautions } from "@/components/WiringCautions";
 import { InterfaceChip } from "@/components/InterfaceChip";
+import { PinPlannerSection } from "@/components/planner/PinPlannerSection";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -228,6 +229,10 @@ export default async function BoardPage({
               </ul>
             </section>
           ) : null}
+        </div>
+
+        <div className="mt-5">
+          <PinPlannerSection board={board} />
         </div>
 
         {related.length ? (
