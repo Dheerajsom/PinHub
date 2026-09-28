@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expectColor } from "./color";
 
 async function planner(page: Page): Promise<Locator> {
   const section = page.getByRole("region", { name: "Pin planner" });
@@ -96,7 +97,7 @@ test.describe("pin planner", () => {
       ["light", "rgb(154, 52, 18)"],
     ] as const) {
       await page.locator("html").evaluate((element, value) => element.setAttribute("data-theme", value), theme);
-      await expect(status).toHaveCSS("color", color);
+      await expectColor(status, color);
     }
   });
 

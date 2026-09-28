@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { boards } from "../src/lib/boards";
 import { verificationSourceFor } from "../src/lib/source-trust";
+import { expectColor } from "./color";
 
 const pi5 = boards.find((board) => board.id === "raspberry-pi-5")!;
 const pi5Source = verificationSourceFor(pi5)!.url;
@@ -62,8 +63,7 @@ for (const theme of ["dark", "light"] as const) {
       expect(query.get("connector")).toBe(pi5.pinout!.connector);
       expect(query.get("pinhub_source")).toBe(pi5Source);
       await expectExternalLink(report);
-      // toHaveCSS retries while the theme's colour transitions settle.
-      await expect(report).toHaveCSS("color", reportInk[theme]);
+      await expectColor(report, reportInk[theme]);
       expect(errors).toEqual([]);
     });
 
@@ -79,7 +79,7 @@ for (const theme of ["dark", "light"] as const) {
       expect(boardQuery.has("pin")).toBe(false);
       expect(boardQuery.get("pinhub_source")).toBe(pi5Source);
       await expectExternalLink(boardReport);
-      await expect(boardReport).toHaveCSS("color", reportInk[theme]);
+      await expectColor(boardReport, reportInk[theme]);
 
       const workbench = page.getByRole("region", { name: "Raspberry Pi 5 dynamic pinout" });
       const dynamicTab = page.getByRole("tab", { name: "Dynamic", exact: true });

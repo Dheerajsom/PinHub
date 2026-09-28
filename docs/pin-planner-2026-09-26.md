@@ -301,3 +301,24 @@ server (`Unexpected end of JSON input` while compiling
 `/boards/raspberry-pi-4-model-b`). It passed 6 of 6 with one worker and
 10 of 10 against the production build, so it is a dev-server compile race
 under parallel workers, not an app bug. Filed as a separate task.
+
+Follow-up (resolved 2026-09-27): Web CI had been red since the pin error
+report merge, with every failure in `npm run test:e2e`. Two causes:
+
+- Exact `lab()` colour strings. Chrome on Linux serializes the dark-theme
+  inks with different float noise than Chrome on Windows
+  (`lab(94.7127 3.58394 14.3151)` against the recorded `3.58391`). The
+  checks in `pin-planner.spec.ts` and `pin-reports.spec.ts` now use
+  `e2e/color.ts`, which compares channels numerically within 0.01. A
+  throwaway probe confirmed it accepts that drift and still rejects a
+  different colour.
+- The dev-server compile race above. CI now runs Playwright against the
+  production build it already makes (`next start`); local runs keep
+  `next dev`. That also covers the pinned-pin report test on
+  `/pinout/raspberry-pi-5`, which timed out on every CI attempt but has
+  never failed locally. No CI trace existed to confirm its cause, so the
+  workflow now uploads `test-results/` on failure (seven-day retention).
+
+Verified: lint, typecheck, `npm test` (459), build, and `CI=1` e2e with
+two workers against `next start` (79 of 79, no retries, 43 s), plus the
+edited specs against `next dev` (10 of 10).
