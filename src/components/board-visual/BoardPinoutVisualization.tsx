@@ -18,6 +18,7 @@ import { InspectorBody } from "@/components/board-visual/InspectorBody";
 import { countRoles } from "@/components/board-visual/roles";
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 import { pinReportContextFor } from "@/lib/pin-report";
+import { serializePinoutState } from "@/lib/pinout-state";
 
 export function BoardPinoutVisualization({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
@@ -44,6 +45,8 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const liveKey = activeKey ?? selectedKey;
   const probe = probedNet(nets, liveKey);
   const report = useMemo(() => pinReportContextFor(board), [board]);
+  const linkState = serializePinoutState({ role: activeRole, pin: selectedKey }, new Set(geometry?.anchors.map((anchor) => anchor.key)), new Set(geometry?.anchors.map((anchor) => anchor.pin.role)));
+  const fullViewHref = `/pinout/${board.id}${linkState ? `?${linkState}` : ""}`;
 
   if (!board.pinout || !geometry) {
     return (
@@ -109,7 +112,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             Inspect
           </button>
           <a
-            href={`/pinout/${board.id}`}
+            href={fullViewHref}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open the ${board.name} pinout in a new tab`}
@@ -174,7 +177,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
           Dense header — open{" "}
           <a
-            href={`/pinout/${board.id}`}
+            href={fullViewHref}
             target="_blank"
             rel="noopener noreferrer"
             className="font-medium underline underline-offset-2 hover:text-cyan-100"

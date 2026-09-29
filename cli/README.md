@@ -83,6 +83,8 @@ node dist/cli.js rpi5
 
 ```bash
 ph <board>            # render one board's pinout
+ph pico sda           # show recorded SDA matches only
+ph rpi5 --role spi    # show pins whose recorded role is SPI
 ph list               # list the complete catalog
 ph search <query>     # search names, aliases, and manufacturers
 ph info <board>       # show description, warnings, headers, and aliases
@@ -95,6 +97,12 @@ ph --version          # show the installed version
 Names are case-insensitive and forgiving. For example, `ph rpi5`, `ph pi5`,
 `ph raspberry-pi-5`, and `ph raspberry pi 5` resolve to the same board. If a
 query does not match, `ph` suggests the closest entries.
+
+Pin lookup matches recorded labels, aliases, roles, and derived nets; it does
+not infer unrecorded alternate functions. Matching rows include the physical
+position, connector group, role, net, and available pin notes or flags.
+Use `--json` for matching records or `--ascii`, `--compact`, and `--width`
+for terminal formatting. An unmatched signal returns a clear error.
 
 Compatibility notes:
 

@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Search, X } from "lucide-react";
-import type { Board, PinRole } from "@/lib/boards";
+import type { Board } from "@/lib/boards";
+import { usePinoutUrlState } from "@/components/board-visual/usePinoutUrlState";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { InspectorBody } from "@/components/board-visual/InspectorBody";
 import {
@@ -20,9 +21,12 @@ import { PinPlannerSection } from "@/components/planner/PinPlannerSection";
 // detail column, but works for every board with a pin map.
 export function PinoutFullView({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const { state, update } = usePinoutUrlState(geometry?.anchors ?? []);
+  const selectedKey = state.pin;
+  const setSelectedKey = (pin: string | null) => update({ ...state, pin });
   const [activeKey, setActiveKey] = useState<string | null>(null);
-  const [activeRole, setActiveRole] = useState<PinRole | null>(null);
+  const activeRole = state.role;
+  const setActiveRole = (role: typeof activeRole) => { setActiveKey(null); update({ role, pin: null }); };
   const [query, setQuery] = useState("");
   const [activeCategories, setActiveCategories] = useState<
     PinoutFilterCategory[]

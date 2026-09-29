@@ -41,8 +41,8 @@
   },
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "generate:boards": "tsx scripts/generate-boards.ts",
-    "check:boards": "tsx scripts/generate-boards.ts --check",
+    "generate:boards": "tsx --tsconfig ../tsconfig.json scripts/generate-boards.ts",
+    "check:boards": "tsx --tsconfig ../tsconfig.json scripts/generate-boards.ts --check",
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "lint": "eslint .",
