@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { boards } from "@/lib/boards";
 import { PinoutFullView } from "@/components/board-visual/PinoutFullView";
@@ -51,5 +52,5 @@ export default async function PinoutPage({
   const { id } = await params;
   const board = boards.find((b) => b.id === id);
   if (!board) notFound();
-  return <PinoutFullView board={board} />;
+  return <Suspense fallback={<p className="p-4 text-sm">Loading pinout…</p>}><PinoutFullView board={board} /></Suspense>;
 }

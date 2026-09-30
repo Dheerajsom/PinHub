@@ -458,6 +458,11 @@ button {
   }
 }
 
+.touch-target.pin-role-control {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+}
+
 :focus-visible {
   outline: 2px solid rgba(103, 232, 249, 0.7);
   outline-offset: 2px;

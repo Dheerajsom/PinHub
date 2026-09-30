@@ -19,6 +19,9 @@ import {
   safeTerminalValue,
 } from "./render/text.js";
 import { hasNoColor, isCiEnvironment } from "./status.js";
+import { pinIndex } from "./boards/pin-index.js";
+import { matchesPin, pinQueryTokens, pinRoles } from "./pin-match.js";
+import { renderPinLookup } from "./render/pin-lookup.js";
 
 export type RunOptions = {
   /** Override detected terminal width (defaults to stdout columns or 80). */
@@ -36,6 +39,7 @@ export type RunResult = {
 };
 
 type DiagramFlags = {
+  role?: string;
   compact?: boolean;
   ascii?: boolean;
   color?: boolean;
@@ -147,6 +151,19 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
   };
 
   const showBoard = (words: string[], flags: DiagramFlags) => {
+    const tokens = pinQueryTokens(words.join(" "));
+    const fullBoard = resolveBoard(tokens.join(" "));
+    const term = flags.role ?? (!fullBoard && tokens.length > 1 ? tokens.at(-1) : undefined);
+    if (term !== undefined) {
+      if (flags.source || flags.details) { printErr("Pin lookup cannot be combined with --source or --details."); code = 1; return; }
+      if (flags.role && (!pinRoles.some((role) => role === flags.role) || flags.role.length > 32)) { printErr("Unknown pin role."); code = 1; return; }
+      const board = resolveOrSuggest(flags.role ? tokens : tokens.slice(0, -1));
+      if (!board) return;
+      const pins = (pinIndex.find((entry) => entry.id === board.id)?.pins ?? []).filter((pin) => flags.role ? pin.role === term : matchesPin(pin, term));
+      if (!pins.length) { printErr(`No recorded pins match "${displayQuery(term)}" on ${safeTerminalValue(board.name)}.`); code = 1; return; }
+      print(flags.json ? JSON.stringify(pins, null, 2) : renderPinLookup(board.name, pins, buildRender(flags)));
+      return;
+    }
     const board = resolveOrSuggest(words);
     if (!board) return;
     if (flags.json) {
@@ -162,6 +179,11 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
     flags: DiagramFlags,
     scope: "single-board" | "multi-board",
   ): boolean => {
+    if (scope === "multi-board" && flags.role) {
+      printErr("`--role` needs one board. Use `ph <board> --role <role>`.");
+      code = 1;
+      return true;
+    }
     if (scope === "multi-board" && flags.source) {
       printErr("`--source` needs one board. Use `ph <board> --source`.");
       code = 1;
@@ -218,6 +240,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
     .option("--no-color", "disable ANSI colors (the NO_COLOR env var is also honored)")
     .option("--no-motion", "disable the interactive signal pulse")
     .option("--details", "show additional alternate pin functions")
+    .option("--role <role>", "show pins with a recorded role (e.g. spi, i2c, pwm)")
     .option("--json", "emit machine-readable JSON")
     .option("--source", "print documentation source links for one board")
     .option(
@@ -279,6 +302,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
     .action((words: string[]) => {
       const flags = program.opts<DiagramFlags>();
       if (rejectIncompatibleFlags(flags, "single-board")) return;
+      if (flags.role) { showBoard(words, flags); return; }
       const board = resolveOrSuggest(words);
       if (!board) return;
       if (flags.json) {

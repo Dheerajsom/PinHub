@@ -44,6 +44,7 @@ import { useCatalogResults } from "@/components/catalog/useCatalogResults";
 import { FavoriteLimitToast, useFavoriteToggle } from "@/components/catalog/useFavoriteToggle";
 import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
 import { CatalogHeader } from "@/components/catalog/CatalogHeader";
+import { PinLookupAnswer } from "@/components/catalog/PinLookupAnswer";
 import {
   isDesktopCatalogLayout,
   useDesktopCatalogLayout,
@@ -743,6 +744,7 @@ export function PinHubApp({
           aria-label="Board results"
         >
           <FavoriteLimitToast message={favoriteMessage} />
+          <PinLookupAnswer query={query} search={boardSearchEntries} />
           <div className="mb-2 flex items-center justify-between gap-3 px-0.5">
             <span
               className="font-mono text-xs tabular-nums text-zinc-400"
