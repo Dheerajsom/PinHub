@@ -49,10 +49,10 @@ test("board detail and comparison prices update through one shared feed per page
   const feed = await mockPrices(page);
   await page.goto("/boards/raspberry-pi-5");
   await expect.poll(feed.requests, { timeout: 15_000 }).toBeGreaterThan(0);
-  await expect(page.getByText("$120.00 · Adafruit", { exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("link", { name: /Board price Adafruit \$120\.00/ })).toBeVisible({ timeout: 15_000 });
   feed.update();
   await page.clock.fastForward(60_000);
-  await expect(page.getByText("$119.00 · Adafruit", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Board price Adafruit \$119\.00/ })).toBeVisible();
   await page.goto("/compare?boards=raspberry-pi-5,raspberry-pi-pico");
   await expect(page.getByRole("link", { name: "$119.00 at Adafruit (opens in a new tab)", exact: true }).last()).toBeVisible();
   // Two comparison layouts plus all time labels share a single browser request.

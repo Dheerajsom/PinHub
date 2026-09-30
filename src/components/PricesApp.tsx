@@ -41,14 +41,13 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
     <div className="mx-auto max-w-[1560px] px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-5 flex flex-col justify-between gap-3 lg:flex-row lg:items-end">
         <div>
-          <div className="mb-2 hidden font-mono text-xs uppercase tracking-[0.14em] text-amber-200 sm:block">Board buying reference</div>
-          <h1 className="brand-title text-2xl leading-tight text-white sm:text-3xl">Prices &amp; availability</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">Popular boards. Exact variants. A direct route to the pins.</p>
+                    <h1 className="brand-title text-2xl leading-tight text-white sm:text-3xl">Prices &amp; availability</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">Checked US listings for the exact board variant, each linked to its pin map.</p>
         </div>
-        <div className="border-l-2 border-amber-300/60 pl-3 text-xs leading-5 text-zinc-400">
+        <div className="ph-price-rule pl-3 text-xs leading-5 text-zinc-400">
           <div className="font-medium text-zinc-200">US stores · USD · one board</div>
           <div>Shipping and tax excluded.</div>
-          <a href="#price-notes" className="inline-flex min-h-6 items-center text-amber-200 underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
+          <a href="#price-notes" className="ph-price-ink inline-flex min-h-6 items-center underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
         </div>
       </div>
 
@@ -131,9 +130,9 @@ function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
         <h2><Link href={`/boards/${listing.boardId}`} className="inline-flex min-h-11 items-center text-base font-semibold leading-6 text-white hover:text-cyan-200">{listing.name}</Link></h2>
         <p className="text-xs leading-5 text-zinc-400">{listing.variant}</p>
       </div>
-      <div className="price-amount min-w-0 border-l-2 border-amber-300/40 pl-3">
+      <div className="price-amount ph-price-rule min-w-0 pl-3">
         <div className="text-[10px] uppercase tracking-wider text-zinc-400">{freshness === "fresh" ? "Listed price" : "Reference price"} · USD</div>
-        <div className="mt-1 font-mono text-2xl font-medium tabular-nums tracking-tight text-amber-100">{formatPrice(listing)}</div>
+        <div className="mt-1 ph-price-ink font-mono text-2xl font-medium tabular-nums tracking-tight">{formatPrice(listing)}</div>
         {listing.stock === "out-of-stock" && recentStock ? <div className="mt-1 text-[11px] text-zinc-400">Unavailable at check</div> : null}
       </div>
       <div className="price-seller min-w-0 text-xs leading-5">
@@ -147,7 +146,7 @@ function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
       </div>
       <div className="price-actions flex gap-2 lg:flex-col">
         <a href={listing.url} target="_blank" rel="noopener noreferrer" aria-label={`View ${listing.name} at ${listing.retailer} (opens in a new tab)`}
-          className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg border border-amber-300/30 bg-amber-300/10 px-3 text-xs font-medium text-amber-100 transition hover:border-amber-300/60 hover:bg-amber-300/20">View store <ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
+          className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 ph-price-button rounded-lg px-3 text-xs font-medium transition">View store <ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
         <Link href={`/pinout/${listing.boardId}`} aria-label={`Pinout for ${listing.name}`} className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 px-3 text-xs text-cyan-200 transition hover:bg-white/[0.05]"><CircuitBoard className="size-3.5" aria-hidden="true" /> Pinout</Link>
       </div>
     </li>

@@ -184,7 +184,7 @@ export function DiscoveryApp({
               className="transition duration-500 group-hover:rotate-6 group-hover:scale-110"
             />
             <div className="min-w-0">
-              <h1 className="brand-title bg-gradient-to-r from-white via-cyan-200 to-amber-200 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
+              <h1 className="brand-title text-2xl leading-none text-white sm:text-3xl">
                 PinHub
               </h1>
               <p className="mt-1 truncate text-xs text-zinc-400 sm:text-sm">
@@ -428,7 +428,7 @@ function BoardCard({
   index: number;
 }) {
   return (
-    <article className="discovery-card group relative overflow-hidden rounded-xl border border-white/10 bg-[#14161d] p-4 shadow-[0_14px_34px_-24px_rgba(0,0,0,0.9)] transition duration-300 hover:-translate-y-0.5 hover:border-cyan-300/35 hover:bg-[#171b22]" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}>
+    <article className="discovery-card group relative overflow-hidden rounded-xl border border-white/10 bg-[#14161d] p-4 shadow-[0_14px_34px_-24px_rgba(0,0,0,0.9)] transition hover:border-cyan-300/35 hover:bg-[#171b22]" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}>
       <div className="flex items-start gap-3">
         <VendorLogo vendor={board.vendor} size={30} />
         <div className="min-w-0 flex-1">

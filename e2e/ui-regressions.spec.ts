@@ -40,7 +40,7 @@ test("dark-theme muted labels use the accessible contrast token", async ({ page 
   );
 });
 
-test("light-theme price navigation uses readable amber ink", async ({ page }) => {
+test("light-theme price navigation uses readable green ink", async ({ page }) => {
   await page.goto("/");
   await page.locator("html").evaluate((element) => {
     element.setAttribute("data-theme", "light");
@@ -48,7 +48,7 @@ test("light-theme price navigation uses readable amber ink", async ({ page }) =>
   await expect(
     page.getByRole("navigation", { name: "PinHub sections" })
       .getByRole("link", { name: "Prices", exact: true }),
-  ).toHaveCSS("color", "rgb(133, 77, 14)");
+  ).toHaveCSS("color", "rgb(22, 101, 52)");
 });
 
 test("pinout SVG definitions have unique IDs", async ({ page }) => {

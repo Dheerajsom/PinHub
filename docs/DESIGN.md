@@ -107,6 +107,7 @@ The first screen **is** the catalog. No hero, no marketing copy.
 | trust | emerald-400 | data present / official provenance |
 | caution | orange-300 | warnings, verify affordances |
 | favorite | amber-300 | the one deliberately loud control |
+| price | green-300 `#86efac` | board cost (`.ph-price-*`), kept apart from emerald |
 | text | white / zinc-200 / zinc-400 / zinc-500 | 4-step hierarchy |
 
 Pin-role colors are a separate 13-hue scale (power red, ground zinc, GPIO
@@ -401,3 +402,19 @@ and keyboard speed over decoration. Sections 2–4 are the layout spec,
   caution is an orange row quoting the source.
 - A board without source-backed pin functions shows one neutral line and the
   data-error report link, never a guessed plan.
+
+## 17. Cautions, prices, and finish (2026-09-30)
+
+- **Before you wire** drops its orange leading-edge rule. The panel is a
+  neutral opaque surface with zinc-200 body text at 14 px; orange marks only
+  the hazard parts: a warm header band, a diamond bullet per caution, the
+  count chip, and the border.
+- **Board price** is green, the colour of what a board costs, distinct from
+  the bluer emerald of official sources. The card reads like a shelf tag: a
+  "Board price" eyebrow and the retailer on one line, the amount in large
+  Geist Mono beside the variant, and a perforated (dashed) rule above a single
+  "Last checked" line (USD and tax terms live on the Prices page). The Prices nav link, price amounts, and "View store"
+  buttons use the same green.
+- **Finish**: no gradient-filled wordmarks, no glowing dots or coloured
+  bloom shadows, no hover lifts on rows and chips, and an opaque command bar
+  (no backdrop blur). Selection is a flat tint plus the cyan border.

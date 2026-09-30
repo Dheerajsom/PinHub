@@ -16,13 +16,9 @@ export function CatalogHeader({
 }: CatalogHeaderProps) {
   return (
     <header className="ph-header relative overflow-hidden pt-[env(safe-area-inset-top)]">
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent"
-        aria-hidden="true"
-      />
       <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="relative grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-[#0e1118] shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] sm:size-14">
+          <div className="relative grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-[#0e1118] sm:size-14">
             <Image
               src="/pinhub-logo.png"
               alt=""
@@ -34,7 +30,7 @@ export function CatalogHeader({
             />
           </div>
           <div className="min-w-0">
-            <h1 className="brand-title bg-gradient-to-b from-white via-zinc-100 to-zinc-400 bg-clip-text text-2xl leading-none text-transparent sm:text-3xl">
+            <h1 className="brand-title text-2xl leading-none text-white sm:text-3xl">
               PinHub
             </h1>
             <p className="mt-1 truncate text-xs text-zinc-400 sm:text-[13px]">
@@ -69,7 +65,7 @@ function GitHubButton() {
     >
       <svg
         viewBox="0 0 24 24"
-        className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:text-cyan-200"
+        className="size-5 shrink-0"
         fill="currentColor"
         aria-hidden="true"
       >
@@ -82,7 +78,7 @@ function GitHubButton() {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col-reverse rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-right transition hover:border-cyan-300/25">
+    <div className="flex flex-col-reverse rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-right">
       <dt className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500">
         {label}
       </dt>

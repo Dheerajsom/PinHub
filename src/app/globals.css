@@ -1,35 +1,37 @@
 @import "tailwindcss";
 
 /* A paper release sticker; normal flow keeps it clear of card names and tools. */
-.ph-render-sticker {
-  position: relative;
+/* Rows whose board has the drawn, interactive diagram. A plain labelled chip
+   in the row's own ink: it states a fact about the data, not a promotion. */
+.ph-render-chip {
   display: inline-flex;
-  flex-direction: column;
-  align-items: center;
   flex-shrink: 0;
-  margin: 5px 4px 7px auto;
-  padding: 5px 14px 7px;
-  border: 2px solid #fff8cf;
-  border-radius: 6px 7px 13px 5px;
-  background: linear-gradient(165deg, #fff09b, #f5d65f 75%, #d6b244);
-  color: #302a13;
-  box-shadow: 1px 3px 0 #00000024, 2px 5px 9px #00000030, inset 0 1px #ffffffb3;
-  transform: rotate(-6deg);
-  line-height: 1.15;
-  text-align: center;
+  align-self: flex-start;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 3px 7px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 5px;
+  color: #a7f3d0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
-.ph-render-sticker > span { font-size: 10px; font-weight: 600; }
-.ph-render-sticker > strong { font-size: 12px; font-weight: 750; letter-spacing: -0.02em; }
-.ph-render-sticker::after {
+.ph-render-chip::before {
   content: "";
-  position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 12px;
-  height: 12px;
-  border-radius: 2px 0 10px 0;
-  background: linear-gradient(135deg, #b99a39 0%, #fff9dc 48%, #d2b859 51%, #eed574 100%);
-  box-shadow: -1px -1px 2px #7b602833;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background-color: #34d399;
+}
+:root[data-theme="light"] .ph-render-chip {
+  border-color: rgba(4, 120, 87, 0.35);
+  color: #065f46;
+}
+:root[data-theme="light"] .ph-render-chip::before {
+  background-color: #059669;
 }
 
 /* Pin readout (PinDetails): the pin's role hue rules the left edge, and the
@@ -864,9 +866,6 @@ button {
 
 .ph-commandbar {
   background-color: var(--panel);
-  background-color: color-mix(in srgb, var(--panel) 90%, transparent);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--panel-border);
 }
 
@@ -883,7 +882,6 @@ button {
   border-color: rgba(103, 232, 249, 0.65);
   box-shadow:
     0 0 0 1px rgba(103, 232, 249, 0.35),
-    0 0 24px -6px rgba(34, 211, 238, 0.45),
     inset 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
@@ -891,7 +889,6 @@ button {
   border-color: rgba(8, 145, 178, 0.6);
   box-shadow:
     0 0 0 1px rgba(8, 145, 178, 0.25),
-    0 0 20px -8px rgba(8, 145, 178, 0.5),
     inset 0 1px 2px rgba(23, 32, 42, 0.06);
 }
 
@@ -958,60 +955,223 @@ button {
   border-color: rgba(154, 52, 18, 0.3);
 }
 
-/* "Before you wire" panel: the caution surface, marked by a solid orange rule
-   on its leading edge so it reads as a hazard notice at a glance, even in a
-   narrow column. The verify link is its footer, on a slightly deeper well. */
+/* "Before you wire" panel. A neutral, opaque panel so the cautions read as
+   body text, not text on a brown slab. Orange marks only the hazard parts:
+   a warm header band, the diamond bullets, and the border. There is no
+   leading-edge rule; the header band identifies the panel at a glance. */
 .ph-cautions {
-  background-color: #1b1410;
-  border: 1px solid rgba(253, 186, 116, 0.3);
-  box-shadow:
-    inset 3px 0 0 rgba(253, 186, 116, 0.85),
-    0 1px 2px rgba(0, 0, 0, 0.4);
+  background-color: #15171c;
+  border: 1px solid rgba(251, 146, 60, 0.26);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.ph-cautions-head {
+  background-color: #1c1713;
+  border-bottom: 1px solid rgba(251, 146, 60, 0.16);
+}
+
+.ph-cautions-icon {
+  color: #fdba74;
+}
+
+.ph-cautions-count {
+  border: 1px solid rgba(251, 146, 60, 0.3);
+  color: #fed7aa;
+}
+
+.ph-cautions-text {
+  color: #e4e4e7;
+}
+
+/* A small hazard diamond, centred on the first line of each caution. */
+.ph-cautions-mark {
+  width: 6px;
+  height: 6px;
+  margin-top: 0.56rem;
+  transform: rotate(45deg);
+  background-color: #fb923c;
+}
+
+.ph-cautions-more {
+  color: #fdba74;
+}
+
+.ph-cautions-more:hover {
+  color: #ffedd5;
 }
 
 .ph-cautions-verify {
-  border-color: rgba(253, 186, 116, 0.2);
-  background-color: #150f0b;
+  border-color: rgba(255, 255, 255, 0.08);
+  background-color: #111318;
 }
 
 .ph-cautions-verify:hover {
-  background-color: #22170f;
+  background-color: #181b21;
+}
+
+.ph-cautions-eyebrow {
+  color: #fdba74;
 }
 
 :root[data-theme="light"] .ph-cautions {
-  background-color: #fff7ed;
-  border-color: rgba(154, 52, 18, 0.3);
-  box-shadow:
-    inset 3px 0 0 #c2410c,
-    0 1px 2px rgba(23, 32, 42, 0.08);
+  background-color: #ffffff;
+  border-color: rgba(194, 65, 12, 0.28);
+  box-shadow: 0 1px 2px rgba(23, 32, 42, 0.08);
+}
+
+:root[data-theme="light"] .ph-cautions-head {
+  background-color: #fff4ea;
+  border-bottom-color: rgba(194, 65, 12, 0.16);
+}
+
+:root[data-theme="light"] :is(.ph-cautions-icon, .ph-cautions-eyebrow, .ph-cautions-more) {
+  color: #b43d0b;
+}
+
+:root[data-theme="light"] .ph-cautions-more:hover {
+  color: #7c2d12;
+}
+
+:root[data-theme="light"] .ph-cautions-count {
+  border-color: rgba(194, 65, 12, 0.3);
+  color: #9a3412;
+}
+
+:root[data-theme="light"] .ph-cautions-text {
+  color: #1f2937;
+}
+
+:root[data-theme="light"] .ph-cautions-mark {
+  background-color: #c2410c;
 }
 
 :root[data-theme="light"] .ph-cautions-verify {
-  border-color: rgba(154, 52, 18, 0.2);
-  background-color: #ffedd5;
+  border-color: rgba(23, 32, 42, 0.1);
+  background-color: #f7f8fa;
 }
 
 :root[data-theme="light"] .ph-cautions-verify:hover {
-  background-color: #fed7aa;
+  background-color: #eef1f4;
 }
 
-/* "Report a data error": the panel's last row. It shares the caution surface
-   and rule but stays neutral ink, because reporting is a utility action, not a
-   hazard. */
+/* "Report a data error": the panel's last row, neutral ink, because
+   reporting is a utility action, not a hazard. */
 .ph-cautions-report {
-  border-color: rgba(253, 186, 116, 0.2);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .ph-cautions-report:hover {
-  background-color: #22170f;
+  background-color: #181b21;
 }
 
 :root[data-theme="light"] .ph-cautions-report {
-  border-color: rgba(154, 52, 18, 0.2);
+  border-color: rgba(23, 32, 42, 0.1);
 }
 
 :root[data-theme="light"] .ph-cautions-report:hover {
-  background-color: #ffedd5;
+  background-color: #eef1f4;
+}
+
+/* Prices: green is the colour of what a board costs, kept apart from the
+   bluer emerald that marks official sources and present data. */
+.ph-price-ink {
+  color: #86efac;
+}
+
+:root[data-theme="light"] .ph-price-ink {
+  color: #166534;
+}
+
+.ph-price-nav:hover {
+  color: #bbf7d0;
+  background-color: rgba(74, 222, 128, 0.08);
+}
+
+:root[data-theme="light"] .ph-price-nav:hover {
+  color: #14532d;
+  background-color: rgba(22, 163, 74, 0.1);
+}
+
+.ph-price-rule {
+  border-left: 2px solid rgba(74, 222, 128, 0.45);
+}
+
+:root[data-theme="light"] .ph-price-rule {
+  border-left-color: rgba(22, 128, 61, 0.5);
+}
+
+.ph-price-button {
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  background-color: rgba(74, 222, 128, 0.08);
+  color: #bbf7d0;
+}
+
+.ph-price-button:hover {
+  border-color: rgba(74, 222, 128, 0.6);
+  background-color: rgba(74, 222, 128, 0.15);
+}
+
+:root[data-theme="light"] .ph-price-button {
+  border-color: rgba(22, 128, 61, 0.35);
+  background-color: #effaf2;
+  color: #14532d;
+}
+
+:root[data-theme="light"] .ph-price-button:hover {
+  border-color: rgba(22, 128, 61, 0.6);
+  background-color: #dcf5e3;
+}
+
+/* Board price card: a shelf tag. The amount leads in mono, the retailer sits
+   opposite it, and a perforated rule separates the price from its terms. */
+.ph-price-card {
+  background-color: #111a15;
+  border: 1px solid rgba(74, 222, 128, 0.26);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.ph-price-card:hover {
+  border-color: rgba(74, 222, 128, 0.5);
+  background-color: #14201a;
+}
+
+.ph-price-eyebrow {
+  color: #4ade80;
+}
+
+.ph-price-perf {
+  border-top: 1px dashed rgba(74, 222, 128, 0.25);
+}
+
+.ph-price-arrow {
+  color: #4ade80;
+  transition: transform 0.15s ease;
+}
+
+.ph-price-card:hover .ph-price-arrow {
+  transform: translateX(2px);
+}
+
+:root[data-theme="light"] .ph-price-card {
+  background-color: #f3fbf5;
+  border-color: rgba(22, 128, 61, 0.3);
+  box-shadow: 0 1px 2px rgba(23, 32, 42, 0.08);
+}
+
+:root[data-theme="light"] .ph-price-card:hover {
+  border-color: rgba(22, 128, 61, 0.55);
+  background-color: #e8f7ed;
+}
+
+:root[data-theme="light"] :is(.ph-price-eyebrow, .ph-price-arrow) {
+  color: #15803d;
+}
+
+:root[data-theme="light"] .ph-price-perf {
+  border-top-color: rgba(22, 128, 61, 0.3);
 }
 
 /* Datasheet-style key characteristics: one ruled table instead of four
@@ -1053,7 +1213,6 @@ button {
 }
 
 .ph-row:hover {
-  transform: translateY(-1px);
   background-color: #191d26;
 }
 
@@ -1071,20 +1230,15 @@ button {
 }
 
 .ph-row-selected {
-  background:
-    linear-gradient(180deg, rgba(103, 232, 249, 0.07), transparent 42%),
-    #212734;
+  background-color: #1b2029;
 }
 
 :root[data-theme="light"] .ph-row-selected {
-  background:
-    linear-gradient(180deg, rgba(8, 145, 178, 0.12), transparent 46%),
-    #ffffff;
+  background: #f0f8fb;
   border-color: rgba(8, 145, 178, 0.45);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 1px 2px rgba(23, 32, 42, 0.1),
-    0 16px 34px -20px rgba(8, 145, 178, 0.4);
+    0 1px 2px rgba(23, 32, 42, 0.1);
 }
 
 .ph-quick-chip {
@@ -1095,9 +1249,7 @@ button {
     transform 0.15s ease;
 }
 
-.ph-quick-chip:hover {
-  transform: translateY(-1px);
-}
+
 
 .ph-quick-chip:active {
   transform: translateY(0) scale(0.98);

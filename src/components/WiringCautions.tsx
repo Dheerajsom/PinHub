@@ -51,18 +51,16 @@ export function WiringCautions({
       aria-labelledby={headingId}
       className={clsx("ph-cautions min-w-0 rounded-xl", className)}
     >
-      <div className="flex items-center gap-2.5 px-4 pt-3.5">
-        <span className="grid size-7 shrink-0 place-items-center rounded-md border border-orange-300/30 bg-orange-400/10">
-          <ShieldAlert className="size-3.5 text-orange-200" aria-hidden="true" />
-        </span>
+      <div className="ph-cautions-head flex min-h-11 items-center gap-2 rounded-t-[11px] px-4 py-2.5">
+        <ShieldAlert className="ph-cautions-icon size-4 shrink-0" aria-hidden="true" />
         <h2
           id={headingId}
-          className="text-[13px] font-semibold tracking-tight text-white"
+          className="text-sm font-semibold tracking-tight text-white"
         >
           Before you wire
         </h2>
         {warnings.length ? (
-          <span className="ml-auto rounded-full bg-orange-400/10 px-2 py-0.5 font-mono text-[10px] tabular-nums text-orange-200">
+          <span className="ph-cautions-count ml-auto rounded px-1.5 py-0.5 font-mono text-[11px] tabular-nums">
             {warnings.length} {warnings.length === 1 ? "caution" : "cautions"}
           </span>
         ) : null}
@@ -71,14 +69,11 @@ export function WiringCautions({
       {warnings.length ? (
         <ul
           id={listId}
-          className="mt-2.5 space-y-2 px-4 text-[13px] leading-6 text-zinc-300"
+          className="ph-cautions-text space-y-2.5 px-4 pt-3 text-sm leading-6"
         >
           {warnings.slice(0, limit).map((warning) => (
             <li key={warning} className="flex gap-2.5">
-              <span
-                className="mt-[0.6rem] h-px w-2.5 shrink-0 bg-orange-300/80"
-                aria-hidden="true"
-              />
+              <span className="ph-cautions-mark shrink-0" aria-hidden="true" />
               <span className="min-w-0">{warning}</span>
             </li>
           ))}
@@ -92,7 +87,7 @@ export function WiringCautions({
             onClick={() => setExpanded((value) => !value)}
             aria-expanded={expanded}
             aria-controls={listId}
-            className="mt-1.5 inline-flex min-h-11 items-center text-xs font-medium text-orange-200 underline-offset-4 transition hover:text-orange-50 hover:underline"
+            className="ph-cautions-more mt-1 inline-flex min-h-11 items-center text-xs font-medium underline-offset-4 transition hover:underline"
           >
             {expanded
               ? "Show fewer cautions"
@@ -117,7 +112,7 @@ export function WiringCautions({
           )}
         >
           <span className="min-w-0">
-            <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-orange-200/80">
+            <span className="ph-cautions-eyebrow block text-[10px] font-semibold uppercase tracking-[0.14em]">
               Verify against
             </span>
             <span className="mt-0.5 block truncate font-medium text-zinc-100">
@@ -140,7 +135,7 @@ export function WiringCautions({
               </span>
             )}
             <ArrowUpRight
-              className="size-4 text-orange-200/70 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-orange-100"
+              className="size-4 text-zinc-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white"
               aria-hidden="true"
             />
           </span>

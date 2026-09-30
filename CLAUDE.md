@@ -5,6 +5,14 @@ files cannot drift apart. Everything below adds to them; nothing overrides them.
 
 @AGENTS.md
 
+## Branches, never worktrees (strict)
+
+- **Never create a git worktree.** Do not run `git worktree add`, do not use
+  worktree isolation for subagents, and do not call worktree tools. This rule
+  has no exceptions.
+- Work in this checkout. When work needs isolation, create a new **branch**
+  here (`git switch -c <branch>` from an up-to-date `main`) and work on it.
+
 ## Change workflow
 
 Follow these steps, in order, for any refactor, bug fix, security fix, or UI/UX
@@ -13,6 +21,7 @@ needs no design pass).
 
 1. **Branch.** Work on `main` unless the user names a branch. When they do,
    create it from an up-to-date `main` (`git fetch` first) and push only there.
+   Always a branch in this checkout, never a worktree (see above).
 2. **Baseline.** Before editing, run `npm run lint`, `npm run typecheck`, and
    `npm test` so any failure you see later is known to be yours.
 3. **Review before changing.** Read the affected routes, components, and
@@ -41,7 +50,8 @@ needs no design pass).
    - Opaque, lightly raised surfaces (`.surface-panel`, `.surface-well`); no
      translucent glass or `backdrop-blur` on widgets. Keep `CircuitBackground`.
    - Color encodes meaning only: cyan = interaction/selection, orange =
-     hardware caution, emerald = official/present, amber = favorites/prices.
+     hardware caution, emerald = official/present, green = prices (the
+     `.ph-price-*` classes), amber = favorites and older-check notes.
      Pin-role hues come from `board-visual/roles.ts`, and cyan `#22d3ee`
      belongs to the pin probe alone.
    - Geist for UI, Geist Mono for anything an engineer might transcribe,

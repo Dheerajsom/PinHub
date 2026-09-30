@@ -554,7 +554,7 @@ export function PinHubApp({
             className={clsx(
               "fav-button inline-flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-xs font-semibold leading-none",
               showFavoritesOnly
-                ? "bg-gradient-to-b from-amber-300 to-amber-400 text-zinc-950"
+                ? "bg-amber-300 text-zinc-950"
                 : "bg-amber-400/10 text-amber-200 hover:bg-amber-400/20 hover:text-amber-50",
             )}
           >

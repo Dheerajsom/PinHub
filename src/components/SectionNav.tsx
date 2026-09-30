@@ -17,9 +17,9 @@ export function SectionNav({ current, className }: { current: string; className?
           <Link key={href} href={href} aria-current={active ? "page" : undefined}
             className={clsx("inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition",
               active
-                ? "bg-cyan-300/12 text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.35)]"
+                ? "bg-cyan-300/10 text-cyan-100 ring-1 ring-inset ring-cyan-300/35"
                 : href === "/prices"
-                  ? "text-amber-200 hover:bg-amber-300/10 hover:text-amber-100"
+                  ? "ph-price-ink ph-price-nav"
                   : "text-zinc-500 hover:bg-white/[0.06] hover:text-white")}>
             <Icon className="size-3.5" aria-hidden="true" />{label}
           </Link>

@@ -61,7 +61,7 @@ export function FilterPanel({
           {title}
         </span>
         {active !== "All" ? (
-          <span className="ml-auto size-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.8)]" aria-hidden="true" />
+          <span className="ml-auto size-1.5 rounded-full bg-cyan-300" aria-hidden="true" />
         ) : null}
       </div>
       <div className="flex flex-wrap gap-1.5 lg:flex-col lg:gap-0.5">
@@ -132,7 +132,7 @@ export function FilterSelect({
           {title}
         </span>
         {hasValue ? (
-          <span className="ml-auto size-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.8)]" aria-hidden="true" />
+          <span className="ml-auto size-1.5 rounded-full bg-cyan-300" aria-hidden="true" />
         ) : null}
       </span>
       <select
@@ -188,7 +188,7 @@ export const BoardResult = memo(function BoardResult({
       className={clsx(
         "ph-row ph-card-in group relative rounded-xl border [contain-intrinsic-block-size:9rem] [content-visibility:auto]",
         selected
-          ? "ph-row-selected border-cyan-300/40 shadow-[inset_0_1px_0_rgba(103,232,249,0.14),0_2px_4px_rgba(0,0,0,0.5),0_18px_44px_-18px_rgba(34,211,238,0.35)]"
+          ? "ph-row-selected border-cyan-300/40 shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
           : "border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] hover:border-cyan-300/25",
       )}
     >
@@ -265,10 +265,7 @@ export const BoardResult = memo(function BoardResult({
             </div>
           </div>
           {raspberryPiModel(board.id) ? (
-            <span className="ph-render-sticker">
-              <span>New</span>
-              <strong>Dynamic render</strong>
-            </span>
+            <span className="ph-render-chip">Board diagram</span>
           ) : null}
         </div>
 
