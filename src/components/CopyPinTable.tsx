@@ -7,6 +7,7 @@ import type { Board, Pin, Pinout, SourceLink } from "@/lib/boards";
 import { roleLabels } from "@/components/board-visual/roles";
 import { siteUrl } from "@/lib/site";
 import { classifySource } from "@/lib/source-trust";
+import { csvCell } from "@/lib/csv";
 
 /**
  * The board an exported table belongs to. Connector maps are shared between
@@ -120,19 +121,6 @@ export function pinoutToMarkdown(pinout: Pinout, board?: PinExportBoard): string
     : [];
 
   return [...header, ...rows, ...notes, ...provenance].join("\n");
-}
-
-function csvCell(value: string): string {
-  const flattened = value.replace(/[\r\n]+/g, " ");
-  // Spreadsheet applications interpret cells beginning with these markers as
-  // formulas, even in a quoted CSV field. Prefix a text marker so pin labels
-  // such as "+3.3V" remain literal and future catalog text cannot become an
-  // executable spreadsheet expression.
-  const literal =
-    /^[ \t]*[=+\-@]/.test(flattened) || flattened.startsWith("\t")
-      ? `'${flattened}`
-      : flattened;
-  return `"${literal.replace(/"/g, '""')}"`;
 }
 
 export function pinoutToCsv(pinout: Pinout, board?: PinExportBoard): string {

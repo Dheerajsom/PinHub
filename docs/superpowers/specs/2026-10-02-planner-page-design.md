@@ -202,3 +202,26 @@ filter, and caution lookup.
 - Plans are not saved anywhere but the URL.
 - `main` does not yet contain the wiring sheet; merging that branch later
   will conflict in `/boards/[id]/page.tsx` where the planner section was.
+
+## As built (2026-10-02)
+
+Where the build differs from the text above:
+
+- **Render.** Instead of a `schematic` flag on the board drawing, the planner
+  has its own geometry (`buildBoardGeometry(board, { sheet: true })`): a
+  connector chart for two-row connectors, and the usual pad positions on a
+  flat outline for other layouts. The first attempt, the generic board
+  drawing without Pi artwork, still drew invented components and left 40-pin
+  headers too small to pick a pad from.
+- **Claim names on the drawing.** A claimed pad keeps its catalog label. The
+  claim name shows in the readout, the table, and the exports.
+- **`use=` format.** Tokens are `<anchorKey>~<name>` joined by `,` (anchor
+  keys contain `:`, and names can contain `.`), with no extra encoding beyond
+  `URLSearchParams`.
+- **Picker data.** The page passes the ids of boards with pin functions
+  (`autoAssignIds`) beside the catalog summaries; `BoardSummary` and the
+  `/api/boards` index are unchanged.
+- **Editor.** Sticks to the bottom of the window rather than sitting under the
+  drawing, and closes after Claim or Release.
+- **Links.** "Plan pins on this board" is its own link under the board
+  actions, in the full view, and in the catalog panel.

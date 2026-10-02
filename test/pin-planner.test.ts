@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boards, type Board } from "@/lib/boards";
+import { boards, type Board, type Pin } from "@/lib/boards";
 import {
   normalizePlanRequirements,
   planCapabilities,
@@ -295,5 +295,38 @@ describe("determinism, bounds, and support", () => {
     expect(planCapabilities(board("arduino-uno-rev3")).map((item) => item.peripheral)).toEqual([
       "I2C", "SPI", "UART", "PWM", "ADC", "GPIO",
     ]);
+  });
+});
+
+function allPins(target: Board): Pin[] {
+  const pinout = target.pinout!;
+  return pinout.pins
+    ? [...pinout.pins.left, ...pinout.pins.right]
+    : (pinout.groups ?? []).flatMap((group) => group.pins);
+}
+
+describe("excluded pins", () => {
+  const pico = board("raspberry-pi-pico");
+
+  it("never assigns a pin the user already claimed", () => {
+    const taken = new Set(ok(planPins(pico, { I2C: 1 })).map((item) => item.pin));
+    const second = ok(planPins(pico, { I2C: 1 }, undefined, taken));
+    expect(second).toHaveLength(2);
+    for (const item of second) expect(taken.has(item.pin)).toBe(false);
+  });
+
+  it("shrinks what the board can supply", () => {
+    const adcPins = new Set(
+      allPins(pico).filter((pin) => pin.functions?.some((item) => item.peripheral === "ADC")),
+    );
+    expect(planCapabilities(pico).some((item) => item.peripheral === "ADC")).toBe(true);
+    expect(planCapabilities(pico, adcPins).some((item) => item.peripheral === "ADC")).toBe(false);
+    expect(planCapabilities(pico, new Set(allPins(pico)))).toEqual([]);
+  });
+
+  it("gives the same plan with no exclusion as before", () => {
+    expect(planPins(pico, { SPI: 1, PWM: 2 }, undefined, new Set())).toEqual(
+      planPins(pico, { SPI: 1, PWM: 2 }),
+    );
   });
 });

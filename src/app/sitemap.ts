@@ -10,6 +10,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: new URL("/planner", siteUrl).toString(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: new URL("/compare", siteUrl).toString(),
       changeFrequency: "monthly",
       priority: 0.7,

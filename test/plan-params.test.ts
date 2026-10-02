@@ -1,10 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+  boardFromSearch,
+  claimsFromSearch,
   maxPlanParamLength,
   parsePlanParam,
+  parseUseParam,
   planFromSearch,
   searchWithPlan,
+  searchWithPlanner,
   serializePlan,
+  serializeUse,
 } from "@/lib/plan-params";
 
 describe("plan URL parameter", () => {
@@ -39,5 +44,57 @@ describe("plan URL parameter", () => {
     expect(searchWithPlan("?x=1&plan=i2c1", { SPI: 1 })).toBe("?x=1&plan=spi1");
     expect(searchWithPlan("?plan=i2c1", {})).toBe("");
     expect(searchWithPlan("", { UART: 1, GPIO: 3 })).toBe("?plan=uart1.gpio3");
+  });
+});
+
+describe("planner board and claims parameters", () => {
+  const keys = new Set(["pL:0", "pL:1", "pR:0"]);
+
+  it("accepts only board-id-shaped values", () => {
+    expect(boardFromSearch("?board=raspberry-pi-pico")).toBe("raspberry-pi-pico");
+    expect(boardFromSearch("?board=../etc")).toBeNull();
+    expect(boardFromSearch("?board=Raspberry")).toBeNull();
+    expect(boardFromSearch("")).toBeNull();
+  });
+
+  it("parses claims, dropping unknown keys and repeats", () => {
+    expect(parseUseParam("pL:0~OLED SDA,pR:0~,zz:9~nope,pL:0~again", keys)).toEqual([
+      { key: "pL:0", name: "OLED SDA" },
+      { key: "pR:0", name: "" },
+    ]);
+  });
+
+  it("filters and bounds names", () => {
+    expect(parseUseParam(`pL:1~<script>${"x".repeat(60)}`, keys)).toEqual([
+      { key: "pL:1", name: `script${"x".repeat(18)}` },
+    ]);
+  });
+
+  it("rejects oversized input and caps the claim count", () => {
+    expect(parseUseParam(`pL:0~${"a".repeat(3000)}`, keys)).toEqual([]);
+    const many = new Set(Array.from({ length: 100 }, (_, index) => `g0:${index}`));
+    const value = [...many].map((key) => `${key}~`).join(",");
+    expect(parseUseParam(value, many)).toHaveLength(64);
+    expect(parseUseParam(null, keys)).toEqual([]);
+  });
+
+  it("round-trips through the search string and keeps other parameters", () => {
+    const claims = [
+      { key: "pL:0", name: "OLED SDA" },
+      { key: "pR:0", name: "" },
+    ];
+    const search = searchWithPlanner("?board=raspberry-pi-pico&x=1", { I2C: 1 }, claims);
+    const params = new URLSearchParams(search);
+    expect(params.get("board")).toBe("raspberry-pi-pico");
+    expect(params.get("x")).toBe("1");
+    expect(params.get("plan")).toBe("i2c1");
+    expect(claimsFromSearch(search, keys)).toEqual(claims);
+    expect(searchWithPlanner(search, {}, [])).toBe("?board=raspberry-pi-pico&x=1");
+  });
+
+  it("applies the same limits when writing", () => {
+    const claims = Array.from({ length: 100 }, (_, index) => ({ key: `g0:${index}`, name: "n" }));
+    expect(serializeUse(claims).split(",")).toHaveLength(64);
+    expect(serializeUse([{ key: "pL:0", name: "a~b,c" }])).toBe("pL:0~abc");
   });
 });

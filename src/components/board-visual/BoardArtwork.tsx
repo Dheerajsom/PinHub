@@ -66,6 +66,68 @@ export function BoardArtwork({
     );
   }
 
+  // The planner's sheet: the outline and the connector bodies, flat, plus the
+  // builder's connector designators. No components, copper, or connectors.
+  if (geometry.plain) {
+    return (
+      <g aria-hidden="true">
+        <rect
+          x={body.x}
+          y={body.y}
+          width={body.w}
+          height={body.h}
+          rx={body.rx ?? 14}
+          fill="#0f141b"
+          stroke="#ffffff"
+          strokeOpacity={0.1}
+          strokeWidth={1.5}
+        />
+        {headerZones.map((zone, index) => (
+          <rect
+            key={`zone-${index}`}
+            x={zone.x}
+            y={zone.y}
+            width={zone.w}
+            height={zone.h}
+            rx={zone.rx ?? 6}
+            fill="#05070a"
+            stroke="#ffffff"
+            strokeOpacity={0.07}
+          />
+        ))}
+        {silk?.lines.map((line, index) => (
+          <line
+            key={`silk-line-${index}`}
+            x1={line.x1}
+            y1={line.y1}
+            x2={line.x2}
+            y2={line.y2}
+            stroke={SILK}
+            strokeOpacity={0.2}
+            strokeWidth={1.5}
+            strokeDasharray={line.dashed ? "12 9" : undefined}
+          />
+        ))}
+        {silk?.texts.map((entry, index) => (
+          <text
+            key={`silk-text-${index}`}
+            x={entry.x}
+            y={entry.y}
+            textAnchor="middle"
+            fontSize={entry.size}
+            fontFamily="var(--font-mono, monospace)"
+            fontWeight={700}
+            letterSpacing="0.16em"
+            fill={SILK}
+            fillOpacity={0.28}
+          >
+            {entry.text}
+          </text>
+        ))}
+      </g>
+    );
+  }
+
   // A card-edge board's connector is its own PCB, plated gold — there is no
   // part to draw, and drawing a header there would be wrong.
   const fingers = kind === "edge-connector";

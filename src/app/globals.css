@@ -1514,3 +1514,35 @@ button {
 :root[data-theme="light"] .ph-plan-step:hover:not(:disabled) {
   background-color: rgba(31, 48, 58, 0.08);
 }
+
+/* Planner board picker: the highlighted result. Written here, not as a
+   `bg-white/…` utility, for the same light-theme reason as the stepper. */
+.ph-plan-option[aria-selected="true"]:not([aria-disabled="true"]),
+.ph-plan-option:hover:not([aria-disabled="true"]) {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="light"] .ph-plan-option[aria-selected="true"]:not([aria-disabled="true"]),
+:root[data-theme="light"] .ph-plan-option:hover:not([aria-disabled="true"]) {
+  background-color: rgba(31, 48, 58, 0.08);
+}
+
+/* Planner pin list: the marker for a pin claimed by hand. A hollow ring, to
+   match the solid ring on the board and stay apart from the role hues. */
+.ph-claim-dot {
+  border: 1.5px solid #f4f4f5;
+}
+
+:root[data-theme="light"] .ph-claim-dot {
+  border-color: #1f303a;
+}
+
+/* Planner pin editor: it floats over the sheet, so it carries a shadow to
+   separate it from the pads underneath. */
+.ph-plan-editor {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+:root[data-theme="light"] .ph-plan-editor {
+  box-shadow: 0 10px 28px rgba(31, 48, 58, 0.28);
+}
