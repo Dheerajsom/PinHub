@@ -46,6 +46,11 @@ type BoardStageProps = {
    * role's lighter ink step and a dash, so the probe stays unmistakable.
    */
   planned?: ReadonlyMap<string, PinRole>;
+  /**
+   * Pads the user claimed by hand in the planner. A solid ring in a neutral
+   * ink: distinct from the planner's dashed role-hue ring and from the probe.
+   */
+  claimed?: ReadonlySet<string>;
 };
 
 export function BoardStage({
@@ -62,6 +67,7 @@ export function BoardStage({
   className,
   compact = false,
   planned,
+  claimed,
 }: BoardStageProps) {
   const padRefs = useRef<Array<SVGGElement | null>>([]);
   const [focusIndex, setFocusIndex] = useState(0);
@@ -156,6 +162,7 @@ export function BoardStage({
               stacked={stacked}
               stackedFont={stackedFont}
               columnWidth={geometry.pitch}
+              padR={padR}
             />
           );
         })}
@@ -208,14 +215,21 @@ export function BoardStage({
             selected={anchor.key === selectedKey}
             active={anchor.key === activeKey}
             onNet={netKeys.has(anchor.key)}
-            dimmed={
-              (activeRole !== null && anchor.pin.role !== activeRole) ||
-              (Boolean(planned?.size) &&
-                !planned?.has(anchor.key) &&
-                anchor.key !== activeKey &&
-                anchor.key !== selectedKey)
+            // A role filter hides what it excludes; a plan only quiets the
+            // free pads, which still have to be read to be claimed.
+            opacity={
+              activeRole !== null && anchor.pin.role !== activeRole
+                ? 0.28
+                : Boolean(planned?.size || claimed?.size) &&
+                    !planned?.has(anchor.key) &&
+                    !claimed?.has(anchor.key) &&
+                    anchor.key !== activeKey &&
+                    anchor.key !== selectedKey
+                  ? 0.5
+                  : 1
             }
             plannedRole={planned?.get(anchor.key)}
+            claimed={Boolean(claimed?.has(anchor.key))}
             tabIndex={index === focusIndex ? 0 : -1}
             uid={uid}
             realistic={Boolean(geometry.artworkId)}
@@ -250,8 +264,9 @@ function Pad({
   selected,
   active,
   onNet,
-  dimmed,
+  opacity,
   plannedRole,
+  claimed,
   tabIndex,
   uid,
   realistic,
@@ -270,8 +285,9 @@ function Pad({
   selected: boolean;
   active: boolean;
   onNet: boolean;
-  dimmed: boolean;
+  opacity: number;
   plannedRole?: PinRole;
+  claimed: boolean;
   tabIndex: number;
   uid: string;
   realistic?: boolean;
@@ -298,7 +314,7 @@ function Pad({
       aria-pressed={selected}
       aria-label={pinAccessibleLabel(anchor.pin)}
       className="bv-pad cursor-pointer outline-none"
-      style={{ opacity: dimmed ? 0.28 : 1 }}
+      style={{ opacity }}
       onFocus={onFocus}
       onBlur={onBlur}
       onPointerEnter={onPointerEnter}
@@ -331,6 +347,17 @@ function Pad({
           stroke={PROBE_COLOR}
           strokeOpacity={0.45}
           strokeWidth={1.5}
+        />
+      ) : null}
+      {claimed ? (
+        <circle
+          className="bv-claimed-ring"
+          cx={anchor.cx}
+          cy={anchor.cy}
+          r={padR + 4.5}
+          fill="none"
+          stroke="#f4f4f5"
+          strokeWidth={2.5}
         />
       ) : null}
       {plannedRole ? (
@@ -413,6 +440,7 @@ function LeaderLabel({
   stacked,
   stackedFont,
   columnWidth,
+  padR,
 }: {
   anchor: PinAnchor;
   active: boolean;
@@ -422,6 +450,7 @@ function LeaderLabel({
   stacked: boolean;
   stackedFont: number;
   columnWidth: number;
+  padR: number;
 }) {
   const colors = roleColors[anchor.pin.role];
   const fill = active ? "#eaf8ff" : onNet ? PROBE_COLOR : colors.ink;
@@ -452,7 +481,7 @@ function LeaderLabel({
 
   return (
     <g opacity={opacity}>
-      {showLeader ? <Leader anchor={anchor} /> : null}
+      {showLeader ? <Leader anchor={anchor} padR={padR} /> : null}
       <text
         x={anchor.labelX}
         y={anchor.labelY}
@@ -481,17 +510,22 @@ function LeaderLabel({
  * artwork, so it is reduced to a tick at each end and the column alignment
  * carries the rest.
  */
-function Leader({ anchor }: { anchor: PinAnchor }) {
+function Leader({ anchor, padR }: { anchor: PinAnchor; padR: number }) {
   const dx = anchor.labelX - anchor.cx;
   const dy = anchor.labelY - anchor.cy;
   const length = Math.hypot(dx, dy);
   const stroke = { stroke: ANNOTATION, strokeOpacity: 0.32, strokeWidth: 1.25 };
+  // Start at the pad's edge, not its centre: a dimmed pad is translucent, and
+  // a leader run through it reads as the pin number struck out.
+  const edge = length > padR ? padR / length : 0;
+  const startX = anchor.cx + dx * edge;
+  const startY = anchor.cy + dy * edge;
 
   if (length < 220) {
     return (
       <line
-        x1={anchor.cx}
-        y1={anchor.cy}
+        x1={startX}
+        y1={startY}
         x2={anchor.labelX}
         y2={anchor.labelY}
         {...stroke}
@@ -503,10 +537,10 @@ function Leader({ anchor }: { anchor: PinAnchor }) {
   return (
     <>
       <line
-        x1={anchor.cx}
-        y1={anchor.cy}
-        x2={anchor.cx + dx * tick}
-        y2={anchor.cy + dy * tick}
+        x1={startX}
+        y1={startY}
+        x2={startX + dx * tick}
+        y2={startY + dy * tick}
         {...stroke}
       />
       <line

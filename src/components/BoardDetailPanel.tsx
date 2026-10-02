@@ -24,6 +24,7 @@ import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { fiveVoltCaution, revisionNotesFor } from "@/lib/board-utilities";
 import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
+import { PlanPinsLink } from "@/components/planner/PlanPinsLink";
 
 export type DetailState =
   | { status: "ready"; board: Board }
@@ -119,27 +120,24 @@ export function BoardDetailPanel({
   );
 }
 /**
- * The catalog panel is a preview; the pin planner and the rest of the board
- * reference live on the board page. Only boards with source-backed pin
- * functions are promised a planner, and they land on it directly.
+ * The catalog panel is a preview; the rest of the board reference lives on
+ * the board page, and planning lives in the planner. Auto-assign is promised
+ * only to boards with source-backed pin functions.
  */
 function FullBoardPageLink({ board }: { board: Board }) {
-  const plannable = Boolean(board.pinFunctions && board.pinout);
   return (
-    <Link
-      href={plannable ? `/boards/${board.id}#plan` : `/boards/${board.id}`}
-      className="mt-2 flex min-h-11 items-center sm:max-w-sm justify-between gap-3 rounded-lg border border-white/10 bg-[#15181f] px-3 py-2 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white"
-    >
-      <span className="min-w-0">
-        <span className="block font-medium">Open full board page</span>
-        {plannable ? (
-          <span className="block text-xs leading-5 text-zinc-500">
-            Plan pins for your circuit
-          </span>
-        ) : null}
-      </span>
-      <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
-    </Link>
+    <>
+      <Link
+        href={`/boards/${board.id}`}
+        className="mt-2 flex min-h-11 items-center sm:max-w-sm justify-between gap-3 rounded-lg border border-white/10 bg-[#15181f] px-3 py-2 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white"
+      >
+        <span className="block min-w-0 font-medium">Open full board page</span>
+        <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
+      </Link>
+      {board.pinout ? (
+        <PlanPinsLink boardId={board.id} auto={Boolean(board.pinFunctions)} className="mt-2" />
+      ) : null}
+    </>
   );
 }
 

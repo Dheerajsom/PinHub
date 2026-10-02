@@ -26,7 +26,7 @@ import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WiringCautions } from "@/components/WiringCautions";
 import { InterfaceChip } from "@/components/InterfaceChip";
-import { PinPlannerSection } from "@/components/planner/PinPlannerSection";
+import { PlanPinsLink } from "@/components/planner/PlanPinsLink";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -135,6 +135,13 @@ export default async function BoardPage({
               </ul>
               <div className="mt-5">
                 <BoardActions board={board} />
+                {board.pinout ? (
+                  <PlanPinsLink
+                    boardId={board.id}
+                    auto={Boolean(board.pinFunctions)}
+                    className="mt-2"
+                  />
+                ) : null}
               </div>
             </div>
             <dl className="ph-spec-table border-t border-white/10 bg-[#0e1118] px-5 py-1 lg:border-l lg:border-t-0">
@@ -229,10 +236,6 @@ export default async function BoardPage({
               </ul>
             </section>
           ) : null}
-        </div>
-
-        <div className="mt-5">
-          <PinPlannerSection board={board} />
         </div>
 
         {related.length ? (

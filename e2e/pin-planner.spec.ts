@@ -1,7 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { expectColor } from "./color";
 
-async function planner(page: Page): Promise<Locator> {
+async function workspace(page: Page): Promise<Locator> {
   const section = page.getByRole("region", { name: "Pin planner" });
   await expect(section).toBeVisible();
   return section;
@@ -18,78 +18,105 @@ async function setCount(section: Locator, peripheral: string, target: number) {
   }).toPass();
 }
 
-test.describe("pin planner", () => {
-  test("a phone reaches the planner from the catalog panel", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/");
-    await page.getByRole("button", { name: "Show Raspberry Pi Pico details", exact: true }).click();
-    const panel = page.getByRole("complementary").filter({
-      has: page.getByRole("heading", { name: "Raspberry Pi Pico", exact: true }),
-    });
-    const open = panel.getByRole("link", { name: /Open full board page/ });
-    await expect(open).toContainText("Plan pins for your circuit");
-    const box = await open.boundingBox();
-    expect(box?.height).toBeGreaterThanOrEqual(44);
+/** Selects a pad and claims it under `name`. */
+async function claim(section: Locator, pad: RegExp, name: string) {
+  const editor = section.getByRole("region", { name: "Pin editor" });
+  await expect(async () => {
+    if (!(await editor.isVisible())) await section.getByRole("button", { name: pad }).click();
+    await expect(editor).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  await editor.getByLabel("Used for").fill(name);
+  await editor.getByRole("button", { name: "Claim pin" }).click();
+  await expect(editor).toBeHidden();
+}
 
-    await open.click();
-    await expect(page).toHaveURL(/\/boards\/raspberry-pi-pico#plan$/);
-    await expect(await planner(page)).toBeInViewport();
-  });
-
-  test("builds a Pico plan, shares it by URL, highlights it, and exports it", async ({ page, context }) => {
+test.describe("planner page", () => {
+  test("nav reaches the planner; search, pick, claim, auto-assign, share, export", async ({ page, context }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
-    await page.goto("/boards/raspberry-pi-pico");
-    let section = await planner(page);
+
+    await page.goto("/");
+    const nav = page.getByRole("navigation", { name: "PinHub sections" });
+    await nav.getByRole("link", { name: "Planner", exact: true }).click();
+    await expect(page).toHaveURL(/\/planner$/);
+    await expect(
+      page
+        .getByRole("navigation", { name: "PinHub sections" })
+        .getByRole("link", { name: "Planner", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+
+    const search = page.getByRole("combobox", { name: "Search for your board" });
+    await expect(async () => {
+      await search.fill("raspberry pi pico");
+      await expect(page.getByRole("option").first()).toContainText("Raspberry Pi Pico", { timeout: 1000 });
+    }).toPass();
+    await expect(page.getByRole("option").first()).toContainText("Auto-assign");
+    await search.press("Enter");
+    await expect(page).toHaveURL(/\/planner\?board=raspberry-pi-pico$/);
+
+    let section = await workspace(page);
+    await expect(section.getByRole("heading", { level: 1 })).toContainText("Raspberry Pi Pico");
+
+    // GP4 and GP5 are the pins the solver would pick first for I2C.
+    await claim(section, /^Pin 6, GP4/, "OLED SDA");
+    await claim(section, /^Pin 7, GP5/, "OLED SCL");
+    await expect(section.locator(".bv-claimed-ring")).toHaveCount(2);
+    await expect(section.locator('tr[data-kind="manual"]')).toHaveCount(2);
 
     await setCount(section, "I2C", 1);
-    await setCount(section, "SPI", 1);
     await setCount(section, "PWM", 2);
-    await setCount(section, "ADC", 1);
-    await setCount(section, "GPIO", 2);
-    const status = section.locator("[data-plan-status]");
-    await expect(status).toHaveText("Plan ready: 11 pins assigned.");
-    await expect(page).toHaveURL(/\?plan=i2c1\.spi1\.pwm2\.adc1\.gpio2$/);
+    await expect(section.locator("[data-plan-status]")).toHaveText("Plan ready: 4 pins assigned.");
+    for (const text of await section.locator('tr[data-kind="auto"]').allTextContents()) {
+      expect(text).not.toMatch(/GP[45](?!\d)/);
+    }
 
-    // The shared link reproduces the plan on a fresh load.
-    await page.goto(page.url());
-    section = await planner(page);
-    await expect(section.getByRole("group", { name: "I2C, 1 planned, up to 2" })).toBeVisible();
-    await expect(section.locator('[data-plan-count="GPIO"]')).toHaveText("2");
-    await expect(section.locator("[data-plan-status]")).toHaveText("Plan ready: 11 pins assigned.");
-
-    // Every assigned pin is ringed on the planner's drawing, in a role hue.
-    const rings = section.locator(".bv-planned-ring");
-    await expect(rings).toHaveCount(11);
+    // Planned rings are dashed role hues, claimed rings are solid; neither is the probe's cyan.
+    const rings = section.locator(".bv-planned-ring, .bv-claimed-ring");
+    await expect(rings).toHaveCount(6);
     for (const stroke of await rings.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("stroke")))) {
       expect(stroke?.toLowerCase()).not.toBe("#22d3ee");
     }
 
-    // A result row probes its pin on the drawing.
+    // The shared link reproduces the whole plan.
+    await page.goto(page.url());
+    section = await workspace(page);
+    await expect(section.locator('tr[data-kind="manual"]')).toHaveCount(2);
+    await expect(section.locator('tr[data-kind="manual"]').first()).toContainText("OLED SDA");
+    await expect(section.locator('[data-plan-count="PWM"]')).toHaveText("2");
+    await expect(section.locator("[data-plan-status]")).toHaveText("Plan ready: 4 pins assigned.");
+
+    // A row probes its pin on the drawing.
     const row = section.getByRole("button", { name: "Show pin 6, GP4 on the board" });
     await row.click();
     await expect(row).toHaveAttribute("aria-pressed", "true");
     await expect(section.getByRole("button", { name: /^Pin 6, GP4/ })).toHaveAttribute("aria-pressed", "true");
+    await section.getByRole("button", { name: "Close pin editor" }).click();
 
-    // Exports carry the plan and the verification header.
+    // Exports carry both halves and the verification header.
     const preview = section.getByLabel(/export preview$/);
-    await expect(preview).toContainText("#define PINHUB_I2C0_SDA 4");
+    await expect(preview).toContainText("#define PINHUB_USER_OLED_SDA 4");
     await expect(preview).toContainText("Generated by PinHub — verify against the source before wiring.");
-    await section.getByRole("button", { name: "MicroPython", exact: true }).click();
-    await expect(preview).toContainText("i2c0 = I2C(0, sda=Pin(4), scl=Pin(5))");
+    await section.getByRole("button", { name: "CSV", exact: true }).click();
+    await expect(preview).toContainText('"Manual","OLED SDA"');
     await section.getByRole("button", { name: "Copy", exact: true }).click();
-    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("from machine import");
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('"Auto","I2C 1"');
     await expect(section.getByRole("link", { name: "Download" })).toHaveAttribute(
       "download",
-      "pinhub-plan-raspberry-pi-pico-micropython.py",
+      "pinhub-plan-raspberry-pi-pico.csv",
     );
+
+    // Changing board asks first, then returns to the picker.
+    await section.getByRole("button", { name: "Change board" }).click();
+    await page.getByRole("button", { name: "Discard plan and change board" }).click();
+    await expect(page).toHaveURL(/\/planner$/);
+    await expect(search).toBeVisible();
     expect(errors).toEqual([]);
   });
 
   test("explains an unsatisfiable plan in orange, in both themes", async ({ page }) => {
-    await page.goto("/boards/arduino-uno-rev3?plan=spi1.pwm6");
-    const section = await planner(page);
+    await page.goto("/planner?board=arduino-uno-rev3&plan=spi1.pwm6");
+    const section = await workspace(page);
     const status = section.locator("[data-plan-status]");
     await expect(status).toHaveText("No plan fits. 6× PWM doesn't fit alongside 1× SPI: they need the same pins.");
     for (const [theme, color] of [
@@ -101,21 +128,113 @@ test.describe("pin planner", () => {
     }
   });
 
-  test("the full pinout view carries the planner too", async ({ page }) => {
-    await page.goto("/pinout/esp32-devkitc?plan=i2c1.gpio1");
-    const section = await planner(page);
-    await expect(section.locator("[data-plan-status]")).toHaveText("Plan ready: 3 pins assigned.");
-    await expect(section).toContainText("GPIO matrix");
+  test("a Raspberry Pi is a flat sheet, and a manual-only board gets no guessed plan", async ({ page }) => {
+    await page.goto("/planner?board=raspberry-pi-4-model-b&plan=i2c1");
+    const section = await workspace(page);
+    await expect(section).toContainText("Auto-assign isn't available for this board yet.");
+    await expect(section.getByRole("button", { name: /^Add one/ })).toHaveCount(0);
+    await expect(section.locator(".bv-planned-ring")).toHaveCount(0);
+    // The realistic Pi artwork draws square gold pins; the planner's sheet does not.
+    await expect(section.locator(".bv-stage .bv-pad")).toHaveCount(40);
+    await expect(section.locator(".bv-stage .bv-pad circle.bv-pad-body")).toHaveCount(39);
+    const report = section.getByRole("link", { name: /Report a data error/ });
+    expect(new URL((await report.getAttribute("href")) ?? "").protocol).toBe("https:");
+    await expect(report).toHaveAttribute("rel", "noopener noreferrer");
+
+    await claim(section, /^Pin 3, GPIO2/, "Sensor SDA");
+    await expect(section.locator('tr[data-kind="manual"]')).toContainText("Sensor SDA");
+    await expect(section.getByRole("button", { name: "CSV", exact: true })).toBeVisible();
+    await expect(section.getByRole("button", { name: "C header", exact: true })).toHaveCount(0);
   });
 
-  test("a board without pin function data says so and offers a report", async ({ page }) => {
-    await page.goto("/boards/raspberry-pi-4-model-b?plan=i2c1");
-    const section = await planner(page);
-    await expect(section).toContainText("Pin planning isn't available for this board yet.");
-    const report = section.getByRole("link", { name: /Report a data error/ });
-    const href = new URL((await report.getAttribute("href")) ?? "");
-    expect(href.searchParams.get("board")).toBe("raspberry-pi-4-model-b");
-    await expect(report).toHaveAttribute("rel", "noopener noreferrer");
-    await expect(section.getByRole("button", { name: /^Add one/ })).toHaveCount(0);
+  test("hostile parameters fall back to the picker or are dropped", async ({ page }) => {
+    await page.goto("/planner?board=..%2F..%2Fetc");
+    await expect(page.getByRole("combobox", { name: "Search for your board" })).toBeVisible();
+
+    const use = encodeURIComponent("pL:0~<img src=x onerror=alert(1)>,zz:1~x");
+    await page.goto(`/planner?board=raspberry-pi-pico&use=${use}`);
+    const section = await workspace(page);
+    await expect(section.locator('tr[data-kind="manual"]')).toHaveCount(1);
+    await expect(section.locator('tr[data-kind="manual"]')).toContainText("img srcx onerroralert1");
+    await expect(section.locator("img[src='x']")).toHaveCount(0);
+    await expect(page).toHaveURL(/use=pL%3A0%7Eimg\+srcx\+onerroralert1$/);
+  });
+
+  test("board page, full view, and catalog panel link to the planner on a phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/boards/raspberry-pi-pico");
+    await expect(page.getByRole("region", { name: "Pin planner" })).toHaveCount(0);
+    const link = page.getByRole("link", { name: /Plan pins on this board/ });
+    expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+    await link.click();
+    await expect(page).toHaveURL(/\/planner\?board=raspberry-pi-pico$/);
+    await workspace(page);
+
+    await page.goto("/pinout/esp32-devkitc");
+    await expect(page.getByRole("link", { name: /Plan pins on this board/ })).toHaveAttribute(
+      "href",
+      "/planner?board=esp32-devkitc",
+    );
+
+    await page.goto("/");
+    await page.getByRole("button", { name: "Show Raspberry Pi Pico details", exact: true }).click();
+    const panel = page.getByRole("complementary").filter({
+      has: page.getByRole("heading", { name: "Raspberry Pi Pico", exact: true }),
+    });
+    const fromPanel = panel.getByRole("link", { name: /Plan pins on this board/ });
+    await expect(fromPanel).toHaveAttribute("href", "/planner?board=raspberry-pi-pico");
+    expect((await fromPanel.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+  });
+
+  test("touching a pad never moves the sheet, so the first tap opens that pin", async ({ browser }) => {
+    // Regression: the readout above the sheet went from two lines to one when
+    // a pad was touched, shifting every pad 20 px between touch-down and
+    // touch-up. The tap then landed on a neighbouring pad, or on none.
+    for (const viewport of [
+      { width: 360, height: 800 },
+      { width: 844, height: 390 },
+    ]) {
+      const context = await browser.newContext({ viewport, hasTouch: true, isMobile: true });
+      const page = await context.newPage();
+      await page.goto("/planner?board=raspberry-pi-5");
+      const section = await workspace(page);
+      const pad = section.getByRole("button", { name: /^Pin 15, / });
+      await pad.scrollIntoViewIfNeeded();
+      const top = async () => Math.round((await pad.boundingBox())!.y);
+      const before = await top();
+      await pad.hover();
+      await expect(section.locator("p[aria-live]").first()).toContainText("15 ·");
+      expect(await top(), `${viewport.width} px: sheet moved`).toBe(before);
+
+      const box = (await pad.boundingBox())!;
+      await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+      await expect(section.getByRole("region", { name: "Pin editor" })).toContainText(/^15 · /);
+      await context.close();
+    }
+  });
+
+  test("four sections fit one row at 360 px without overflow", async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    for (const path of ["/", "/planner", "/compare", "/prices", "/boards/raspberry-pi-pico"]) {
+      await page.goto(path);
+      const links = page.getByRole("navigation", { name: "PinHub sections" }).first().getByRole("link");
+      await expect(links).toHaveCount(4);
+      const boxes = await links.evaluateAll((nodes) =>
+        nodes.map((node) => {
+          const box = node.getBoundingClientRect();
+          return { top: Math.round(box.top), right: box.right, left: box.left, height: box.height };
+        }),
+      );
+      expect(new Set(boxes.map((box) => box.top)).size, `${path} nav wraps`).toBe(1);
+      for (const box of boxes) {
+        expect(box.left, `${path} nav clipped`).toBeGreaterThanOrEqual(0);
+        expect(box.right, `${path} nav clipped`).toBeLessThanOrEqual(360);
+        expect(box.height, `${path} nav target`).toBeGreaterThanOrEqual(44);
+      }
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `${path} overflows`).toBeLessThanOrEqual(0);
+    }
   });
 });

@@ -4,6 +4,7 @@ import { planPins, type PlanAssignment, type PlanRequirements } from "@/lib/pin-
 import { planExports, planFilename, planNotice } from "@/lib/pin-plan-export";
 import { revisionNotesFor } from "@/lib/board-utilities";
 import { verificationSourceFor } from "@/lib/source-trust";
+import type { ClaimedPin } from "@/lib/planner-claims";
 
 const date = "2026-09-26";
 
@@ -33,12 +34,13 @@ describe("pin plan exports", () => {
       const exports = planExports(target, plan(target, requirements), date);
 
       it("offers only the formats the board's pin naming supports", () => {
-        expect(exports.map((item) => item.format)).toEqual(formats);
+        expect(exports.map((item) => item.format)).toEqual([...formats, "csv"]);
       });
 
       it("opens every file with the board, connector, revisions, source, notice, and date", () => {
         const source = verificationSourceFor(target)!;
-        for (const item of exports) {
+        // The CSV carries the board, source, and notice in its closing row.
+        for (const item of exports.filter((entry) => entry.format !== "csv")) {
           const opening = item.text.slice(0, item.text.indexOf(date) + date.length);
           expect(opening, item.format).toContain(target.name);
           expect(opening, item.format).toContain(target.id);
@@ -53,7 +55,7 @@ describe("pin plan exports", () => {
 
       it("uses safe filenames", () => {
         for (const item of exports) {
-          expect(item.filename).toMatch(/^[a-z0-9-]+\.(h|py|json)$/);
+          expect(item.filename).toMatch(/^[a-z0-9-]+\.(h|py|json|csv)$/);
         }
       });
 
@@ -94,5 +96,84 @@ describe("pin plan exports", () => {
   it("builds filenames from [a-z0-9-] only", () => {
     expect(planFilename({ id: "Raspberry Pi/5" }, "c-header")).toBe("pinhub-plan-aspberry-pi-5.h".replace("aspberry", "raspberry"));
     expect(planFilename({ id: "../../etc" }, "json")).toBe("pinhub-plan-etc.json");
+  });
+});
+
+function pinByLabel(target: Board, label: string) {
+  const pinout = target.pinout!;
+  const all = pinout.pins
+    ? [...pinout.pins.left, ...pinout.pins.right]
+    : (pinout.groups ?? []).flatMap((group) => group.pins);
+  const pin = all.find((item) => item.label === label);
+  if (!pin) throw new Error(`${label} missing on ${target.id}`);
+  return pin;
+}
+
+describe("exports with manual claims", () => {
+  const pico = board("raspberry-pi-pico");
+  const claims: ClaimedPin[] = [
+    { name: "OLED SDA", pin: pinByLabel(pico, "GP2"), cautions: [] },
+    { name: "+5V rail", pin: pinByLabel(pico, "VBUS"), cautions: [] },
+    { name: "OLED SDA", pin: pinByLabel(pico, "GP3"), cautions: [] },
+  ];
+
+  it("leaves a plan with no claims byte-identical", () => {
+    const assignments = plan(pico, { I2C: 1 });
+    expect(planExports(pico, assignments, date, [])).toEqual(planExports(pico, assignments, date));
+  });
+
+  it("adds claims as constants where the pin has an MCU identity", () => {
+    const exports = planExports(pico, plan(pico, { I2C: 1 }), date, claims);
+    const header = exports.find((item) => item.format === "c-header")!.text;
+    expect(header).toContain("#define PINHUB_USER_OLED_SDA 2");
+    expect(header).toContain("#define PINHUB_USER_OLED_SDA_2 3");
+    expect(header).toContain("// In use (no MCU pin): physical pin 40, VBUS: +5V rail");
+    const python = exports.find((item) => item.format === "micropython")!.text;
+    expect(python).toContain("user_oled_sda = Pin(2)");
+  });
+
+  it("carries a claimed pin's cautions into the files", () => {
+    const esp = board("esp32-devkitc");
+    const all = esp.pinout!.pins
+      ? [...esp.pinout!.pins.left, ...esp.pinout!.pins.right]
+      : (esp.pinout!.groups ?? []).flatMap((group) => group.pins);
+    const flagged = all.find((pin) => pin.flags?.includes("strapping") && pin.mcu)!;
+    const note = esp.pinFunctions!.flagNotes.strapping!;
+    const exports = planExports(esp, [], date, [
+      { name: "Button", pin: flagged, cautions: [{ label: "strapping", note }] },
+    ]);
+    for (const format of ["c-header", "json", "csv"] as const) {
+      const text = exports.find((item) => item.format === format)!.text;
+      expect(text, format).toContain(note.slice(0, 30).replace(/"/g, ""));
+    }
+  });
+
+  it("offers code exports for claims alone on a board with pin functions", () => {
+    const exports = planExports(pico, [], date, claims);
+    expect(exports.map((item) => item.format)).toEqual(["c-header", "micropython", "json", "csv"]);
+    expect(exports[0].text).not.toContain("avr/io.h");
+  });
+
+  it("writes a formula-safe CSV", () => {
+    const text = planExports(pico, plan(pico, { I2C: 1 }), date, claims).find(
+      (item) => item.format === "csv",
+    )!.text;
+    expect(text).toContain(`"Manual","'+5V rail"`);
+    expect(text).toContain(`"Auto","I2C 1"`);
+    expect(text).toContain(planNotice);
+    for (const line of text.slice(1).split("\r\n")) {
+      for (const cell of line.slice(1, -1).split('","')) expect(cell).not.toMatch(/^[=+\-@]/);
+    }
+  });
+
+  it("gives a board without pin functions JSON and CSV only", () => {
+    const pi4 = board("raspberry-pi-4-model-b");
+    const exports = planExports(pi4, [], date, [
+      { name: "LED", pin: pinByLabel(pi4, "GPIO2"), cautions: [] },
+    ]);
+    expect(exports.map((item) => item.format)).toEqual(["json", "csv"]);
+    expect(JSON.parse(exports[0].text).claims[0].name).toBe("LED");
+    expect(exports[1].filename).toBe("pinhub-plan-raspberry-pi-4-model-b.csv");
+    expect(planExports(pi4, [], date, [])).toEqual([]);
   });
 });

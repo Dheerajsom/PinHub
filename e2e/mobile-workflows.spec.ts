@@ -154,6 +154,7 @@ for (const viewport of viewports) {
       const toolbar = page.locator("main .sticky").first();
       const controls = [
         toolbar.getByRole("link", { name: "Pin Maps", exact: true }),
+        toolbar.getByRole("link", { name: "Planner", exact: true }),
         toolbar.getByRole("link", { name: "Compare", exact: true }),
         toolbar.getByRole("link", { name: "Prices", exact: true }),
         toolbar.getByRole("button", { name: /^Favorites/ }),

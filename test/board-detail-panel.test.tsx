@@ -37,25 +37,30 @@ beforeAll(() => {
 afterEach(cleanup);
 
 describe("BoardDetailPanel full board page link", () => {
-  it("sends a board with pin function data straight to its planner", () => {
+  it("links to the board page and, separately, to the planner", () => {
     const board = catalogBoard("raspberry-pi-pico");
     expect(board.pinFunctions).toBeDefined();
     renderPanel(board);
 
-    const link = screen.getByRole("link", { name: /Open full board page/ });
-    expect(link.getAttribute("href")).toBe("/boards/raspberry-pi-pico#plan");
-    expect(link.textContent).toContain("Plan pins for your circuit");
-    expect(link.getAttribute("target")).toBeNull();
+    const page = screen.getByRole("link", { name: /Open full board page/ });
+    expect(page.getAttribute("href")).toBe("/boards/raspberry-pi-pico");
+    const plan = screen.getByRole("link", { name: /Plan pins on this board/ });
+    expect(plan.getAttribute("href")).toBe("/planner?board=raspberry-pi-pico");
+    expect(plan.textContent).toContain("auto-assign");
+    expect(plan.getAttribute("target")).toBeNull();
   });
 
-  it("does not promise a planner to a board without pin function data", () => {
+  it("does not promise auto-assign to a board without pin function data", () => {
     const board = catalogBoard("raspberry-pi-500");
     expect(board.pinFunctions).toBeUndefined();
     renderPanel(board);
 
-    const link = screen.getByRole("link", { name: /Open full board page/ });
-    expect(link.getAttribute("href")).toBe("/boards/raspberry-pi-500");
-    expect(link.textContent).not.toMatch(/plan/i);
+    expect(
+      screen.getByRole("link", { name: /Open full board page/ }).getAttribute("href"),
+    ).toBe("/boards/raspberry-pi-500");
+    const plan = screen.queryByRole("link", { name: /Plan pins on this board/ });
+    if (board.pinout) expect(plan?.textContent).not.toMatch(/auto/i);
+    else expect(plan).toBeNull();
   });
 
   it("is not shown while the board details are still loading", () => {

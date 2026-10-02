@@ -418,3 +418,36 @@ and keyboard speed over decoration. Sections 2–4 are the layout spec,
 - **Finish**: no gradient-filled wordmarks, no glowing dots or coloured
   bloom shadows, no hover lifts on rows and chips, and an opaque command bar
   (no backdrop blur). Selection is a flat tint plus the cyan border.
+
+## 18. Planner page (2026-10-02)
+
+Supersedes the placement in section 16: the planner is its own section,
+`/planner`, in the header nav beside Pin Maps. Board pages, the full pinout
+view, and the catalog panel link to it ("Plan pins on this board") instead of
+embedding it.
+
+- **Two steps.** Pick a board (search, with a tag per result: emerald
+  "Auto-assign" where pin functions are source-backed, neutral "Manual" for a
+  pin map only, a disabled "No pin map" row otherwise), then plan it.
+- **The sheet, not the board.** The planner draws a connector chart: a 2×N
+  header's two rows side by side, a module's two edges apart, large pads,
+  labels out to either side, and no illustrated components, copper, or
+  Raspberry Pi artwork. It claims nothing about the board around the pins.
+  Other layouts use their usual pad positions on a flat outline.
+- **Three marks, never alike.** Solid neutral ring = claimed by hand. Dashed
+  ring in the role's `ink` = auto-assigned. Solid cyan = the probe, and
+  nothing else. Free pads recede to half strength once a plan exists; they
+  must stay readable, because they are what gets claimed next.
+- **Claiming.** Selecting a pad opens the pin editor, which rides the bottom
+  of the window so it is on screen whichever pad was picked. A claim's name is
+  the user's text: it appears in the readout, the "Your pins" table, and the
+  exports, never as a label on the drawing, where it could be mistaken for
+  catalog data.
+- **Nothing moves under a finger.** The readout above the sheet reserves its
+  full height: a line that collapsed on touch would shift the pads between
+  touch-down and touch-up.
+- **Cautions** for a claimed pin come only from the record (the pin's flags
+  with the board's notes, and the reserved role), in the same orange rows as
+  auto-assigned pins.
+- **Section nav** holds four links on one row down to 360 px: below 400 px
+  the icons give way to the labels. Links are 44 px tall at every width.

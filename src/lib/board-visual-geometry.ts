@@ -88,6 +88,12 @@ export type BoardGeometry = {
   notToScale: boolean;
   orientation: string;
   revisionNote?: string;
+  /**
+   * Draw the pads on a flat outline with no illustrated components. The
+   * planner's sheet sets it: there the pins are the subject, and decorative
+   * parts would compete with the rings that mark a plan.
+   */
+  plain?: boolean;
 };
 
 // --- tunable layout constants (all in viewBox units) -----------------------
@@ -866,10 +872,93 @@ const builders: Record<
   "zio-quad": buildZioQuad,
 };
 
-/** Build the full geometry for a board, or null if it has no pinout. */
-export function buildBoardGeometry(board: Board): BoardGeometry | null {
+// The planner's sheet for a two-row connector: the two rows as a connector
+// chart, labels out to either side, and nothing else. It makes no claim about
+// the board around the pins, so the pads can be drawn large enough to pick one
+// out of forty. A 2xN header's rows sit together, as they do on the part; a
+// module's two edges stay apart, so the chart never reads as one header.
+// Anchor keys match the board drawings (`pL:n`, `pR:n`), so a shared plan
+// means the same pins on either.
+function buildPlanSheet(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> | null {
+  const edges = visual.headerKind === "edge-dual";
+  if (!edges && visual.headerKind !== "header2x") return null;
+  const { left, right } = edges
+    ? edgeRows(board, visual)
+    : { left: board.pinout?.pins?.left ?? [], right: board.pinout?.pins?.right ?? [] };
+  if (!left.length && !right.length) return null;
+  const n = Math.max(left.length, right.length, 1);
+  const pitch = EDGE_PITCH;
+  const inset = PAD_R + 14;
+  const columnGap = edges ? 190 : 58;
+  const margin = 26;
+  const leftRail = railFor(left, 112);
+  const rightRail = railFor(right, 112);
+  const body: Rect = {
+    x: leftRail,
+    y: margin,
+    w: columnGap + inset * 2,
+    h: (n - 1) * pitch + inset * 2,
+    rx: 12,
+  };
+
+  const anchors: PinAnchor[] = [];
+  const column = (pins: Pin[], side: "left" | "right") => {
+    const cx = side === "left" ? body.x + inset : body.x + body.w - inset;
+    pins.forEach((pin, i) => {
+      const cy = body.y + inset + i * pitch;
+      anchors.push({
+        key: `${side === "left" ? "pL" : "pR"}:${i}`,
+        pin,
+        cx,
+        cy,
+        side,
+        labelX: side === "left" ? body.x - 16 : body.x + body.w + 16,
+        labelY: cy,
+        labelAnchor: side === "left" ? "end" : "start",
+        rotateLabel: false,
+      });
+    });
+  };
+  column(left, "left");
+  column(right, "right");
+
+  return {
+    vbw: leftRail + body.w + rightRail,
+    vbh: body.h + margin * 2,
+    body,
+    accent: accentForBoard(board.id, board.vendor),
+    headerZones: [],
+    ports: [],
+    holes: [],
+    anchors,
+    padR: PAD_R,
+    pitch,
+    arrangement: `2 × ${n}`,
+    notToScale: true,
+    orientation: edges
+      ? "Connector chart: the two edge rows in the catalog's order, not a drawing of the board."
+      : "Connector chart: both header rows in the catalog's order, not a drawing of the board.",
+    plain: true,
+  };
+}
+
+/**
+ * Build the full geometry for a board, or null if it has no pinout.
+ * `sheet: true` builds the planner's drawing instead of the board's: a
+ * connector chart for two-row connectors and the plain outline otherwise,
+ * with no Raspberry Pi artwork and no illustrated components.
+ */
+export function buildBoardGeometry(
+  board: Board,
+  options: { sheet?: boolean } = {},
+): BoardGeometry | null {
   if (!board.pinout) return null;
   const visual = boardVisuals[board.id];
   if (!visual) return null;
+  if (options.sheet) {
+    const sheet = buildPlanSheet(board, visual);
+    if (sheet) return { kind: "edge-dual", ...sheet };
+    return { kind: visual.headerKind, ...builders[visual.headerKind](board, visual), plain: true };
+  }
   return raspberryPiGeometry(board, { kind: visual.headerKind, ...builders[visual.headerKind](board, visual) });
 }

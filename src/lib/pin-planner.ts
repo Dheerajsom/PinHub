@@ -228,10 +228,17 @@ export class PinPlanModel {
   readonly candidates: Candidate[];
   readonly data: PinFunctionData;
 
-  constructor(readonly board: Board) {
+  constructor(
+    readonly board: Board,
+    /** Pins already in use (manual claims); they are treated as absent. */
+    exclude?: ReadonlySet<Pin>,
+  ) {
     if (!board.pinFunctions) throw new Error(`${board.id} has no pin function data`);
     this.data = board.pinFunctions;
-    this.candidates = candidatesOf(board);
+    const candidates = candidatesOf(board);
+    this.candidates = exclude?.size
+      ? candidates.filter((candidate) => !exclude.has(candidate.pin))
+      : candidates;
   }
 
   private routable(peripheral: PlanPeripheral) {
@@ -588,14 +595,17 @@ function capacityReason(peripheral: PlanPeripheral, available: number): string {
 /**
  * Plans pins for `requirements` on `board`. `budget` caps the backtracking
  * search; a search that runs out reports so instead of returning a guess.
+ * `exclude` lists pins the user has claimed by hand; they are never assigned
+ * and do not count toward capacity.
  */
 export function planPins(
   board: Board,
   requirements: PlanRequirements,
   budget = defaultPlanStepBudget,
+  exclude?: ReadonlySet<Pin>,
 ): PlanResult {
   if (!board.pinFunctions || !board.pinout) return { status: "unsupported" };
-  const model = new PinPlanModel(board);
+  const model = new PinPlanModel(board, exclude);
   const wanted = normalizePlanRequirements(requirements, model.candidates.length);
   if (!planPeripherals.some((peripheral) => (wanted[peripheral] ?? 0) > 0)) {
     return { status: "empty" };
@@ -690,9 +700,12 @@ function sortAssignments(assignments: PlanAssignment[]): PlanAssignment[] {
 }
 
 /** Peripherals this board can plan, with the most units of each it can supply. */
-export function planCapabilities(board: Board): { peripheral: PlanPeripheral; max: number }[] {
+export function planCapabilities(
+  board: Board,
+  exclude?: ReadonlySet<Pin>,
+): { peripheral: PlanPeripheral; max: number }[] {
   if (!board.pinFunctions || !board.pinout) return [];
-  const capacity = new PinPlanModel(board).capacity();
+  const capacity = new PinPlanModel(board, exclude).capacity();
   return planPeripherals
     .filter((peripheral) => capacity[peripheral] > 0)
     .map((peripheral) => ({
