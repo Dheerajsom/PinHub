@@ -102,14 +102,21 @@ function notify() {
   for (const listener of listeners) listener();
 }
 
-function persist(next: PersonalLibrarySnapshot) {
+/**
+ * Applies `next` and reports whether it reached storage. When storage is
+ * unavailable or full the in-memory library stays usable for this visit, but
+ * callers must not tell the user it was saved.
+ */
+function persist(next: PersonalLibrarySnapshot): boolean {
   snapshot = next;
+  let durable = true;
   try {
     window.localStorage.setItem(personalLibraryStorageKey, JSON.stringify(next));
   } catch {
-    // The in-memory library remains usable when storage is unavailable.
+    durable = false;
   }
   notify();
+  return durable;
 }
 
 function onStorage(event: StorageEvent) {
@@ -149,13 +156,24 @@ export function recordRecentBoard(id: string): void {
 }
 
 export function createCollection(name: string, boardIds: string[] = []): string | null {
+  return saveCollection(name, boardIds)?.id ?? null;
+}
+
+/**
+ * Creates a collection and reports whether it was stored (`durable`) or is
+ * only kept for this visit because the browser refused the write.
+ */
+export function saveCollection(
+  name: string,
+  boardIds: string[] = [],
+): { id: string; durable: boolean } | null {
   const cleanName = name.trim().slice(0, collectionNameLimit);
   if (!cleanName) return null;
   const current = getPersonalLibrarySnapshot();
   if (current.collections.length >= collectionLimit) return null;
   const now = new Date().toISOString();
   const id = globalThis.crypto?.randomUUID?.() ?? `collection-${Date.now()}`;
-  persist({
+  const durable = persist({
     ...current,
     collections: [
       ...current.collections,
@@ -168,7 +186,7 @@ export function createCollection(name: string, boardIds: string[] = []): string 
       },
     ],
   });
-  return id;
+  return { id, durable };
 }
 
 export function setBoardInCollection(

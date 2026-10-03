@@ -136,6 +136,16 @@ describe("PlannerWorkspace", () => {
     expect(manual[0].textContent).toContain("UART TX");
     expect(within(section).getByRole("group", { name: /^I2C, 1 planned/ })).toBeTruthy();
     expect(new URLSearchParams(window.location.search).get("use")).toBe("pL:0~UART TX");
+    expect(within(section).getByText(/Some claimed pins in this link could not be restored/)).toBeTruthy();
+  });
+
+  it("restores a complete shared link without a warning", async () => {
+    window.history.replaceState(null, "", "/planner?board=raspberry-pi-pico&use=pL:0~UART+TX");
+    render(<PlannerWorkspace board={board("raspberry-pi-pico")} onChangeBoard={() => {}} />);
+    await settle();
+    const section = screen.getByRole("region", { name: "Pin planner" });
+    expect(section.querySelectorAll('tr[data-kind="manual"]')).toHaveLength(1);
+    expect(within(section).queryByText(/could not be restored/)).toBeNull();
   });
 
   it("offers manual claims but no guessed plan on a board without pin functions", async () => {

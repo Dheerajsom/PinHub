@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { WiringCautions } from "@/components/WiringCautions";
 import { SaveSharedCollection } from "@/components/SaveSharedCollection";
 
@@ -71,5 +71,33 @@ describe("SaveSharedCollection", () => {
     expect(button.hasAttribute("disabled")).toBe(true);
     expect(button.className).not.toContain("emerald");
     expect(screen.getByRole("status").textContent).toContain("24 collections");
+  });
+});
+
+describe("SaveSharedCollection when storage refuses the write", () => {
+  it("says the collection is kept for this visit, not saved", async () => {
+    vi.resetModules();
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("QuotaExceededError");
+    });
+    try {
+      const { SaveSharedCollection: Fresh } = await import("@/components/SaveSharedCollection");
+      render(<Fresh name="Bench" boardIds={["raspberry-pi-5"]} />);
+      fireEvent.click(screen.getByRole("button", { name: "Save this collection" }));
+      const button = screen.getByRole("button", { name: "Kept for this visit" });
+      expect(button.className).not.toContain("emerald");
+      expect(screen.queryByText("Saved locally")).toBeNull();
+      expect(screen.getByRole("status").textContent).toContain("gone after a reload");
+    } finally {
+      setItem.mockRestore();
+    }
+  });
+
+  it("still says saved when the write succeeds", async () => {
+    vi.resetModules();
+    const { SaveSharedCollection: Fresh } = await import("@/components/SaveSharedCollection");
+    render(<Fresh name="Bench" boardIds={["raspberry-pi-5"]} />);
+    fireEvent.click(screen.getByRole("button", { name: "Save this collection" }));
+    expect(screen.getByRole("button", { name: "Saved locally" }).className).toContain("emerald");
   });
 });

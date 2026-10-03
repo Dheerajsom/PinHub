@@ -7,8 +7,8 @@ import {
 import { isBoardId } from "@/lib/board-id";
 import {
   cleanClaimName,
+  maxClaimNameLength,
   maxClaims,
-  maxUseParamLength,
   type PinClaim,
 } from "@/lib/planner-claims";
 
@@ -19,7 +19,18 @@ import {
 export const planParam = "plan";
 export const maxPlanParamLength = 64;
 const maxPlanTokens = planPeripherals.length;
-const maxSearchScan = 4096;
+
+// Claim limits are derived from the longest token the writer can emit (the
+// longest anchor key, `~`, the longest name), so a valid plan is never cut
+// short when written, and the reader's scan window always holds what the
+// writer wrote. Encoded, `:`, `~`, `,` and every name character other than
+// letters, digits, `-`, `.` and `_` become three-character escapes.
+const maxAnchorKeyLength = 8 + 1 + 4;
+export const maxUseParamLength = maxClaims * (maxAnchorKeyLength + 1 + maxClaimNameLength + 1) - 1;
+const maxEncodedUseParamLength =
+  maxClaims * (maxAnchorKeyLength + 2 + 3 + 3 * maxClaimNameLength) + (maxClaims - 1) * 3;
+// Room for the claims plus the board, the plan, and the parameter names.
+const maxSearchScan = maxEncodedUseParamLength + 1024;
 const tokenPattern = /^([a-z0-9]+?)(\d)$/;
 
 const peripheralByKey = new Map<string, PlanPeripheral>(
@@ -108,16 +119,31 @@ export function serializeUse(claims: readonly PinClaim[]): string {
   for (const claim of claims.slice(0, maxClaims)) {
     if (!anchorKeyPattern.test(claim.key)) continue;
     const token = `${claim.key}~${cleanClaimName(claim.name)}`;
-    if (length + token.length + 1 > maxUseParamLength) break;
+    const added = token.length + (tokens.length ? 1 : 0);
+    if (length + added > maxUseParamLength) break;
     tokens.push(token);
-    length += token.length + 1;
+    length += added;
   }
   return tokens.join(",");
 }
 
+/**
+ * The claims in a shared link, and whether all of them came back. A link
+ * PinHub wrote always restores completely; one that was edited, cut short, or
+ * written for another board may not, and the planner says so.
+ */
+export function restoreClaims(
+  search: string,
+  validKeys: ReadonlySet<string>,
+): { claims: PinClaim[]; complete: boolean } {
+  const value = new URLSearchParams(search.slice(0, maxSearchScan)).get(useParam);
+  const claims = parseUseParam(value, validKeys);
+  const offered = value ? value.split(",").filter((token) => token !== "").length : 0;
+  return { claims, complete: search.length <= maxSearchScan && claims.length === offered };
+}
+
 export function claimsFromSearch(search: string, validKeys: ReadonlySet<string>): PinClaim[] {
-  const params = new URLSearchParams(search.slice(0, maxSearchScan));
-  return parseUseParam(params.get(useParam), validKeys);
+  return restoreClaims(search, validKeys).claims;
 }
 
 /** `search` with the plan and claims set (or removed when empty); the rest is kept. */

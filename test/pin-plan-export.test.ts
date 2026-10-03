@@ -132,6 +132,32 @@ describe("exports with manual claims", () => {
     expect(python).toContain("user_oled_sda = Pin(2)");
   });
 
+  it("never emits the same claim identifier twice", () => {
+    const named: ClaimedPin[] = [
+      { name: "foo", pin: pinByLabel(pico, "GP2"), cautions: [] },
+      { name: "foo", pin: pinByLabel(pico, "GP3"), cautions: [] },
+      { name: "foo_2", pin: pinByLabel(pico, "GP4"), cautions: [] },
+    ];
+    const exports = planExports(pico, [], date, named);
+    const header = exports.find((item) => item.format === "c-header")!.text;
+    const defines = [...header.matchAll(/^#define (PINHUB_USER_\w+) /gm)].map((match) => match[1]);
+    expect(defines).toEqual(["PINHUB_USER_FOO", "PINHUB_USER_FOO_2", "PINHUB_USER_FOO_2_2"]);
+    const python = exports.find((item) => item.format === "micropython")!.text;
+    const variables = [...python.matchAll(/^(user_\w+) = /gm)].map((match) => match[1]);
+    expect(new Set(variables).size).toBe(3);
+    expect(python).toContain("user_foo_2 = Pin(3)");
+    expect(python).toContain("user_foo_2_2 = Pin(4)");
+
+    const uno = board("arduino-uno-rev3");
+    const arduinoText = planExports(uno, [], date, [
+      { name: "foo", pin: pinByLabel(uno, "D2"), cautions: [] },
+      { name: "foo", pin: pinByLabel(uno, "D3"), cautions: [] },
+      { name: "foo_2", pin: pinByLabel(uno, "D4"), cautions: [] },
+    ]).find((item) => item.format === "arduino")!.text;
+    const constants = [...arduinoText.matchAll(/const uint8_t (PINHUB_USER_\w+) =/g)].map((match) => match[1]);
+    expect(constants).toEqual(["PINHUB_USER_FOO", "PINHUB_USER_FOO_2", "PINHUB_USER_FOO_2_2"]);
+  });
+
   it("carries a claimed pin's cautions into the files", () => {
     const esp = board("esp32-devkitc");
     const all = esp.pinout!.pins

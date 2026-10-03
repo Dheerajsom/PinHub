@@ -35,10 +35,22 @@ describe("deployment security headers", () => {
     for (const workflow of [web, cli]) {
       expect(workflow).toContain("persist-credentials: false");
       expect(workflow).toContain("timeout-minutes: 20");
-      expect(workflow).toContain("npm audit --audit-level=high");
     }
+    expect(cli).toContain("npm audit --audit-level=high");
+    // Web CI audits the full tree through the dated exception policy.
+    expect(web).toContain("npm run audit:ci");
+    expect(repositoryFile("package.json")).toContain('"audit:ci": "tsx scripts/audit.ts"');
+    const script = repositoryFile("scripts/audit.ts");
+    expect(script).toContain('"npm audit --json"');
+    expect(script).not.toContain("--omit");
     expect(web).not.toContain("--audit-level=critical");
     expect(web).not.toContain("npm audit --omit=dev");
+  });
+
+  it("checks the CLI's generated catalog whenever shared board code changes", () => {
+    const web = repositoryFile(".github/workflows/web-ci.yml");
+    expect(web).toContain("npm --prefix cli ci");
+    expect(web).toContain("npm --prefix cli run check:boards");
   });
 
   it("runs web CI when files covered by its repository assertions change", () => {

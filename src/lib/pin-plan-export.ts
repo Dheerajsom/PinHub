@@ -107,14 +107,19 @@ function claimCautionLines(claim: ClaimedPin): string[] {
   );
 }
 
-/** A unique name per claim: the cleaned name, then `_2`, `_3` for repeats. */
+/**
+ * A unique name per claim: the cleaned name, then `_2`, `_3` for repeats.
+ * Every emitted name is reserved, so a claim literally named `foo_2` cannot
+ * collide with the second `foo`.
+ */
 function claimNames(claims: readonly ClaimedPin[], shape: (value: string) => string): string[] {
-  const used = new Map<string, number>();
+  const used = new Set<string>();
   return claims.map((claim) => {
     const base = shape(claim.name) || shape("pin");
-    const count = (used.get(base) ?? 0) + 1;
-    used.set(base, count);
-    return count === 1 ? base : `${base}_${count}`;
+    let name = base;
+    for (let suffix = 2; used.has(name); suffix += 1) name = `${base}_${suffix}`;
+    used.add(name);
+    return name;
   });
 }
 

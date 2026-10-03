@@ -14,7 +14,6 @@ export type ClaimedPin = { name: string; pin: Pin; group?: string; cautions: Cla
 
 export const maxClaims = 64;
 export const maxClaimNameLength = 24;
-export const maxUseParamLength = 2048;
 
 const disallowed = /[^A-Za-z0-9 _+\-./#]+/g;
 const maxNameScan = 256;

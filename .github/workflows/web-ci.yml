@@ -63,14 +63,26 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            cli/package-lock.json
       - name: Use the repository's declared npm version
         run: npm install --global npm@11.11.0
       - run: npm ci
-      - run: npm audit --audit-level=high
+      # High and critical advisories fail unless scripts/lib/audit-policy.ts
+      # records a dated, package-specific exception.
+      - run: npm run audit:ci
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # The CLI's generated catalog and pin index are built from src/lib
+      # (boards, geometry, nets, pin functions, the matcher), whose files CLI
+      # CI's path filter cannot list exhaustively; any shared change runs here.
+      - name: Check the CLI catalog matches the shared board data
+        run: |
+          npm --prefix cli ci
+          npm --prefix cli run check:boards
       - run: npx playwright install --with-deps chrome
       - run: npm run test:e2e -- --workers=2
       - name: Keep Playwright traces and screenshots

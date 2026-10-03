@@ -324,6 +324,29 @@ describe("excluded pins", () => {
     expect(planCapabilities(pico, new Set(allPins(pico)))).toEqual([]);
   });
 
+  it("reports a request the remaining pins cannot meet instead of shrinking it", () => {
+    const gpio = new Set(ok(planPins(pico, { GPIO: 8 })).map((item) => item.pin));
+    const candidates = allPins(pico).filter((pin) => pin.mcu && !["power", "ground", "reserved"].includes(pin.role));
+    const allButOne = new Set(candidates);
+    allButOne.delete([...gpio][0]);
+    const result = planPins(pico, { GPIO: 2 }, undefined, allButOne);
+    expect(result).toMatchObject({
+      status: "unsatisfiable",
+      reason: "Only one pin on this board can be assigned as plain GPIO.",
+    });
+  });
+
+  it("reports a request with every pin claimed as unsatisfiable, not empty", () => {
+    expect(planPins(pico, { GPIO: 2 }, undefined, new Set(allPins(pico)))).toMatchObject({
+      status: "unsatisfiable",
+      reason: "No pin on this board is left to assign as plain GPIO.",
+    });
+    expect(planPins(pico, { I2C: 1 }, undefined, new Set(allPins(pico)))).toMatchObject({
+      status: "unsatisfiable",
+      reason: "No I2C instance is routable on this board.",
+    });
+  });
+
   it("gives the same plan with no exclusion as before", () => {
     expect(planPins(pico, { SPI: 1, PWM: 2 }, undefined, new Set())).toEqual(
       planPins(pico, { SPI: 1, PWM: 2 }),

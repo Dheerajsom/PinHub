@@ -6,6 +6,7 @@ import {
   parsePlanParam,
   parseUseParam,
   planFromSearch,
+  restoreClaims,
   searchWithPlan,
   searchWithPlanner,
   serializePlan,
@@ -90,6 +91,46 @@ describe("planner board and claims parameters", () => {
     expect(params.get("plan")).toBe("i2c1");
     expect(claimsFromSearch(search, keys)).toEqual(claims);
     expect(searchWithPlanner(search, {}, [])).toBe("?board=raspberry-pi-pico&x=1");
+  });
+
+  it("restores every claim the writer can produce, even fully escaped", () => {
+    // Longest keys, longest names, every name character escaped when encoded.
+    const many = Array.from({ length: 64 }, (_, index) => ({
+      key: `abcdefgh:${String(1000 + index)}`,
+      name: "#/+".repeat(8),
+    }));
+    const valid = new Set(many.map((item) => item.key));
+    const search = searchWithPlanner(
+      `?board=${"a".repeat(64)}`,
+      { I2C: 8, SPI: 8, UART: 8, PWM: 8, ADC: 8, DAC: 8, GPIO: 8 },
+      many,
+    );
+    expect(search.length).toBeGreaterThan(4096);
+    expect(serializeUse(many).split(",")).toHaveLength(64);
+    expect(restoreClaims(search, valid)).toEqual({ claims: many, complete: true });
+  });
+
+  it("restores 64 long-named BeagleBone-style claims from a shared link", () => {
+    const many = Array.from({ length: 64 }, (_, index) => ({
+      key: `${index < 32 ? "P8" : "P9"}:${(index % 32) + 1}`,
+      name: `${index}`.padEnd(24, "/#+"),
+    }));
+    const valid = new Set(many.map((item) => item.key));
+    const search = searchWithPlanner("?board=beaglebone-black", {}, many);
+    expect(many.every((item) => item.name.length === 24)).toBe(true);
+    expect(search.length).toBeGreaterThan(4096);
+    expect(claimsFromSearch(search, valid)).toHaveLength(64);
+  });
+
+  it("reports a link whose claims could not all be restored", () => {
+    expect(restoreClaims("?use=pL:0~a,zz:9~b,pL:0~c", keys)).toEqual({
+      claims: [{ key: "pL:0", name: "a" }],
+      complete: false,
+    });
+    expect(restoreClaims("?use=pL:0~a,pR:0~b", keys).complete).toBe(true);
+    expect(restoreClaims("?board=x", keys)).toEqual({ claims: [], complete: true });
+    const cut = `?use=pL:0~a&pad=${"x".repeat(10_000)}`;
+    expect(restoreClaims(cut, keys)).toEqual({ claims: [{ key: "pL:0", name: "a" }], complete: false });
   });
 
   it("applies the same limits when writing", () => {

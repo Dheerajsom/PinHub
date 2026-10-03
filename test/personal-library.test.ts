@@ -171,8 +171,15 @@ describe("personal project library", () => {
     expect(library.getPersonalLibrarySnapshot()).toMatchObject({ recentBoardIds: [] });
     expect(() => library.recordRecentBoard("pico")).not.toThrow();
     expect(library.getPersonalLibrarySnapshot().recentBoardIds).toEqual(["pico"]);
+    expect(library.saveCollection("Bench", ["pico"])).toMatchObject({ durable: false });
+    expect(library.getPersonalLibrarySnapshot().collections).toHaveLength(1);
     getItem.mockRestore();
     setItem.mockRestore();
+  });
+
+  it("reports a stored collection as durable", async () => {
+    const library = await loadLibrary();
+    expect(library.saveCollection("Bench", ["pico"])).toMatchObject({ durable: true });
   });
 
   it("re-reads the library after a cross-tab storage event", async () => {

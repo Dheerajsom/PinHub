@@ -585,6 +585,7 @@ function capacityReason(peripheral: PlanPeripheral, available: number): string {
       : `Only ${word} ${peripheral} ${available === 1 ? "instance is" : "instances are"} routable on this board.`;
   }
   if (peripheral === "GPIO") {
+    if (available === 0) return "No pin on this board is left to assign as plain GPIO.";
     return `Only ${word} ${available === 1 ? "pin" : "pins"} on this board can be assigned as plain GPIO.`;
   }
   return available === 0
@@ -605,11 +606,13 @@ export function planPins(
   exclude?: ReadonlySet<Pin>,
 ): PlanResult {
   if (!board.pinFunctions || !board.pinout) return { status: "unsupported" };
-  const model = new PinPlanModel(board, exclude);
-  const wanted = normalizePlanRequirements(requirements, model.candidates.length);
+  // Counts are only clamped to the planner's range here, never to what the
+  // board has left: a request that cannot fit must be reported, not shrunk.
+  const wanted = normalizePlanRequirements(requirements);
   if (!planPeripherals.some((peripheral) => (wanted[peripheral] ?? 0) > 0)) {
     return { status: "empty" };
   }
+  const model = new PinPlanModel(board, exclude);
 
   const capacity = model.capacity();
   for (const peripheral of placementOrder) {

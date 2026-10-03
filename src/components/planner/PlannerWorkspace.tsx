@@ -15,7 +15,7 @@ import {
   type PlanResult,
 } from "@/lib/pin-planner";
 import { planExports } from "@/lib/pin-plan-export";
-import { claimsFromSearch, planFromSearch, searchWithPlanner } from "@/lib/plan-params";
+import { planFromSearch, restoreClaims, searchWithPlanner } from "@/lib/plan-params";
 import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
 import {
   claimCautions,
@@ -84,14 +84,23 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
 
   const [requirements, setRequirements] = useState<PlanRequirements>({});
   const [claims, setClaims] = useState<PinClaim[]>([]);
+  // A shared link whose claims did not all come back says so until the user
+  // edits the claims, rather than quietly showing a shorter plan.
+  const [linkIncomplete, setLinkIncomplete] = useState(false);
   const ready = useRef(false);
+
+  const restoreLinkClaims = useCallback(() => {
+    const restored = restoreClaims(location.search, validKeys);
+    setClaims(restored.claims);
+    setLinkIncomplete(!restored.complete);
+  }, [validKeys]);
 
   const restore = useCallback(() => {
     if (ready.current) return;
     ready.current = true;
     setRequirements(fit(planFromSearch(location.search)));
-    setClaims(claimsFromSearch(location.search, validKeys));
-  }, [fit, validKeys]);
+    restoreLinkClaims();
+  }, [fit, restoreLinkClaims]);
 
   // Restore a shared plan after hydration: the page is statically generated,
   // so the URL is only known in the browser.
@@ -206,17 +215,18 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
       if (!ready.current) {
         // A tap can beat the first frame; start from the shared plan, not over it.
         ready.current = true;
-        setClaims(claimsFromSearch(location.search, validKeys));
+        restoreLinkClaims();
         setRequirements(apply(fit(planFromSearch(location.search))));
       } else {
         setRequirements(apply);
       }
     },
-    [fit, validKeys],
+    [fit, restoreLinkClaims],
   );
 
   function claim(key: string, name: string) {
     restore();
+    setLinkIncomplete(false);
     const cleaned = cleanClaimName(name);
     setClaims((current) => {
       if (current.some((item) => item.key === key)) {
@@ -228,6 +238,7 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
 
   function release(key: string) {
     restore();
+    setLinkIncomplete(false);
     setClaims((current) => current.filter((item) => item.key !== key));
   }
 
@@ -400,6 +411,12 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
         <div className="min-w-0 space-y-4">
           <section aria-label="Your pins" className="surface-panel min-w-0 rounded-xl p-4">
             <h2 className="mb-3 text-[15px] font-semibold tracking-tight text-white">Your pins</h2>
+            {linkIncomplete ? (
+              <p role="status" className="surface-well mb-3 rounded-md px-3 py-2 text-[13px] leading-6 text-zinc-300">
+                Some claimed pins in this link could not be restored. Check the list below before you wire
+                anything.
+              </p>
+            ) : null}
             <PlannerPinsTable rows={rows} selectedKey={liveKey} auto={auto} onProbe={probe} />
           </section>
           <PlannerAutoAssign
