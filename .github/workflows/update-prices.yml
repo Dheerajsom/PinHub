@@ -33,7 +33,9 @@ jobs:
       - name: Use the repository's declared npm version
         run: npm install --global npm@11.11.0
       - run: npm ci
-      - run: npm audit --audit-level=high
+      # Same policy as Web CI: high and critical advisories fail unless
+      # scripts/lib/audit-policy.ts records a dated exception.
+      - run: npm run audit:ci
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test

@@ -56,6 +56,10 @@ and each fix has a regression test that fails without it.
    advisory and package with a reason and an expiry. The one entry, braces,
    expires 2027-01-03, after which CI fails again. Unreadable reports fail
    closed. Tests: `test/audit-policy.test.ts`.
+   The hourly price workflow ran the same plain audit and had failed on this
+   advisory since 2026-10-03 06:29 UTC (earlier failures were the
+   brace-expansion advisories that the Dependabot update cleared); it now
+   uses `npm run audit:ci` too.
 
 7. **Node engine range.** The root allowed Node 20.17+, but Vitest requires
    `^22.12 || ^24 || >=26`. The range now matches.

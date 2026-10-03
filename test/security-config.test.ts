@@ -47,6 +47,12 @@ describe("deployment security headers", () => {
     expect(web).not.toContain("npm audit --omit=dev");
   });
 
+  it("audits the price workflow with the same policy as Web CI", () => {
+    const prices = repositoryFile(".github/workflows/update-prices.yml");
+    expect(prices).toContain("npm run audit:ci");
+    expect(prices).not.toContain("npm audit --omit=dev");
+  });
+
   it("checks the CLI's generated catalog whenever shared board code changes", () => {
     const web = repositoryFile(".github/workflows/web-ci.yml");
     expect(web).toContain("npm --prefix cli ci");
