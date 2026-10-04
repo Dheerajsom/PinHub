@@ -4,7 +4,7 @@ PinHub checks 11 curated Adafruit/Arduino offers on an hourly target schedule. S
 
 ## Data flow
 
-1. `.github/workflows/update-prices.yml` runs at minute 17 each hour on `main`, or through manual dispatch. GitHub may delay or drop scheduled runs. Inactive public repositories can have schedules disabled after 60 days.
+1. `.github/workflows/update-prices.yml` runs at minute 17 each hour on `main`, or through manual dispatch. GitHub delays scheduled runs by hours at a time (early October 2026: 3–7 hours between successful runs) and can disable schedules on inactive repositories, so the workflow is also started through `/api/cron/prices` (see [Hourly trigger](#hourly-trigger)).
 2. After audit, lint, typecheck, tests and build, `npm run publish-prices` reads the shared snapshot and merges observations into the curated listings. A storage error aborts; only a confirmed missing object permits initialization from the bundled data.
 3. Sequential retailer requests validate exact SKU, variant URL, USD, quantity and stock. Successful checks replace amount, stock and timestamp together. Failed checks retain the last verified observation, including its timestamp. A change exceeding 50% needs explicit reviewed-price acceptance.
 4. The complete validated snapshot is uploaded with the ETag of the version read. A stale cached read or competing writer causes a conditional-write failure; the publisher does not retry with a blind overwrite. Initial creation refuses to overwrite an existing object. Public Blob reads can be cached for 60 seconds; wait at least that long before retrying a conflict.
@@ -23,6 +23,25 @@ Create a **public** Vercel Blob store for the PinHub project, scoped to producti
 - Preview/development without credentials: dated fallback mode works, including builds and tests. Browser tests mock the API for deterministic update/failure scenarios.
 
 Activation requires the GitHub secret as well as the published workflow on the default branch with Actions enabled. Missing credentials cause a visible failed publication, never a success or a fresh timestamp. The user explicitly approved the dedicated price-store credential transfer, and `PINHUB_PRICES_BLOB_TOKEN` was configured on September 10, 2026 UTC.
+
+## Hourly trigger
+
+`GET /api/cron/prices` asks GitHub to dispatch the price workflow on `main`; it never checks retailers or writes prices itself. It requires `Authorization: Bearer $CRON_SECRET`, rejects query strings, and returns `no-store` JSON. It skips without dispatching when the latest run is still active or started less than 40 minutes ago, so overlapping schedules (or a leaked secret) start at most one run per window. GitHub response bodies and tokens are never returned or logged.
+
+Callers:
+
+- An outside scheduler (for example cron-job.org) calls it hourly. Vercel Hobby only allows daily cron jobs.
+- `vercel.json` adds a daily Vercel Cron as a backstop. Vercel sends the `CRON_SECRET` header automatically.
+- GitHub's own `:17` schedule stays as a third, best-effort source.
+
+Vercel environment variables (Production only, marked Sensitive):
+
+| Name | Value |
+| --- | --- |
+| `CRON_SECRET` | Random string of at least 32 characters (`openssl rand -hex 32`). The route stays closed (503) when it is shorter or missing. |
+| `PRICE_WORKFLOW_TOKEN` | Fine-grained GitHub token limited to `Dheerajsom/PinHub` with **Actions: Read and write** only. Note its expiry date and rotate it before then. |
+
+Redeploy after setting them. To check: `curl -H "Authorization: Bearer $CRON_SECRET" https://pinhub-mauve.vercel.app/api/cron/prices` returns `{"status":"dispatched"}` or `{"status":"skipped",...}`, and the run appears under the workflow's Actions tab as a `workflow_dispatch` event.
 
 ## Listing identity and safety
 
