@@ -135,6 +135,7 @@ function uniqueValues(values: Iterable<string>, sorted = false): string[] {
 type PinHubAppProps = {
   catalog: BoardSummary[];
   initialBoard: Board;
+  sourceCount: number;
 };
 
 // JS-initiated scrolling honors the user's reduced-motion preference (the CSS
@@ -148,6 +149,7 @@ function scrollBehavior(): ScrollBehavior {
 export function PinHubApp({
   catalog,
   initialBoard,
+  sourceCount,
 }: PinHubAppProps) {
   const [catalogState, setCatalogState] = useCatalogUrlState("/");
   const query = catalogState.query;
@@ -463,7 +465,11 @@ export function PinHubApp({
   return (
     <main className="relative isolate min-h-screen">
       <CircuitBackground />
-      <CatalogHeader />
+      <CatalogHeader
+        boardCount={catalog.length}
+        interfaceCount={facetItems.interface.length - 1}
+        sourceCount={sourceCount}
+      />
 
       <div className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6 lg:px-8">

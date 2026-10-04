@@ -69,7 +69,7 @@ function setViewport(desktop: boolean) {
 
 function renderApp() {
   return render(
-    <PinHubApp catalog={catalog} initialBoard={pi5} />,
+    <PinHubApp catalog={catalog} initialBoard={pi5} sourceCount={2} />,
   );
 }
 
@@ -244,7 +244,7 @@ describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
     const connector = withQwiic.find((item) => item.id === "qwiic-board")!.discovery.connectorEcosystems[0];
     expect(connector).toBeTruthy();
     history.replaceState(null, "", `/?connector=${encodeURIComponent(connector)}`);
-    render(<PinHubApp catalog={withQwiic} initialBoard={pi5} />);
+    render(<PinHubApp catalog={withQwiic} initialBoard={pi5} sourceCount={2} />);
 
     const chip = await screen.findByRole("button", { name: `Remove Connector: ${connector} filter` });
     fireEvent.click(chip);
@@ -278,7 +278,7 @@ describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
     // "Curation notes" card, and gave every row a Compare icon that the
     // board's More menu already offers.
     setViewport(true);
-    const { container } = renderApp();
+    renderApp();
 
     const status = screen
       .getAllByRole("status")
@@ -291,6 +291,20 @@ describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
     // Active filters are marked by their pressed styling alone, not a dot.
     const active = screen.getAllByRole("button", { pressed: true, name: /^All/ })[0];
     expect(active.querySelector(".rounded-full.bg-cyan-300")).toBeNull();
-    expect(container.querySelector("dl")?.textContent ?? "").not.toMatch(/Interfaces/);
+  });
+
+  it("reads out the catalog's board, interface, and source counts in the header", () => {
+    setViewport(true);
+    const { container } = renderApp();
+    const readout = container.querySelector("header dl")!;
+    const pairs = [...readout.querySelectorAll("div")].map((cell) => [
+      cell.querySelector("dt")?.textContent,
+      cell.querySelector("dd")?.textContent,
+    ]);
+    expect(pairs).toEqual([
+      ["Boards", String(catalog.length)],
+      ["Interfaces", expect.stringMatching(/^\d+$/)],
+      ["Sources", "2"],
+    ]);
   });
 });

@@ -2,7 +2,17 @@ import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { repoUrl } from "@/lib/site";
 
-export function CatalogHeader() {
+type CatalogHeaderProps = {
+  boardCount: number;
+  interfaceCount: number;
+  sourceCount: number;
+};
+
+export function CatalogHeader({
+  boardCount,
+  interfaceCount,
+  sourceCount,
+}: CatalogHeaderProps) {
   return (
     <header className="ph-header relative overflow-hidden pt-[env(safe-area-inset-top)]">
       <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
@@ -28,7 +38,14 @@ export function CatalogHeader() {
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2.5 sm:gap-5">
+        <div className="flex shrink-0 items-center gap-2.5">
+          {/* One recessed readout, read like the spec table's ruled rows:
+              mono figures an engineer might quote, mono labels beside them. */}
+          <dl className="surface-well hidden h-10 items-stretch rounded-xl md:flex">
+            <Readout label="Boards" value={boardCount} />
+            <Readout label="Interfaces" value={interfaceCount} />
+            <Readout label="Sources" value={sourceCount} />
+          </dl>
           <ThemeToggle />
           <GitHubButton />
         </div>
@@ -57,5 +74,18 @@ function GitHubButton() {
       </svg>
       <span className="relative hidden sm:inline">GitHub</span>
     </a>
+  );
+}
+
+function Readout({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex flex-row-reverse items-baseline gap-1.5 self-center border-l border-[var(--panel-border)] px-3 first:border-l-0">
+      <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+        {label}
+      </dt>
+      <dd className="font-mono text-sm font-semibold tabular-nums text-white">
+        {value}
+      </dd>
+    </div>
   );
 }

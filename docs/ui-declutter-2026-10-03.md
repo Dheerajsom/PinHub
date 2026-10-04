@@ -30,8 +30,6 @@ and the same `SpecTable`.
   "Board diagram" row chip and its CSS, the per-row Compare icon (now in ⋯),
   the boxed category tag on rows (folded into the meta line), and the cyan
   dots on active filter items, filter headers, and active-filter chips.
-- Header: the Boards / Interfaces / Sources metric tiles (the Category facet
-  already shows the board count).
 - Background: the "REFERENCE HARDWARE / COMPUTE" and "/ CONTROL" labels.
 - Footer: the "147 boards · 277 source links" line.
 - Detail panel: the interface, highlight, and source count badges; the empty
@@ -47,6 +45,15 @@ and the same `SpecTable`.
   count (kept `sr-only`), "· USD" on every row, and the duplicate "Shipping
   and tax excluded."
 - `PlanPinsLink`: the subtitle. It no longer takes `auto`.
+
+## Header readout (restored on request)
+
+The header's Boards / Interfaces / Sources counts came back after review,
+restyled to match the spec table. There is one recessed `surface-well` strip,
+40 px tall like the theme and GitHub buttons. Each cell has a mono figure and
+a mono uppercase label, with hairline dividers between cells. It shows from
+`md` (768 px) up, as before. The footer count stays removed, so the header is
+the only place these numbers appear.
 
 ## Kept on purpose
 
