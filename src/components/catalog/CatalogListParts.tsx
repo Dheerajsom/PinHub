@@ -1,6 +1,5 @@
 import { memo, type ReactNode } from "react";
-import Link from "next/link";
-import { GitCompareArrows, Star, X } from "lucide-react";
+import { Star, X } from "lucide-react";
 import { clsx } from "clsx";
 import type { BoardSummary } from "@/lib/board-summary";
 import {
@@ -8,7 +7,6 @@ import {
   type BoardMatchField,
 } from "@/lib/board-search";
 import { VendorLogo } from "@/components/VendorLogo";
-import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { InterfaceChip } from "@/components/InterfaceChip";
 
 type ActiveFilterChipProps = {
@@ -24,7 +22,6 @@ export function ActiveFilterChip({ label, onClear }: ActiveFilterChipProps) {
       aria-label={`Remove ${label} filter`}
       className="group flex shrink-0 items-center gap-1.5 rounded-full border border-cyan-300/50 bg-cyan-300/10 py-1 pl-2.5 pr-2 text-xs font-medium text-cyan-50 transition hover:border-cyan-300/80 hover:bg-cyan-300/15"
     >
-      <span className="size-1.5 rounded-full bg-cyan-300" aria-hidden="true" />
       {label}
       <X
         className="size-3 text-cyan-200/70 transition group-hover:text-white"
@@ -60,9 +57,6 @@ export function FilterPanel({
         <span className="text-[13px] font-semibold tracking-tight text-white">
           {title}
         </span>
-        {active !== "All" ? (
-          <span className="ml-auto size-1.5 rounded-full bg-cyan-300" aria-hidden="true" />
-        ) : null}
       </div>
       <div className="flex flex-wrap gap-1.5 lg:flex-col lg:gap-0.5">
         {items.map((item) => {
@@ -80,12 +74,7 @@ export function FilterPanel({
               )}
               aria-pressed={isActive}
             >
-              <span className="flex min-w-0 items-center gap-2">
-                {isActive ? (
-                  <span className="size-1.5 shrink-0 rounded-full bg-cyan-300" aria-hidden="true" />
-                ) : null}
-                <span className="truncate">{item}</span>
-              </span>
+              <span className="truncate">{item}</span>
               {counts?.has(item) ? (
                 <span
                   className={clsx(
@@ -121,7 +110,6 @@ export function FilterSelect({
   active,
   onChange,
 }: FilterSelectProps) {
-  const hasValue = active !== "All";
   return (
     <label className="surface-panel block rounded-xl p-3">
       <span className="mb-2 flex items-center gap-2 px-1">
@@ -131,9 +119,6 @@ export function FilterSelect({
         <span className="text-[13px] font-semibold tracking-tight text-white">
           {title}
         </span>
-        {hasValue ? (
-          <span className="ml-auto size-1.5 rounded-full bg-cyan-300" aria-hidden="true" />
-        ) : null}
       </span>
       <select
         value={active}
@@ -232,7 +217,7 @@ export const BoardResult = memo(function BoardResult({
         className="absolute inset-0 z-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
       />
       <div className="pointer-events-none relative z-10 p-4">
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 pr-20">
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 pr-10">
           <div className="flex min-w-0 items-center gap-2.5">
             <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-[#0a0c11] text-sm font-bold text-zinc-300">
               <VendorLogo vendor={board.vendor} size={20} />
@@ -245,11 +230,8 @@ export const BoardResult = memo(function BoardResult({
                 <h2 className="truncate text-[15px] font-semibold tracking-tight text-white">{board.name}</h2>
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="rounded border border-white/10 bg-[#0a0c11] px-1.5 py-px text-[10px] font-medium uppercase tracking-[0.1em] text-zinc-400">
-                  {board.category}
-                </span>
-                <span className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-500">
-                  {board.vendor} · {board.logicLevel}
+                <span className="font-mono text-[11px] text-zinc-500">
+                  {board.vendor} · {board.category} · {board.logicLevel}
                 </span>
                 {matchedBy ? (
                   <span className="shrink-0 rounded border border-cyan-300/25 bg-cyan-300/[0.07] px-1.5 py-px font-mono text-[10px] uppercase tracking-[0.1em] text-cyan-200/90">
@@ -264,9 +246,6 @@ export const BoardResult = memo(function BoardResult({
               </div>
             </div>
           </div>
-          {raspberryPiModel(board.id) ? (
-            <span className="ph-render-chip">Board diagram</span>
-          ) : null}
         </div>
 
         <p
@@ -292,14 +271,6 @@ export const BoardResult = memo(function BoardResult({
           </span>
         </div>
       </div>
-      <Link
-        href={`/compare?boards=${encodeURIComponent(board.id)}`}
-        aria-label={`Compare ${board.name}`}
-        title="Compare board"
-        className="absolute right-11 top-2.5 z-20 grid size-9 place-items-center rounded-lg border border-transparent text-zinc-600 transition hover:border-cyan-300/30 hover:bg-white/[0.08] hover:text-cyan-200 focus-visible:ring-2 focus-visible:ring-cyan-300/70"
-      >
-        <GitCompareArrows className="size-4" aria-hidden="true" />
-      </Link>
       <button
         type="button"
         onClick={() => onToggleFavorite(board.id)}

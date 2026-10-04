@@ -1,39 +1,5 @@
 @import "tailwindcss";
 
-/* A paper release sticker; normal flow keeps it clear of card names and tools. */
-/* Rows whose board has the drawn, interactive diagram. A plain labelled chip
-   in the row's own ink: it states a fact about the data, not a promotion. */
-.ph-render-chip {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-self: flex-start;
-  align-items: center;
-  gap: 5px;
-  margin-left: auto;
-  padding: 3px 7px;
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  border-radius: 5px;
-  color: #a7f3d0;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 1.2;
-  white-space: nowrap;
-}
-.ph-render-chip::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background-color: #34d399;
-}
-:root[data-theme="light"] .ph-render-chip {
-  border-color: rgba(4, 120, 87, 0.35);
-  color: #065f46;
-}
-:root[data-theme="light"] .ph-render-chip::before {
-  background-color: #059669;
-}
-
 /* Pin readout (PinDetails): the pin's role hue rules the left edge, and the
    pinned-pin actions share one quiet row. Defined here rather than as utilities
    so the hover wash has a real light-theme counterpart. */
@@ -80,8 +46,7 @@
   --pi-caution: #c2410c;
 }
 .pi-workbench-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 18px; border-bottom: 1px solid var(--pi-rule); }
-.pi-workbench-heading h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.025em; }
-.pi-workbench-heading p { margin: 4px 0 0; font-size: 12px; color: var(--pi-muted); }
+.pi-workbench-heading h3 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
 .pi-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .pi-tools > button, .pi-tools > a { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 11px; border: 1px solid var(--pi-rule); border-radius: 6px; font-size: 12px; background: var(--pi-well); }
 .pi-workbench button, .pi-workbench a { cursor: pointer; }
@@ -212,8 +177,8 @@ body {
 }
 
 /* Match button and link labels despite the global form-control font reset. */
-.board-actions button, .board-actions > a { font-size: 0.8125rem; }
-.board-actions > button, .board-actions > a { font-weight: 500; }
+.board-actions button, .board-actions a { font-size: 0.8125rem; }
+.board-actions > div > a { font-weight: 500; }
 
 /* Prices read like a parts list: the amber price column anchors each row.
    On a phone the same content becomes a two-column purchasing card. */
@@ -1257,14 +1222,6 @@ button {
 
 .ph-fav-active svg {
   animation: ph-star-pop 280ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.ph-spec-tile {
-  transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-
-.ph-spec-tile:hover {
-  border-color: rgba(103, 232, 249, 0.35);
 }
 
 .ph-source-row {

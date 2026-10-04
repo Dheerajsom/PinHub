@@ -16,7 +16,6 @@ import {
   Search,
   ShieldAlert,
   SlidersHorizontal,
-  Sparkles,
   Star,
   Wifi,
   X,
@@ -63,11 +62,9 @@ const discoveryDefaultState = { ...defaultCatalogState, sort: "name" as const };
 
 export function DiscoveryApp({
   catalog,
-  sourceCount,
   initialCompareIds = [],
 }: {
   catalog: BoardSummary[];
-  sourceCount: number;
   initialCompareIds?: string[];
 }) {
   const ids = useMemo(() => new Set(catalog.map((board) => board.id)), [catalog]);
@@ -188,17 +185,11 @@ export function DiscoveryApp({
                 PinHub
               </h1>
               <p className="mt-1 truncate text-xs text-zinc-400 sm:text-sm">
-                Compare boards. Verify pins. Build with confidence.
+                Source-backed pinouts for dev boards, SBCs, and microcontrollers
               </p>
             </div>
           </Link>
-          <div className="flex items-center gap-3 sm:gap-5">
-            <div className="hidden items-center gap-5 sm:flex">
-              <Metric value={catalog.length} label="Boards" />
-              <Metric value={sourceCount} label="Sources" />
-            </div>
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -254,7 +245,7 @@ export function DiscoveryApp({
               <option value="recentlyAdded">Recently added</option>
               <option value="interfaceCount">Most interfaces</option>
             </select>
-            <span className="ml-auto shrink-0 font-mono text-xs text-zinc-400 sm:order-6 sm:shrink" role="status" aria-live="polite">{filtered.length} matches</span>
+            <span className="sr-only" role="status" aria-live="polite">{filtered.length} matches</span>
           </div>
         </div>
       </div>
@@ -295,13 +286,6 @@ export function DiscoveryApp({
 
         <section id="board-results" aria-label="Board results" className="min-w-0">
           <FavoriteLimitToast message={favoriteMessage} />
-          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-cyan-200"><Sparkles className="size-3.5" /> Discovery workspace</div>
-              <h2 className="mt-1 text-xl font-semibold text-white">Find the right board, then verify every wire.</h2>
-            </div>
-            <p className="max-w-md text-sm leading-6 text-zinc-400">Use factual filters, shortlist up to four boards, and inspect the differences that matter.</p>
-          </div>
           <div className="grid gap-3 xl:grid-cols-2">
             {filtered.slice(0, visible).map(({ board, matchedBy }, index) => (
               <BoardCard key={board.id} board={board} matchedBy={matchedBy} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === maxComparedBoards} onFavorite={onToggleFavorite} onCompare={toggleCompare} index={index} />
@@ -378,10 +362,6 @@ export function DiscoveryApp({
       ) : null}
     </main>
   );
-}
-
-function Metric({ value, label }: { value: number; label: string }) {
-  return <div className="text-right"><div className="font-mono text-lg font-semibold text-white">{value}</div><div className="text-[10px] uppercase tracking-[0.14em] text-zinc-500">{label}</div></div>;
 }
 
 function Facet({

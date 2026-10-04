@@ -2,7 +2,6 @@ import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { repoUrl } from "@/lib/site";
 
-
 type CatalogHeaderProps = {
   boardCount: number;
   interfaceCount: number;
@@ -39,11 +38,13 @@ export function CatalogHeader({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2.5 sm:gap-5">
-          <dl className="hidden items-center gap-2 text-sm md:flex">
-            <Metric label="Boards" value={boardCount.toString()} />
-            <Metric label="Interfaces" value={interfaceCount.toString()} />
-            <Metric label="Sources" value={sourceCount.toString()} />
+        <div className="flex shrink-0 items-center gap-2.5">
+          {/* One recessed readout, read like the spec table's ruled rows:
+              mono figures an engineer might quote, mono labels beside them. */}
+          <dl className="surface-well hidden h-10 items-stretch rounded-xl md:flex">
+            <Readout label="Boards" value={boardCount} />
+            <Readout label="Interfaces" value={interfaceCount} />
+            <Readout label="Sources" value={sourceCount} />
           </dl>
           <ThemeToggle />
           <GitHubButton />
@@ -76,13 +77,13 @@ function GitHubButton() {
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Readout({ label, value }: { label: string; value: number }) {
   return (
-    <div className="flex flex-col-reverse rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-right">
-      <dt className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500">
+    <div className="flex flex-row-reverse items-baseline gap-1.5 self-center border-l border-[var(--panel-border)] px-3 first:border-l-0">
+      <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
         {label}
       </dt>
-      <dd className="font-mono text-[15px] font-semibold leading-none tabular-nums text-white">
+      <dd className="font-mono text-sm font-semibold tabular-nums text-white">
         {value}
       </dd>
     </div>

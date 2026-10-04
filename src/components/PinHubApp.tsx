@@ -22,7 +22,6 @@ import {
   Radio,
   Search,
   SlidersHorizontal,
-  Sparkles,
   Star,
   X,
   Zap,
@@ -720,20 +719,6 @@ export function PinHubApp({
               className="size-4 accent-cyan-300"
             />
           </label>
-          <section className="surface-panel hidden rounded-xl p-4 xl:block">
-            <div className="flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
-              <Sparkles className="size-4 text-amber-200" aria-hidden="true" />
-              Curation notes
-            </div>
-            <p className="mt-2.5 text-[13px] leading-6 text-zinc-400">
-              In-app maps ship where connector layouts are stable and
-              source-backed. Entries without maps still link to the official
-              pinout, manual, datasheet, or schematic — nothing is a dead end.
-            </p>
-            <p className="mt-2.5 border-t border-white/10 pt-2.5 font-mono text-[11px] leading-5 text-zinc-500">
-              Tip: star a board, then filter Favorites to keep a bench shortlist.
-            </p>
-          </section>
           <LibraryRail catalog={catalog} />
         </aside>
 
@@ -745,18 +730,13 @@ export function PinHubApp({
         >
           <FavoriteLimitToast message={favoriteMessage} />
           <PinLookupAnswer query={query} search={boardSearchEntries} />
-          <div className="mb-2 flex items-center justify-between gap-3 px-0.5">
-            <span
-              className="font-mono text-xs tabular-nums text-zinc-400"
-              role="status"
-              aria-live="polite"
-            >
-              Showing {visibleBoards.length} of {filteredBoards.length}{" "}
-              {hasActiveFilters ? "matches" : "boards"}
-              {hasActiveFilters ? ` · ${catalog.length} total` : ""}
-              {paging ? " · loading more" : ""}
-            </span>
-          </div>
+          {/* Announced, not shown: the list itself shows what matched. */}
+          <span className="sr-only" role="status" aria-live="polite">
+            Showing {visibleBoards.length} of {filteredBoards.length}{" "}
+            {hasActiveFilters ? "matches" : "boards"}
+            {hasActiveFilters ? ` · ${catalog.length} total` : ""}
+            {paging ? " · loading more" : ""}
+          </span>
           {!hasActiveFilters ? (
             <CommonBoards
               boards={commonBoards}
@@ -953,17 +933,12 @@ function CommonBoards({
       aria-labelledby="common-boards-heading"
       className="surface-panel ph-card-in mb-3 overflow-hidden rounded-xl"
     >
-      <div className="flex items-baseline justify-between gap-3 border-b border-white/5 px-3.5 py-2.5">
-        <h2
-          id="common-boards-heading"
-          className="text-[13px] font-semibold tracking-tight text-white"
-        >
-          Common boards
-        </h2>
-        <span className="font-mono text-[11px] text-zinc-500">
-          {boards.length} reference picks
-        </span>
-      </div>
+      <h2
+        id="common-boards-heading"
+        className="border-b border-white/5 px-3.5 py-2.5 text-[13px] font-semibold tracking-tight text-white"
+      >
+        Common boards
+      </h2>
       <div className="flex gap-1.5 overflow-x-auto p-2.5 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:overflow-visible min-[1500px]:grid-cols-4 [&::-webkit-scrollbar]:hidden">
         {boards.map((board) => (
           <button
@@ -994,7 +969,7 @@ function CommonBoards({
       <div className="flex items-center gap-1.5 overflow-x-auto border-t border-white/5 px-3.5 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-zinc-500">
           <Search className="size-3.5 text-cyan-300/70" aria-hidden="true" />
-          Try a search:
+          Try
         </span>
         {quickQueries.map((suggestion) => (
           <button
