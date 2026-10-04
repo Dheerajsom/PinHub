@@ -36,31 +36,49 @@ beforeAll(() => {
 
 afterEach(cleanup);
 
-describe("BoardDetailPanel full board page link", () => {
+describe("BoardDetailPanel header card", () => {
   it("links to the board page and, separately, to the planner", () => {
     const board = catalogBoard("raspberry-pi-pico");
-    expect(board.pinFunctions).toBeDefined();
     renderPanel(board);
 
-    const page = screen.getByRole("link", { name: /Open full board page/ });
+    const page = screen.getByRole("link", { name: /Board page/ });
     expect(page.getAttribute("href")).toBe("/boards/raspberry-pi-pico");
-    const plan = screen.getByRole("link", { name: /Plan pins on this board/ });
+    const plan = screen.getByRole("link", { name: /Plan pins/ });
     expect(plan.getAttribute("href")).toBe("/planner?board=raspberry-pi-pico");
-    expect(plan.textContent).toContain("auto-assign");
     expect(plan.getAttribute("target")).toBeNull();
   });
 
-  it("does not promise auto-assign to a board without pin function data", () => {
-    const board = catalogBoard("raspberry-pi-500");
-    expect(board.pinFunctions).toBeUndefined();
+  it("offers no planner link for a board without a pin map", () => {
+    const board = boards.find((item) => !item.pinout);
+    if (!board) return;
     renderPanel(board);
+    expect(screen.getByRole("link", { name: /Board page/ })).toBeTruthy();
+    expect(screen.queryByRole("link", { name: /Plan pins/ })).toBeNull();
+  });
 
-    expect(
-      screen.getByRole("link", { name: /Open full board page/ }).getAttribute("href"),
-    ).toBe("/boards/raspberry-pi-500");
-    const plan = screen.queryByRole("link", { name: /Plan pins on this board/ });
-    if (board.pinout) expect(plan?.textContent).not.toMatch(/auto/i);
-    else expect(plan).toBeNull();
+  it("names the board once and keeps the specs, without eyebrow or duplicate lines", () => {
+    // Regression: the card repeated itself — a "Selected board" eyebrow, a
+    // category chip, a vendor / family line, and Collection + Compare buttons
+    // that duplicated the More menu and the catalog row.
+    const board = catalogBoard("raspberry-pi-5");
+    const { container } = renderPanel(board);
+    const card = container.querySelector("section")!;
+
+    expect(card.textContent).not.toMatch(/Selected board/i);
+    expect(card.textContent).not.toContain(`${board.vendor} / ${board.family}`);
+    expect(screen.getAllByRole("heading", { name: board.name })).toHaveLength(1);
+    for (const label of ["Processor", "Logic", "Power", "Format"]) {
+      expect(card.textContent).toContain(label);
+    }
+    expect(screen.queryByRole("button", { name: "Collection" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Compare" })).toBeNull();
+    expect(screen.getByRole("button", { name: "More board actions" })).toBeTruthy();
+  });
+
+  it("hides the revision notes section when the record has none", () => {
+    const board = catalogBoard("raspberry-pi-5");
+    renderPanel(board);
+    expect(screen.queryByText(/No revision-specific note/)).toBeNull();
   });
 
   it("is not shown while the board details are still loading", () => {
@@ -73,6 +91,6 @@ describe("BoardDetailPanel full board page link", () => {
         onBackToResults={() => {}}
       />,
     );
-    expect(screen.queryByRole("link", { name: /Open full board page/ })).toBeNull();
+    expect(screen.queryByRole("link", { name: /Board page/ })).toBeNull();
   });
 });

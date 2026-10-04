@@ -156,12 +156,6 @@ export function WiringCautions({
             Report a data error
             <span className="sr-only"> on GitHub (opens in a new tab)</span>
           </span>
-          <span
-            className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500"
-            aria-hidden="true"
-          >
-            GitHub
-          </span>
         </a>
       ) : null}
     </section>

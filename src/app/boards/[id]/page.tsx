@@ -16,7 +16,7 @@ import {
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { siteName } from "@/lib/site";
 import { boardVisuals } from "@/lib/board-visuals";
-import { fiveVoltCaution, revisionNotesFor } from "@/lib/board-utilities";
+import { revisionNotesFor } from "@/lib/board-utilities";
 import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { PinoutTabs } from "@/components/PinoutTabs";
@@ -26,7 +26,7 @@ import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WiringCautions } from "@/components/WiringCautions";
 import { InterfaceChip } from "@/components/InterfaceChip";
-import { PlanPinsLink } from "@/components/planner/PlanPinsLink";
+import { SpecTable } from "@/components/SpecTable";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -94,7 +94,6 @@ export default async function BoardPage({
       ? [boardVisuals[board.id].revisionNote]
       : []),
   ].filter((note, index, all) => all.indexOf(note) === index);
-  const logicCaution = fiveVoltCaution(board);
 
   return (
     <main className="relative isolate min-h-screen pb-10">
@@ -117,9 +116,6 @@ export default async function BoardPage({
                 </span>
                 <span className="min-w-0 break-words">{board.name}</span>
               </h1>
-              <p className="mt-2 font-mono text-xs text-zinc-500">
-                {board.vendor} / {board.family}
-              </p>
               <p className="mt-3 max-w-2xl text-[15px] leading-7 text-zinc-400">
                 {board.description}
               </p>
@@ -133,23 +129,14 @@ export default async function BoardPage({
                   </li>
                 ))}
               </ul>
-              <div className="mt-5">
+              <div className="mt-5 sm:max-w-sm">
                 <BoardActions board={board} />
-                {board.pinout ? (
-                  <PlanPinsLink
-                    boardId={board.id}
-                    auto={Boolean(board.pinFunctions)}
-                    className="mt-2"
-                  />
-                ) : null}
               </div>
             </div>
-            <dl className="ph-spec-table border-t border-white/10 bg-[#0e1118] px-5 py-1 lg:border-l lg:border-t-0">
-              <SpecRow label="Processor" value={board.processor} />
-              <SpecRow label="Logic" value={board.logicLevel} caution={logicCaution} />
-              <SpecRow label="Power" value={board.power} />
-              <SpecRow label="Format" value={board.formFactor} />
-            </dl>
+            <SpecTable
+              board={board}
+              className="border-t border-white/10 bg-[#0e1118] px-5 py-1 lg:border-l lg:border-t-0"
+            />
           </div>
         </section>
 
@@ -181,18 +168,16 @@ export default async function BoardPage({
           <div className="min-w-0 space-y-5 lg:col-start-2 lg:row-start-2">
             <BoardPriceLink boardId={board.id} />
 
-            <section className="surface-panel rounded-xl p-4">
-              <h2 className="flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
-                <GitBranch className="size-4 text-amber-200" aria-hidden="true" /> Revision notes
-              </h2>
-              {revisionNotes.length ? (
+            {revisionNotes.length ? (
+              <section className="surface-panel rounded-xl p-4">
+                <h2 className="flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
+                  <GitBranch className="size-4 text-amber-200" aria-hidden="true" /> Revision notes
+                </h2>
                 <ul className="mt-3 grid gap-2 text-sm leading-6 text-zinc-400">
                   {revisionNotes.map((note) => <li key={note} className="surface-well rounded-lg p-3">{note}</li>)}
                 </ul>
-              ) : (
-                <p className="mt-2 text-[13px] leading-6 text-zinc-500">No revision-specific differences are documented in PinHub for this board. Check the linked vendor material for your exact hardware revision.</p>
-              )}
-            </section>
+              </section>
+            ) : null}
 
             <section className="surface-panel rounded-xl p-4">
               <h2 className="mb-3 flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
@@ -259,26 +244,3 @@ export default async function BoardPage({
   );
 }
 
-function SpecRow({
-  label,
-  value,
-  caution,
-}: {
-  label: string;
-  value: string;
-  caution?: string | null;
-}) {
-  return (
-    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 py-3">
-      <dt className="pt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
-        {label}
-      </dt>
-      <dd className="min-w-0 text-sm leading-6 text-zinc-200">
-        {value}
-        {caution ? (
-          <span className="mt-1 block text-xs font-medium text-amber-200">{caution}</span>
-        ) : null}
-      </dd>
-    </div>
-  );
-}

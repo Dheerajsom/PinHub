@@ -164,7 +164,7 @@ test.describe("planner page", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/boards/raspberry-pi-pico");
     await expect(page.getByRole("region", { name: "Pin planner" })).toHaveCount(0);
-    const link = page.getByRole("link", { name: /Plan pins on this board/ });
+    const link = page.getByRole("link", { name: "Plan pins", exact: true });
     expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(44);
     await link.click();
     await expect(page).toHaveURL(/\/planner\?board=raspberry-pi-pico$/);
@@ -181,7 +181,7 @@ test.describe("planner page", () => {
     const panel = page.getByRole("complementary").filter({
       has: page.getByRole("heading", { name: "Raspberry Pi Pico", exact: true }),
     });
-    const fromPanel = panel.getByRole("link", { name: /Plan pins on this board/ });
+    const fromPanel = panel.getByRole("link", { name: "Plan pins", exact: true });
     await expect(fromPanel).toHaveAttribute("href", "/planner?board=raspberry-pi-pico");
     expect((await fromPanel.boundingBox())?.height).toBeGreaterThanOrEqual(44);
   });

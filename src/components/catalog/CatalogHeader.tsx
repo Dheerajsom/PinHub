@@ -2,18 +2,7 @@ import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { repoUrl } from "@/lib/site";
 
-
-type CatalogHeaderProps = {
-  boardCount: number;
-  interfaceCount: number;
-  sourceCount: number;
-};
-
-export function CatalogHeader({
-  boardCount,
-  interfaceCount,
-  sourceCount,
-}: CatalogHeaderProps) {
+export function CatalogHeader() {
   return (
     <header className="ph-header relative overflow-hidden pt-[env(safe-area-inset-top)]">
       <div className="relative mx-auto flex max-w-[1560px] items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
@@ -40,11 +29,6 @@ export function CatalogHeader({
         </div>
 
         <div className="flex shrink-0 items-center gap-2.5 sm:gap-5">
-          <dl className="hidden items-center gap-2 text-sm md:flex">
-            <Metric label="Boards" value={boardCount.toString()} />
-            <Metric label="Interfaces" value={interfaceCount.toString()} />
-            <Metric label="Sources" value={sourceCount.toString()} />
-          </dl>
           <ThemeToggle />
           <GitHubButton />
         </div>
@@ -73,18 +57,5 @@ function GitHubButton() {
       </svg>
       <span className="relative hidden sm:inline">GitHub</span>
     </a>
-  );
-}
-
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col-reverse rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-right">
-      <dt className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500">
-        {label}
-      </dt>
-      <dd className="font-mono text-[15px] font-semibold leading-none tabular-nums text-white">
-        {value}
-      </dd>
-    </div>
   );
 }

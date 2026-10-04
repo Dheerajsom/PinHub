@@ -11,20 +11,12 @@ assertBoardSourcesValid(boards);
 assertBoardVisualsValid();
 
 const catalog = boards.map(summarizeBoard);
-const sourceCount = boards.reduce(
-  (total, board) => total + board.sourceLinks.length,
-  0,
-);
 
 export default function Home() {
   const initialBoard = boards[0];
   if (!initialBoard) return null;
 
   return (
-    <PinHubApp
-      catalog={catalog}
-      initialBoard={initialBoard}
-      sourceCount={sourceCount}
-    />
+    <PinHubApp catalog={catalog} initialBoard={initialBoard} />
   );
 }

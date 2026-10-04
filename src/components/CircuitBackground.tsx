@@ -181,11 +181,6 @@ export function CircuitBackground() {
           <text x="74" y="335" fill="#d4f3f6" fillOpacity="0.88" fontFamily="var(--font-sans)" fontSize="23" fontWeight="700">ARDUINO</text>
           <text x="74" y="355" fill="#9ee1e8" fillOpacity="0.7" fontFamily="var(--font-mono)" fontSize="12" fontWeight="700" letterSpacing="1.4">UNO R3</text>
         </g>
-
-        <g className="pinhub-bench-labels" fill="#b6c9d2" fillOpacity="0.28" fontFamily="var(--font-mono)" fontSize="9" letterSpacing="1.8">
-          <text x="44" y="918">REFERENCE HARDWARE / COMPUTE</text>
-          <text x="1460" y="918">REFERENCE HARDWARE / CONTROL</text>
-        </g>
       </svg>
 
       <div className="pinhub-background-light absolute inset-0" />

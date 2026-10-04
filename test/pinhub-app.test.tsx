@@ -69,7 +69,7 @@ function setViewport(desktop: boolean) {
 
 function renderApp() {
   return render(
-    <PinHubApp catalog={catalog} initialBoard={pi5} sourceCount={2} />,
+    <PinHubApp catalog={catalog} initialBoard={pi5} />,
   );
 }
 
@@ -244,7 +244,7 @@ describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
     const connector = withQwiic.find((item) => item.id === "qwiic-board")!.discovery.connectorEcosystems[0];
     expect(connector).toBeTruthy();
     history.replaceState(null, "", `/?connector=${encodeURIComponent(connector)}`);
-    render(<PinHubApp catalog={withQwiic} initialBoard={pi5} sourceCount={2} />);
+    render(<PinHubApp catalog={withQwiic} initialBoard={pi5} />);
 
     const chip = await screen.findByRole("button", { name: `Remove Connector: ${connector} filter` });
     fireEvent.click(chip);
@@ -270,5 +270,27 @@ describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
     expect(within(section).getByRole("button", { name: "Inspect Raspberry Pi 5" })).toBeTruthy();
     expect(within(section).queryByText("01")).toBeNull();
     expect(screen.queryByText(/Trending/i)).toBeNull();
+  });
+
+  it("keeps the first screen free of filler text and duplicate controls", () => {
+    // Regression: the catalog announced its result count visibly, labelled
+    // rows "Board diagram", counted its own "reference picks", carried a
+    // "Curation notes" card, and gave every row a Compare icon that the
+    // board's More menu already offers.
+    setViewport(true);
+    const { container } = renderApp();
+
+    const status = screen
+      .getAllByRole("status")
+      .find((node) => node.textContent?.startsWith("Showing"));
+    expect(status?.className).toContain("sr-only");
+    expect(screen.queryByText("Board diagram")).toBeNull();
+    expect(screen.queryByText(/reference picks/)).toBeNull();
+    expect(screen.queryByText("Curation notes")).toBeNull();
+    expect(screen.queryByRole("link", { name: /^Compare Raspberry Pi/ })).toBeNull();
+    // Active filters are marked by their pressed styling alone, not a dot.
+    const active = screen.getAllByRole("button", { pressed: true, name: /^All/ })[0];
+    expect(active.querySelector(".rounded-full.bg-cyan-300")).toBeNull();
+    expect(container.querySelector("dl")?.textContent ?? "").not.toMatch(/Interfaces/);
   });
 });
