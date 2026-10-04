@@ -5,6 +5,7 @@ import { ArrowRight, Tags } from "lucide-react";
 import { formatPrice, priceForBoard } from "@/lib/board-prices";
 import { useLivePrices } from "./useLivePrices";
 import { PriceCheckTime } from "./PriceCheckTime";
+import { PriceStockStatus } from "./PriceStockStatus";
 
 /**
  * The board's reference price as a shelf tag: the amount in mono, the
@@ -30,8 +31,9 @@ export function BoardPriceLink({ boardId }: { boardId: string }) {
         <span className="ph-price-ink font-mono text-2xl font-medium leading-8 tabular-nums tracking-tight">{formatPrice(price)}</span>
         <span className="min-w-0 text-xs text-zinc-400">{price.variant}</span>
       </span>
-      <span className="ph-price-perf mt-2.5 block pt-2 text-[11px] leading-5 text-zinc-400">
-        Last checked: <PriceCheckTime checkedAt={price.checkedAt} />
+      <span className="ph-price-perf mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5 pt-2 text-[11px] leading-5">
+        <span className="text-zinc-400">Last checked: <PriceCheckTime checkedAt={price.checkedAt} /></span>
+        <PriceStockStatus price={price} />
       </span>
     </Link>
   );

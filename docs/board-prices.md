@@ -39,7 +39,7 @@ The Adafruit and Arduino robots files were inspected September 10, 2026 UTC. Bot
 - Recent price: zero through three hours.
 - Older check: over three hours through 24 hours.
 - Needs new check: over 24 hours, invalid dates or future dates.
-- Stock confidence expires at exactly two hours; expired/unknown stock says `Check with seller` and is excluded from the recent-stock filter.
+- Stock confidence expires at exactly two hours; expired/unknown stock says `Check with seller` and is excluded from the recent-stock filter. The same label (`stockStatus` in `src/lib/board-prices.ts`) appears on the board price card and the compare price cell, so stock is visible before leaving PinHub.
 
 Reference amounts remain visible at every age. Relative check times appear after hydration, with exact UTC timestamps in the time element/title. The prices page reports unavailable updates when the API or shared snapshot cannot be used. Tax, shipping and import costs are excluded; the seller determines final price and availability.
 

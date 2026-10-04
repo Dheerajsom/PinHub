@@ -415,6 +415,13 @@ and keyboard speed over decoration. Sections 2–4 are the layout spec,
   Geist Mono beside the variant, and a perforated (dashed) rule above a single
   "Last checked" line (USD and tax terms live on the Prices page). The Prices nav link, price amounts, and "View store"
   buttons use the same green.
+- **Stock before click-out** (2026-10-04): the price card footer and the
+  compare price cell carry the same stock line as the Prices page, from one
+  helper (`stockStatus`). A flat 6 px indicator LED leads the label: filled
+  emerald "In stock at check", solid ring "Out of stock at check", dashed ring
+  "Check with seller" when the check is over two hours old, unknown, or the
+  clock is not yet known. The label always carries the meaning; the LED never
+  glows.
 - **Finish**: no gradient-filled wordmarks, no glowing dots or coloured
   bloom shadows, no hover lifts on rows and chips, and an opaque command bar
   (no backdrop blur). Selection is a flat tint plus the cyan border.

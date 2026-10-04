@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, CircuitBoard, Search, X } from "lucide-react";
 import { clsx } from "clsx";
-import { formatPrice, hasRecentStockCheck, priceFreshness } from "@/lib/board-prices";
+import { formatPrice, hasRecentStockCheck, priceFreshness, stockStatus } from "@/lib/board-prices";
 import { defaultPriceFilters, filterPrices, type PriceListing } from "@/lib/price-filters";
 import { VendorLogo } from "@/components/VendorLogo";
 import { usePriceUrlState } from "@/components/usePriceUrlState";
@@ -118,7 +118,7 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
 function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
   const freshness = priceFreshness(listing, now);
   const recentStock = hasRecentStockCheck(listing, now);
-  const stock = !recentStock || listing.stock === "unknown" ? "Check with seller" : listing.stock === "in-stock" ? "In stock at check" : "Out of stock at check";
+  const stock = stockStatus(listing, now);
   return (
     <li id={listing.id} className="price-grid grid scroll-mt-24 gap-x-4 gap-y-4 p-4 transition hover:bg-white/[0.02] sm:p-5">
       <div className="price-board min-w-0">
@@ -133,7 +133,7 @@ function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
       </div>
       <div className="price-seller min-w-0 text-xs leading-5">
         <div className="font-semibold text-zinc-200">{listing.retailer} <span className="font-normal text-zinc-400">/ {listing.sellerType}</span></div>
-        <div className={clsx("mt-1", recentStock && listing.stock === "in-stock" ? "text-emerald-200" : "text-zinc-400")}>{stock}</div>
+        <div className={clsx("mt-1", stock.tone === "in-stock" ? "text-emerald-200" : "text-zinc-400")}>{stock.label}</div>
         <div className="mt-1 font-mono text-[11px] text-zinc-400">SKU {listing.sku}</div>
       </div>
       <div className="price-checked text-xs leading-5 text-zinc-400">

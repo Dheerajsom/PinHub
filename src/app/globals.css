@@ -1139,6 +1139,59 @@ button {
   border-top-color: rgba(22, 128, 61, 0.3);
 }
 
+/* Stock at the last check, as a flat indicator LED (no glow): lit emerald (present),
+   hollow (out of stock), or dashed (not confirmed recently). The label
+   always accompanies the LED, so colour is never the only signal. */
+.ph-stock {
+  color: #a1a1aa;
+}
+
+.ph-stock[data-tone="in-stock"] {
+  color: #a7f3d0;
+}
+
+.ph-stock[data-tone="out-of-stock"] {
+  color: #d4d4d8;
+}
+
+.ph-stock-led {
+  border: 1px dashed #71717a;
+}
+
+.ph-stock[data-tone="in-stock"] .ph-stock-led {
+  border: 1px solid #34d399;
+  background-color: #34d399;
+}
+
+.ph-stock[data-tone="out-of-stock"] .ph-stock-led {
+  border: 1px solid #a1a1aa;
+}
+
+:root[data-theme="light"] .ph-stock {
+  color: #52525b;
+}
+
+:root[data-theme="light"] .ph-stock[data-tone="in-stock"] {
+  color: #065f46;
+}
+
+:root[data-theme="light"] .ph-stock[data-tone="out-of-stock"] {
+  color: #3f3f46;
+}
+
+:root[data-theme="light"] .ph-stock-led {
+  border-color: #71717a;
+}
+
+:root[data-theme="light"] .ph-stock[data-tone="in-stock"] .ph-stock-led {
+  border-color: #059669;
+  background-color: #059669;
+}
+
+:root[data-theme="light"] .ph-stock[data-tone="out-of-stock"] .ph-stock-led {
+  border-color: #3f3f46;
+}
+
 /* Datasheet-style key characteristics: one ruled table instead of four
    floating tiles, so the values line up and scan as a column. */
 .ph-spec-table > div {

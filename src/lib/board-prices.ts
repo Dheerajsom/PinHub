@@ -36,6 +36,17 @@ export function hasRecentStockCheck(price: Pick<BoardPrice, "checkedAt">, now: n
   return age(price, now) < stockValidForMs;
 }
 
+export type StockStatus = { tone: "in-stock" | "out-of-stock" | "unconfirmed"; label: string };
+
+/**
+ * Stock as the last retailer check saw it. Unknown, expired, or not-yet-known
+ * clocks (before hydration) never claim availability either way.
+ */
+export function stockStatus(price: Pick<BoardPrice, "stock" | "checkedAt">, now: number | null): StockStatus {
+  if (now === null || !hasRecentStockCheck(price, now) || price.stock === "unknown") return { tone: "unconfirmed", label: "Check with seller" };
+  return price.stock === "in-stock" ? { tone: "in-stock", label: "In stock at check" } : { tone: "out-of-stock", label: "Out of stock at check" };
+}
+
 export function formatPrice(price: Pick<BoardPrice, "amount" | "currency">): string {
   return priceFormatter.format(price.amount / 100);
 }

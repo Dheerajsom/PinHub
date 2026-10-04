@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { boards } from "@/lib/boards";
-import { boardPrices, formatPrice, formatPriceDate, hasRecentStockCheck, isPriceStale, priceFreshness, priceFreshForMs, priceStaleAfterMs, stockValidForMs, priceForBoard, pricesForBoard } from "@/lib/board-prices";
+import { boardPrices, formatPrice, formatPriceDate, hasRecentStockCheck, isPriceStale, priceFreshness, priceFreshForMs, priceStaleAfterMs, stockValidForMs, stockStatus, priceForBoard, pricesForBoard } from "@/lib/board-prices";
 import { parseBoardPrices } from "@/lib/board-price-schema";
 import { defaultPriceFilters, filterPrices, parsePriceFilters, pricesUrl, type PriceListing } from "@/lib/price-filters";
 
@@ -43,6 +43,18 @@ describe("price source integrity", () => {
     expect(hasRecentStockCheck(price, checked - 1)).toBe(false);
     expect(priceFreshness(price, NaN)).toBe("stale");
     expect(formatPriceDate("bad-date")).toBe("Unknown check date");
+  });
+
+  it("labels stock only from a recent check and never before the clock is known", () => {
+    const price = { ...boardPrices[0], stock: "in-stock" as const };
+    const checked = Date.parse(price.checkedAt);
+    expect(stockStatus(price, checked + 1)).toEqual({ tone: "in-stock", label: "In stock at check" });
+    expect(stockStatus({ ...price, stock: "out-of-stock" }, checked + 1)).toEqual({ tone: "out-of-stock", label: "Out of stock at check" });
+    expect(stockStatus({ ...price, stock: "unknown" }, checked + 1).tone).toBe("unconfirmed");
+    expect(stockStatus(price, checked + stockValidForMs)).toEqual({ tone: "unconfirmed", label: "Check with seller" });
+    expect(stockStatus({ ...price, stock: "out-of-stock" }, checked + stockValidForMs).tone).toBe("unconfirmed");
+    expect(stockStatus(price, null).tone).toBe("unconfirmed");
+    expect(stockStatus(price, checked - 1).tone).toBe("unconfirmed");
   });
 
   it("supports multiple listings with one explicit default and distinct offers", () => {
