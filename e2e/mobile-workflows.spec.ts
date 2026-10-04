@@ -40,7 +40,7 @@ for (const viewport of viewports) {
       await page.reload();
       await expect(page.getByRole("button", { name: "Remove Raspberry Pi 5 from favorites" })).toBeVisible();
       await page.getByRole("button", { name: "Show Raspberry Pi 5 details" }).tap();
-      await expect(page.getByRole("button", { name: "Collection", exact: true })).toBeVisible();
+      await expect(page.getByRole("button", { name: "More board actions" })).toBeVisible();
       await expectPageFits(page);
       await page.screenshot({ path: testInfo.outputPath("inline-details.png") });
       expect(errors).toEqual([]);
@@ -48,7 +48,8 @@ for (const viewport of viewports) {
 
     test("collection creation persists and opens a shareable collection", async ({ page }, testInfo) => {
       await page.goto("/boards/raspberry-pi-pico");
-      await page.getByRole("button", { name: "Collection", exact: true }).tap();
+      await page.getByRole("button", { name: "More board actions" }).tap();
+      await page.getByRole("button", { name: "Add to collection", exact: true }).tap();
       const dialog = page.getByRole("dialog", { name: "Collections for Raspberry Pi Pico" });
       await expect(dialog.getByRole("button", { name: "Create", exact: true })).toBeDisabled();
       await dialog.getByRole("textbox", { name: "New collection name" }).fill("Mobile robotics");
@@ -58,7 +59,8 @@ for (const viewport of viewports) {
       await page.screenshot({ path: testInfo.outputPath("collection.png") });
       await dialog.getByRole("button", { name: "Close collections" }).tap();
       await page.reload();
-      await page.getByRole("button", { name: "Collection", exact: true }).tap();
+      await page.getByRole("button", { name: "More board actions" }).tap();
+      await page.getByRole("button", { name: "Add to collection", exact: true }).tap();
       await expect(dialog.getByRole("button", { name: "Mobile robotics", exact: true })).toHaveAttribute("aria-pressed", "true");
       await page.goto("/collections?name=Mobile%20robotics&boards=raspberry-pi-pico");
       await expect(page.getByRole("heading", { name: "Mobile robotics" })).toBeVisible();
@@ -106,7 +108,8 @@ for (const viewport of viewports) {
         }));
       });
       await page.goto("/boards/raspberry-pi-pico");
-      await page.getByRole("button", { name: "Collection", exact: true }).tap();
+      await page.getByRole("button", { name: "More board actions" }).tap();
+      await page.getByRole("button", { name: "Add to collection", exact: true }).tap();
       const dialog = page.getByRole("dialog", { name: "Collections for Raspberry Pi Pico" });
       await expect(dialog.getByRole("button", { name: "Engineering collection 1 Full (24)", exact: true })).toBeDisabled();
       await dialog.getByRole("textbox", { name: "New collection name" }).fill("Another project");

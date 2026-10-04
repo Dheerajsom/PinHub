@@ -40,13 +40,9 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
   return (
     <div className="mx-auto max-w-[1560px] px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-5 flex flex-col justify-between gap-3 lg:flex-row lg:items-end">
-        <div>
-                    <h1 className="brand-title text-2xl leading-tight text-white sm:text-3xl">Prices &amp; availability</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">Checked US listings for the exact board variant, each linked to its pin map.</p>
-        </div>
+        <h1 className="brand-title text-2xl leading-tight text-white sm:text-3xl">Prices &amp; availability</h1>
         <div className="ph-price-rule pl-3 text-xs leading-5 text-zinc-400">
-          <div className="font-medium text-zinc-200">US stores · USD · one board</div>
-          <div>Shipping and tax excluded.</div>
+          <div className="font-medium text-zinc-200">US stores · USD · one board · shipping and tax excluded</div>
           <a href="#price-notes" className="ph-price-ink inline-flex min-h-6 items-center underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
         </div>
       </div>
@@ -86,10 +82,10 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
         </button>
         <span id="price-search-scope" className="text-zinc-400">Search is limited to this board. Remove the filter to search all boards.</span>
       </div> : null}
-      <div className="flex min-h-14 flex-wrap items-center justify-between gap-2 py-3 text-xs">
-        <p role="status" aria-live="polite" className="font-mono text-zinc-400">{matches.length} of {listings.length} listings{selectedBoard ? ` · ${selectedBoard.name}` : ""}</p>
-        {filtered ? <button type="button" onClick={() => update(defaultPriceFilters)} className="inline-flex min-h-11 items-center gap-1.5 text-cyan-200 hover:text-white"><X className="size-3.5" aria-hidden="true" /> Show all boards</button> : <span className="text-zinc-400">Price &amp; stock as of the date shown</span>}
-      </div>
+      <p role="status" aria-live="polite" className="sr-only">{matches.length} of {listings.length} listings{selectedBoard ? ` · ${selectedBoard.name}` : ""}</p>
+      {filtered ? <div className="flex justify-end py-1.5 text-xs">
+        <button type="button" onClick={() => update(defaultPriceFilters)} className="inline-flex min-h-11 items-center gap-1.5 text-cyan-200 hover:text-white"><X className="size-3.5" aria-hidden="true" /> Show all boards</button>
+      </div> : <div className="h-4" aria-hidden="true" />}
       {olderCount > 0 ? <p className="mb-4 rounded-lg border border-amber-300/30 bg-amber-300/10 p-3 text-sm text-amber-100">{olderCount} {olderCount === 1 ? "listing has" : "listings have"} an older check. These prices remain available for reference; confirm price and stock with the retailer.</p> : null}
       {filters.inStock ? <p className="mb-3 text-xs text-zinc-400">Showing listings checked in stock less than two hours ago. Current availability can change.</p> : null}
 
@@ -114,7 +110,7 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
           <p><strong className="font-medium text-zinc-200">Confirm before buying.</strong> These are selected US listings, not a lowest-price guarantee. The retailer sets the final price and availability. PinHub does not sell boards.</p>
         </div>
       </details>
-      <p className="mt-4 text-xs leading-5 text-zinc-400">Shipping and tax excluded. Need a board that isn’t listed? <Link href="/" className="inline-flex min-h-6 items-center text-cyan-200 underline underline-offset-4">Explore the full pinout catalog</Link>.</p>
+      <p className="mt-4 text-xs leading-5 text-zinc-400">Need a board that isn’t listed? <Link href="/" className="inline-flex min-h-6 items-center text-cyan-200 underline underline-offset-4">Explore the full pinout catalog</Link>.</p>
     </div>
   );
 }
@@ -131,7 +127,7 @@ function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
         <p className="text-xs leading-5 text-zinc-400">{listing.variant}</p>
       </div>
       <div className="price-amount ph-price-rule min-w-0 pl-3">
-        <div className="text-[10px] uppercase tracking-wider text-zinc-400">{freshness === "fresh" ? "Listed price" : "Reference price"} · USD</div>
+        <div className="text-[10px] uppercase tracking-wider text-zinc-400">{freshness === "fresh" ? "Listed price" : "Reference price"}</div>
         <div className="mt-1 ph-price-ink font-mono text-2xl font-medium tabular-nums tracking-tight">{formatPrice(listing)}</div>
         {listing.stock === "out-of-stock" && recentStock ? <div className="mt-1 text-[11px] text-zinc-400">Unavailable at check</div> : null}
       </div>

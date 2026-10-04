@@ -35,7 +35,7 @@ export default async function PricesPage({ searchParams }: {
             <Image src="/pinhub-logo.png" alt="" width={48} height={48} priority />
             <div className="min-w-0">
               <span className="brand-title text-2xl text-white sm:text-3xl">PinHub</span>
-              <p className="mt-0.5 text-xs text-zinc-400">From pin map to parts list.</p>
+              <p className="mt-0.5 text-xs text-zinc-400">Source-backed pinouts for dev boards, SBCs, and microcontrollers</p>
             </div>
           </Link>
           <ThemeToggle />
@@ -44,7 +44,6 @@ export default async function PricesPage({ searchParams }: {
       <div className="sticky top-0 z-30 border-b border-white/10 bg-[#0c0e13]">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6 lg:px-8">
           <SectionNav current="/prices" />
-          <span className="hidden font-mono text-xs text-zinc-400 sm:block">US listings / USD / quantity 1</span>
         </div>
       </div>
       <PricesApp listings={listings} now={now} initialSource={data.source} />

@@ -5,12 +5,9 @@ import { Route } from "lucide-react";
 /** The way from a board to its planner. Only render it for a board with a pin map. */
 export function PlanPinsLink({
   boardId,
-  auto,
   className,
 }: {
   boardId: string;
-  /** True when the board has source-backed pin functions. */
-  auto: boolean;
   className?: string;
 }) {
   return (
@@ -21,12 +18,7 @@ export function PlanPinsLink({
         className,
       )}
     >
-      <span className="min-w-0">
-        <span className="block font-medium">Plan pins on this board</span>
-        <span className="block text-xs leading-5 text-zinc-500">
-          {auto ? "Claim pins by hand or auto-assign buses" : "Mark the pins your circuit uses"}
-        </span>
-      </span>
+      <span className="min-w-0 font-medium">Plan pins on this board</span>
       <Route className="size-4 shrink-0" aria-hidden="true" />
     </Link>
   );

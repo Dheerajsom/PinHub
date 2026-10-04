@@ -1,16 +1,11 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import {
-  ArrowRight,
   ArrowUp,
   ArrowUpRight,
   BadgeCheck,
   BookOpen,
   Cable,
-  Cpu,
   LoaderCircle,
-  PlugZap,
-  Ruler,
   ShieldAlert,
   Zap,
 } from "lucide-react";
@@ -22,9 +17,9 @@ import { PinoutTabs } from "@/components/PinoutTabs";
 import { BoardActions } from "@/components/BoardActions";
 import { BoardPriceLink } from "@/components/BoardPriceLink";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
-import { fiveVoltCaution, revisionNotesFor } from "@/lib/board-utilities";
+import { revisionNotesFor } from "@/lib/board-utilities";
 import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
-import { PlanPinsLink } from "@/components/planner/PlanPinsLink";
+import { SpecTable } from "@/components/SpecTable";
 
 export type DetailState =
   | { status: "ready"; board: Board }
@@ -119,37 +114,12 @@ export function BoardDetailPanel({
     </>
   );
 }
-/**
- * The catalog panel is a preview; the rest of the board reference lives on
- * the board page, and planning lives in the planner. Auto-assign is promised
- * only to boards with source-backed pin functions.
- */
-function FullBoardPageLink({ board }: { board: Board }) {
-  return (
-    <>
-      <Link
-        href={`/boards/${board.id}`}
-        className="mt-2 flex min-h-11 items-center sm:max-w-sm justify-between gap-3 rounded-lg border border-white/10 bg-[#15181f] px-3 py-2 text-sm text-zinc-300 transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white"
-      >
-        <span className="block min-w-0 font-medium">Open full board page</span>
-        <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
-      </Link>
-      {board.pinout ? (
-        <PlanPinsLink boardId={board.id} auto={Boolean(board.pinFunctions)} className="mt-2" />
-      ) : null}
-    </>
-  );
-}
-
 function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   const verifySource = verificationSourceFor(board);
   const verifySourceOfficial = verifySource
     ? classifySource(board.vendor, verifySource.url) === "official"
     : false;
   const revisionNotes = revisionNotesFor(board);
-  const officialCount = board.sourceLinks.filter(
-    (source) => classifySource(board.vendor, source.url) === "official",
-  ).length;
   return (
     <aside className="min-w-0 space-y-4 xl:sticky xl:top-[5.25rem] xl:max-h-[calc(100vh-6.25rem)] xl:self-start xl:overflow-y-auto xl:pb-2 xl:pr-1">
       {/* Stacked-layout escape hatch: the detail panel sits below the result
@@ -162,45 +132,19 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
         <ArrowUp className="size-4" aria-hidden="true" />
         Back to results
       </button>
-      <section className="surface-panel rounded-xl">
-        <div className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-              Selected board
-            </div>
-            <span className="rounded-full border border-white/10 bg-[#0a0c11] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-zinc-400">
-              {board.category}
-            </span>
-          </div>
-          <div className="mt-3 flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <h2 className="flex items-center gap-2.5 text-[22px] font-semibold leading-tight tracking-tight text-white">
-                <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-[#0a0c11]">
-                  <VendorLogo vendor={board.vendor} size={22} />
-                </span>
-                <span className="min-w-0 break-words">{board.name}</span>
-              </h2>
-              <p className="mt-2 font-mono text-xs text-zinc-500">
-                {board.vendor} / {board.family}
-              </p>
-            </div>
-          </div>
-
-          <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
-            <SpecTile icon={<Cpu className="size-3.5 text-cyan-200" aria-hidden="true" />} label="Processor" value={board.processor} />
-            <SpecTile
-              icon={<Zap className="size-3.5 text-amber-200" aria-hidden="true" />}
-              label="Logic"
-              value={board.logicLevel}
-              accent={fiveVoltCaution(board) ?? undefined}
-            />
-            <SpecTile icon={<PlugZap className="size-3.5 text-emerald-200" aria-hidden="true" />} label="Power" value={board.power} />
-            <SpecTile icon={<Ruler className="size-3.5 text-violet-200" aria-hidden="true" />} label="Format" value={board.formFactor} />
-          </dl>
-          <div className="mt-4 border-t border-white/10 pt-4">
-            <BoardActions board={board} />
-            <FullBoardPageLink board={board} />
-          </div>
+      {/* Identity, the four specs people check first, and where to go next.
+          No eyebrow or category chip: the panel's position says it is the
+          selection, and the catalog row already names the category. */}
+      <section className="surface-panel rounded-xl p-5">
+        <h2 className="flex items-center gap-3 text-[22px] font-semibold leading-tight tracking-tight text-white">
+          <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-[#0a0c11]">
+            <VendorLogo vendor={board.vendor} size={22} />
+          </span>
+          <span className="min-w-0 break-words">{board.name}</span>
+        </h2>
+        <SpecTable board={board} className="mt-3 border-y border-white/10" />
+        <div className="mt-4">
+          <BoardActions board={board} showBoardPage />
         </div>
       </section>
 
@@ -227,17 +171,23 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
             <Cable className="size-3.5 text-cyan-200" aria-hidden="true" />
           </span>
           <span className="text-[13px] font-semibold tracking-tight text-white">Interfaces</span>
-          <span className="ml-auto rounded-full bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] tabular-nums text-zinc-400">
-            {board.interfaces.length}
-          </span>
         </div>
         <div className="flex flex-wrap gap-1.5">{board.interfaces.map((item) => <span key={item} className="surface-well rounded-md px-2 py-1 font-mono text-[11px] font-medium text-zinc-300">{item}</span>)}</div>
       </section>
 
-      <section className="surface-panel rounded-xl p-4">
-        <div className="text-[13px] font-semibold tracking-tight text-white">Revision notes</div>
-        {revisionNotes.length ? <ul className="mt-2 grid gap-2 text-sm leading-6 text-zinc-400">{revisionNotes.map((note) => <li key={note} className="flex gap-2"><span className="mt-2.5 size-1 shrink-0 rounded-full bg-cyan-300/70" aria-hidden="true" />{note}</li>)}</ul> : <p className="mt-2 text-[13px] leading-6 text-zinc-500">No revision-specific note is documented in PinHub. Verify your exact board revision against the linked sources.</p>}
-      </section>
+      {revisionNotes.length ? (
+        <section className="surface-panel rounded-xl p-4">
+          <h2 className="text-[13px] font-semibold tracking-tight text-white">Revision notes</h2>
+          <ul className="mt-2 grid gap-2 text-sm leading-6 text-zinc-400">
+            {revisionNotes.map((note) => (
+              <li key={note} className="flex gap-2">
+                <span className="mt-2.5 size-1 shrink-0 rounded-full bg-cyan-300/70" aria-hidden="true" />
+                {note}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {board.highlights.length ? (
         <InfoBlock
@@ -254,9 +204,6 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           </span>
           <span className="text-[13px] font-semibold tracking-tight text-white">
             Source references
-          </span>
-          <span className="ml-auto font-mono text-[10px] tabular-nums text-zinc-500">
-            {officialCount} official · {board.sourceLinks.length} total
           </span>
         </div>
         <div className="grid gap-2">
@@ -311,32 +258,6 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   );
 }
 
-type SpecTileProps = {
-  icon: ReactNode;
-  label: string;
-  value: string;
-  accent?: string;
-};
-
-function SpecTile({ icon, label, value, accent }: SpecTileProps) {
-  return (
-    <div className="ph-spec-tile surface-well rounded-lg p-2.5">
-      <dt className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
-        {icon}
-        {label}
-      </dt>
-      <dd className="mt-1.5 truncate text-[13px] font-medium text-zinc-100" title={value}>
-        {value}
-      </dd>
-      {accent ? (
-        <dd className="mt-1 truncate text-[11px] font-medium text-amber-200" title={accent}>
-          {accent}
-        </dd>
-      ) : null}
-    </div>
-  );
-}
-
 type InfoBlockProps = {
   title: string;
   icon: ReactNode;
@@ -353,9 +274,6 @@ function InfoBlock({ title, icon, items }: InfoBlockProps) {
         <h2 className="text-[13px] font-semibold tracking-tight text-white">
           {title}
         </h2>
-        <span className="ml-auto rounded-full bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] tabular-nums text-zinc-400">
-          {items.length}
-        </span>
       </div>
       <ul className="space-y-2 text-[13px] leading-6 text-zinc-400">
         {items.map((item) => (

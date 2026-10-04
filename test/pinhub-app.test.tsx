@@ -271,4 +271,40 @@ describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
     expect(within(section).queryByText("01")).toBeNull();
     expect(screen.queryByText(/Trending/i)).toBeNull();
   });
+
+  it("keeps the first screen free of filler text and duplicate controls", () => {
+    // Regression: the catalog announced its result count visibly, labelled
+    // rows "Board diagram", counted its own "reference picks", carried a
+    // "Curation notes" card, and gave every row a Compare icon that the
+    // board's More menu already offers.
+    setViewport(true);
+    renderApp();
+
+    const status = screen
+      .getAllByRole("status")
+      .find((node) => node.textContent?.startsWith("Showing"));
+    expect(status?.className).toContain("sr-only");
+    expect(screen.queryByText("Board diagram")).toBeNull();
+    expect(screen.queryByText(/reference picks/)).toBeNull();
+    expect(screen.queryByText("Curation notes")).toBeNull();
+    expect(screen.queryByRole("link", { name: /^Compare Raspberry Pi/ })).toBeNull();
+    // Active filters are marked by their pressed styling alone, not a dot.
+    const active = screen.getAllByRole("button", { pressed: true, name: /^All/ })[0];
+    expect(active.querySelector(".rounded-full.bg-cyan-300")).toBeNull();
+  });
+
+  it("reads out the catalog's board, interface, and source counts in the header", () => {
+    setViewport(true);
+    const { container } = renderApp();
+    const readout = container.querySelector("header dl")!;
+    const pairs = [...readout.querySelectorAll("div")].map((cell) => [
+      cell.querySelector("dt")?.textContent,
+      cell.querySelector("dd")?.textContent,
+    ]);
+    expect(pairs).toEqual([
+      ["Boards", String(catalog.length)],
+      ["Interfaces", expect.stringMatching(/^\d+$/)],
+      ["Sources", "2"],
+    ]);
+  });
 });

@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { SquareTerminal, Braces } from "lucide-react";
-import { boards } from "@/lib/boards";
 import { cliGuideUrl } from "@/lib/site";
-
-const sourceCount = boards.reduce(
-  (total, board) => total + board.sourceLinks.length,
-  0,
-);
 
 export function Footer() {
   return (
@@ -16,7 +10,7 @@ export function Footer() {
           text. This block carries the liability disclaimer and the Privacy
           link, so it is the last text on the site that should be hard to read.
           zinc-400 (#9f9fa9) measures 7.51:1. */}
-      <div className="mx-auto grid max-w-[1560px] gap-3 px-4 py-5 text-xs sm:px-6 lg:grid-cols-[minmax(0,1.6fr)_auto_auto] lg:items-center lg:px-8">
+      <div className="mx-auto grid max-w-[1560px] gap-3 px-4 py-5 text-xs sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:px-8">
         <span className="leading-5 text-zinc-400">
           Pinout data is community-compiled for reference only, provided
           &ldquo;as is&rdquo; without warranty. Always verify against the
@@ -54,9 +48,6 @@ export function Footer() {
             <Braces className="size-3" aria-hidden="true" />
             /api/boards
           </a>
-        </span>
-        <span className="font-mono tabular-nums text-zinc-500">
-          {boards.length} boards · {sourceCount} source links
         </span>
       </div>
     </footer>

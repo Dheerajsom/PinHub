@@ -34,7 +34,8 @@ test("dark-theme muted labels use the accessible contrast token", async ({ page 
 
   // toHaveCSS retries: elements with a color `transition` report interpolated
   // values for a moment after the theme flips.
-  await expect(page.getByText("Boards", { exact: true }).first()).toHaveCSS(
+  // The selected board's spec-table labels use the muted token.
+  await expect(page.getByText("Processor", { exact: true }).first()).toHaveCSS(
     "color",
     "rgb(156, 163, 175)",
   );
@@ -73,7 +74,8 @@ test("board classification does not repeat itself", async ({ page }) => {
 
 test("a deleted collection can be restored from the shelf", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Collection" }).click();
+  await page.getByRole("button", { name: "More board actions" }).click();
+  await page.getByRole("button", { name: "Add to collection" }).click();
   await page.getByPlaceholder("Robotics boards").fill("Robotics");
   await page.getByRole("button", { name: "Create" }).click();
 

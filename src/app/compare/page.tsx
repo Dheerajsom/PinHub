@@ -21,10 +21,6 @@ assertBoardSourcesValid(boards);
 assertBoardVisualsValid();
 
 const catalog = boards.map(summarizeBoard);
-const sourceCount = boards.reduce(
-  (total, board) => total + board.sourceLinks.length,
-  0,
-);
 
 export default async function ComparePage({
   searchParams,
@@ -40,7 +36,6 @@ export default async function ComparePage({
     return (
       <DiscoveryApp
         catalog={catalog}
-        sourceCount={sourceCount}
         initialCompareIds={selected.map((board) => board.id)}
       />
     );

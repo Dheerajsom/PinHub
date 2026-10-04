@@ -166,7 +166,7 @@ export function PinoutFullView({ board }: { board: Board }) {
                 onActiveCategoriesChange={setActiveCategories}
               />
             </div>
-            <PlanPinsLink boardId={board.id} auto={Boolean(board.pinFunctions)} className="mt-5" />
+            <PlanPinsLink boardId={board.id} className="mt-5" />
           </div>
         ) : (
           <p className="mt-8 rounded-lg border border-dashed border-white/15 bg-[#101319] p-6 text-sm text-zinc-400">

@@ -85,7 +85,6 @@ describe("useCatalogUrlState owned parameters", () => {
     render(
       <DiscoveryApp
         catalog={catalog}
-        sourceCount={2}
         initialCompareIds={[first.id]}
       />,
     );
