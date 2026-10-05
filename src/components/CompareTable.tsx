@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, Check, Copy, Eye, EyeOff, ExternalLink, Trash2, X } from "lucide-react";
+import { AlertTriangle, Cable, Check, Copy, Eye, EyeOff, ExternalLink, Trash2, X } from "lucide-react";
 import { clsx } from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Board } from "@/lib/boards";
 import { getBoardDiscoveryProfile } from "@/lib/board-discovery";
 import { analyzePinConflicts, type PinConflict } from "@/lib/compare-conflicts";
 import { compareUrl } from "@/lib/compare-params";
+import { linkUrl } from "@/lib/link-params";
 import { VendorLogo } from "@/components/VendorLogo";
 import { BoardPriceReference } from "@/components/BoardPriceReference";
 import { priceForBoard } from "@/lib/board-prices";
@@ -131,6 +132,11 @@ export function CompareTable({ boards }: { boards: Board[] }) {
           <button type="button" onClick={copyLink} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
             {copied ? <Check className="size-4 text-emerald-300" aria-hidden="true" /> : copyFailed ? <X className="size-4 text-red-300" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}<span aria-live="polite">{copied ? "Copied" : copyFailed ? "Share failed" : "Share"}</span>
           </button>
+          {boards.length === 2 && boards.every((board) => board.pinout) ? (
+            <Link href={linkUrl(boards[0].id, boards[1].id)} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white">
+              <Cable className="size-4" aria-hidden="true" />Wire these two boards
+            </Link>
+          ) : null}
           <button type="button" onClick={clearComparison} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-300 transition hover:border-orange-300/40 hover:text-white"><Trash2 className="size-4" aria-hidden="true" /> Clear comparison</button>
         </div>
       </div>

@@ -458,3 +458,31 @@ embedding it.
   auto-assigned pins.
 - **Section nav** holds four links on one row down to 360 px: below 400 px
   the icons give way to the labels. Links are 44 px tall at every width.
+
+## 19. Board link (2026-10-04)
+
+`/link`, in the header nav between Planner and Compare. Two boards and a bus
+in, the wire list out. Updates the section-nav note in section 18: five links
+now share the row, so the icons give way to the labels below 480 px and the
+padding tightens below 400 px.
+
+- **The harness is the signature.** Each wire is a row: a ferrule for the pin
+  on board A (position cell and Geist Mono label, outlined in the wire's hue),
+  the run, and the ferrule on board B. The run's arrowhead says which way the
+  signal travels (none on ground). Wire hues are the role `ink` steps for UART
+  and I2C and the ground grey; never the probe's cyan.
+- **The shifter is drawn where it goes.** When the records call for a level
+  shifter, an orange "LS" block is spliced into every signal run, and the
+  verdict strip above turns orange. Orange stays hardware caution only.
+- **Verdict before wires.** Matching levels get a neutral strip; a mismatch,
+  an unsettled level, or a blocked link gets the orange one, worded from the
+  records (`logicLevel`, `fiveVoltCaution`).
+- **Cautions once.** A ferrule with a recorded caution carries an orange
+  mark; the notes themselves are quoted once under the harness, with every
+  pin that shares a note listed together.
+- **Sheets, not boards.** Both boards are drawn as the planner's connector
+  sheet with the linked pads ringed (dashed, role ink). Tapping a row or a
+  ringed pad selects that wire on both. A sheet much wider than tall takes
+  the full row so its labels stay readable.
+- **Scope.** UART and I2C only. SPI is named as absent, with the reason, next
+  to the bus switch.

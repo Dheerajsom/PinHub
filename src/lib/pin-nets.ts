@@ -66,7 +66,7 @@ const BUS_SIGNALS: Array<{
 // PCM clock is never reported as an SPI net.
 // Matched as a prefix, not a whole word, so instance-suffixed names like
 // "TDMB SCLK" are caught alongside a bare "TDM".
-const FOREIGN_PROTOCOLS = /\b(TDM|PCM|PDM|SAI|DVP|LCD|CAM|MIPI|SDIO|EMMC)/;
+export const FOREIGN_PROTOCOLS = /\b(TDM|PCM|PDM|SAI|DVP|LCD|CAM|MIPI|SDIO|EMMC)/;
 
 // Debug interfaces. Grouping SWD and JTAG pins is genuinely useful — those pins
 // are only ever used together.
