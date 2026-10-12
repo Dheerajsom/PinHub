@@ -33,9 +33,9 @@ jobs:
       - name: Use the repository's declared npm version
         run: npm install --global npm@11.11.0
       - run: npm ci
-      # Same policy as Web CI: high and critical advisories fail unless
-      # scripts/lib/audit-policy.ts records a dated exception.
-      - run: npm run audit:ci
+      # No dependency audit here: Web CI enforces it on every push and pull
+      # request to main, and a newly published advisory should not stop
+      # hourly price publishing.
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
