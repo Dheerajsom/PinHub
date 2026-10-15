@@ -213,16 +213,16 @@ test.describe("planner page", () => {
     }
   });
 
-  test("four sections fit one row at 360 px without overflow", async ({ page }) => {
+  test("five sections fit one row at 360 px without overflow", async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
-    for (const path of ["/", "/planner", "/compare", "/prices", "/boards/raspberry-pi-pico"]) {
+    for (const path of ["/", "/planner", "/link", "/compare", "/prices", "/boards/raspberry-pi-pico"]) {
       await page.goto(path);
       const links = page.getByRole("navigation", { name: "PinHub sections" }).first().getByRole("link");
-      await expect(links).toHaveCount(4);
+      await expect(links).toHaveCount(5);
       const boxes = await links.evaluateAll((nodes) =>
         nodes.map((node) => {
           const box = node.getBoundingClientRect();
-          return { top: Math.round(box.top), right: box.right, left: box.left, height: box.height };
+          return { top: Math.round(box.top), right: box.right, left: box.left, height: box.height, width: box.width };
         }),
       );
       expect(new Set(boxes.map((box) => box.top)).size, `${path} nav wraps`).toBe(1);
@@ -230,6 +230,7 @@ test.describe("planner page", () => {
         expect(box.left, `${path} nav clipped`).toBeGreaterThanOrEqual(0);
         expect(box.right, `${path} nav clipped`).toBeLessThanOrEqual(360);
         expect(box.height, `${path} nav target`).toBeGreaterThanOrEqual(44);
+        expect(box.width, `${path} nav target`).toBeGreaterThanOrEqual(44);
       }
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
