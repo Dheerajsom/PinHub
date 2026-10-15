@@ -47,10 +47,11 @@ describe("deployment security headers", () => {
     expect(web).not.toContain("npm audit --omit=dev");
   });
 
-  it("audits the price workflow with the same policy as Web CI", () => {
+  it("leaves dependency auditing to Web CI so a new advisory cannot stop price publishing", () => {
     const prices = repositoryFile(".github/workflows/update-prices.yml");
-    expect(prices).toContain("npm run audit:ci");
-    expect(prices).not.toContain("npm audit --omit=dev");
+    expect(prices).not.toMatch(/npm (run audit|audit)/);
+    // The gate still exists, on every push and pull request to main.
+    expect(repositoryFile(".github/workflows/web-ci.yml")).toContain("npm run audit:ci");
   });
 
   it("checks the CLI's generated catalog whenever shared board code changes", () => {
