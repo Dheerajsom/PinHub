@@ -88,6 +88,33 @@ needs no design pass).
    message covering the fixes, refactors, and design changes, then push the
    branch. Open a pull request only when asked.
 
+## Shipping a branch to `main`
+
+When the user asks to ship, merge, or make a branch live, do all of this
+without being asked again:
+
+1. **Audit first.** Re-check the branch's feature against the current
+   catalog and `main`: claims, counts, and copy in its `docs/` write-up must
+   match what the code derives today. Fix what is wrong with regression tests
+   (change workflow steps 2–8, including the mobile gate for UI/UX changes).
+2. **Bring in `main`.** Merge `origin/main` into the branch, resolve
+   conflicts, and rerun the checks if anything came in.
+3. **Commit and push** the branch, then open a pull request into `main`.
+4. **Merge** once its checks pass (a merge commit, matching the history). If
+   a check fails, fix it on the branch; never bypass a failing check.
+5. **Dependabot.** List open Dependabot PRs (`gh pr list --author
+   app/dependabot`). Merge each one whose checks pass, after any rebase it
+   needs (`@dependabot rebase`). If one fails, or is a major-version bump,
+   report it with the failing check instead of merging it.
+6. **Clean up.** Fast-forward local `main` to `origin/main`, then delete
+   every branch, local and remote, that is fully merged into `main`
+   (`git merge-base --is-ancestor <branch> origin/main`), Dependabot branches
+   included. Prune stale remote refs (`git fetch --prune`). Never delete
+   `main` or a branch that is not fully merged.
+7. **Confirm it is live.** Check that the production Vercel deployment of the
+   merge commit succeeded, and report the PR links, what merged, and what was
+   deleted.
+
 ## Useful facts
 
 - Prices: the hourly workflow publishes to Vercel Blob. The API merges shared

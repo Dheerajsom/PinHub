@@ -51,11 +51,16 @@ const signalWords: Record<string, { family: Family; signal: Signal; needsI2cPref
   RXI: { family: "UART", signal: "RX" },
 };
 
+// Power-domain prefixes some SoCs put before a controller name
+// ("MCU_I2C0_SDA", "WKUP_UART0_TXD"): part of the instance, not a new bus.
+const domainPattern = /^(MCU|WKUP|MAIN)[-_ ]+(?=(I2C|UART|USART)\d)/;
+
 function parsePart(part: string): BusSignal | null {
   if (FOREIGN_PROTOCOLS.test(part.toUpperCase())) return null;
-  const compact = part
-    .toUpperCase()
-    .trim()
+  const upper = part.toUpperCase().trim();
+  const domain = domainPattern.exec(upper)?.[1];
+  const compact = upper
+    .replace(domainPattern, "")
     // Pin-mux and active-low suffixes: "I2C4_SDA_M0", "SPI1_CS0_N".
     .replace(/[-_ ]M\d+$/, "")
     .replace(/[-_ ]N$/, "")
@@ -74,7 +79,7 @@ function parsePart(part: string): BusSignal | null {
   const name = prefix === "U" ? "UART" : prefix || meaning.family;
   return {
     family: meaning.family,
-    instance: number ? `${name}${number}` : "",
+    instance: number ? `${domain ? `${domain}_` : ""}${name}${number}` : "",
     signal: meaning.signal,
     isDefault: false,
   };
@@ -101,15 +106,24 @@ export function busSignalsForPin(pin: Pin): BusSignal[] {
       ];
     });
   }
-  const parts = [pin.label, ...(pin.aliases ?? [])].flatMap((token) => token.split(/[/,]/));
   const found: BusSignal[] = [];
-  for (const part of parts) {
-    const hit = parsePart(part);
-    if (hit && !found.some((item) => item.instance === hit.instance && item.signal === hit.signal)) {
-      found.push(hit);
+  for (const token of [pin.label, ...(pin.aliases ?? [])]) {
+    // "CAN TX / RX": a bare TX or RX after a CAN name is the CAN line.
+    const canToken = /\b[FM]?CAN\d*\b/i.test(token);
+    for (const part of token.split(/[/,]/)) {
+      const hit = parsePart(part);
+      if (!hit || (canToken && !hit.instance)) continue;
+      if (!found.some((item) => item.instance === hit.instance && item.signal === hit.signal)) {
+        found.push(hit);
+      }
     }
   }
-  return found;
+  // "TX" next to "U0TXD" is one signal of UART0, not a second, unnamed bus.
+  return found.filter(
+    (hit) =>
+      hit.instance ||
+      !found.some((other) => other.instance && other.family === hit.family && other.signal === hit.signal),
+  );
 }
 
 type PlacedPin = { pin: Pin; group?: string; order: number };
@@ -337,7 +351,9 @@ function end(port: LinkPort, signal: Signal): WireEnd {
     pin: chosen.pin,
     ...(chosen.group ? { group: chosen.group } : {}),
     signal: port.instance ? `${port.instance} ${signal}` : signal,
-    alternatives: rest.map((item) => item.pin),
+    // Only a named controller vouches that another pin carries the same
+    // signal; two unnamed "SDA" pins may belong to different buses.
+    alternatives: port.instance ? rest.map((item) => item.pin) : [],
     cautions: chosen.cautions,
   };
 }
@@ -355,7 +371,7 @@ function groundEnd(board: Board, ground: PlacedPin): WireEnd {
 function blockerFor(board: Board, ports: LinkPort[], bus: LinkBus): string {
   const name = busNames[bus];
   const best = ports[0];
-  if (!best) return `PinHub’s pin map for ${board.name} names no ${name} pins.`;
+  if (!best) return `PinHub’s pin map for ${board.name} labels no ${name} pins.`;
   const have = requiredSignals[best.family].filter((signal) => !best.missing.includes(signal));
   return `PinHub’s pin map for ${board.name} names ${best.label} ${have.join(" and ")} but no ${best.missing.join(" or ")}.`;
 }

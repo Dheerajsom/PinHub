@@ -51,7 +51,13 @@ links. The page says so next to the bus switch.
    `USART2_TX`, `TXO`/`RXI`, `SDA1`, `I2C-3 SDA`, `I2C4_SDA_M0`, `TWI1-SCK`,
    and `I2C2_DAT`/`_CLK`.
    - Only a number names an instance. "UART TX" and a bare "SDA" name the
-     bus family, never a numbered controller.
+     bus family, never a numbered controller. A bare spelling on a pin that
+     also carries a numbered one (`TX` beside `U0TXD`) is that controller,
+     not a second bus.
+   - Power-domain prefixes stay in the instance (`MCU_I2C0`, `WKUP_I2C0`),
+     so two controllers that share a number are not merged.
+   - A bare `TX`/`RX` in a token that names CAN (`CAN TX / RX`) is a CAN
+     line, not UART.
    - Clock and data spellings (`SCK`, `CLK`, `DAT`) count as I2C only under
      an I2C or TWI prefix; a bare `SCK` is an SPI clock.
    - Unnamed buses are split by connector group, so two unrelated "TX/RX"
@@ -60,8 +66,11 @@ links. The page says so next to the bus switch.
      protocols (`PCM`, `CAM`, …, shared with `pin-nets`) are ignored.
 3. Ground: a pin on the `GND` net, preferring the connector group of the
    chosen signal pins.
+4. Alternate pins are listed only for a named controller. Two unnamed
+   "I2C SDA" pins may sit on different buses (ODROID-M1 pins 3 and 27), so an
+   unnamed bus offers none.
 
-Coverage on today's catalog: 125 of 142 mapped boards can link over UART and
+Coverage on today's catalog: 125 of 141 mapped boards can link over UART and
 112 over I2C. The rest are blocked with a reason (for example the ESP32-S3
 DevKitC-1 record names no I2C pins, because its I2C is GPIO-matrix routed).
 
@@ -137,6 +146,40 @@ line now appears only when a sheet is wider than its panel (covered by the
 e2e). Keyboard users reach every pad by Tab, and focusing a pad scrolls it
 into view, so the scroller gets no extra tab stop.
 
+## Accuracy pass — 2026-10-15
+
+Before merging, every port the parser derives was dumped for all 141 mapped
+boards and read against its record. Found and fixed:
+
+- **Duplicate buses.** Sixteen boards listed the same pins twice, once as an
+  unnamed bus and once as a numbered one ("UART · J3" and "UART0" on the
+  ESP32-S3-DevKitM-1; "I2C" and "I2C1" on the SparkFun Pro Micro RP2040), so
+  the bus select offered two identical choices.
+- **Merged controllers.** BeagleY-AI's `MCU_I2C0` (pins 3/5) and `WKUP_I2C0`
+  (pins 27/28) read as one unnamed bus, and the wire list offered pin 27 as
+  an "also" pin for pin 3's SDA. They are now two ports.
+- **Cross-bus alternates.** ODROID-M1 labels both of its I2C buses "I2C SDA" /
+  "I2C SCL"; the wire list offered the other bus's pins as alternates.
+  Unnamed buses now list none.
+- **CAN read as UART.** Teensy 3.2's "CAN TX / RX" produced a stray, incomplete
+  UART port.
+- **Blocker wording.** "names no I2C pins" now reads "labels no I2C pins": the
+  Teensy LC record names SDA0/SCL0 in pin notes, which the link does not read.
+- **Counts.** The catalog has 141 mapped boards, not 142. UART and I2C
+  coverage (125 and 112) is unchanged by the fixes.
+
+Regression tests for each fix are in `test/board-link.test.ts` (21 cases).
+
+Verification: `npm run lint`, `npm run typecheck`, `npm test` (571 passing),
+`npm run build`, `npm run test:e2e` (85 passing), and the `cli/` checks all
+pass. The mobile-mojo agent rechecked `/link` on the production build at
+360 × 800, 390 × 844, 412 × 915, and 844 × 390: BeagleY-AI's two controllers
+switch wires and sheets correctly, the ESP32-S3-DevKitM-1 shows one UART, the
+Pico still lists its alternates, and the Teensy LC blocker wraps cleanly.
+There was no overflow and no console errors, and every link control is at
+least 44 px. Shared site chrome below 44 px (theme toggle 40 px, footer pills
+36 px) predates this branch and is not changed here.
+
 ## Known limits
 
 - SPI is not offered (see above).
@@ -146,5 +189,7 @@ into view, so the scroller gets no extra tab stop.
   name, not every routable pin.
 - In landscape a tall 40-pin sheet is about 760 px high and needs a
   vertical scroll; that is the cost of keeping its pads tappable.
+- Signals named only in pin notes (Teensy LC's SDA0/SCL0) are not read; the
+  board is blocked for I2C until its labels or aliases carry them.
 - The ground pin is the first suitable one; another ground on the same
   header works equally well, and the sheet shows them all.

@@ -54,6 +54,20 @@ describe("busSignalsForPin", () => {
     expect(signals({ label: "CAM SDA", role: "i2c" })).toEqual([]);
   });
 
+  it("reads a bare TX next to a numbered spelling as that controller, not a second bus", () => {
+    expect(signals({ label: "TX / GPIO43", role: "uart", aliases: ["U0TXD"] })).toEqual(["UART0:TX"]);
+    expect(signals({ label: "SDA / GP2", role: "i2c", aliases: ["I2C1 SDA"] })).toEqual(["I2C1:SDA"]);
+  });
+
+  it("keeps a power-domain prefix as part of the controller name", () => {
+    expect(signals({ label: "GPIO2 / SDA", role: "i2c", aliases: ["MCU_I2C0_SDA"] })).toEqual(["MCU_I2C0:SDA"]);
+    expect(signals({ label: "GPIO0 / SDA", role: "i2c", aliases: ["WKUP_I2C0_SDA"] })).toEqual(["WKUP_I2C0:SDA"]);
+  });
+
+  it("does not read a CAN line as UART", () => {
+    expect(signals({ label: "CAN TX / RX", role: "special" })).toEqual([]);
+  });
+
   it("uses the source-backed functions when the pin has them", () => {
     const withFunctions = pin({
       label: "D0 / RX",
@@ -87,6 +101,15 @@ describe("linkPorts", () => {
       ["UART~J2", true],
       ["UART~J1", false],
     ]);
+  });
+
+  it("lists one port, not two, when a board names a bus both ways", () => {
+    expect(linkPorts(board("esp32-s3-devkitm-1"), "uart").map((port) => port.id)).toEqual(["UART0"]);
+    expect(linkPorts(board("sparkfun-pro-micro-rp2040"), "i2c").map((port) => port.id)).toEqual(["I2C1"]);
+  });
+
+  it("splits I2C controllers that differ only by power domain", () => {
+    expect(linkPorts(board("beagley-ai"), "i2c").map((port) => port.id)).toEqual(["MCU_I2C0", "WKUP_I2C0"]);
   });
 
   it("prefers the instance the sources name as default", () => {
@@ -128,6 +151,15 @@ describe("buildBoardLink", () => {
     expect(wireLabels(link).slice(0, 2)).toEqual(["GP4 both IO21", "GP5 both IO22"]);
     expect(link.status).toBe("ready");
     expect(link.notes.join(" ")).toMatch(/pull-up/i);
+  });
+
+  it("offers no alternate pins on a bus whose controller the record does not name", () => {
+    // ODROID-M1 labels two different I2C buses "I2C SDA"/"I2C SCL" (pins 3/5 and 27/28).
+    const m1 = board("odroid-m1");
+    const link = buildBoardLink(m1, m1, "i2c");
+    expect(wireLabels(link).slice(0, 2)).toEqual(["I2C SDA both I2C SDA", "I2C SCL both I2C SCL"]);
+    expect(link.wires.slice(0, 2).map((wire) => wire.a.pin.position)).toEqual([3, 5]);
+    expect(link.wires.every((wire) => wire.a.alternatives.length === 0)).toBe(true);
   });
 
   it("honours a chosen instance and ignores an unknown one", () => {
