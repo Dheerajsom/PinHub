@@ -243,30 +243,21 @@ body {
   }
 }
 
-/* Bright-bench theme: the same capture inked onto drafting paper. Lanes take
-   the darker fill step of each role ramp so they read on a light ground. */
-:root[data-theme="light"] .ph-scope {
-  --scope-edge: #dce6e9;
-  --scope-rule: rgba(31, 48, 58, 0.09);
-  --scope-mark: rgba(31, 48, 58, 0.38);
-  --scope-trace: 0.42;
-  --scope-glow: 0.05;
-  --scope-wash: 0.06;
-}
-
-:root[data-theme="light"] .ph-scope-base {
+/* Bright-bench theme: the same boards on drafting paper. They step back so
+   the paper stays bright; the role-colored pins keep their full hue. */
+:root[data-theme="light"] .ph-bench-base {
   background:
+    radial-gradient(ellipse 30% 55% at 4% 38%, rgba(13, 148, 136, 0.08), transparent 72%),
+    radial-gradient(ellipse 30% 60% at 96% 55%, rgba(8, 145, 178, 0.08), transparent 72%),
     linear-gradient(90deg, #dce6e9 0%, #edf3f4 22%, #f7fafb 50%, #edf3f4 78%, #dce6e9 100%);
 }
 
-:root[data-theme="light"] .ph-role-i2c { color: #0e5566; }
-:root[data-theme="light"] .ph-role-spi { color: #6b4709; }
-:root[data-theme="light"] .ph-role-uart { color: #0c4a6e; }
-:root[data-theme="light"] .ph-role-pwm { color: #6b1f5e; }
-:root[data-theme="light"] .ph-role-gpio { color: #0f5132; }
+:root[data-theme="light"] .ph-bench-board { opacity: 0.62; }
+:root[data-theme="light"] .ph-bench-glow { opacity: 0.25; }
+:root[data-theme="light"] .ph-bench-pin { fill: #23323b; fill-opacity: 0.8; }
 
-:root[data-theme="light"] .ph-scope-vignette {
-  background: linear-gradient(180deg, rgba(31, 48, 58, 0.05), transparent 14%, transparent 84%, rgba(31, 48, 58, 0.08));
+:root[data-theme="light"] .ph-bench-vignette {
+  background: linear-gradient(180deg, rgba(31, 48, 58, 0.04), transparent 16%, transparent 84%, rgba(31, 48, 58, 0.07));
 }
 
 :root[data-theme="light"] :is(
@@ -493,137 +484,70 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Logic-analyzer backdrop (see components/CircuitBackground.tsx and
-   components/bus-capture.ts)
-   Ten channels of real bus traffic scroll slowly past a fixed trigger line.
-   Each lane wears its pin-role hue from board-visual/roles.ts (the ink step,
-   never the probe cyan), so the backdrop speaks the same color language as the
-   pin map. The capture is full strength only in the desktop gutters; behind
-   the 1560px content column it drops to a whisper, so the gaps between the
-   opaque panels show a hint of signal rather than noise.
+   Board bench backdrop (see components/CircuitBackground.tsx)
+   Popular catalog boards lie top-down in the desktop gutters, cropped by the
+   window edge like boards on a bench beyond the frame. Their header pins are
+   the brightest marks on the page: each pad wears its pin-role hue from
+   board-visual/roles.ts and its catalog label. Everything else on a board is
+   kept quieter, and nothing moves.
    --------------------------------------------------------------------------- */
-.ph-scope {
-  --scope-edge: #06080b;
-  --scope-rule: rgba(148, 163, 184, 0.075);
-  --scope-mark: rgba(203, 213, 225, 0.22);
-  --scope-trace: 0.6;
-  --scope-glow: 0.1;
-  --scope-wash: 0.07;
-}
-
-.ph-role-i2c { color: #a5f3fc; }
-.ph-role-spi { color: #fde68a; }
-.ph-role-uart { color: #bae6fd; }
-.ph-role-pwm { color: #f5d0fe; }
-.ph-role-gpio { color: #a7f3d0; }
-
-.ph-scope-base {
+.ph-bench-base {
   background:
-    radial-gradient(130% 95% at 50% 42%, #0b0e13 0%, #090b0f 55%, var(--scope-edge) 100%);
+    radial-gradient(ellipse 30% 55% at 4% 38%, rgba(52, 160, 112, 0.1), transparent 72%),
+    radial-gradient(ellipse 30% 60% at 96% 55%, rgba(72, 120, 200, 0.09), transparent 72%),
+    linear-gradient(90deg, #06080b 0%, #0a0d11 16%, #090b0f 50%, #0a0d11 84%, #06080b 100%);
 }
 
-/* Time divisions: vertical dotted rules only, like a scope graticule. */
-.ph-scope-divisions {
-  background-image: linear-gradient(to right, var(--scope-rule) 1px, transparent 1px);
-  background-size: 10% 100%;
-  background-position: 5% 0;
-  -webkit-mask-image: repeating-linear-gradient(to bottom, #000 0 2px, transparent 2px 7px);
-  mask-image: repeating-linear-gradient(to bottom, #000 0 2px, transparent 2px 7px);
+/* Each side is drawn so its pins land in the first 196 units (19.6vh) beside
+   the window edge, which is the gutter a 1920 x 1080 screen leaves. On wider
+   screens the side slides toward the 1560px content column by the extra
+   gutter, and the art cropped at the edge comes into view. */
+.ph-bench-side {
+  --bench-shift: max(0px, calc(50% - 748px - 19.6vh));
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 520 / 1000;
+  overflow: visible;
 }
 
-.ph-scope-capture {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    #000 calc(50% - 800px),
-    rgba(0, 0, 0, 0.34) calc(50% - 720px),
-    rgba(0, 0, 0, 0.34) calc(50% + 720px),
-    #000 calc(50% + 800px)
-  );
-  mask-image: linear-gradient(
-    to right,
-    #000 calc(50% - 800px),
-    rgba(0, 0, 0, 0.34) calc(50% - 720px),
-    rgba(0, 0, 0, 0.34) calc(50% + 720px),
-    #000 calc(50% + 800px)
-  );
-}
+.ph-bench-left { left: var(--bench-shift); }
+.ph-bench-right { right: var(--bench-shift); }
 
-.ph-scope-strip {
-  animation: ph-scope-scroll 160s linear infinite;
-  will-change: transform;
-}
+.ph-bench-board { opacity: 0.9; }
+.ph-bench-glow { opacity: 0.5; }
 
-.ph-scope-trace { stroke-opacity: var(--scope-trace); }
-.ph-scope-glow { stroke-opacity: var(--scope-glow); }
-.ph-scope-decode { fill-opacity: var(--scope-wash); }
-.ph-scope-decode-text {
-  fill-opacity: calc(var(--scope-trace) * 0.95);
+.ph-bench-pin {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  fill-opacity: 0.88;
+}
+
+.ph-bench-mark {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  fill: #c9d2d8;
+  fill-opacity: 0.72;
+}
+
+.ph-bench-mark-ink { fill: #262e34; fill-opacity: 0.8; }
+.ph-bench-mark-sub { font-weight: 500; fill-opacity: 0.55; }
+
+.ph-bench-silk {
+  font-family: var(--font-mono);
+  font-weight: 600;
   letter-spacing: 0.04em;
+  fill-opacity: 0.72;
 }
 
-@keyframes ph-scope-scroll {
-  to { transform: translateX(calc(-1 * var(--capture-width))); }
-}
-
-/* Channel panel and trigger line appear only where the gutter can hold them. */
-.ph-scope-channels,
-.ph-scope-trigger {
-  display: none;
-}
-
-.ph-scope-channels {
-  width: 104px;
-  background: linear-gradient(to right, var(--scope-edge) 72%, transparent);
-}
-
-.ph-scope-channel {
-  position: absolute;
-  left: 20px;
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-  transform: translateY(-50%);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  line-height: 1;
-}
-
-.ph-scope-channel-index { color: var(--scope-mark); }
-.ph-scope-channel-name { opacity: 0.72; }
-
-.ph-scope-trigger {
-  left: 120px;
-  border-left: 1px dashed var(--scope-mark);
-}
-
-.ph-scope-trigger-flag {
-  position: absolute;
-  top: calc(16% - 30px);
-  left: -8px;
-  display: grid;
-  place-items: center;
-  width: 15px;
-  height: 15px;
-  border: 1px solid var(--scope-mark);
-  border-radius: 2px;
-  color: var(--scope-mark);
-  font-family: var(--font-mono);
-  font-size: 9px;
-}
-
-@media (min-width: 1800px) {
-  .ph-scope-channels,
-  .ph-scope-trigger {
-    display: block;
-  }
-}
-
-.ph-scope-vignette {
+.ph-bench-vignette {
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 14%, transparent 84%, rgba(0, 0, 0, 0.3));
+    linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 16%, transparent 82%, rgba(0, 0, 0, 0.32)),
+    radial-gradient(ellipse at center, transparent 58%, rgba(3, 5, 8, 0.28) 100%);
 }
 
 /* ---------------------------------------------------------------------------
@@ -772,15 +696,11 @@ button {
   }
 }
 
-/* On narrow screens the catalog fills the frame and the capture only shows in
-   the gaps between cards, so it holds still and steps back. */
+/* On narrow screens the catalog fills the frame, so the boards are removed
+   and only the quiet graphite base remains. */
 @media (max-width: 1023px) {
-  .ph-scope-strip {
-    animation: none;
-  }
-
-  .ph-scope-capture {
-    opacity: 0.6;
+  .ph-bench-side {
+    display: none;
   }
 }
 
@@ -794,8 +714,7 @@ button {
   .bv-pad-ring,
   .bv-leader,
   .bv-label,
-  .bv-net-path,
-  .ph-scope-strip {
+  .bv-net-path {
     animation: none;
     transition: none;
   }
@@ -1487,7 +1406,7 @@ button {
     background: white !important;
     color: #111827 !important;
   }
-  .ph-scope,
+  .ph-bench,
   .compare-tray,
   header,
   footer,

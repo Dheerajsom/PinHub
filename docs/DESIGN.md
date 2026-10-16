@@ -19,7 +19,7 @@ from** (official vs third-party provenance on every link and pin map),
 detail tab), and **that the pin map is the product** (the interactive
 connector map is the visual and interactive center of the board view, with
 static and dynamic presentations of the same source-backed data). Everything
-decorative is subordinate to lookup speed: the logic-analyzer backdrop stays behind
+decorative is subordinate to lookup speed: the board-bench backdrop stays behind
 opaque panels, motion is enhancement-only, and every chip, badge, and color
 encodes a real electrical or provenance fact.
 
@@ -116,13 +116,14 @@ debug lime, system orange, alt teal, reserved stone) defined once in
 `board-visual/roles.ts` and reused by chips, SVG pads, legend, and table so
 every rendering of a pin agrees.
 
-- **Background**: a logic-analyzer capture (`CircuitBackground`, data in
-  `bus-capture.ts`). Ten channels of real, decodable traffic (I2C, SPI, UART,
-  PWM, a bouncing GPIO button) in the pin-role ink hues scroll slowly past a
-  fixed trigger line over faint dotted time divisions. Full strength in the
-  desktop gutters, channel labels only at 1800px and wider, a whisper behind
-  the content column, static below 1024px and for reduced motion. A unit test
-  decodes every lane, so the traffic stays protocol-correct. All widgets
+- **Background**: a static bench of popular catalog boards
+  (`CircuitBackground`): Raspberry Pi 5 and ESP32 DevKit V1 on the left; Pi
+  Zero 2 W, STM32 Blue Pill and Raspberry Pi Pico on the right, drawn top-down
+  in the desktop gutters and cropped by the window edge. The header pins are
+  the subject: each pad uses its pin-role hue and catalog label from
+  `bench-boards.ts`, which a unit test holds to the catalog. On screens wider
+  than 1920px the boards slide toward the content column. Hidden below
+  1024px. No grid, no motion. All widgets
   are opaque — no glass/blur.
 - **Typography**: Geist (UI), Geist Mono (pin labels, numbers, metrics —
   anything an engineer might transcribe), Audiowide (wordmark only).
