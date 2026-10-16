@@ -19,7 +19,7 @@ from** (official vs third-party provenance on every link and pin map),
 detail tab), and **that the pin map is the product** (the interactive
 connector map is the visual and interactive center of the board view, with
 static and dynamic presentations of the same source-backed data). Everything
-decorative is subordinate to lookup speed: the blueprint backdrop stays behind
+decorative is subordinate to lookup speed: the logic-analyzer backdrop stays behind
 opaque panels, motion is enhancement-only, and every chip, badge, and color
 encodes a real electrical or provenance fact.
 
@@ -116,9 +116,13 @@ debug lime, system orange, alt teal, reserved stone) defined once in
 `board-visual/roles.ts` and reused by chips, SVG pads, legend, and table so
 every rendering of a pin agrees.
 
-- **Background**: static graphite instrument plates with a masked micro-grid,
-  brushed texture, and legible PCB traces (`CircuitBackground`) confined to the
-  desktop gutters. All widgets
+- **Background**: a logic-analyzer capture (`CircuitBackground`, data in
+  `bus-capture.ts`). Ten channels of real, decodable traffic (I2C, SPI, UART,
+  PWM, a bouncing GPIO button) in the pin-role ink hues scroll slowly past a
+  fixed trigger line over faint dotted time divisions. Full strength in the
+  desktop gutters, channel labels only at 1800px and wider, a whisper behind
+  the content column, static below 1024px and for reduced motion. A unit test
+  decodes every lane, so the traffic stays protocol-correct. All widgets
   are opaque — no glass/blur.
 - **Typography**: Geist (UI), Geist Mono (pin labels, numbers, metrics —
   anything an engineer might transcribe), Audiowide (wordmark only).
