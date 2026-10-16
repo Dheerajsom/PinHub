@@ -19,7 +19,7 @@ from** (official vs third-party provenance on every link and pin map),
 detail tab), and **that the pin map is the product** (the interactive
 connector map is the visual and interactive center of the board view, with
 static and dynamic presentations of the same source-backed data). Everything
-decorative is subordinate to lookup speed: the board-bench backdrop stays behind
+decorative is subordinate to lookup speed: the vendor-mark backdrop stays behind
 opaque panels, motion is enhancement-only, and every chip, badge, and color
 encodes a real electrical or provenance fact.
 
@@ -116,14 +116,14 @@ debug lime, system orange, alt teal, reserved stone) defined once in
 `board-visual/roles.ts` and reused by chips, SVG pads, legend, and table so
 every rendering of a pin agrees.
 
-- **Background**: a static bench of popular catalog boards
-  (`CircuitBackground`): Raspberry Pi 5 and ESP32 DevKit V1 on the left; Pi
-  Zero 2 W, STM32 Blue Pill and Raspberry Pi Pico on the right, drawn top-down
-  in the desktop gutters and cropped by the window edge. The header pins are
-  the subject: each pad uses its pin-role hue and catalog label from
-  `bench-boards.ts`, which a unit test holds to the catalog. On screens wider
-  than 1920px the boards slide toward the content column. Hidden below
-  1024px. No grid, no motion. All widgets
+- **Background**: the catalog's vendor marks (`CircuitBackground`, layout in
+  `background-field.ts`) scattered through the desktop gutters in quiet
+  monochrome, plus a cursor probe. Where a mouse rests on bare background (no
+  panel under it), a soft cyan light follows it. Inside it the nearby marks
+  return to color and a field of bus bytes shows through: I2C writes to common
+  parts, address bytes in the I2C role ink, and a hidden ASCII message. Marks
+  load from Google's favicon service like `VendorLogo`, so no logo files ship.
+  Hidden below 1024px, and the probe needs a fine hovering pointer. All widgets
   are opaque — no glass/blur.
 - **Typography**: Geist (UI), Geist Mono (pin labels, numbers, metrics —
   anything an engineer might transcribe), Audiowide (wordmark only).

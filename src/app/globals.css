@@ -243,20 +243,32 @@ body {
   }
 }
 
-/* Bright-bench theme: the same boards on drafting paper. They step back so
-   the paper stays bright; the role-colored pins keep their full hue. */
-:root[data-theme="light"] .ph-bench-base {
+/* Bright-bench theme: the same marks and probe on drafting paper. */
+:root[data-theme="light"] .ph-backdrop-base {
   background:
-    radial-gradient(ellipse 30% 55% at 4% 38%, rgba(13, 148, 136, 0.08), transparent 72%),
-    radial-gradient(ellipse 30% 60% at 96% 55%, rgba(8, 145, 178, 0.08), transparent 72%),
     linear-gradient(90deg, #dce6e9 0%, #edf3f4 22%, #f7fafb 50%, #edf3f4 78%, #dce6e9 100%);
 }
 
-:root[data-theme="light"] .ph-bench-board { opacity: 0.62; }
-:root[data-theme="light"] .ph-bench-glow { opacity: 0.25; }
-:root[data-theme="light"] .ph-bench-pin { fill: #23323b; fill-opacity: 0.8; }
+:root[data-theme="light"] .ph-logo {
+  filter: grayscale(1) contrast(0.9);
+  opacity: 0.16;
+}
 
-:root[data-theme="light"] .ph-bench-vignette {
+:root[data-theme="light"] .ph-logo-field-lit .ph-logo {
+  filter: none;
+  opacity: 1;
+}
+
+:root[data-theme="light"] .ph-probe {
+  background: radial-gradient(closest-side, rgba(8, 145, 178, 0.13), rgba(8, 145, 178, 0.04) 62%, transparent);
+}
+
+:root[data-theme="light"] .ph-hex-field { color: rgba(71, 85, 105, 0.7); }
+:root[data-theme="light"] .ph-hex-addr { color: #0e5566; }
+:root[data-theme="light"] .ph-hex-mark { color: #1e293b; }
+:root[data-theme="light"] .ph-hex-msg { color: #0e7490; text-shadow: none; }
+
+:root[data-theme="light"] .ph-backdrop-vignette {
   background: linear-gradient(180deg, rgba(31, 48, 58, 0.04), transparent 16%, transparent 84%, rgba(31, 48, 58, 0.07));
 }
 
@@ -484,70 +496,88 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Board bench backdrop (see components/CircuitBackground.tsx)
-   Popular catalog boards lie top-down in the desktop gutters, cropped by the
-   window edge like boards on a bench beyond the frame. Their header pins are
-   the brightest marks on the page: each pad wears its pin-role hue from
-   board-visual/roles.ts and its catalog label. Everything else on a board is
-   kept quieter, and nothing moves.
+   Vendor marks and the cursor probe (see components/CircuitBackground.tsx and
+   components/background-field.ts)
+   The catalog's vendor marks sit in the desktop gutters in quiet monochrome.
+   Where the pointer rests on bare background, a soft cyan light (cyan is the
+   interaction color) follows it, returns the nearby marks to colour, and
+   reveals a field of bus bytes: I2C writes to common parts, with the address
+   bytes in the I2C role ink, and a hidden ASCII message in bright white.
    --------------------------------------------------------------------------- */
-.ph-bench-base {
+.ph-backdrop-base {
   background:
-    radial-gradient(ellipse 30% 55% at 4% 38%, rgba(52, 160, 112, 0.1), transparent 72%),
-    radial-gradient(ellipse 30% 60% at 96% 55%, rgba(72, 120, 200, 0.09), transparent 72%),
-    linear-gradient(90deg, #06080b 0%, #0a0d11 16%, #090b0f 50%, #0a0d11 84%, #06080b 100%);
+    radial-gradient(ellipse 70% 60% at 50% 40%, #0b0e13 0%, transparent 70%),
+    linear-gradient(90deg, #06080b 0%, #090c10 18%, #090b0f 50%, #090c10 82%, #06080b 100%);
 }
 
-/* Each side is drawn so its pins land in the first 196 units (19.6vh) beside
-   the window edge, which is the gutter a 1920 x 1080 screen leaves. On wider
-   screens the side slides toward the 1560px content column by the extra
-   gutter, and the art cropped at the edge comes into view. */
-.ph-bench-side {
-  --bench-shift: max(0px, calc(50% - 748px - 19.6vh));
+.ph-logo-field {
+  position: absolute;
+  inset: 0;
+}
+
+.ph-logo {
+  position: absolute;
+  border-radius: 7px;
+  filter: grayscale(1) brightness(1.5) contrast(0.85);
+  opacity: 0.1;
+}
+
+.ph-logo-field-lit .ph-logo {
+  filter: none;
+  opacity: 0.95;
+}
+
+.ph-probe {
   position: absolute;
   top: 0;
-  height: 100%;
-  width: auto;
-  aspect-ratio: 520 / 1000;
-  overflow: visible;
+  left: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  background: radial-gradient(closest-side, rgba(103, 232, 249, 0.18), rgba(103, 232, 249, 0.06) 62%, transparent);
+  -webkit-mask-image: radial-gradient(closest-side, #000 38%, rgba(0, 0, 0, 0.5) 66%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 38%, rgba(0, 0, 0, 0.5) 66%, transparent 100%);
+  will-change: transform, opacity;
 }
 
-.ph-bench-left { left: var(--bench-shift); }
-.ph-bench-right { right: var(--bench-shift); }
+.ph-probe[data-lit="true"] {
+  opacity: 1;
+}
 
-.ph-bench-board { opacity: 0.9; }
-.ph-bench-glow { opacity: 0.5; }
+.ph-probe-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  will-change: transform;
+}
 
-.ph-bench-pin {
+/* 11px Geist Mono: "3C " is 20px wide, matching HEX_TOKEN_WIDTH. */
+.ph-hex-field {
+  position: absolute;
+  inset: 0;
+  padding: 6px 0 0 8px;
+  overflow: hidden;
   font-family: var(--font-mono);
-  font-size: 7px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  fill-opacity: 0.88;
+  font-size: 11px;
+  line-height: 20px;
+  white-space: pre;
+  color: rgba(165, 180, 198, 0.72);
 }
 
-.ph-bench-mark {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  fill: #c9d2d8;
-  fill-opacity: 0.72;
+.ph-hex-addr { color: #a5f3fc; font-weight: 600; }
+.ph-hex-mark { color: #e4e4e7; font-weight: 600; }
+.ph-hex-msg {
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(103, 232, 249, 0.75);
 }
 
-.ph-bench-mark-ink { fill: #262e34; fill-opacity: 0.8; }
-.ph-bench-mark-sub { font-weight: 500; fill-opacity: 0.55; }
-
-.ph-bench-silk {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  fill-opacity: 0.72;
-}
-
-.ph-bench-vignette {
+.ph-backdrop-vignette {
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 16%, transparent 82%, rgba(0, 0, 0, 0.32)),
-    radial-gradient(ellipse at center, transparent 58%, rgba(3, 5, 8, 0.28) 100%);
+    linear-gradient(180deg, rgba(0, 0, 0, 0.14), transparent 16%, transparent 84%, rgba(0, 0, 0, 0.28));
 }
 
 /* ---------------------------------------------------------------------------
@@ -696,10 +726,11 @@ button {
   }
 }
 
-/* On narrow screens the catalog fills the frame, so the boards are removed
-   and only the quiet graphite base remains. */
+/* On narrow screens the catalog fills the frame, so the marks and the probe
+   are removed and only the quiet graphite base remains. */
 @media (max-width: 1023px) {
-  .ph-bench-side {
+  .ph-logo-field,
+  .ph-probe {
     display: none;
   }
 }
@@ -714,7 +745,8 @@ button {
   .bv-pad-ring,
   .bv-leader,
   .bv-label,
-  .bv-net-path {
+  .bv-net-path,
+  .ph-probe {
     animation: none;
     transition: none;
   }
@@ -1406,7 +1438,7 @@ button {
     background: white !important;
     color: #111827 !important;
   }
-  .ph-bench,
+  .ph-backdrop,
   .compare-tray,
   header,
   footer,
