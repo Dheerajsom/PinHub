@@ -19,7 +19,7 @@ from** (official vs third-party provenance on every link and pin map),
 detail tab), and **that the pin map is the product** (the interactive
 connector map is the visual and interactive center of the board view, with
 static and dynamic presentations of the same source-backed data). Everything
-decorative is subordinate to lookup speed: the blueprint backdrop stays behind
+decorative is subordinate to lookup speed: the vendor-mark backdrop stays behind
 opaque panels, motion is enhancement-only, and every chip, badge, and color
 encodes a real electrical or provenance fact.
 
@@ -116,9 +116,14 @@ debug lime, system orange, alt teal, reserved stone) defined once in
 `board-visual/roles.ts` and reused by chips, SVG pads, legend, and table so
 every rendering of a pin agrees.
 
-- **Background**: static graphite instrument plates with a masked micro-grid,
-  brushed texture, and legible PCB traces (`CircuitBackground`) confined to the
-  desktop gutters. All widgets
+- **Background**: the catalog's vendor marks (`CircuitBackground`, layout in
+  `background-field.ts`) scattered through the desktop gutters in quiet
+  monochrome, plus a cursor probe. Where a mouse rests on bare background (no
+  panel under it), a soft cyan light follows it. Inside it the nearby marks
+  return to color and a field of bus bytes shows through: I2C writes to common
+  parts, address bytes in the I2C role ink, and a hidden ASCII message. Marks
+  load from Google's favicon service like `VendorLogo`, so no logo files ship.
+  Hidden below 1024px, and the probe needs a fine hovering pointer. All widgets
   are opaque — no glass/blur.
 - **Typography**: Geist (UI), Geist Mono (pin labels, numbers, metrics —
   anything an engineer might transcribe), Audiowide (wordmark only).

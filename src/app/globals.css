@@ -243,21 +243,33 @@ body {
   }
 }
 
-/* Bright-bench theme. The same dense hierarchy remains; only the workbench
-   materials change from charcoal anodized metal to drafting-paper neutrals. */
-:root[data-theme="light"] .pinhub-background-base {
+/* Bright-bench theme: the same marks and probe on drafting paper. */
+:root[data-theme="light"] .ph-backdrop-base {
   background:
-    radial-gradient(ellipse at 9% 39%, rgba(13, 148, 136, 0.1), transparent 28%),
-    radial-gradient(ellipse at 91% 63%, rgba(8, 145, 178, 0.09), transparent 28%),
     linear-gradient(90deg, #dce6e9 0%, #edf3f4 22%, #f7fafb 50%, #edf3f4 78%, #dce6e9 100%);
 }
 
-:root[data-theme="light"] .pinhub-background-grid {
-  opacity: 0.48;
+:root[data-theme="light"] .ph-logo {
+  filter: grayscale(1) contrast(0.9);
+  opacity: 0.16;
 }
 
-:root[data-theme="light"] .pinhub-trace-map {
-  opacity: 0.2;
+:root[data-theme="light"] .ph-logo-field-lit .ph-logo {
+  filter: none;
+  opacity: 1;
+}
+
+:root[data-theme="light"] .ph-probe {
+  background: radial-gradient(closest-side, rgba(8, 145, 178, 0.13), rgba(8, 145, 178, 0.04) 62%, transparent);
+}
+
+:root[data-theme="light"] .ph-hex-field { color: rgba(71, 85, 105, 0.7); }
+:root[data-theme="light"] .ph-hex-addr { color: #0e5566; }
+:root[data-theme="light"] .ph-hex-mark { color: #1e293b; }
+:root[data-theme="light"] .ph-hex-msg { color: #0e7490; text-shadow: none; }
+
+:root[data-theme="light"] .ph-backdrop-vignette {
+  background: linear-gradient(180deg, rgba(31, 48, 58, 0.04), transparent 16%, transparent 84%, rgba(31, 48, 58, 0.07));
 }
 
 :root[data-theme="light"] :is(
@@ -484,97 +496,88 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Reference-board workbench (see components/CircuitBackground.tsx)
-   Detailed hardware sits in the desktop gutters while animated signal traces
-   add life without competing with the dense catalog in the center.
+   Vendor marks and the cursor probe (see components/CircuitBackground.tsx and
+   components/background-field.ts)
+   The catalog's vendor marks sit in the desktop gutters in quiet monochrome.
+   Where the pointer rests on bare background, a soft cyan light (cyan is the
+   interaction color) follows it, returns the nearby marks to colour, and
+   reveals a field of bus bytes: I2C writes to common parts, with the address
+   bytes in the I2C role ink, and a hidden ASCII message in bright white.
    --------------------------------------------------------------------------- */
-.pinhub-background-base {
+.ph-backdrop-base {
   background:
-    radial-gradient(ellipse at 9% 39%, rgba(22, 157, 151, 0.13), transparent 28%),
-    radial-gradient(ellipse at 91% 63%, rgba(16, 151, 175, 0.12), transparent 28%),
-    linear-gradient(90deg, #070a0d 0%, #0b1116 18%, #090c10 34%, #090c10 66%, #0b1116 82%, #070a0d 100%);
+    radial-gradient(ellipse 70% 60% at 50% 40%, #0b0e13 0%, transparent 70%),
+    linear-gradient(90deg, #06080b 0%, #090c10 18%, #090b0f 50%, #090c10 82%, #06080b 100%);
 }
 
-.pinhub-background-grid {
-  background-image:
-    radial-gradient(circle, rgba(161, 193, 205, 0.14) 0.65px, transparent 0.75px),
-    linear-gradient(to right, rgba(125, 160, 176, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(125, 160, 176, 0.04) 1px, transparent 1px);
-  background-size: 20px 20px, 100px 100px, 100px 100px;
-  background-position: -10px -10px, -1px -1px, -1px -1px;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.52) 18%,
-    rgba(0, 0, 0, 0.1) 38%,
-    rgba(0, 0, 0, 0.1) 62%,
-    rgba(0, 0, 0, 0.52) 82%,
-    rgba(0, 0, 0, 0.9) 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.52) 18%,
-    rgba(0, 0, 0, 0.1) 38%,
-    rgba(0, 0, 0, 0.1) 62%,
-    rgba(0, 0, 0, 0.52) 82%,
-    rgba(0, 0, 0, 0.9) 100%
-  );
+.ph-logo-field {
+  position: absolute;
+  inset: 0;
 }
 
-.pinhub-trace-map {
-  opacity: 0.92;
-  filter: saturate(0.92);
+.ph-logo {
+  position: absolute;
+  border-radius: 7px;
+  filter: grayscale(1) brightness(1.5) contrast(0.85);
+  opacity: 0.1;
 }
 
-.pinhub-board {
-  transform-box: fill-box;
-  transform-origin: center;
-  will-change: translate;
+.ph-logo-field-lit .ph-logo {
+  filter: none;
+  opacity: 0.95;
 }
 
-.pinhub-board-pi {
-  animation: board-drift-pi 11s ease-in-out infinite;
+.ph-probe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  background: radial-gradient(closest-side, rgba(103, 232, 249, 0.18), rgba(103, 232, 249, 0.06) 62%, transparent);
+  -webkit-mask-image: radial-gradient(closest-side, #000 38%, rgba(0, 0, 0, 0.5) 66%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 38%, rgba(0, 0, 0, 0.5) 66%, transparent 100%);
+  will-change: transform, opacity;
 }
 
-.pinhub-board-uno {
-  animation: board-drift-uno 13s ease-in-out -4s infinite;
+.ph-probe[data-lit="true"] {
+  opacity: 1;
 }
 
-.pinhub-signal-traces path {
-  stroke-dasharray: 0.06 0.025;
-  animation: signal-flow 3.8s linear infinite;
+.ph-probe-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  will-change: transform;
 }
 
-.pinhub-signal-traces path:nth-child(even) {
-  animation-direction: reverse;
-  animation-duration: 4.6s;
+/* 11px Geist Mono: "3C " is 20px wide, matching HEX_TOKEN_WIDTH. */
+.ph-hex-field {
+  position: absolute;
+  inset: 0;
+  padding: 6px 0 0 8px;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 20px;
+  white-space: pre;
+  color: rgba(165, 180, 198, 0.72);
 }
 
-@keyframes board-drift-pi {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 7px -10px; }
+.ph-hex-addr { color: #a5f3fc; font-weight: 600; }
+.ph-hex-mark { color: #e4e4e7; font-weight: 600; }
+.ph-hex-msg {
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(103, 232, 249, 0.75);
 }
 
-@keyframes board-drift-uno {
-  0%, 100% { translate: 0 0; }
-  50% { translate: -8px 9px; }
-}
-
-@keyframes signal-flow {
-  to { stroke-dashoffset: -0.17; }
-}
-
-.pinhub-background-light {
+.ph-backdrop-vignette {
   background:
-    linear-gradient(90deg, rgba(73, 220, 219, 0.025), transparent 27%, transparent 73%, rgba(73, 220, 219, 0.02)),
-    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.006) 3px 4px);
-}
-
-.pinhub-background-vignette {
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.04), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.26)),
-    radial-gradient(ellipse at center, transparent 52%, rgba(3, 5, 8, 0.3) 100%);
+    linear-gradient(180deg, rgba(0, 0, 0, 0.14), transparent 16%, transparent 84%, rgba(0, 0, 0, 0.28));
 }
 
 /* ---------------------------------------------------------------------------
@@ -723,17 +726,12 @@ button {
   }
 }
 
-/* On narrow screens the catalog occupies the frame, so the trace artwork is
-   removed and only the quiet graphite grid remains. */
+/* On narrow screens the catalog fills the frame, so the marks and the probe
+   are removed and only the quiet graphite base remains. */
 @media (max-width: 1023px) {
-  .pinhub-trace-map {
+  .ph-logo-field,
+  .ph-probe {
     display: none;
-  }
-
-  .pinhub-background-grid {
-    opacity: 0.5;
-    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%);
-    mask-image: linear-gradient(to bottom, #000, transparent 75%);
   }
 }
 
@@ -748,8 +746,7 @@ button {
   .bv-leader,
   .bv-label,
   .bv-net-path,
-  .pinhub-board,
-  .pinhub-signal-traces path {
+  .ph-probe {
     animation: none;
     transition: none;
   }
@@ -1441,7 +1438,7 @@ button {
     background: white !important;
     color: #111827 !important;
   }
-  .pinhub-background-base,
+  .ph-backdrop,
   .compare-tray,
   header,
   footer,
