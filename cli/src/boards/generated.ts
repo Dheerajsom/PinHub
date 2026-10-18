@@ -965,7 +965,7 @@ export const generatedBoards: Board[] = [
       "uno-r4-wifi",
       "r4-wifi"
     ],
-    "description": "A modern UNO-format board with a 32-bit Renesas microcontroller, Wi-Fi/Bluetooth coprocessor, Qwiic connector, and the classic shield header layout.",
+    "description": "UNO-format board with a 32-bit Renesas MCU, Wi-Fi/Bluetooth coprocessor, Qwiic, and the classic shield header.",
     "warnings": [
       {
         "severity": "warning",
@@ -1262,7 +1262,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "nano-esp32"
     ],
-    "description": "A compact Arduino Nano-format board built around an ESP32-S3 module with Arduino, MicroPython, Wi-Fi, and Bluetooth support.",
+    "description": "Arduino Nano-format board built around an ESP32-S3 module, with Wi-Fi, Bluetooth, and MicroPython support.",
     "warnings": [
       {
         "severity": "warning",
@@ -1679,7 +1679,7 @@ export const generatedBoards: Board[] = [
       "devkitc",
       "esp32-devkitc-v4"
     ],
-    "description": "Espressif's official 38-pin ESP32 development board, with module IO broken out across J2 and J3 breadboard-friendly headers.",
+    "description": "Espressif's official 38-pin ESP32 board, with module I/O broken out across the J2 and J3 headers.",
     "warnings": [
       {
         "severity": "warning",
@@ -2309,7 +2309,7 @@ export const generatedBoards: Board[] = [
       "nucleo",
       "nucleo-f401re"
     ],
-    "description": "A popular STM32 Nucleo-64 board that exposes both Arduino-compatible headers and ST Morpho headers for direct MCU access.",
+    "description": "Popular STM32 Nucleo-64 with Arduino-compatible headers plus ST Morpho headers for direct MCU access.",
     "warnings": [
       {
         "severity": "warning",
@@ -2697,7 +2697,7 @@ export const generatedBoards: Board[] = [
       "bbb",
       "beaglebone"
     ],
-    "description": "A Linux SBC designed for hardware control, with two 46-pin cape headers and a rich set of default and muxed peripheral functions.",
+    "description": "Linux SBC built for hardware control, with two 46-pin cape headers and a rich set of muxed peripherals.",
     "warnings": [
       {
         "severity": "warning",
@@ -3872,7 +3872,7 @@ export const generatedBoards: Board[] = [
       "jetson",
       "orin-nano"
     ],
-    "description": "NVIDIA's entry Jetson Orin developer kit for edge AI projects, with a 40-pin expansion header plus camera, display, and high-speed interfaces.",
+    "description": "NVIDIA's entry Jetson Orin kit for edge AI, with a 40-pin header plus camera, display, and high-speed I/O.",
     "warnings": [
       {
         "severity": "warning",
@@ -4300,7 +4300,7 @@ export const generatedBoards: Board[] = [
       "teensy",
       "teensy41"
     ],
-    "description": "A very fast Arduino-compatible microcontroller board with many IO pins, Ethernet PHY support, USB host pads, and optional memory pads.",
+    "description": "Very fast Arduino-compatible board with many I/O pins, Ethernet PHY support, USB host pads, and memory pads.",
     "warnings": [
       {
         "severity": "warning",
@@ -6222,7 +6222,7 @@ export const generatedBoards: Board[] = [
       "pico2",
       "pico-2"
     ],
-    "description": "Raspberry Pi's RP2350 board keeps the Pico form factor while adding a newer MCU architecture for embedded systems teaching and firmware experiments.",
+    "description": "Raspberry Pi's RP2350 board in the Pico form factor, for embedded teaching and firmware experiments.",
     "warnings": [
       {
         "severity": "warning",
@@ -6702,7 +6702,7 @@ export const generatedBoards: Board[] = [
       "mega2560",
       "arduino-mega"
     ],
-    "description": "A classic high-pin-count Arduino board for teaching, robotics, lab instruments, and shield projects that need many GPIOs or serial ports.",
+    "description": "Classic high-pin-count Arduino for robotics, lab instruments, and shield projects that need many GPIOs or UARTs.",
     "warnings": [
       {
         "severity": "warning",
@@ -7458,7 +7458,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "nano"
     ],
-    "description": "The classic breadboard-friendly Arduino used in labs and small prototypes where UNO compatibility is needed in a compact package.",
+    "description": "The classic breadboard-friendly Arduino: UNO compatibility in a compact package.",
     "warnings": [
       {
         "severity": "warning",
@@ -7821,7 +7821,7 @@ export const generatedBoards: Board[] = [
       "nano-33-ble",
       "nano-33"
     ],
-    "description": "A compact BLE and TinyML-friendly Arduino with onboard sensors that made it a common choice in teaching demos and embedded ML labs.",
+    "description": "Compact BLE Arduino with onboard sensors, a common pick for TinyML demos and embedded ML labs.",
     "warnings": [
       {
         "severity": "warning",
@@ -8640,7 +8640,7 @@ export const generatedBoards: Board[] = [
       "esp32-s3",
       "s3-devkitc"
     ],
-    "description": "Espressif's mainstream ESP32-S3 reference board for USB, AI acceleration experiments, BLE, Wi-Fi, and embedded product prototypes.",
+    "description": "Espressif's mainstream ESP32-S3 board for USB, AI acceleration, BLE, Wi-Fi, and product prototypes.",
     "warnings": [
       {
         "severity": "warning",
@@ -9452,7 +9452,7 @@ export const generatedBoards: Board[] = [
     "name": "ESP32-C3-DevKitC-02",
     "manufacturer": "Espressif",
     "aliases": [],
-    "description": "Espressif's WROOM-02 ESP32-C3 board — the PCB-antenna sibling of the DevKitM-1, with a different J1/J3 order that is easy to mix up.",
+    "description": "WROOM-02 ESP32-C3 board: the PCB-antenna sibling of the DevKitM-1, with a J1/J3 order that is easy to mix up.",
     "warnings": [
       {
         "severity": "warning",
@@ -9892,7 +9892,7 @@ export const generatedBoards: Board[] = [
     "name": "ESP32-S2-DevKitM-1",
     "manufacturer": "Espressif",
     "aliases": [],
-    "description": "Espressif's MINI-module ESP32-S2 board: 42 broken-out pins with 14 touch channels, two DACs, and the widest analog coverage of the S2 kits.",
+    "description": "MINI-module ESP32-S2 board: 42 pins, 14 touch channels, two DACs, and the widest analog coverage of the S2 kits.",
     "warnings": [
       {
         "severity": "warning",
@@ -10572,7 +10572,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "esp32-c6"
     ],
-    "description": "A modern Espressif board for Wi-Fi 6, BLE, Zigbee, and Thread experiments in connected-device coursework and product prototyping.",
+    "description": "Espressif board for Wi-Fi 6, BLE, Zigbee, and Thread experiments and connected-device prototypes.",
     "warnings": [
       {
         "severity": "warning",
@@ -11497,7 +11497,7 @@ export const generatedBoards: Board[] = [
       "microbit",
       "micro-bit"
     ],
-    "description": "A classroom-first board with sensors, buttons, display, radio, and an edge connector that makes hardware concepts approachable.",
+    "description": "Classroom-first board with sensors, buttons, a display, radio, and an edge connector.",
     "warnings": [
       {
         "severity": "warning",
@@ -12082,7 +12082,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "xiao-esp32s3"
     ],
-    "description": "A tiny ESP32-S3 board for wireless embedded projects where space matters but Wi-Fi, BLE, and native USB are still needed.",
+    "description": "Tiny ESP32-S3 board for space-constrained projects that still need Wi-Fi, BLE, and native USB.",
     "warnings": [
       {
         "severity": "warning",
@@ -13211,7 +13211,7 @@ export const generatedBoards: Board[] = [
     "name": "SparkFun Thing Plus RP2040",
     "manufacturer": "SparkFun",
     "aliases": [],
-    "description": "SparkFun's RP2040 Thing Plus combines the Feather-compatible footprint, Qwiic, battery support, microSD, and plenty of flash.",
+    "description": "SparkFun's Feather-footprint RP2040 board with Qwiic, battery support, microSD, and plenty of flash.",
     "warnings": [
       {
         "severity": "warning",
@@ -13857,7 +13857,7 @@ export const generatedBoards: Board[] = [
     "name": "SparkFun RedBoard Artemis ATP",
     "manufacturer": "SparkFun",
     "aliases": [],
-    "description": "An ultra-low-power Artemis board that breaks out nearly every module signal in a Mega-compatible footprint for advanced prototyping.",
+    "description": "Ultra-low-power Artemis board that breaks out nearly every module signal in a Mega-compatible footprint.",
     "warnings": [
       {
         "severity": "warning",
@@ -14433,7 +14433,7 @@ export const generatedBoards: Board[] = [
       "pi3",
       "raspberry-pi-3"
     ],
-    "description": "The final mainstream Pi 3 revision with gigabit-over-USB Ethernet and dual-band Wi-Fi, still common in deployed kiosks, labs, and legacy HAT projects.",
+    "description": "Final mainstream Pi 3 revision with gigabit-over-USB Ethernet and dual-band Wi-Fi, still common in legacy HAT projects.",
     "warnings": [
       {
         "severity": "warning",
@@ -14913,7 +14913,7 @@ export const generatedBoards: Board[] = [
       "pi500",
       "rpi500"
     ],
-    "description": "Pi 5 internals built into a keyboard, with the standard 40-pin GPIO header exposed on the rear edge for classroom electronics without a separate board.",
+    "description": "Pi 5 internals in a keyboard, with the standard 40-pin GPIO header on the rear edge.",
     "warnings": [
       {
         "severity": "warning",
@@ -15393,7 +15393,7 @@ export const generatedBoards: Board[] = [
       "blue-pill",
       "bluepill"
     ],
-    "description": "The ubiquitous low-cost STM32 board from many manufacturers, a staple for learning bare-metal Arm, STM32duino, and SWD debugging on a budget.",
+    "description": "Ubiquitous low-cost STM32 board, a staple for learning bare-metal Arm, STM32duino, and SWD debugging.",
     "warnings": [
       {
         "severity": "warning",
@@ -15942,7 +15942,7 @@ export const generatedBoards: Board[] = [
       "black-pill",
       "blackpill"
     ],
-    "description": "The popular successor to the Blue Pill with a Cortex-M4F, USB-C, and a user key, widely used for keyboards (QMK), flight controllers, and STM32 learning.",
+    "description": "Blue Pill successor with a Cortex-M4F, USB-C, and a user key, popular for QMK keyboards and flight controllers.",
     "warnings": [
       {
         "severity": "warning",
@@ -16490,7 +16490,7 @@ export const generatedBoards: Board[] = [
     "name": "nRF52840 DK",
     "manufacturer": "Nordic Semiconductor",
     "aliases": [],
-    "description": "Nordic's reference kit for Bluetooth LE, Thread, Zigbee, and 802.15.4 development, with a SEGGER J-Link debugger and NFC antenna on board.",
+    "description": "Nordic's reference kit for Bluetooth LE, Thread, Zigbee, and 802.15.4, with an onboard J-Link and NFC antenna.",
     "warnings": [
       {
         "severity": "warning",
@@ -16921,7 +16921,7 @@ export const generatedBoards: Board[] = [
     "name": "MSP430 LaunchPad (MSP-EXP430G2ET)",
     "manufacturer": "Texas Instruments",
     "aliases": [],
-    "description": "TI's entry-level ultra-low-power LaunchPad with a socketed DIP MSP430 and onboard eZ-FET debug probe, a common first board for low-power MCU courses.",
+    "description": "TI's entry ultra-low-power LaunchPad with a socketed DIP MSP430 and an onboard eZ-FET debug probe.",
     "warnings": [
       {
         "severity": "warning",
@@ -17184,7 +17184,7 @@ export const generatedBoards: Board[] = [
     "name": "Banana Pi BPI-M5",
     "manufacturer": "Banana Pi",
     "aliases": [],
-    "description": "An Amlogic S905X3 SBC in a Pi-style footprint with 16 GB eMMC onboard, gigabit Ethernet, and a 40-pin header, popular as a low-cost media and Linux box.",
+    "description": "Amlogic S905X3 SBC in a Pi-style footprint with 16 GB eMMC, gigabit Ethernet, and a 40-pin header.",
     "warnings": [
       {
         "severity": "warning",
@@ -17689,7 +17689,7 @@ export const generatedBoards: Board[] = [
     "name": "ODROID-C4",
     "manufacturer": "Hardkernel",
     "aliases": [],
-    "description": "Hardkernel's mainstream S905X3 SBC with four USB 3.0 ports, gigabit Ethernet, and a well-documented 40-pin expansion header for Linux and Android work.",
+    "description": "Hardkernel's S905X3 SBC with four USB 3.0 ports, gigabit Ethernet, and a well-documented 40-pin header.",
     "warnings": [
       {
         "severity": "warning",
@@ -18171,7 +18171,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "rockpro64"
     ],
-    "description": "Pine64's RK3399 board with a physical PCIe x4 slot, used widely for NAS builds, Linux mainline development, and community OS work.",
+    "description": "Pine64's RK3399 board with a physical PCIe x4 slot, popular for NAS builds and mainline Linux work.",
     "warnings": [
       {
         "severity": "warning",
@@ -18663,7 +18663,7 @@ export const generatedBoards: Board[] = [
       "le-potato",
       "potato"
     ],
-    "description": "A Raspberry Pi 3-footprint SBC with upstream Linux support and a 40-pin GPIO header, often used as a drop-in Pi alternative for headless projects.",
+    "description": "Pi 3-footprint SBC with upstream Linux support and a 40-pin header, often used as a drop-in Pi alternative.",
     "warnings": [
       {
         "severity": "warning",
@@ -19191,7 +19191,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "milkv"
     ],
-    "description": "A tiny RISC-V Linux board in the Raspberry Pi Pico footprint, able to run Linux on one core and an RTOS on the other, popular for cheap RISC-V experimentation.",
+    "description": "Tiny RISC-V board in the Pico footprint that runs Linux on one core and an RTOS on the other.",
     "warnings": [
       {
         "severity": "warning",
@@ -19619,7 +19619,7 @@ export const generatedBoards: Board[] = [
     "name": "LilyGO T-Display-S3",
     "manufacturer": "LilyGO",
     "aliases": [],
-    "description": "An ESP32-S3 board with a 170x320 parallel LCD, two user buttons, and Li-Po charging, widely used for badges, dashboards, and small connected displays.",
+    "description": "ESP32-S3 board with a 170x320 LCD, two buttons, and Li-Po charging, built for badges and small dashboards.",
     "warnings": [
       {
         "severity": "warning",
@@ -19952,7 +19952,7 @@ export const generatedBoards: Board[] = [
       "d1-mini",
       "wemos-d1-mini"
     ],
-    "description": "The classic tiny ESP8266 board with a stackable shield ecosystem, still everywhere in home automation (ESPHome, Tasmota) and quick Wi-Fi hacks.",
+    "description": "Classic tiny ESP8266 board with stackable shields, still everywhere in ESPHome and Tasmota builds.",
     "warnings": [
       {
         "severity": "warning",
@@ -20205,7 +20205,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "s2-mini"
     ],
-    "description": "An ESP32-S2 upgrade in the D1 Mini footprint with native USB and many more GPIOs, a cheap favorite for ESPHome nodes and USB-device experiments.",
+    "description": "An ESP32-S2 in the D1 Mini footprint, with native USB and many more GPIOs.",
     "warnings": [
       {
         "severity": "warning",
@@ -20580,7 +20580,7 @@ export const generatedBoards: Board[] = [
       "nodemcu",
       "esp8266"
     ],
-    "description": "The open-hardware ESP8266 board that popularized Wi-Fi microcontrollers, with onboard USB-serial, auto-reset, and the D0–D8 Lua/Arduino pin naming.",
+    "description": "The open-hardware ESP8266 board that popularized Wi-Fi MCUs, with onboard USB-serial and D0–D8 pin naming.",
     "warnings": [
       {
         "severity": "warning",
@@ -21023,7 +21023,7 @@ export const generatedBoards: Board[] = [
       "photon",
       "photon-2"
     ],
-    "description": "Particle's Wi-Fi 5 + BLE 5 cloud-connected dev board in Adafruit Feather form, built around Device OS with over-the-air firmware updates.",
+    "description": "Particle's Wi-Fi 5 + BLE 5 board in Feather form, built around Device OS with over-the-air updates.",
     "warnings": [
       {
         "severity": "warning",
@@ -21492,7 +21492,7 @@ export const generatedBoards: Board[] = [
     "aliases": [
       "wio"
     ],
-    "description": "A SAMD51-based handheld with LCD, buttons, IMU, mic, and a Raspberry Pi-compatible 40-pin connector, used for portable dashboards and TinyML demos.",
+    "description": "SAMD51 handheld with an LCD, buttons, IMU, mic, and a Raspberry Pi-compatible 40-pin connector.",
     "warnings": [
       {
         "severity": "warning",
@@ -22009,7 +22009,7 @@ export const generatedBoards: Board[] = [
     "name": "Adafruit ItsyBitsy M4 Express",
     "manufacturer": "Adafruit",
     "aliases": [],
-    "description": "A small, fast SAMD51 stick board with QSPI flash for CircuitPython, a common step up from M0 boards when projects need more speed and RAM.",
+    "description": "Small, fast SAMD51 board with QSPI flash for CircuitPython, a step up from M0 boards.",
     "warnings": [
       {
         "severity": "warning",
@@ -22447,7 +22447,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino GIGA R1 WiFi",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "Arduino's high-end Mega-format board with a dual-core STM32H7, Wi-Fi/BLE, USB host, and camera/display connectors for demanding maker and robotics builds.",
+    "description": "Mega-format Arduino with a dual-core STM32H7, Wi-Fi/BLE, USB host, and camera/display connectors.",
     "warnings": [
       {
         "severity": "warning",
@@ -23352,7 +23352,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Pro Mini",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "A minimal ATmega328P Arduino board intended for embedded projects, exposing the familiar UNO-class GPIO set without onboard USB.",
+    "description": "Minimal ATmega328P Arduino that exposes the UNO-class GPIO set without onboard USB.",
     "warnings": [
       {
         "severity": "warning",
@@ -24198,7 +24198,7 @@ export const generatedBoards: Board[] = [
     "name": "Banana Pi BPI-M2 Zero",
     "manufacturer": "Banana Pi",
     "aliases": [],
-    "description": "A compact Linux SBC with Wi-Fi/Bluetooth and a 40-pin expansion header documented as Raspberry Pi 3 physical-compatible but with Allwinner signal names.",
+    "description": "Compact Wi-Fi/Bluetooth Linux SBC whose 40-pin header is documented as Pi 3-compatible, with Allwinner signal names.",
     "warnings": [
       {
         "severity": "warning",
@@ -24677,7 +24677,7 @@ export const generatedBoards: Board[] = [
     "name": "Seeed Studio BeagleBone Green",
     "manufacturer": "Seeed Studio",
     "aliases": [],
-    "description": "A Seeed and BeagleBoard.org AM335x board derived from BeagleBone Black, replacing HDMI with two Grove connectors while retaining the cape headers.",
+    "description": "BeagleBone Black derivative that swaps HDMI for two Grove connectors and keeps the cape headers.",
     "warnings": [
       {
         "severity": "warning",
@@ -25853,7 +25853,7 @@ export const generatedBoards: Board[] = [
     "name": "Raspberry Pi Zero W",
     "manufacturer": "Raspberry Pi",
     "aliases": [],
-    "description": "The original wireless Pi Zero is a tiny Linux SBC with the Raspberry Pi 40-pin header footprint for low-power headless and embedded projects.",
+    "description": "The original wireless Pi Zero: a tiny Linux SBC with the 40-pin header footprint for headless projects.",
     "warnings": [
       {
         "severity": "warning",
@@ -28244,7 +28244,7 @@ export const generatedBoards: Board[] = [
     "name": "Raspberry Pi 400",
     "manufacturer": "Raspberry Pi",
     "aliases": [],
-    "description": "A Raspberry Pi 4-class computer built into a keyboard, exposing the same 40-pin GPIO header at the rear edge for desktop lab work.",
+    "description": "A Pi 4-class computer in a keyboard, with the 40-pin GPIO header on the rear edge.",
     "warnings": [
       {
         "severity": "warning",
@@ -29017,7 +29017,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Leonardo",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "A classic native-USB Arduino board using the ATmega32U4, with UNO-style shield headers but Leonardo-specific I2C and SPI placement.",
+    "description": "Native-USB ATmega32U4 Arduino with UNO-style headers but Leonardo-specific I2C and SPI placement.",
     "warnings": [
       {
         "severity": "warning",
@@ -29483,7 +29483,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Micro",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "A breadboard-friendly ATmega32U4 board developed with Adafruit, bringing Leonardo-style native USB to a compact dual-row module.",
+    "description": "Breadboard-friendly ATmega32U4 board with Leonardo-style native USB, developed with Adafruit.",
     "warnings": [
       {
         "severity": "warning",
@@ -30484,7 +30484,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Due",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "Arduino's classic Arm-based Mega-format board, valued for many IO pins, dual DAC outputs, and faster 3.3 V logic than AVR boards.",
+    "description": "Arduino's Arm-based Mega-format board, with many I/O pins, dual DAC outputs, and 3.3 V logic.",
     "warnings": [
       {
         "severity": "warning",
@@ -31246,7 +31246,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Nano Every",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "A modernized 5 V Nano with the ATmega4809, keeping the small breadboard-friendly Nano footprint for simple embedded projects.",
+    "description": "A modernized 5 V Nano with the ATmega4809 in the small breadboard-friendly Nano footprint.",
     "warnings": [
       {
         "severity": "warning",
@@ -31598,7 +31598,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Nano 33 IoT",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "A compact Arduino Nano-format board with SAMD21 logic plus Wi-Fi and Bluetooth connectivity for cloud-connected prototypes.",
+    "description": "Compact Nano-format SAMD21 board with Wi-Fi and Bluetooth for cloud-connected prototypes.",
     "warnings": [
       {
         "severity": "warning",
@@ -32016,7 +32016,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Nano RP2040 Connect",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "Arduino's Nano-format RP2040 board adds Wi-Fi, Bluetooth, IMU, microphone, and secure element features around Raspberry Pi silicon.",
+    "description": "Nano-format RP2040 board with Wi-Fi, Bluetooth, an IMU, a microphone, and a secure element.",
     "warnings": [
       {
         "severity": "warning",
@@ -33222,7 +33222,7 @@ export const generatedBoards: Board[] = [
     "name": "Adafruit Feather M4 Express",
     "manufacturer": "Adafruit",
     "aliases": [],
-    "description": "A fast SAMD51 Feather with battery charging and QSPI flash, popular for CircuitPython and Arduino projects that need more speed than M0 boards.",
+    "description": "Fast SAMD51 Feather with battery charging and QSPI flash, popular for CircuitPython and Arduino.",
     "warnings": [
       {
         "severity": "warning",
@@ -33619,7 +33619,7 @@ export const generatedBoards: Board[] = [
     "name": "Adafruit Feather nRF52840 Express",
     "manufacturer": "Adafruit",
     "aliases": [],
-    "description": "A BLE-capable Feather built around Nordic's nRF52840, with CircuitPython support and a familiar Feather expansion pinout.",
+    "description": "BLE-capable Feather built around Nordic's nRF52840, with CircuitPython support and the familiar Feather pinout.",
     "warnings": [
       {
         "severity": "warning",
@@ -35151,7 +35151,7 @@ export const generatedBoards: Board[] = [
     "name": "Adafruit Grand Central M4 Express",
     "manufacturer": "Adafruit",
     "aliases": [],
-    "description": "A high-pin-count SAMD51 board in the Arduino Mega footprint, aimed at projects needing many headers plus CircuitPython support.",
+    "description": "High-pin-count SAMD51 board in the Arduino Mega footprint, with CircuitPython support.",
     "warnings": [
       {
         "severity": "warning",
@@ -35931,7 +35931,7 @@ export const generatedBoards: Board[] = [
     "name": "Seeed Studio XIAO SAMD21",
     "manufacturer": "Seeed Studio",
     "aliases": [],
-    "description": "The original tiny Seeed XIAO board exposes SAMD21 pins on castellated edges for wearables, small sensors, and USB prototypes.",
+    "description": "The original tiny Seeed XIAO, with SAMD21 pins on castellated edges for wearables, sensors, and USB prototypes.",
     "warnings": [
       {
         "severity": "warning",
@@ -36796,7 +36796,7 @@ export const generatedBoards: Board[] = [
     "name": "Seeed Studio reTerminal",
     "manufacturer": "Seeed Studio",
     "aliases": [],
-    "description": "A CM4-based industrial HMI device with display, sensors, and Raspberry Pi-style expansion for dashboards and edge control panels.",
+    "description": "CM4-based industrial HMI with a display, sensors, and Raspberry Pi-style expansion.",
     "warnings": [
       {
         "severity": "warning",
@@ -37267,7 +37267,7 @@ export const generatedBoards: Board[] = [
     "name": "SparkFun Pro Micro RP2040",
     "manufacturer": "SparkFun",
     "aliases": [],
-    "description": "SparkFun's RP2040 board in the popular Pro Micro footprint, useful for USB HID, keyboards, and compact embedded projects.",
+    "description": "SparkFun's RP2040 board in the Pro Micro footprint, popular for USB HID and keyboards.",
     "warnings": [
       {
         "severity": "warning",
@@ -37577,7 +37577,7 @@ export const generatedBoards: Board[] = [
     "name": "SparkFun RedBoard Turbo",
     "manufacturer": "SparkFun",
     "aliases": [],
-    "description": "A SAMD21 RedBoard with Arduino shield ergonomics and 3.3 V logic for projects needing more memory and speed than classic AVR boards.",
+    "description": "SAMD21 RedBoard with the Arduino shield layout and 3.3 V logic, with more memory and speed than AVR boards.",
     "warnings": [
       {
         "severity": "warning",
@@ -38334,7 +38334,7 @@ export const generatedBoards: Board[] = [
     "name": "Teensy 3.2",
     "manufacturer": "PJRC",
     "aliases": [],
-    "description": "A legacy but still widely used Teensy board with native USB, 34 digital IO signals, analog inputs, a DAC output, CAN, and rich Teensyduino support.",
+    "description": "Legacy but widely used Teensy with native USB, 34 digital I/O, analog inputs, a DAC output, and CAN.",
     "warnings": [
       {
         "severity": "warning",
@@ -39655,7 +39655,7 @@ export const generatedBoards: Board[] = [
     "name": "Particle Boron",
     "manufacturer": "Particle",
     "aliases": [],
-    "description": "Particle's cellular IoT development board combines nRF52840 application logic with LTE connectivity and Particle Device OS.",
+    "description": "Particle's cellular IoT board, pairing nRF52840 application logic with LTE and Particle Device OS.",
     "warnings": [
       {
         "severity": "warning",
@@ -40321,7 +40321,7 @@ export const generatedBoards: Board[] = [
     "name": "NVIDIA Jetson Nano Developer Kit",
     "manufacturer": "NVIDIA",
     "aliases": [],
-    "description": "NVIDIA's entry Jetson developer kit exposes a Raspberry Pi-style 40-pin header alongside camera and display connectors for edge AI experiments.",
+    "description": "NVIDIA's entry Jetson kit with a Pi-style 40-pin header plus camera and display connectors.",
     "warnings": [
       {
         "severity": "warning",
@@ -40762,7 +40762,7 @@ export const generatedBoards: Board[] = [
     "name": "NVIDIA Jetson Xavier NX Developer Kit",
     "manufacturer": "NVIDIA",
     "aliases": [],
-    "description": "A compact Jetson developer kit with higher AI performance than Nano and a carrier exposing expansion headers and camera interfaces.",
+    "description": "Compact Jetson kit with more AI performance than Nano, plus expansion headers and camera interfaces.",
     "warnings": [
       {
         "severity": "warning",
@@ -41203,7 +41203,7 @@ export const generatedBoards: Board[] = [
     "name": "BeagleY-AI",
     "manufacturer": "BeagleBoard.org",
     "aliases": [],
-    "description": "A BeagleBoard AI-focused SBC with a Pi-like form factor, expansion header, camera connectors, and TI neural acceleration.",
+    "description": "BeagleBoard's AI-focused SBC in a Pi-like form factor, with camera connectors and TI neural acceleration.",
     "warnings": [
       {
         "severity": "warning",
@@ -41671,7 +41671,7 @@ export const generatedBoards: Board[] = [
     "name": "BeagleBone AI-64",
     "manufacturer": "BeagleBoard.org",
     "aliases": [],
-    "description": "A high-performance BeagleBone-family board with TI vision/AI acceleration while retaining many cape-style expansion concepts.",
+    "description": "High-performance BeagleBone-family board with TI vision/AI acceleration and cape-style expansion.",
     "warnings": [
       {
         "severity": "warning",
@@ -45754,7 +45754,7 @@ export const generatedBoards: Board[] = [
     "name": "STM32 Nucleo-F446RE",
     "manufacturer": "STMicroelectronics",
     "aliases": [],
-    "description": "A popular STM32F4 Nucleo-64 board for DSP, control, and communication prototypes, with Arduino-compatible and ST Morpho headers.",
+    "description": "Popular STM32F4 Nucleo-64 for DSP and control prototypes, with Arduino-compatible and ST Morpho headers.",
     "warnings": [
       {
         "severity": "warning",
@@ -46536,7 +46536,7 @@ export const generatedBoards: Board[] = [
     "name": "STM32 Nucleo-G071RB",
     "manufacturer": "STMicroelectronics",
     "aliases": [],
-    "description": "A cost-effective STM32G0 Nucleo board with Arduino and morpho headers for control, interface, and low-cost MCU evaluation.",
+    "description": "Cost-effective STM32G0 Nucleo board with Arduino and morpho headers for low-cost MCU evaluation.",
     "warnings": [
       {
         "severity": "warning",
@@ -46933,7 +46933,7 @@ export const generatedBoards: Board[] = [
     "name": "STM32 Nucleo-H753ZI",
     "manufacturer": "STMicroelectronics",
     "aliases": [],
-    "description": "ST's flagship Nucleo-144 for the 480 MHz STM32H753, exposing 100 Zio signals plus full ST morpho fan-out, onboard Ethernet, and the integrated STLINK-V3E debugger.",
+    "description": "ST's flagship Nucleo-144 for the 480 MHz STM32H753, with Ethernet, STLINK-V3E, and full morpho fan-out.",
     "warnings": [
       {
         "severity": "warning",
@@ -48291,7 +48291,7 @@ export const generatedBoards: Board[] = [
     "name": "Nordic nRF5340 DK",
     "manufacturer": "Nordic Semiconductor",
     "aliases": [],
-    "description": "Nordic's dual-core Bluetooth LE development kit with Arduino-compatible headers, current measurement support, and Segger debugger.",
+    "description": "Nordic's dual-core Bluetooth LE kit with Arduino-compatible headers, current measurement, and a Segger debugger.",
     "warnings": [
       {
         "severity": "warning",
@@ -48674,7 +48674,7 @@ export const generatedBoards: Board[] = [
     "name": "Nordic nRF52 DK",
     "manufacturer": "Nordic Semiconductor",
     "aliases": [],
-    "description": "A widely used Nordic Bluetooth LE development kit exposing nRF52832 IO through headers and debugger-friendly board resources.",
+    "description": "Widely used Nordic Bluetooth LE kit that exposes nRF52832 I/O through headers.",
     "warnings": [
       {
         "severity": "warning",
@@ -49908,7 +49908,7 @@ export const generatedBoards: Board[] = [
       "pico2w",
       "pico-2-w"
     ],
-    "description": "The wireless Pico 2 adds Wi-Fi and Bluetooth via a CYW43439 to the RP2350, keeping the identical 40-pin castellated header of the Pico 2 for drop-in upgrades of networked embedded projects.",
+    "description": "Pico 2 with Wi-Fi and Bluetooth via a CYW43439, keeping the same 40-pin castellated header.",
     "warnings": [
       {
         "severity": "warning",
@@ -50382,7 +50382,7 @@ export const generatedBoards: Board[] = [
     "name": "Adafruit QT Py RP2040",
     "manufacturer": "Adafruit",
     "aliases": [],
-    "description": "A tiny RP2040 board in the Seeed XIAO footprint with a STEMMA QT connector, NeoPixel, and CircuitPython support — an easy stepping stone from the QT Py SAMD21.",
+    "description": "Tiny RP2040 board in the Seeed XIAO footprint with STEMMA QT, a NeoPixel, and CircuitPython support.",
     "warnings": [
       {
         "severity": "warning",
@@ -50624,7 +50624,7 @@ export const generatedBoards: Board[] = [
     "name": "Waveshare RP2040-Zero",
     "manufacturer": "Waveshare",
     "aliases": [],
-    "description": "An ultra-compact RP2040 breakout from Waveshare with castellated pads on three edges, a USB-C connector, onboard WS2812 RGB LED, and BOOT/RESET buttons.",
+    "description": "Ultra-compact RP2040 board with castellated pads on three edges, USB-C, a WS2812 LED, and BOOT/RESET buttons.",
     "warnings": [
       {
         "severity": "warning",
@@ -50959,7 +50959,7 @@ export const generatedBoards: Board[] = [
     "name": "Lattice MachXO2 Breakout Board",
     "manufacturer": "Lattice Semiconductor",
     "aliases": [],
-    "description": "A low-cost breakout board for the MachXO2-7000HE FPGA in a 144-pin TQFP package. Four unpopulated 2x20 header landings expose 108 FPGA I/Os plus bank power, core power, ground, and configuration signals. The device provides embedded Flash for instant-on operation, two PLLs, 256 kbits of embedded RAM, and hardened I2C/SPI blocks.",
+    "description": "Low-cost MachXO2-7000HE FPGA breakout with four unpopulated 2x20 header landings exposing 108 I/Os.",
     "warnings": [
       {
         "severity": "warning",
@@ -52517,7 +52517,7 @@ export const generatedBoards: Board[] = [
     "name": "Lattice MachXO3D Breakout Board",
     "manufacturer": "Lattice Semiconductor",
     "aliases": [],
-    "description": "A breakout board for the MachXO3D security-enhanced FPGA (9,400 LUTs, embedded Hardware Root of Trust, instant-on NV Flash). The MachXO3D adds an immutable security block with hardware attestation, secure boot, and cryptographic services on top of the MachXO3 fabric. Four 2×20 expansion header landings expose 127 FPGA signal positions plus bank power and ground. Includes 8 LEDs, 16 Mbit SPI flash, and a 40-hole prototype area.",
+    "description": "MachXO3D security FPGA breakout (9,400 LUTs, hardware root of trust) with four 2×20 header landings.",
     "warnings": [
       {
         "severity": "warning",
@@ -54069,7 +54069,7 @@ export const generatedBoards: Board[] = [
     "name": "Lattice iCEstick Evaluation Kit",
     "manufacturer": "Lattice Semiconductor",
     "aliases": [],
-    "description": "A USB-stick evaluation board for the low-power iCE40HX-1K FPGA. Two unpopulated 1x10 expansion headers (J1, J3) and a populated 2x6 Digilent Pmod (J2) break out 24 FPGA I/Os, alongside five LEDs, an IrDA transceiver, and an FT2232H for USB programming. It was one of the first boards to gain open-source (Project IceStorm) toolchain support.",
+    "description": "USB-stick iCE40HX-1K FPGA board with a Pmod and two 1x10 headers; an early open-source toolchain target.",
     "warnings": [
       {
         "severity": "warning",
@@ -54455,7 +54455,7 @@ export const generatedBoards: Board[] = [
     "name": "Lattice MachXO3 Starter Kit",
     "manufacturer": "Lattice Semiconductor",
     "aliases": [],
-    "description": "A starter board that exposes all six I/O banks of the MachXO3L (NVCM) or MachXO3LF (Flash) device through four 2x20 expansion headers (J3, J4, J6, J8). It carries an FT2232H for USB JTAG/UART, eight LEDs, an 8-position DIP switch, and a 12 MHz oscillator, and is supported by Lattice Diamond. The same board is sold as the MachXO3L and MachXO3LF Starter Kit.",
+    "description": "MachXO3L/LF starter board exposing all six I/O banks on four 2x20 headers, with FT2232H USB JTAG.",
     "warnings": [
       {
         "severity": "warning",
@@ -56007,7 +56007,7 @@ export const generatedBoards: Board[] = [
     "name": "Lattice CrossLink-NX Evaluation Board",
     "manufacturer": "Lattice Semiconductor",
     "aliases": [],
-    "description": "An evaluation board for the CrossLink-NX LIFCL-40 FPGA, targeting video bridging, imaging, and edge-AI designs. Three Digilent-compatible Pmod headers (J17, J18, J19) provide a general-purpose GPIO breakout alongside an FMC LPC connector, a Raspberry Pi GPIO header, MIPI CSI-2 camera connectors, a D-PHY header, and a PCIe x1 interface. It is supported by Lattice Radiant software.",
+    "description": "CrossLink-NX LIFCL-40 FPGA board for video bridging, with Pmod, FMC, Pi GPIO, MIPI CSI-2, and PCIe.",
     "warnings": [
       {
         "severity": "warning",
@@ -56436,7 +56436,7 @@ export const generatedBoards: Board[] = [
       "frdm-kl25z",
       "kl25z"
     ],
-    "description": "A Cortex-M0+ teaching platform used in embedded-systems and microprocessor laboratories, with onboard OpenSDA debugging, an accelerometer, capacitive touch, and a position-complete Rev. E expansion map.",
+    "description": "Cortex-M0+ teaching board with OpenSDA debugging, an accelerometer, and capacitive touch.",
     "warnings": [
       {
         "severity": "warning",
@@ -57420,7 +57420,7 @@ export const generatedBoards: Board[] = [
       "nexys-a7-100t",
       "nexys"
     ],
-    "description": "A feature-rich Artix-7 trainer used in digital-system design and computer-architecture laboratories, with five fully mapped Pmod ports, DDR2, Ethernet, USB HID, VGA, audio, and onboard I/O.",
+    "description": "Feature-rich Artix-7 trainer with five Pmod ports, DDR2, Ethernet, VGA, audio, and onboard I/O.",
     "warnings": [
       {
         "severity": "warning",
@@ -58221,7 +58221,7 @@ export const generatedBoards: Board[] = [
       "de10-lite",
       "de10lite"
     ],
-    "description": "Intel's entry academic MAX 10 board, used across digital-logic and FPGA courses, with a complete 40-pin GPIO and Arduino R3 expansion map plus onboard SDRAM, VGA, ADC, accelerometer, switches, LEDs, and displays.",
+    "description": "Intel's entry MAX 10 FPGA board with 40-pin GPIO and Arduino R3 headers, SDRAM, VGA, an ADC, and displays.",
     "warnings": [
       {
         "severity": "warning",
@@ -59207,7 +59207,7 @@ export const generatedBoards: Board[] = [
     "name": "STM32F4 Discovery",
     "manufacturer": "STMicroelectronics",
     "aliases": [],
-    "description": "The classic low-cost Cortex-M4 board that introduced a generation of embedded-systems students to STM32, with an onboard ST-LINK/V2-A debugger, accelerometer, digital mic, and audio DAC for signal-processing labs.",
+    "description": "Classic low-cost Cortex-M4 board with an onboard ST-LINK/V2-A, accelerometer, digital mic, and audio DAC.",
     "warnings": [
       {
         "severity": "warning",
@@ -59251,7 +59251,7 @@ export const generatedBoards: Board[] = [
     "name": "Tiva C TM4C123G LaunchPad",
     "manufacturer": "Texas Instruments",
     "aliases": [],
-    "description": "TI's classic Cortex-M4F evaluation board and a staple of university embedded-systems courses, with an onboard ICDI debugger, BoosterPack ecosystem, and native USB on the target MCU.",
+    "description": "TI's Cortex-M4F LaunchPad with an onboard ICDI debugger, BoosterPack headers, and native USB.",
     "warnings": [
       {
         "severity": "warning",
@@ -59295,7 +59295,7 @@ export const generatedBoards: Board[] = [
     "name": "Digilent Arty A7",
     "manufacturer": "Digilent",
     "aliases": [],
-    "description": "A widely used low-cost Artix-7 board built around MicroBlaze soft-processor designs, common in university digital-design and computer-architecture courses thanks to free Vivado licensing and Digilent's tutorial ecosystem.",
+    "description": "Low-cost Artix-7 board for MicroBlaze designs, common in university digital-design courses.",
     "warnings": [
       {
         "severity": "warning",
@@ -59345,7 +59345,7 @@ export const generatedBoards: Board[] = [
     "name": "Digilent Basys 3",
     "manufacturer": "Digilent",
     "aliases": [],
-    "description": "The most common introductory FPGA teaching board in university digital-design courses: 16 switches, 16 LEDs, a 4-digit 7-segment display, VGA, and USB-HID host mean intro labs need no external hardware.",
+    "description": "The standard intro FPGA teaching board: 16 switches, 16 LEDs, a 4-digit 7-segment display, and VGA.",
     "warnings": [
       {
         "severity": "warning",
@@ -59389,7 +59389,7 @@ export const generatedBoards: Board[] = [
     "name": "Coral Dev Board",
     "manufacturer": "Google Coral",
     "aliases": [],
-    "description": "A Raspberry-Pi-header-compatible single-board computer built for on-device ML inferencing with the Edge TPU (4 TOPS at ~2 W); an early and influential edge-AI dev board still widely deployed and taught.",
+    "description": "Pi-header-compatible SBC built for on-device ML with the Edge TPU (4 TOPS at ~2 W).",
     "warnings": [
       {
         "severity": "warning",
@@ -59858,7 +59858,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Portenta H7",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "An industrial-grade dual-core Arduino for edge-AI and industrial-IoT products, used as the reference platform for Arduino's PRO ecosystem with vision, motor-control, and secure-boot workloads split across two cores.",
+    "description": "Dual-core industrial Arduino for edge AI and IIoT, the reference board for Arduino's PRO ecosystem.",
     "warnings": [
       {
         "severity": "warning",
@@ -59908,7 +59908,7 @@ export const generatedBoards: Board[] = [
     "name": "Nordic nRF9160 DK",
     "manufacturer": "Nordic Semiconductor",
     "aliases": [],
-    "description": "The reference cellular-IoT development kit pairing Nordic's nRF9160 LTE-M/NB-IoT/GNSS SiP with an nRF52840 board controller; widely used in industry for asset-tracking and telemetry prototypes.",
+    "description": "Nordic's cellular-IoT kit pairing the nRF9160 LTE-M/NB-IoT/GNSS SiP with an nRF52840 board controller.",
     "warnings": [
       {
         "severity": "warning",
@@ -59952,7 +59952,7 @@ export const generatedBoards: Board[] = [
       "visionfive-2",
       "vf2"
     ],
-    "description": "The mainstream affordable RISC-V Linux SBC: a JH7110 quad-core RV64GC board in a Raspberry-Pi-shaped footprint, and the usual first target for RISC-V Linux and bare-metal work.",
+    "description": "Affordable RISC-V Linux SBC: a quad-core JH7110 in a Raspberry Pi-shaped footprint.",
     "warnings": [
       {
         "severity": "warning",
@@ -60423,7 +60423,7 @@ export const generatedBoards: Board[] = [
       "flipper",
       "flipperzero"
     ],
-    "description": "A pocket multi-tool for hardware and RF work whose 18-pin top header exposes STM32WB55 GPIO, UART, SWD, and 1-Wire — widely used as an interactive bench tool for probing and bring-up.",
+    "description": "Pocket hardware and RF multi-tool whose 18-pin header exposes STM32WB55 GPIO, UART, SWD, and 1-Wire.",
     "warnings": [
       {
         "severity": "warning",
@@ -60722,7 +60722,7 @@ export const generatedBoards: Board[] = [
       "esp32-p4",
       "p4-function-ev"
     ],
-    "description": "Espressif's evaluation board for the ESP32-P4 — a high-performance RISC-V application MCU with MIPI display and camera interfaces that has no radio of its own and pairs with an onboard ESP32-C6 for wireless.",
+    "description": "Espressif's ESP32-P4 board: a radio-less RISC-V MCU with MIPI display/camera, paired with an onboard ESP32-C6.",
     "warnings": [
       {
         "severity": "warning",
@@ -61197,7 +61197,7 @@ export const generatedBoards: Board[] = [
       "rock-3a",
       "rock3a"
     ],
-    "description": "A Rockchip RK3568 SBC in the Raspberry Pi footprint with an M.2 slot and a 40-pin header, aimed at NAS, edge, and general Linux use.",
+    "description": "Rockchip RK3568 SBC in the Raspberry Pi footprint, with an M.2 slot and a 40-pin header for NAS and edge use.",
     "warnings": [
       {
         "severity": "warning",
@@ -61790,7 +61790,7 @@ export const generatedBoards: Board[] = [
     "name": "Digilent Zybo Z7-20",
     "manufacturer": "Digilent",
     "aliases": [],
-    "description": "A Zynq-7000 development board that pairs a dual Cortex-A9 processing system with Artix-7-class programmable logic, aimed at embedded vision work via its HDMI in/out and Pcam MIPI CSI-2 connector. The Zybo Z7-20 is the larger-FPGA variant of the Zybo Z7 family.",
+    "description": "Zynq-7000 board pairing dual Cortex-A9 cores with FPGA logic, aimed at vision work via HDMI in/out and Pcam.",
     "warnings": [
       {
         "severity": "warning",
@@ -62724,7 +62724,7 @@ export const generatedBoards: Board[] = [
     "name": "Digilent Arty S7-50",
     "manufacturer": "Digilent",
     "aliases": [],
-    "description": "A Spartan-7 FPGA board in the Arty form factor, built to mount standard Arduino/chipKIT shields as well as Digilent Pmods, with on-chip XADC exposed through both connector families. Aimed at MicroBlaze soft-core and general Spartan-7 FPGA development.",
+    "description": "Spartan-7 FPGA board that takes Arduino/chipKIT shields and Pmods, with XADC on both connector families.",
     "warnings": [
       {
         "severity": "warning",
@@ -64225,7 +64225,7 @@ export const generatedBoards: Board[] = [
     "name": "Digilent Cmod A7-35T",
     "manufacturer": "Digilent",
     "aliases": [],
-    "description": "A breadboardable Artix-7 FPGA module in a 48-pin DIP form factor, exposing 44 digital I/O and 2 analog inputs directly to 100-mil through-hole pins for solderless-breadboard FPGA and MicroBlaze work.",
+    "description": "Breadboardable Artix-7 FPGA module in a 48-pin DIP, with 44 digital I/O and 2 analog inputs.",
     "warnings": [
       {
         "severity": "warning",
@@ -65040,7 +65040,7 @@ export const generatedBoards: Board[] = [
     "name": "NVIDIA Jetson AGX Orin Developer Kit",
     "manufacturer": "NVIDIA",
     "aliases": [],
-    "description": "NVIDIA's flagship Jetson developer kit, carrying the Jetson AGX Orin module (up to 275 TOPS) on a full-featured carrier board with PCIe x16, dual CSI camera headers, and a 40-pin expansion header for I2C/SPI/UART/CAN/I2S peripherals.",
+    "description": "NVIDIA's flagship Jetson kit (up to 275 TOPS) with PCIe x16, dual CSI camera headers, and a 40-pin header.",
     "warnings": [
       {
         "severity": "warning",
@@ -65509,7 +65509,7 @@ export const generatedBoards: Board[] = [
     "name": "ESP32-C61-DevKitC-1",
     "manufacturer": "Espressif",
     "aliases": [],
-    "description": "Espressif's reference board for the ESP32-C61, a low-cost single-core RISC-V part with Wi-Fi 6 and Bluetooth LE 5. Both 16-pin headers are documented pin-by-pin in the official user guide.",
+    "description": "Espressif's reference board for the low-cost ESP32-C61 RISC-V chip, with Wi-Fi 6 and Bluetooth LE 5.",
     "warnings": [
       {
         "severity": "warning",
@@ -65970,7 +65970,7 @@ export const generatedBoards: Board[] = [
     "name": "ESP8684-DevKitM-1",
     "manufacturer": "Espressif",
     "aliases": [],
-    "description": "Espressif's entry-level RISC-V Wi-Fi and Bluetooth LE reference board, built on the cost-optimised ESP32-C2 (ESP8684) for high-volume IoT designs.",
+    "description": "Espressif's entry RISC-V Wi-Fi and BLE board, built on the cost-optimised ESP32-C2 (ESP8684).",
     "warnings": [
       {
         "severity": "warning",
@@ -66377,7 +66377,7 @@ export const generatedBoards: Board[] = [
     "name": "ESP32-S3-DevKitM-1",
     "manufacturer": "Espressif",
     "aliases": [],
-    "description": "The MINI-module counterpart to the ESP32-S3-DevKitC-1. It exposes the same 44 header positions but in a different order — GPIO0-GPIO18 run sequentially down J1, while the flash/PSRAM bus and JTAG pins sit on J3.",
+    "description": "MINI-module version of the ESP32-S3-DevKitC-1: the same 44 header positions in a different order.",
     "warnings": [
       {
         "severity": "warning",
@@ -67028,7 +67028,7 @@ export const generatedBoards: Board[] = [
     "name": "ESP32-C6-DevKitM-1",
     "manufacturer": "Espressif",
     "aliases": [],
-    "description": "The MINI-module counterpart to the ESP32-C6-DevKitC-1, in a smaller footprint with a 30-pin header instead of 32. Supports Wi-Fi 6, Bluetooth LE 5, and 802.15.4 for Thread and Zigbee.",
+    "description": "Smaller MINI-module ESP32-C6-DevKitC-1 with a 30-pin header, for Wi-Fi 6, BLE 5, Thread, and Zigbee.",
     "warnings": [
       {
         "severity": "warning",
@@ -67468,7 +67468,7 @@ export const generatedBoards: Board[] = [
     "name": "Arduino Nicla Sense ME",
     "manufacturer": "Arduino",
     "aliases": [],
-    "description": "Arduino's compact industrial sensor node combining an nRF52832 Bluetooth controller with a programmable BHI260AP sensor hub, 6-axis IMU, magnetometer, barometer, and BME688 environmental sensor.",
+    "description": "Compact Arduino sensor node with nRF52832 BLE, a BHI260AP sensor hub, 6-axis IMU, magnetometer, and BME688.",
     "warnings": [
       {
         "severity": "warning",
@@ -67904,7 +67904,7 @@ export const generatedBoards: Board[] = [
     "name": "Milk-V Duo S (hardware V1.2+)",
     "manufacturer": "Milk-V",
     "aliases": [],
-    "description": "A compact heterogeneous Linux/RTOS edge-AI board with selectable RISC-V or Arm application core, 512 MB memory, a 0.5 TOPS TPU, Ethernet, wireless, dual CSI, and MIPI DSI.",
+    "description": "Compact Linux/RTOS edge-AI board with a selectable RISC-V or Arm core, 512 MB memory, a 0.5 TOPS TPU, and Ethernet.",
     "warnings": [
       {
         "severity": "warning",
@@ -69068,7 +69068,7 @@ export const generatedBoards: Board[] = [
     "name": "ESP32-C5-DevKitC-1 v1.2",
     "manufacturer": "Espressif",
     "aliases": [],
-    "description": "Espressif's dual-band Wi-Fi 6 and 802.15.4 reference board, exposing all available non-flash GPIO through revision-specific J1/J3 headers.",
+    "description": "Espressif's dual-band Wi-Fi 6 and 802.15.4 board, with all non-flash GPIO on revision-specific headers.",
     "warnings": [
       {
         "severity": "warning",

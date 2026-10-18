@@ -44,6 +44,7 @@ import { FavoriteLimitToast, useFavoriteToggle } from "@/components/catalog/useF
 import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
 import { CatalogHeader } from "@/components/catalog/CatalogHeader";
 import { PinLookupAnswer } from "@/components/catalog/PinLookupAnswer";
+import { SortMenu, sortOptionsFor } from "@/components/catalog/SortMenu";
 import {
   isDesktopCatalogLayout,
   useDesktopCatalogLayout,
@@ -59,6 +60,14 @@ import {
 } from "@/lib/catalog-state";
 
 const all = "All";
+const catalogSorts: CatalogSort[] = [
+  "relevance",
+  "catalog",
+  "name",
+  "vendor",
+  "recentlyAdded",
+  "interfaceCount",
+];
 // Render a useful first screen without embedding dozens of offscreen cards in
 // the initial HTML. Additional results remain available through the existing
 // pagination control and all records remain searchable client-side.
@@ -580,25 +589,14 @@ export function PinHubApp({
               </span>
             ) : null}
           </button>
-          <select
+          <SortMenu
             value={catalogState.sort}
-            onChange={(event) =>
-              setCatalogState((current) => ({
-                ...current,
-                sort: event.target.value as CatalogSort,
-                page: 1,
-              }))
+            options={sortOptionsFor(catalogSorts, Boolean(query))}
+            onChange={(sort) =>
+              setCatalogState((current) => ({ ...current, sort, page: 1 }))
             }
-            aria-label="Sort boards"
-            className="h-10 shrink-0 cursor-pointer rounded-lg border border-white/10 bg-[#15181f] px-2.5 text-xs text-zinc-200 outline-none transition hover:border-white/20 focus:border-cyan-300/60"
-          >
-            {query ? <option value="relevance">Best match</option> : null}
-            <option value="catalog">Catalog order</option>
-            <option value="name">Name A–Z</option>
-            <option value="vendor">Vendor A–Z</option>
-            <option value="recentlyAdded">Recently added</option>
-            <option value="interfaceCount">Most interfaces</option>
-          </select>
+            className="shrink-0"
+          />
         </div>
         {hasActiveFilters ? (
           <div className="border-t border-white/5">

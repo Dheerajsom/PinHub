@@ -81,6 +81,16 @@ describe("board catalog integrity", () => {
     expect(validateBoardSources(boards)).toEqual([]);
   });
 
+  // Regression: newer entries grew paragraph-length descriptions (up to 430
+  // characters) that a catalog card clamps to two lines anyway. Details
+  // belong in highlights, warnings, and the spec table.
+  it("keeps every card description to one short sentence", () => {
+    const tooLong = boards
+      .filter((board) => board.description.length > 120)
+      .map((board) => `${board.id} (${board.description.length})`);
+    expect(tooLong).toEqual([]);
+  });
+
   it("keeps board identity, search fields, and source metadata valid", () => {
     const ids = new Set<string>();
 
