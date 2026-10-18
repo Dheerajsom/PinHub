@@ -9,9 +9,9 @@ request if you want to add it yourself. Personal boards, obscure dev kits,
 regional clones, and discontinued hardware are all in scope — if you had to hunt
 for the pinout once, someone else is hunting for it right now.
 
-You do not need to be a web developer. Adding a board is one entry in a
-TypeScript file, and the rules below exist so a correct entry passes on the
-first try.
+You do not need to be a web developer. Adding a board is a catalog entry, a
+one-line diagram entry, and one generate command, and the rules below exist so
+a correct entry passes on the first try.
 
 ## Ways to contribute
 
@@ -56,7 +56,7 @@ The shape, with placeholder values:
 {
   id: "vendor-board-name",           // kebab-case, unique across the catalog
   name: "Vendor Board Name",
-  vendor: "Vendor",                  // must match the vendor domain registry
+  vendor: "Vendor",                  // must match a key in src/lib/source-trust.ts
   category: "Microcontroller",       // see allowed values below
   family: "SoC or product family",
   processor: "Dual-core Arm Cortex-M33 @ 150 MHz",
@@ -145,6 +145,29 @@ optional `note` covers per-pin caveats.
 Roles drive the colour coding and the pin-function filter, so pick the role a
 user would filter by to find that pin.
 
+### Board diagram
+
+Every board, with or without a pin map, needs an entry in `boardVisuals` in
+[`src/lib/board-visuals.ts`](src/lib/board-visuals.ts), or the build fails.
+Usually one line reusing the preset of a similar board is enough:
+
+```ts
+"vendor-board-name": preset("sbc"),
+```
+
+The build also checks that every pin in the map can be placed on the drawing.
+
+### CLI catalog
+
+The `ph` CLI ships a generated copy of the catalog, and CI fails when it is
+out of sync. After editing board data, regenerate it and commit the result:
+
+```bash
+npm --prefix cli run generate:boards
+```
+
+Never edit the generated files by hand.
+
 ## Adding pin function data (pin planner)
 
 The pin planner only plans boards whose peripheral mux is recorded from a
@@ -175,27 +198,26 @@ will chase the documentation.
 
 ## Before you open a pull request
 
-Run all four:
+Run these locally:
 
 ```bash
 npm run lint
 npm run typecheck
 npm test
 npm run build
+npm --prefix cli run check:boards
 ```
 
-`npm test` includes catalog integrity checks that will catch duplicate or
-non-route-safe ids, missing wiring warnings, empty required fields, malformed
-source links, and incomplete connector maps — so run it before pushing rather
-than waiting on CI. `npm run build` additionally fails on unsafe or missing
-source links and on pin maps the board visuals cannot render.
+`npm test` catches duplicate or non-route-safe ids, missing wiring warnings,
+empty required fields, malformed source links, and incomplete connector maps.
+`npm run build` also fails on unsafe or unofficial source links and on boards
+without a diagram entry or with pins the diagram cannot place.
+`check:boards` fails when the CLI catalog was not regenerated.
 
-Web CI runs the same commands, plus `npm audit --audit-level=high`, on pull
-requests that touch the website, catalog, or their test and configuration
-paths.
-
-If you changed the CLI, see [cli/README.md](cli/README.md) for its own
-validation steps.
+Web CI runs all of these plus a dependency audit (`npm run audit:ci`) and the
+Playwright browser tests (`npm run test:e2e`). If you changed UI, run the
+browser tests too. If you changed the CLI, see [cli/README.md](cli/README.md)
+for its own validation steps.
 
 ## Style
 
