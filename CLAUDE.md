@@ -17,7 +17,9 @@ files cannot drift apart. Everything below adds to them; nothing overrides them.
 
 Follow these steps, in order, for any refactor, bug fix, security fix, or UI/UX
 change. Skip only the steps that do not apply (for example, a data-only change
-needs no design pass).
+needs no design pass; a docs-only change needs only a check that its claims
+match the code). When a change adds, removes, or renames a route or
+user-facing feature, update the route table in `README.md` in the same commit.
 
 1. **Branch.** Work on `main` unless the user names a branch. When they do,
    create it from an up-to-date `main` (`git fetch` first) and push only there.
@@ -117,7 +119,8 @@ without being asked again:
 
 ## Useful facts
 
-- Prices: the hourly workflow publishes to Vercel Blob. The API merges shared
+- Prices: the hourly workflow (dispatched by an external scheduler through
+  `/api/cron/prices`) publishes to Vercel Blob. The API merges shared
   observations onto curated listings, and a listing whose identity changed in
   a deploy keeps its curated price until it is observed again.
 - `/api/prices` reuses one storage read per server instance for 30 seconds, so

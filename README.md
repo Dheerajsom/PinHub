@@ -2,208 +2,78 @@
   <img src="public/pinhub-logo.png" alt="PinHub" width="280" />
 </p>
 
-PinHub is a searchable pinout catalog for development boards, SBCs,
-microcontrollers, and embedded hardware. Instead of digging through image search,
-forum posts, PDFs, and vendor docs every time you need a board pinout, PinHub
-puts board summaries, warnings, source links, and source-backed connector maps in
-one clean interface.
+PinHub is a searchable, source-backed pinout catalog for development boards,
+SBCs, and microcontroller modules — Raspberry Pi, Arduino, ESP32, STM32 Nucleo,
+Teensy, Adafruit, Seeed, SparkFun, BeagleBone, Jetson, and more. Every board
+links to official documentation, and most carry an interactive pin map.
 
-## Current Build
+**Live:** [pinhub-mauve.vercel.app](https://pinhub-mauve.vercel.app)
 
-- Next.js App Router with TypeScript and Tailwind CSS
-- Static board catalog in `src/lib/boards.ts`
-- Search by board name, vendor, processor, tag, interface, or warning text;
-  part numbers work without separators (`pi5`, `rpi5`, `esp32s3`, `picow`) and
-  units match either spelling (`5V` or `5 V`)
-- Filters for category and common interfaces
-- Local favorites with cross-tab sync and a favorites-only filter
-- Detail view with specs, wiring warnings, source references, and in-app pin maps
-- Interactive pin maps with pin-function filtering, so selecting a role such as
-  `I2C` or `PWM` dims every pin that does not serve it
-- Side-by-side board comparison at `/compare`
-- Read-only JSON API: `/api/boards` index and `/api/boards/[id]` records
-- Pin table export as Markdown or CSV, labelled with the board and its source
-- Source-backed catalog for Raspberry Pi, Arduino, ESP32, STM32 Nucleo,
-  BeagleBone, Jetson, Radxa, Orange Pi, Teensy, Adafruit, Seeed, SparkFun,
-  and micro:bit boards
+## Features
 
-## Compare
+| Route | What it does |
+|---|---|
+| `/` | Catalog: search boards and pins (`pico sda`, `rpi5 spi`, `esp32 gpio27`), filter, favorite, and open board detail |
+| `/pinout/[id]` | Full interactive pin map with role filters, net probing, and Markdown/CSV export |
+| `/boards/[id]` | Specs, wiring warnings, and sources |
+| `/compare` | Up to four boards side by side; differences first; shareable URL |
+| `/planner` | Mark the pins you use and fit I2C, SPI, UART, PWM, and ADC into what's left |
+| `/link` | Wire two boards over UART or I2C, with logic-level mismatch warnings |
+| `/prices` | Dated USD prices and stock for curated listings, refreshed hourly |
+| `/collections` | Shareable board sets from your local library |
 
-`/compare` answers the question the catalog cannot: *which of these boards
-should I actually use?* Picking between a Pico and a QT Py, or a Pi 5 and an
-Orange Pi, usually means opening several vendor pages and holding the
-differences in your head. Compare puts them in one table.
+Favorites and collections stay in local storage; nothing requires an account.
 
-Select boards from the discovery view — the tray at the bottom of the screen
-tracks the set — then open the comparison. Up to **four boards** can be
-compared at once, across twelve attributes:
+## JSON API
 
-- **Silicon and power** — compute class, processor, logic level, 5 V tolerance,
-  power input
-- **Physical and connectivity** — form factor, wireless, connector ecosystem,
-  interfaces
-- **Trust signals** — in-app pin map availability, wiring-caution count, number
-  of linked sources
-
-Three things make it a decision tool rather than a spec dump:
-
-- **Differences surface first.** The table hides identical rows by default, so
-  what is left on screen is only what actually separates the boards. Toggle
-  *Show identical* when you need the full picture.
-- **Electrical compatibility stays visible.** Logic level, 5 V tolerance, and
-  the wiring-caution count are first-class rows. A board that wins on specs and
-  loses on voltage should lose the comparison, and here it visibly does.
-- **Comparisons are shareable.** The board set lives in the URL
-  (`/compare?boards=raspberry-pi-5,raspberry-pi-pico`), so a comparison can be
-  pasted into an issue, a chat, or a purchase request. The *Share* button copies
-  the current link.
-
-On phones the table becomes one card per attribute, each listing every board's
-value, so no board is hidden past the right edge of a scrolling table.
-
-Useful for choosing a board for a project, checking whether a board you already
-own can drive a given peripheral, justifying a purchase to someone else, or
-sanity-checking that two boards are pin-compatible before you rewire anything.
-
-## Getting Started
+Read-only, no key required. The board and pin routes reject query strings
+(`400`) and mutating methods (`405`).
 
 ```bash
-npm install
-npm run dev
+curl https://pinhub-mauve.vercel.app/api/boards                 # index
+curl https://pinhub-mauve.vercel.app/api/boards/raspberry-pi-5  # full record
+curl https://pinhub-mauve.vercel.app/api/pins                   # pin index
+curl https://pinhub-mauve.vercel.app/api/prices                 # price snapshot
 ```
 
-## Command-Line Interface
-
-PinHub is also available as the cross-platform `ph` terminal command:
+## CLI
 
 ```bash
 npm install -g @dheerajsom/pinhub
 ph rpi5
 ```
 
-See the [complete CLI guide](cli/README.md) for installation, commands, output
-options, troubleshooting, board aliases, development, and release instructions.
+See [cli/README.md](cli/README.md).
 
-## Routes
+## Development
 
-| Route | Purpose |
-|---|---|
-| `/` | Catalog: search, filter, favorites, and board detail |
-| `/compare` | Board discovery and side-by-side comparison |
-| `/boards/[id]` | Board overview, specs, warnings, and sources |
-| `/pinout/[id]` | Full interactive connector map |
-| `/api/boards` | Index of every board as JSON |
-| `/api/boards/[id]` | Board record as JSON |
-
-## JSON API
-
-List every board, then fetch the one you need:
+Next.js App Router, TypeScript, Tailwind CSS v4. Board data is static in
+`src/lib/boards.ts`.
 
 ```bash
-curl https://pinhub-mauve.vercel.app/api/boards
-curl https://pinhub-mauve.vercel.app/api/boards/raspberry-pi-5
+npm install
+npm run dev
+npm run lint && npm run typecheck && npm test && npm run build
+npm run test:e2e   # Playwright, port 3100
 ```
 
-The index returns `{ count, boards }`, where each entry carries `id`, `name`,
-`vendor`, `category`, `processor`, `logicLevel`, `interfaces`, `hasPinout`,
-`warningCount`, and the `url` of its full record. Pin maps, sources, and
-warnings stay out of the index; read them from the per-board record. It uses
-the same shared-CDN cache policy and `400`/`405` rules as the per-board route.
-
-The response is the board object described under [Data Model](#data-model).
-Unknown ids return `{"error":"Board not found"}` with a `404`. Records are
-read from the same static catalog as the website. Known records use a shared-CDN
-cache policy. Query parameters are unsupported and return an uncached `400`;
-unknown ids and rejected mutating methods are never cached.
-`POST`, `PUT`, `PATCH`, and `DELETE` return `405`, so the endpoint remains
-explicitly read-only and needs no API key.
-
-## Validation
-
-```bash
-npm run lint
-npm run typecheck
-npm test
-npm run build
-```
-
-Both the website and CLI workflows also run `npm audit --audit-level=high` over
-production and development dependencies. Dependabot is configured for monthly
-npm version updates and weekly GitHub Actions version updates.
-
-## Security boundaries
-
-- Shared catalog/search URLs cap query length, parameter count, and repeated
-  facet values before they reach React state or filtering work.
-- External catalog references must use credential-free public HTTPS URLs on
-  the default port. Official badges are based on narrowly registered vendor
-  domains or GitHub organizations.
-- CSV downloads prefix spreadsheet formula markers as literal text. The source
-  pin labels are unchanged; only the exported cell representation is guarded.
-- The CLI strips terminal escape, control, bidirectional-formatting, and forged
-  line-break content at its rendering boundary, including for callers of the
-  exported `renderBoard` API, and rejects malformed or oversized numeric header
-  layouts before rendering them.
-
-## Deployment
-
-The production website is deployed from `main` to
-[pinhub-mauve.vercel.app](https://pinhub-mauve.vercel.app). The application is
-statically generated for every known board page, requires no runtime environment
-variables, and publishes a robots policy, sitemap, web app manifest, canonical
-URLs, and social metadata. The JSON API reads the same in-memory static catalog
-and CDN-caches only known records.
-
-The CLI is published separately as `@dheerajsom/pinhub` on npm. Run the web
-and CLI validation commands before publishing either surface.
-
-## Data Model
-
-Board entries live in `src/lib/boards.ts` and include:
-
-- board identity, vendor, category, family, processor, power, and logic level
-- tags and supported interfaces
-- highlights and wiring warnings
-- source links for docs, manuals, datasheets, schematics, and pinouts
-- optional in-app pinout maps for stable connector layouts
-
-## Planned Features
-
-- Pin-by-pin diffing between two connector maps, beyond the board-level
-  comparison that ships today
-- User-submitted board entries with review status
-- Downloadable quick-reference sheets
-- Community verification for submitted pinouts
-
-## Contributing
-
-Board additions are welcome, especially for hardware you own and can check
-against the real thing. Adding a board is a single edit to `src/lib/boards.ts`
-plus at least one official vendor source link.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the catalog rules, the validation
-the build enforces, and how to open an issue or a pull request.
+The build also validates board visuals and source links. Prices are optional
+locally: without Blob credentials the app uses the bundled dated snapshot (see
+[docs/board-prices.md](docs/board-prices.md)).
 
 ## Documentation
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) — adding boards, reporting pinout errors
-- [cli/README.md](cli/README.md) — the `ph` command-line client
-- [docs/DESIGN.md](docs/DESIGN.md) — product direction and UI reference
-- [AGENTS.md](AGENTS.md) — conventions for automated contributors
+- [docs/DESIGN.md](docs/DESIGN.md) — design language and UI reference
+- [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — rules for automated contributors
 
-## License
+## Accuracy and license
 
-Released under the [MIT License](LICENSE).
+PinHub is a reference, not a substitute for vendor documentation. Board
+revisions change pin assignments; check the linked sources before wiring
+anything you can't replace, and
+[open an issue](https://github.com/Dheerajsom/PinHub/issues) if an entry
+disagrees with your hardware.
 
-Catalog data is compiled from vendor documentation, which remains the property
-of the respective vendors. PinHub is not affiliated with or endorsed by any
-board vendor.
-
-## A Note on Accuracy
-
-PinHub is a reference, not a substitute for the vendor's documentation. Board
-revisions change pin assignments, and a pin map that is correct for one revision
-can be wrong for the next. Check the linked official sources before wiring
-anything you cannot afford to replace, and please
-[open an issue](https://github.com/Dheerajsom/PinHub/issues) if you find an
-entry that disagrees with your hardware.
+[MIT License](LICENSE). Catalog data is compiled from vendor documentation,
+which remains the vendors' property. PinHub is not affiliated with any vendor.
