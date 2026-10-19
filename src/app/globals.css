@@ -1544,6 +1544,82 @@ button {
   border-color: #1f303a;
 }
 
+/* Board sort menu (catalog and discovery toolbars). An opaque raised list in
+   place of the OS-drawn <select> popup. The highlighted row gets a neutral
+   fill; the chosen sort is the cyan one, because selection is cyan. */
+.ph-sort-menu {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 12px 32px rgba(0, 0, 0, 0.6);
+  animation: ph-sort-in 120ms ease-out;
+}
+
+@keyframes ph-sort-in {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+
+/* Set here, not as a utility: the unlayered `button { font: inherit }` reset
+   outranks Tailwind's text sizes. 13px matches the option rows and keeps the
+   trigger as narrow as the old native select so the toolbar does not wrap. */
+.ph-sort-trigger {
+  font-size: 13px;
+}
+
+/* Keyboard focus hugs the trigger's own border instead of floating 2px out
+   with a dark gap between the two lines. */
+.ph-sort-trigger:focus-visible {
+  outline-offset: 0;
+  border-color: rgba(103, 232, 249, 0.7);
+}
+
+:root[data-theme="light"] .ph-sort-trigger:focus-visible {
+  border-color: rgba(8, 145, 178, 0.85);
+}
+
+.ph-sort-option {
+  color: #d4d4d8;
+}
+
+.ph-sort-option[data-active] {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #fafafa;
+}
+
+.ph-sort-option[aria-selected="true"] {
+  color: #a5f3fc;
+}
+
+.ph-sort-option[aria-selected="true"][data-active] {
+  background-color: rgba(103, 232, 249, 0.1);
+}
+
+:root[data-theme="light"] .ph-sort-menu {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 12px 28px rgba(23, 32, 42, 0.2);
+}
+
+:root[data-theme="light"] .ph-sort-option {
+  color: #334155;
+}
+
+:root[data-theme="light"] .ph-sort-option[data-active] {
+  background-color: rgba(31, 48, 58, 0.08);
+  color: #17202a;
+}
+
+:root[data-theme="light"] .ph-sort-option[aria-selected="true"] {
+  color: #0e7490;
+}
+
+:root[data-theme="light"] .ph-sort-option[aria-selected="true"][data-active] {
+  background-color: rgba(8, 145, 178, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-sort-menu { animation: none; }
+}
+
 /* Planner pin editor: it floats over the sheet, so it carries a shadow to
    separate it from the pads underneath. */
 .ph-plan-editor {

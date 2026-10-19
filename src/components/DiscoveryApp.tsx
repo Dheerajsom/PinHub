@@ -57,8 +57,10 @@ import { useCatalogUrlState } from "@/components/catalog/useCatalogUrlState";
 import { useCatalogResults } from "@/components/catalog/useCatalogResults";
 import { FavoriteLimitToast, useFavoriteToggle } from "@/components/catalog/useFavoriteToggle";
 import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
+import { SortMenu, sortOptionsFor } from "@/components/catalog/SortMenu";
 
 const discoveryDefaultState = { ...defaultCatalogState, sort: "name" as const };
+const discoverySorts: CatalogSort[] = ["relevance", "name", "vendor", "recentlyAdded", "interfaceCount"];
 
 export function DiscoveryApp({
   catalog,
@@ -238,13 +240,7 @@ export function DiscoveryApp({
             <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: !current.favoritesOnly }))} aria-pressed={state.favoritesOnly} className={clsx("inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm transition sm:order-4 sm:shrink", state.favoritesOnly ? "fav-button border-amber-300/60 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
               <Star className={clsx("fav-star size-4", state.favoritesOnly && "fill-amber-300")} /> Favorites
             </button>
-            <select value={state.sort} onChange={(event) => setState((current) => ({ ...current, sort: event.target.value as CatalogSort, page: 1 }))} aria-label="Sort boards" className="h-10 min-w-0 shrink-0 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 outline-none max-sm:order-last max-sm:basis-full sm:order-5 sm:shrink">
-              {state.query ? <option value="relevance">Best match</option> : null}
-              <option value="name">Name A–Z</option>
-              <option value="vendor">Vendor A–Z</option>
-              <option value="recentlyAdded">Recently added</option>
-              <option value="interfaceCount">Most interfaces</option>
-            </select>
+            <SortMenu value={state.sort} options={sortOptionsFor(discoverySorts, Boolean(state.query))} onChange={(sort) => setState((current) => ({ ...current, sort, page: 1 }))} className="min-w-0 shrink-0 max-sm:order-last max-sm:basis-full sm:order-5" />
             <span className="sr-only" role="status" aria-live="polite">{filtered.length} matches</span>
           </div>
         </div>

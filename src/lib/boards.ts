@@ -5453,7 +5453,7 @@ const baseBoards: Board[] = [
     power: "5 V USB-C, 5 V header rail",
     formFactor: "Credit-card SBC",
     description:
-      "The current mainstream Raspberry Pi SBC with a familiar 40-pin GPIO header, PCIe FFC, dual camera/display connectors, and strong Linux support.",
+      "The current mainstream Raspberry Pi, with 40-pin GPIO, PCIe, and dual camera/display connectors.",
     tags: ["Raspberry Pi", "Linux", "40-pin", "HAT", "BCM2712"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "PCIe", "USB"],
     highlights: [
@@ -5491,7 +5491,7 @@ const baseBoards: Board[] = [
     power: "5 V USB-C, 5 V header rail",
     formFactor: "Credit-card SBC",
     description:
-      "A widely deployed Linux SBC with the same 40-pin expansion header used across modern Raspberry Pi boards.",
+      "Widely deployed Linux SBC with the 40-pin header used across modern Raspberry Pi boards.",
     tags: ["Raspberry Pi", "Linux", "40-pin", "HAT", "BCM2711"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet"],
     highlights: [
@@ -5528,7 +5528,7 @@ const baseBoards: Board[] = [
     power: "5 V micro-USB, 5 V header rail",
     formFactor: "Compact SBC",
     description:
-      "A tiny Linux SBC with wireless networking and the standard Raspberry Pi 40-pin GPIO layout in a smaller footprint.",
+      "Tiny wireless Linux SBC with the standard Raspberry Pi 40-pin GPIO layout.",
     tags: ["Raspberry Pi", "Zero", "Linux", "40-pin", "Wireless"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -5565,7 +5565,7 @@ const baseBoards: Board[] = [
     power: "Micro-USB, VSYS, VBUS",
     formFactor: "40-pin DIP module",
     description:
-      "Raspberry Pi's low-cost RP2040 microcontroller board with castellated edges, flexible peripheral muxing, SWD debug, and three exposed ADC inputs.",
+      "Low-cost RP2040 board with castellated edges, flexible pin muxing, SWD debug, and three ADC inputs.",
     tags: ["RP2040", "Pico", "MicroPython", "C SDK", "DIP"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: [
@@ -5603,7 +5603,7 @@ const baseBoards: Board[] = [
     power: "USB-C, barrel jack, VIN",
     formFactor: "UNO shield layout",
     description:
-      "A modern UNO-format board with a 32-bit Renesas microcontroller, Wi-Fi/Bluetooth coprocessor, Qwiic connector, and the classic shield header layout.",
+      "UNO-format board with a 32-bit Renesas MCU, Wi-Fi/Bluetooth coprocessor, and Qwiic.",
     tags: ["Arduino", "UNO", "RA4M1", "Wi-Fi", "Qwiic"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "Wi-Fi", "Bluetooth", "CAN"],
     highlights: [
@@ -5640,7 +5640,7 @@ const baseBoards: Board[] = [
     power: "USB-C, VIN, 3.3 V rail",
     formFactor: "Nano module",
     description:
-      "A compact Arduino Nano-format board built around an ESP32-S3 module with Arduino, MicroPython, Wi-Fi, and Bluetooth support.",
+      "Nano-format Arduino built on an ESP32-S3 module, with Wi-Fi, Bluetooth, and MicroPython support.",
     tags: ["Arduino", "Nano", "ESP32-S3", "MicroPython", "Wireless"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -5677,7 +5677,7 @@ const baseBoards: Board[] = [
     power: "Micro-USB, 5 V VIN, 3.3 V regulator",
     formFactor: "30-pin breadboard dev kit",
     description:
-      "The common DOIT-style 30-pin ESP32-WROOM-32 development board, with Wi-Fi, Bluetooth, and two breadboard-friendly headers.",
+      "The common DOIT-style 30-pin ESP32-WROOM-32 board with Wi-Fi and Bluetooth.",
     tags: ["ESP32", "DOIT", "ESP32-WROOM-32", "Wi-Fi", "Bluetooth", "DevKit"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -5722,7 +5722,7 @@ const baseBoards: Board[] = [
     power: "Micro-USB, 5 V VIN, 3.3 V regulator",
     formFactor: "Breadboard dev kit",
     description:
-      "Espressif's official 38-pin ESP32 development board, with module IO broken out across J2 and J3 breadboard-friendly headers.",
+      "Espressif's official 38-pin ESP32 board, with module I/O broken out across the J2 and J3 headers.",
     tags: ["ESP32", "Espressif", "Wi-Fi", "Bluetooth", "DevKit"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
@@ -5764,7 +5764,7 @@ const baseBoards: Board[] = [
     power: "USB, E5V, VIN, 3.3 V rail",
     formFactor: "Nucleo-64 with Arduino + Morpho headers",
     description:
-      "A popular STM32 Nucleo-64 board that exposes both Arduino-compatible headers and ST Morpho headers for direct MCU access.",
+      "Popular STM32 Nucleo-64 with Arduino-compatible and ST Morpho headers.",
     tags: ["STM32", "Nucleo", "Cortex-M4", "Arduino headers", "Morpho"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: [
@@ -5801,7 +5801,7 @@ const baseBoards: Board[] = [
     power: "5 V barrel jack, USB, header rails",
     formFactor: "Credit-card SBC with dual cape headers",
     description:
-      "A Linux SBC designed for hardware control, with two 46-pin cape headers and a rich set of default and muxed peripheral functions.",
+      "Linux SBC built for hardware control, with two 46-pin cape headers and rich pin muxing.",
     tags: ["BeagleBone", "Linux", "Cape", "AM335x", "PRU"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Ethernet"],
     highlights: [
@@ -5839,7 +5839,7 @@ const baseBoards: Board[] = [
     power: "DC barrel input, 5 V header rail",
     formFactor: "AI SBC carrier board",
     description:
-      "NVIDIA's entry Jetson Orin developer kit for edge AI projects, with a 40-pin expansion header plus camera, display, and high-speed interfaces.",
+      "NVIDIA's entry Jetson Orin kit for edge AI, with a 40-pin header plus camera and display I/O.",
     tags: ["Jetson", "NVIDIA", "AI", "Linux", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "PCIe", "USB"],
     highlights: [
@@ -5876,7 +5876,7 @@ const baseBoards: Board[] = [
     power: "Micro-USB, VIN",
     formFactor: "Breadboard-friendly Teensy module",
     description:
-      "A very fast Arduino-compatible microcontroller board with many IO pins, Ethernet PHY support, USB host pads, and optional memory pads.",
+      "Very fast Arduino-compatible board with many I/O pins, Ethernet PHY support, and USB host pads.",
     tags: ["Teensy", "Cortex-M7", "Arduino", "High speed", "Audio"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Ethernet"],
     highlights: [
@@ -5918,7 +5918,7 @@ const baseBoards: Board[] = [
     power: "USB-C, 5 V header rail",
     formFactor: "Tiny SBC with 40-pin header",
     description:
-      "A compact Linux SBC with wireless networking and a 40-pin GPIO header intended to work with many SBC accessories.",
+      "Compact wireless Linux SBC with a 40-pin GPIO header meant for common SBC accessories.",
     tags: ["Radxa", "Linux", "RK3566", "40-pin", "Wireless"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -5955,7 +5955,7 @@ const baseBoards: Board[] = [
     power: "USB-C / DC power depending on setup",
     formFactor: "RK3588S SBC",
     description:
-      "A high-performance RK3588S Linux SBC with a 26-pin expansion header and high-speed storage/display options.",
+      "High-performance RK3588S Linux SBC with a 26-pin header and fast storage/display options.",
     tags: ["Orange Pi", "Linux", "RK3588S", "26-pin", "AI"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "PCIe", "Ethernet"],
     highlights: [
@@ -5993,7 +5993,7 @@ const baseBoards: Board[] = [
     power: "USB-C, LiPo connector, 3.3 V rail",
     formFactor: "Feather module",
     description:
-      "Adafruit's Feather-format RP2040 board with battery charging, STEMMA QT, and clear CircuitPython-focused pin labels.",
+      "Adafruit's Feather RP2040 with battery charging, STEMMA QT, and CircuitPython-friendly labels.",
     tags: ["Adafruit", "Feather", "RP2040", "CircuitPython", "STEMMA QT"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -6028,12 +6028,12 @@ const additionalBoards: Board[] = [
     vendor: "Raspberry Pi",
     category: "Microcontroller",
     family: "RP2040",
-    processor: "RP2040 dual-core Arm Cortex-M0+ + wireless radio",
+    processor: "RP2040 dual-core Cortex-M0+",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB, VSYS, VBUS",
     formFactor: "40-pin DIP module",
     description:
-      "The wireless version of the Pico keeps the familiar castellated pin layout while adding Wi-Fi for classroom IoT and small connected prototypes.",
+      "The Pico's castellated pin layout with Wi-Fi added, for IoT and small connected prototypes.",
     tags: ["RP2040", "Pico W", "MicroPython", "Wi-Fi", "DIP"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -6065,12 +6065,12 @@ const additionalBoards: Board[] = [
     vendor: "Raspberry Pi",
     category: "Microcontroller",
     family: "RP2350",
-    processor: "RP2350 dual-core Arm Cortex-M33 / RISC-V Hazard3",
+    processor: "RP2350 Cortex-M33 / RISC-V Hazard3",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB, VSYS, VBUS",
     formFactor: "40-pin DIP module",
     description:
-      "Raspberry Pi's RP2350 board keeps the Pico form factor while adding a newer MCU architecture for embedded systems teaching and firmware experiments.",
+      "Raspberry Pi's RP2350 board in the Pico form factor, for embedded teaching and firmware experiments.",
     tags: ["RP2350", "Pico 2", "MicroPython", "C SDK", "DIP"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: [
@@ -6112,7 +6112,7 @@ const additionalBoards: Board[] = [
     power: "USB-B, barrel jack, VIN",
     formFactor: "Mega shield layout",
     description:
-      "A classic high-pin-count Arduino board for teaching, robotics, lab instruments, and shield projects that need many GPIOs or serial ports.",
+      "Classic high-pin-count Arduino for robotics and shield projects that need many GPIOs or UARTs.",
     tags: ["Arduino", "Mega", "AVR", "Robotics", "Shield"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -6149,7 +6149,7 @@ const additionalBoards: Board[] = [
     power: "Mini-B USB, VIN, 5 V rail",
     formFactor: "Breadboard Nano module",
     description:
-      "The classic breadboard-friendly Arduino used in labs and small prototypes where UNO compatibility is needed in a compact package.",
+      "The classic breadboard-friendly Arduino: UNO compatibility in a compact package.",
     tags: ["Arduino", "Nano", "AVR", "Breadboard", "Classic"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -6186,7 +6186,7 @@ const additionalBoards: Board[] = [
     power: "Micro-USB, VIN, 3.3 V rail",
     formFactor: "Nano module with sensors",
     description:
-      "A compact BLE and TinyML-friendly Arduino with onboard sensors that made it a common choice in teaching demos and embedded ML labs.",
+      "Compact BLE Arduino with onboard sensors, a common pick for TinyML demos and embedded ML labs.",
     tags: ["Arduino", "Nano", "nRF52840", "BLE", "TinyML"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth"],
     highlights: [
@@ -6260,7 +6260,7 @@ const additionalBoards: Board[] = [
     power: "USB, 5 V input, 3.3 V regulator",
     formFactor: "Breadboard dev kit",
     description:
-      "Espressif's mainstream ESP32-S3 reference board for USB, AI acceleration experiments, BLE, Wi-Fi, and embedded product prototypes.",
+      "Espressif's mainstream ESP32-S3 board for USB, AI acceleration, BLE, Wi-Fi, and product prototypes.",
     tags: ["ESP32-S3", "Espressif", "Wi-Fi", "BLE", "USB"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
@@ -6292,7 +6292,7 @@ const additionalBoards: Board[] = [
     power: "USB, 5 V input, 3.3 V regulator",
     formFactor: "Compact breadboard dev kit",
     description:
-      "An entry-level Espressif RISC-V dev board with Wi-Fi and BLE for low-cost connected devices and firmware courses.",
+      "Entry-level Espressif RISC-V board with Wi-Fi and BLE for low-cost connected devices.",
     tags: ["ESP32-C3", "Espressif", "RISC-V", "Wi-Fi", "BLE"],
     // The ESP32-C3 has no 802.15.4 radio — Espressif's SoC page lists Wi-Fi
     // and Bluetooth 5 (LE) only, so Zigbee and Thread do not belong here.
@@ -6326,7 +6326,7 @@ const additionalBoards: Board[] = [
     power: "Micro-USB, 5 V header, or 3.3 V header (mutually exclusive)",
     formFactor: "Breadboard dev kit, 15-pin headers",
     description:
-      "Espressif's WROOM-02 ESP32-C3 board — the PCB-antenna sibling of the DevKitM-1, with a different J1/J3 order that is easy to mix up.",
+      "PCB-antenna WROOM-02 sibling of the ESP32-C3-DevKitM-1, with an easy-to-confuse J1/J3 order.",
     tags: ["ESP32-C3", "Espressif", "RISC-V", "Wi-Fi", "BLE", "WROOM-02"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
@@ -6377,7 +6377,7 @@ const additionalBoards: Board[] = [
     power: "Micro-USB, 5 V header, or 3.3 V header (mutually exclusive)",
     formFactor: "Breadboard dev kit, 21-pin headers",
     description:
-      "Espressif's MINI-module ESP32-S2 board: 42 broken-out pins with 14 touch channels, two DACs, and the widest analog coverage of the S2 kits.",
+      "MINI-module ESP32-S2 board with 42 pins, 14 touch channels, and two DACs.",
     tags: ["ESP32-S2", "Espressif", "Wi-Fi", "Touch", "DAC", "MINI-1"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "JTAG"],
     highlights: [
@@ -6435,7 +6435,7 @@ const additionalBoards: Board[] = [
     power: "USB-C, 5 V input, 3.3 V regulator",
     formFactor: "Breadboard dev kit",
     description:
-      "A modern Espressif board for Wi-Fi 6, BLE, Zigbee, and Thread experiments in connected-device coursework and product prototyping.",
+      "Espressif board for Wi-Fi 6, BLE, Zigbee, and Thread experiments and connected-device prototypes.",
     tags: ["ESP32-C6", "Espressif", "Wi-Fi 6", "Zigbee", "Thread"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
@@ -6504,7 +6504,7 @@ const additionalBoards: Board[] = [
     power: "Micro-USB, battery pack, 3 V edge",
     formFactor: "25-pin classroom edge connector",
     description:
-      "A classroom-first board with sensors, buttons, display, radio, and an edge connector that makes hardware concepts approachable.",
+      "Classroom-first board with sensors, buttons, a display, radio, and an edge connector.",
     tags: ["micro:bit", "Education", "nRF52", "BLE", "Classroom"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "Bluetooth"],
     highlights: [
@@ -6536,7 +6536,7 @@ const additionalBoards: Board[] = [
     power: "USB-C, 5 V, 3.3 V rail",
     formFactor: "Tiny XIAO module",
     description:
-      "A thumb-sized RP2040 board with the XIAO 14-pin footprint for wearable, small robot, and compact sensor builds.",
+      "Thumb-sized RP2040 board in the 14-pin XIAO footprint for wearables and compact builds.",
     tags: ["Seeed", "XIAO", "RP2040", "Tiny", "USB-C"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: [
@@ -6568,7 +6568,7 @@ const additionalBoards: Board[] = [
     power: "USB-C, 5 V, 3.3 V rail",
     formFactor: "Tiny XIAO module",
     description:
-      "A tiny ESP32-S3 board for wireless embedded projects where space matters but Wi-Fi, BLE, and native USB are still needed.",
+      "Tiny ESP32-S3 board for space-constrained projects that still need Wi-Fi, BLE, and native USB.",
     tags: ["Seeed", "XIAO", "ESP32-S3", "Wi-Fi", "BLE"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -6605,7 +6605,7 @@ const additionalBoards: Board[] = [
     power: "USB-C, 5 V, 3.3 V rail",
     formFactor: "QT Py tiny module",
     description:
-      "A tiny ESP32-S3 board with STEMMA QT that is popular for CircuitPython, Arduino, and compact Wi-Fi prototypes.",
+      "Tiny ESP32-S3 board with STEMMA QT, popular for CircuitPython and compact Wi-Fi prototypes.",
     tags: ["Adafruit", "QT Py", "ESP32-S3", "CircuitPython", "STEMMA QT"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -6669,7 +6669,7 @@ const additionalBoards: Board[] = [
     power: "USB-C, barrel jack, LiPo connector",
     formFactor: "Arduino shield-compatible Metro",
     description:
-      "An ESP32-S3 board in an Arduino-like Metro footprint with STEMMA QT and enough memory for rich CircuitPython projects.",
+      "ESP32-S3 board in the Arduino-like Metro footprint, with STEMMA QT and room for CircuitPython.",
     tags: ["Adafruit", "Metro", "ESP32-S3", "Wi-Fi", "Shield"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -6701,7 +6701,7 @@ const additionalBoards: Board[] = [
     power: "USB-C, LiPo connector, 3.3 V rail",
     formFactor: "Feather-compatible Thing Plus",
     description:
-      "SparkFun's RP2040 Thing Plus combines the Feather-compatible footprint, Qwiic, battery support, microSD, and plenty of flash.",
+      "SparkFun's Feather-footprint RP2040 board with Qwiic, battery support, microSD, and plenty of flash.",
     tags: ["SparkFun", "Thing Plus", "RP2040", "Qwiic", "Feather"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG"],
     highlights: [
@@ -6787,7 +6787,7 @@ const additionalBoards: Board[] = [
     power: "USB-C, VIN, Qwiic",
     formFactor: "Mega-compatible ATP board",
     description:
-      "An ultra-low-power Artemis board that breaks out nearly every module signal in a Mega-compatible footprint for advanced prototyping.",
+      "Ultra-low-power Artemis board that breaks out nearly every signal in a Mega-compatible footprint.",
     tags: ["SparkFun", "Artemis", "Apollo3", "BLE", "Low power"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth"],
     highlights: [
@@ -6824,12 +6824,12 @@ const additionalBoards: Board[] = [
     vendor: "Raspberry Pi",
     category: "SBC",
     family: "Raspberry Pi 3",
-    processor: "Broadcom BCM2837B0 quad-core Arm Cortex-A53",
+    processor: "Broadcom BCM2837B0 (4× Cortex-A53)",
     logicLevel: "3.3 V GPIO",
     power: "5 V / 2.5 A micro-USB or GPIO header",
     formFactor: "Standard Raspberry Pi credit-card layout",
     description:
-      "The final mainstream Pi 3 revision with gigabit-over-USB Ethernet and dual-band Wi-Fi, still common in deployed kiosks, labs, and legacy HAT projects.",
+      "The last Pi 3 revision, adding gigabit-over-USB Ethernet and dual-band Wi-Fi.",
     tags: ["Raspberry Pi 3", "BCM2837", "40-pin", "Legacy", "PoE header"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth", "Ethernet", "CSI"],
     highlights: [
@@ -6862,12 +6862,12 @@ const additionalBoards: Board[] = [
     vendor: "Raspberry Pi",
     category: "SBC",
     family: "Raspberry Pi 500",
-    processor: "Broadcom BCM2712 quad-core Arm Cortex-A76",
+    processor: "Broadcom BCM2712 (4× Cortex-A76)",
     logicLevel: "3.3 V GPIO",
     power: "5 V / 5 A USB-C",
     formFactor: "Keyboard computer",
     description:
-      "Pi 5 internals built into a keyboard, with the standard 40-pin GPIO header exposed on the rear edge for classroom electronics without a separate board.",
+      "Pi 5 internals in a keyboard, with the standard 40-pin GPIO header on the rear edge.",
     tags: ["Pi 500", "BCM2712", "Keyboard PC", "40-pin", "Desktop"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth", "Ethernet"],
     highlights: [
@@ -6901,11 +6901,11 @@ const additionalBoards: Board[] = [
     category: "Microcontroller",
     family: "STM32F1",
     processor: "STM32F103C8T6 Arm Cortex-M3 @ 72 MHz",
-    logicLevel: "3.3 V GPIO (many pins 5 V tolerant)",
+    logicLevel: "3.3 V; many pins 5 V tolerant",
     power: "Micro-USB, 5 V pin, or 3.3 V pin",
     formFactor: "Breadboard DIP-style board, dual pin rows",
     description:
-      "The ubiquitous low-cost STM32 board from many manufacturers, a staple for learning bare-metal Arm, STM32duino, and SWD debugging on a budget.",
+      "Ubiquitous low-cost STM32 board, a staple for learning bare-metal Arm and SWD debugging.",
     tags: ["STM32", "Blue Pill", "Cortex-M3", "STM32duino", "Clone"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "SWD", "JTAG"],
     highlights: [
@@ -6938,12 +6938,12 @@ const additionalBoards: Board[] = [
     vendor: "WeAct Studio",
     category: "Microcontroller",
     family: "STM32F4",
-    processor: "STM32F411CEU6 Arm Cortex-M4F @ 100 MHz",
-    logicLevel: "3.3 V GPIO (many pins 5 V tolerant)",
+    processor: "STM32F411CEU6 Cortex-M4F @ 100 MHz",
+    logicLevel: "3.3 V; many pins 5 V tolerant",
     power: "USB-C, 5 V pin, or 3.3 V pin",
     formFactor: "Breadboard DIP-style board, dual pin rows",
     description:
-      "The popular successor to the Blue Pill with a Cortex-M4F, USB-C, and a user key, widely used for keyboards (QMK), flight controllers, and STM32 learning.",
+      "Blue Pill successor with a Cortex-M4F and USB-C, popular for QMK keyboards and flight controllers.",
     tags: ["STM32", "Black Pill", "Cortex-M4", "USB-C", "WeAct"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: [
@@ -6982,11 +6982,11 @@ const additionalBoards: Board[] = [
     category: "Development Board",
     family: "nRF52",
     processor: "nRF52840 Arm Cortex-M4F @ 64 MHz",
-    logicLevel: "3.3 V GPIO (1.7–3.6 V supply range)",
+    logicLevel: "3.3 V GPIO (1.7–3.6 V supply)",
     power: "USB, external 1.7–5 V, Li-Po, or CR2032 coin cell",
     formFactor: "Arduino Uno R3-compatible footprint",
     description:
-      "Nordic's reference kit for Bluetooth LE, Thread, Zigbee, and 802.15.4 development, with a SEGGER J-Link debugger and NFC antenna on board.",
+      "Nordic's reference kit for Bluetooth LE, Thread, and Zigbee, with an onboard J-Link and NFC antenna.",
     tags: ["nRF52840", "BLE", "Thread", "Zigbee", "J-Link"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD", "Bluetooth", "Thread", "Zigbee"],
     highlights: [
@@ -7029,7 +7029,7 @@ const additionalBoards: Board[] = [
     power: "USB (eZ-FET) or external 1.8–3.6 V",
     formFactor: "LaunchPad with dual 10-pin BoosterPack headers",
     description:
-      "TI's entry-level ultra-low-power LaunchPad with a socketed DIP MSP430 and onboard eZ-FET debug probe, a common first board for low-power MCU courses.",
+      "TI's entry ultra-low-power LaunchPad with a socketed DIP MSP430 and an onboard eZ-FET debug probe.",
     tags: ["MSP430", "LaunchPad", "Low power", "BoosterPack", "DIP socket"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -7062,12 +7062,12 @@ const additionalBoards: Board[] = [
     vendor: "Banana Pi",
     category: "SBC",
     family: "BPI-M",
-    processor: "Amlogic S905X3 quad-core Arm Cortex-A55",
+    processor: "Amlogic S905X3 (4× Cortex-A55)",
     logicLevel: "3.3 V GPIO",
     power: "5 V USB-C",
     formFactor: "Raspberry Pi-like credit-card layout",
     description:
-      "An Amlogic S905X3 SBC in a Pi-style footprint with 16 GB eMMC onboard, gigabit Ethernet, and a 40-pin header, popular as a low-cost media and Linux box.",
+      "Amlogic S905X3 SBC in a Pi-style footprint with 16 GB eMMC, gigabit Ethernet, and a 40-pin header.",
     tags: ["Banana Pi", "Amlogic", "S905X3", "eMMC", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet"],
     highlights: [
@@ -7096,12 +7096,12 @@ const additionalBoards: Board[] = [
     vendor: "Hardkernel",
     category: "SBC",
     family: "ODROID-C",
-    processor: "Amlogic S905X3 quad-core Arm Cortex-A55 @ 2.0 GHz",
-    logicLevel: "3.3 V GPIO (analog input 1.8 V max)",
+    processor: "Amlogic S905X3 (4× A55, 2.0 GHz)",
+    logicLevel: "3.3 V GPIO; ADC 1.8 V max",
     power: "5.5–17 V DC barrel jack",
     formFactor: "85 x 56 mm SBC with 40-pin header",
     description:
-      "Hardkernel's mainstream S905X3 SBC with four USB 3.0 ports, gigabit Ethernet, and a well-documented 40-pin expansion header for Linux and Android work.",
+      "Hardkernel's S905X3 SBC with four USB 3.0 ports, gigabit Ethernet, and a documented 40-pin header.",
     tags: ["ODROID", "Amlogic", "S905X3", "USB 3.0", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Ethernet"],
     highlights: [
@@ -7134,12 +7134,12 @@ const additionalBoards: Board[] = [
     vendor: "Pine64",
     category: "SBC",
     family: "ROCKPro",
-    processor: "Rockchip RK3399 hexa-core (2x Cortex-A72 + 4x Cortex-A53)",
+    processor: "Rockchip RK3399 (2× A72 + 4× A53)",
     logicLevel: "3.3 V GPIO",
     power: "12 V DC barrel jack",
     formFactor: "127 x 79 mm SBC with open PCIe x4 slot",
     description:
-      "Pine64's RK3399 board with a physical PCIe x4 slot, used widely for NAS builds, Linux mainline development, and community OS work.",
+      "Pine64's RK3399 board with a physical PCIe x4 slot, popular for NAS builds and mainline Linux work.",
     tags: ["Pine64", "RK3399", "PCIe", "NAS", "Mainline Linux"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet", "CSI", "PCIe"],
     highlights: [
@@ -7173,12 +7173,12 @@ const additionalBoards: Board[] = [
     vendor: "Libre Computer",
     category: "SBC",
     family: "Libre Computer",
-    processor: "Amlogic S905X quad-core Arm Cortex-A53",
+    processor: "Amlogic S905X (4× Cortex-A53)",
     logicLevel: "3.3 V GPIO",
     power: "5 V micro-USB",
     formFactor: "Raspberry Pi 3 Model B footprint",
     description:
-      "A Raspberry Pi 3-footprint SBC with upstream Linux support and a 40-pin GPIO header, often used as a drop-in Pi alternative for headless projects.",
+      "Pi 3-footprint SBC with upstream Linux support, often used as a drop-in Pi alternative.",
     tags: ["Libre Computer", "Amlogic", "S905X", "Pi-compatible footprint", "Upstream Linux"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Ethernet"],
     highlights: [
@@ -7211,15 +7211,16 @@ const additionalBoards: Board[] = [
     vendor: "Milk-V",
     category: "SBC",
     family: "Duo",
-    processor: "CVITEK CV1800B dual RISC-V C906 (1 GHz + 700 MHz)",
+    processor: "CVITEK CV1800B (2× RISC-V C906)",
     logicLevel: "3.3 V GPIO",
     power: "5 V USB-C",
     formFactor: "Pico-sized 21 x 51 mm module",
     description:
-      "A tiny RISC-V Linux board in the Raspberry Pi Pico footprint, able to run Linux on one core and an RTOS on the other, popular for cheap RISC-V experimentation.",
+      "Tiny RISC-V board in the Pico footprint that runs Linux on one core and an RTOS on the other.",
     tags: ["RISC-V", "Milk-V", "CV1800B", "Linux", "Pico footprint"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "CSI"],
     highlights: [
+      "Dual RISC-V C906 cores at 1 GHz and 700 MHz.",
       "Boots mainline-derived Linux from microSD on a $5-class board.",
       "Official docs include the full pinout and SDK.",
       "Camera connector for the onboard ISP.",
@@ -7249,7 +7250,7 @@ const additionalBoards: Board[] = [
     power: "USB-C or 1S Li-Po (JST connector with charging)",
     formFactor: "Compact board with integrated 1.9-inch LCD",
     description:
-      "An ESP32-S3 board with a 170x320 parallel LCD, two user buttons, and Li-Po charging, widely used for badges, dashboards, and small connected displays.",
+      "ESP32-S3 board with a 170x320 LCD, two buttons, and Li-Po charging for badges and dashboards.",
     tags: ["LilyGO", "ESP32-S3", "LCD", "Li-Po", "Badge"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -7282,7 +7283,7 @@ const additionalBoards: Board[] = [
     power: "USB or 5 V/3.3 V pins",
     formFactor: "Compact 34.2 x 25.6 mm module with shield stacking",
     description:
-      "The classic tiny ESP8266 board with a stackable shield ecosystem, still everywhere in home automation (ESPHome, Tasmota) and quick Wi-Fi hacks.",
+      "Classic tiny ESP8266 board with stackable shields, still everywhere in ESPHome and Tasmota builds.",
     tags: ["ESP8266", "D1 Mini", "ESPHome", "Tasmota", "Shields"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi"],
     highlights: [
@@ -7315,7 +7316,7 @@ const additionalBoards: Board[] = [
     power: "USB-C or 5 V/3.3 V pins",
     formFactor: "D1 Mini footprint with extra inner pin rows",
     description:
-      "An ESP32-S2 upgrade in the D1 Mini footprint with native USB and many more GPIOs, a cheap favorite for ESPHome nodes and USB-device experiments.",
+      "An ESP32-S2 in the D1 Mini footprint, with native USB and many more GPIOs.",
     tags: ["ESP32-S2", "S2 Mini", "Native USB", "ESPHome", "D1 footprint"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi"],
     highlights: [
@@ -7348,7 +7349,7 @@ const additionalBoards: Board[] = [
     power: "Micro-USB or VIN (5 V)",
     formFactor: "30-pin breadboard DIP module",
     description:
-      "The open-hardware ESP8266 board that popularized Wi-Fi microcontrollers, with onboard USB-serial, auto-reset, and the D0–D8 Lua/Arduino pin naming.",
+      "The open-hardware ESP8266 board that popularized Wi-Fi MCUs, with USB-serial and D0–D8 naming.",
     tags: ["ESP8266", "NodeMCU", "Lua", "Arduino", "Open hardware"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi"],
     highlights: [
@@ -7381,12 +7382,12 @@ const additionalBoards: Board[] = [
     vendor: "Particle",
     category: "Development Board",
     family: "Photon",
-    processor: "Realtek RTL8721DM Arm Cortex-M33 @ 200 MHz",
+    processor: "Realtek RTL8721DM, M33 @ 200 MHz",
     logicLevel: "3.3 V GPIO; not 5 V tolerant",
     power: "USB or Li-Po (onboard charger)",
     formFactor: "Feather-compatible module",
     description:
-      "Particle's Wi-Fi 5 + BLE 5 cloud-connected dev board in Adafruit Feather form, built around Device OS with over-the-air firmware updates.",
+      "Particle's Wi-Fi 5 + BLE 5 board in Feather form, built around Device OS with over-the-air updates.",
     tags: ["Particle", "Photon 2", "Cloud", "Feather", "OTA"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -7414,12 +7415,12 @@ const additionalBoards: Board[] = [
     vendor: "Seeed Studio",
     category: "Development Board",
     family: "Wio",
-    processor: "Microchip ATSAMD51P19 Arm Cortex-M4F @ 120 MHz",
+    processor: "ATSAMD51P19 Cortex-M4F @ 120 MHz",
     logicLevel: "3.3 V GPIO",
     power: "USB-C or battery chassis",
     formFactor: "Handheld terminal with 2.4-inch LCD and Pi-style 40-pin port",
     description:
-      "A SAMD51-based handheld with LCD, buttons, IMU, mic, and a Raspberry Pi-compatible 40-pin connector, used for portable dashboards and TinyML demos.",
+      "SAMD51 handheld with an LCD, buttons, IMU, mic, and a Raspberry Pi-compatible 40-pin connector.",
     tags: ["Seeed", "SAMD51", "LCD", "TinyML", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -7447,12 +7448,12 @@ const additionalBoards: Board[] = [
     vendor: "Adafruit",
     category: "Microcontroller",
     family: "ItsyBitsy",
-    processor: "Microchip ATSAMD51G19 Arm Cortex-M4F @ 120 MHz",
+    processor: "ATSAMD51G19 Cortex-M4F @ 120 MHz",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB or BAT/VHI input",
     formFactor: "36 x 18 mm stick",
     description:
-      "A small, fast SAMD51 stick board with QSPI flash for CircuitPython, a common step up from M0 boards when projects need more speed and RAM.",
+      "Small, fast SAMD51 board with QSPI flash for CircuitPython, a step up from M0 boards.",
     tags: ["Adafruit", "SAMD51", "CircuitPython", "ItsyBitsy", "Compact"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -7480,12 +7481,12 @@ const additionalBoards: Board[] = [
     vendor: "Arduino",
     category: "Microcontroller",
     family: "GIGA",
-    processor: "STM32H747XI dual-core (Cortex-M7 @ 480 MHz + Cortex-M4 @ 240 MHz)",
+    processor: "STM32H747XI, M7 480 + M4 240 MHz",
     logicLevel: "3.3 V GPIO",
     power: "USB-C, barrel jack (6–24 V), VIN",
     formFactor: "Mega shield layout",
     description:
-      "Arduino's high-end Mega-format board with a dual-core STM32H7, Wi-Fi/BLE, USB host, and camera/display connectors for demanding maker and robotics builds.",
+      "Mega-format Arduino with a dual-core STM32H7, Wi-Fi/BLE, USB host, and camera/display connectors.",
     tags: ["Arduino", "GIGA", "STM32H7", "Dual-core", "Mega layout"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
@@ -7519,12 +7520,12 @@ const additionalBoards: Board[] = [
     vendor: "Arduino",
     category: "Microcontroller",
     family: "Classic",
-    processor: "Microchip ATmega328P with ATmega16U2 USB bridge",
+    processor: "ATmega328P + ATmega16U2 USB",
     logicLevel: "5 V operating voltage",
     power: "USB-B, barrel jack, VIN, 5 V pin",
     formFactor: "UNO R3 shield layout",
     description:
-      "The classic ATmega328P UNO board, still the reference target for beginner Arduino projects, shields, and educational wiring diagrams.",
+      "The classic ATmega328P UNO, still the reference target for beginner projects and shields.",
     tags: ["Arduino", "UNO", "ATmega328P", "5 V", "Shield"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -7565,11 +7566,11 @@ const additionalBoards: Board[] = [
     category: "Microcontroller",
     family: "Classic",
     processor: "Microchip ATmega328P",
-    logicLevel: "5 V / 16 MHz or 3.3 V / 8 MHz variant",
+    logicLevel: "5 V / 16 MHz or 3.3 V / 8 MHz",
     power: "RAW input, VCC pin, external serial adapter",
     formFactor: "Compact breadboard module",
     description:
-      "A minimal ATmega328P Arduino board intended for embedded projects, exposing the familiar UNO-class GPIO set without onboard USB.",
+      "Minimal ATmega328P Arduino that exposes the UNO-class GPIO set without onboard USB.",
     tags: ["Arduino", "Pro Mini", "ATmega328P", "Low power", "Compact"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM"],
     highlights: [
@@ -7603,12 +7604,12 @@ const additionalBoards: Board[] = [
     vendor: "Espressif",
     category: "Microcontroller",
     family: "ESP32-H2",
-    processor: "ESP32-H2 RISC-V SoC in ESP32-H2-MINI-1 / MINI-1U module",
+    processor: "ESP32-H2-MINI-1 / MINI-1U (RISC-V)",
     logicLevel: "3.3 V GPIO",
     power: "USB-C to UART port, 5 V header, or 3V3 header",
     formFactor: "Dual-row breadboard dev kit",
     description:
-      "Espressif's entry ESP32-H2 development board for Bluetooth LE, IEEE 802.15.4, Thread, Zigbee, and Matter prototyping.",
+      "Espressif's entry ESP32-H2 board for Bluetooth LE, 802.15.4, Thread, Zigbee, and Matter.",
     tags: ["Espressif", "ESP32-H2", "BLE", "Thread", "Zigbee", "Matter"],
     interfaces: ["GPIO", "SPI", "UART", "ADC", "USB", "Bluetooth", "Zigbee", "Thread"],
     highlights: [
@@ -7642,12 +7643,12 @@ const additionalBoards: Board[] = [
     vendor: "Banana Pi",
     category: "SBC",
     family: "Banana Pi",
-    processor: "Allwinner H3 / H2+ quad-core Cortex-A7",
+    processor: "Allwinner H3 / H2+ (4× Cortex-A7)",
     logicLevel: "3.3 V GPIO",
     power: "5 V micro-USB or 5 V header rail",
     formFactor: "Pi Zero-style compact SBC",
     description:
-      "A compact Linux SBC with Wi-Fi/Bluetooth and a 40-pin expansion header documented as Raspberry Pi 3 physical-compatible but with Allwinner signal names.",
+      "Compact wireless Allwinner SBC whose 40-pin header is documented as Pi 3-compatible.",
     tags: ["Banana Pi", "Allwinner", "Linux", "40-pin", "Zero"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -7676,12 +7677,12 @@ const additionalBoards: Board[] = [
     vendor: "Seeed Studio",
     category: "SBC",
     family: "BeagleBone",
-    processor: "Texas Instruments AM335x Arm Cortex-A8",
-    logicLevel: "3.3 V digital IO, 1.8 V analog inputs",
+    processor: "TI AM335x Cortex-A8",
+    logicLevel: "3.3 V digital, 1.8 V analog in",
     power: "5 V micro-USB, 5 V barrel jack, or cape header rails",
     formFactor: "BeagleBone cape-compatible SBC",
     description:
-      "A Seeed and BeagleBoard.org AM335x board derived from BeagleBone Black, replacing HDMI with two Grove connectors while retaining the cape headers.",
+      "BeagleBone Black derivative that swaps HDMI for two Grove connectors and keeps the cape headers.",
     tags: ["BeagleBone", "Seeed", "AM335x", "Grove", "Cape"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "Ethernet", "USB"],
     highlights: [
@@ -7723,7 +7724,7 @@ const expansionBoards: Board[] = [
     power: "5 V micro-USB, 5 V header rail",
     formFactor: "Compact SBC",
     description:
-      "The original wireless Pi Zero is a tiny Linux SBC with the Raspberry Pi 40-pin header footprint for low-power headless and embedded projects.",
+      "The original wireless Pi Zero: a tiny Linux SBC with the 40-pin header footprint.",
     tags: ["Raspberry Pi", "Zero", "Linux", "40-pin", "Wireless"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -7756,7 +7757,7 @@ const expansionBoards: Board[] = [
     power: "5 V micro-USB, 5 V header rail",
     formFactor: "Compact SBC",
     description:
-      "The non-wireless Raspberry Pi Zero keeps the HAT-compatible 40-pin header in a very small Linux SBC footprint.",
+      "The non-wireless Pi Zero: a very small Linux SBC with the HAT-compatible 40-pin header.",
     tags: ["Raspberry Pi", "Zero", "Linux", "40-pin", "Compact"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB"],
     highlights: [
@@ -7795,7 +7796,7 @@ const expansionBoards: Board[] = [
     power: "5 V micro-USB, 5 V header rail",
     formFactor: "Compact Raspberry Pi SBC",
     description:
-      "A smaller single-USB Raspberry Pi 3 variant with wireless networking and the standard 40-pin expansion header.",
+      "Smaller single-USB Raspberry Pi 3 with wireless networking and the standard 40-pin header.",
     tags: ["Raspberry Pi", "BCM2837", "Linux", "40-pin", "Wireless"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -7828,12 +7829,12 @@ const expansionBoards: Board[] = [
     vendor: "Raspberry Pi",
     category: "SBC",
     family: "Raspberry Pi",
-    processor: "Broadcom BCM2836 / BCM2837B0, depending on revision",
+    processor: "Broadcom BCM2836 / BCM2837B0",
     logicLevel: "3.3 V GPIO",
     power: "5 V micro-USB, 5 V header rail",
     formFactor: "Credit-card SBC",
     description:
-      "The second-generation Raspberry Pi Model B with Ethernet, four USB ports, and the standard 40-pin GPIO header.",
+      "Second-generation Pi Model B with Ethernet, four USB ports, and the standard 40-pin header.",
     tags: ["Raspberry Pi", "BCM2836", "Linux", "40-pin", "Legacy"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet"],
     highlights: [
@@ -7872,7 +7873,7 @@ const expansionBoards: Board[] = [
     power: "5 V micro-USB, 5 V header rail",
     formFactor: "Credit-card SBC",
     description:
-      "The first Raspberry Pi board to standardize the modern 40-pin header, useful for legacy HAT and accessory checks.",
+      "The first Raspberry Pi to standardize the modern 40-pin header, useful for legacy HAT checks.",
     tags: ["Raspberry Pi", "BCM2835", "Linux", "40-pin", "Legacy"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet"],
     highlights: [
@@ -7911,7 +7912,7 @@ const expansionBoards: Board[] = [
     power: "5 V USB-C",
     formFactor: "Keyboard computer with 40-pin header",
     description:
-      "A Raspberry Pi 4-class computer built into a keyboard, exposing the same 40-pin GPIO header at the rear edge for desktop lab work.",
+      "A Pi 4-class computer in a keyboard, with the 40-pin GPIO header on the rear edge.",
     tags: ["Raspberry Pi", "Keyboard", "Linux", "40-pin", "Education"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -7949,7 +7950,7 @@ const expansionBoards: Board[] = [
     power: "USB-C, barrel jack, VIN",
     formFactor: "UNO shield layout",
     description:
-      "The non-wireless UNO R4 keeps the classic 5 V shield footprint while moving the UNO line to a 32-bit Renesas MCU.",
+      "The non-wireless UNO R4: the classic 5 V shield footprint with a 32-bit Renesas MCU.",
     tags: ["Arduino", "UNO", "RA4M1", "5 V", "Shield"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB"],
     highlights: [
@@ -7982,7 +7983,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, barrel jack, VIN",
     formFactor: "UNO-style shield layout",
     description:
-      "A classic native-USB Arduino board using the ATmega32U4, with UNO-style shield headers but Leonardo-specific I2C and SPI placement.",
+      "Native-USB ATmega32U4 Arduino with UNO-style headers but Leonardo-specific I2C and SPI placement.",
     tags: ["Arduino", "Leonardo", "ATmega32U4", "Native USB", "5 V"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG"],
     highlights: [
@@ -8021,7 +8022,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, VIN, 5 V pin",
     formFactor: "Breadboard module",
     description:
-      "A breadboard-friendly ATmega32U4 board developed with Adafruit, bringing Leonardo-style native USB to a compact dual-row module.",
+      "Breadboard-friendly ATmega32U4 board with Leonardo-style native USB, developed with Adafruit.",
     tags: ["Arduino", "Micro", "ATmega32U4", "Native USB", "Breadboard"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG"],
     highlights: [
@@ -8060,7 +8061,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, debug USB, barrel jack, VIN",
     formFactor: "UNO-style shield layout",
     description:
-      "Arduino's SAMD21-based 32-bit UNO-format board with an onboard EDBG debugger and 3.3 V shield headers.",
+      "Arduino's 32-bit SAMD21 UNO-format board with an onboard EDBG debugger and 3.3 V headers.",
     tags: ["Arduino", "Zero", "SAMD21", "EDBG", "3.3 V"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "SWD"],
     highlights: [
@@ -8099,7 +8100,7 @@ const expansionBoards: Board[] = [
     power: "USB, barrel jack, VIN",
     formFactor: "Mega shield layout",
     description:
-      "Arduino's classic Arm-based Mega-format board, valued for many IO pins, dual DAC outputs, and faster 3.3 V logic than AVR boards.",
+      "Arduino's Arm-based Mega-format board, with many I/O pins, dual DAC outputs, and 3.3 V logic.",
     tags: ["Arduino", "Due", "SAM3X8E", "Mega layout", "DAC"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB"],
     highlights: [
@@ -8132,7 +8133,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, VIN, 5 V pin",
     formFactor: "Nano module",
     description:
-      "A modernized 5 V Nano with the ATmega4809, keeping the small breadboard-friendly Nano footprint for simple embedded projects.",
+      "A modernized 5 V Nano with the ATmega4809 in the small breadboard-friendly Nano footprint.",
     tags: ["Arduino", "Nano", "ATmega4809", "5 V", "Breadboard"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -8165,12 +8166,12 @@ const expansionBoards: Board[] = [
     vendor: "Arduino",
     category: "Microcontroller",
     family: "Nano",
-    processor: "Microchip SAMD21G18 + u-blox NINA-W102",
+    processor: "SAMD21G18 + u-blox NINA-W102",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB, VIN",
     formFactor: "Nano module",
     description:
-      "A compact Arduino Nano-format board with SAMD21 logic plus Wi-Fi and Bluetooth connectivity for cloud-connected prototypes.",
+      "Compact Nano-format SAMD21 board with Wi-Fi and Bluetooth for cloud-connected prototypes.",
     tags: ["Arduino", "Nano", "SAMD21", "Wi-Fi", "BLE"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -8203,7 +8204,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, VIN",
     formFactor: "Nano module",
     description:
-      "Arduino's Nano-format RP2040 board adds Wi-Fi, Bluetooth, IMU, microphone, and secure element features around Raspberry Pi silicon.",
+      "Nano-format RP2040 board with Wi-Fi, Bluetooth, an IMU, a microphone, and a secure element.",
     tags: ["Arduino", "Nano", "RP2040", "Wi-Fi", "Sensors"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -8236,7 +8237,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, Li-Po connector, VIN",
     formFactor: "MKR module",
     description:
-      "A SAMD21 MKR-format board with microSD support, aimed at compact audio, logging, and battery-capable embedded projects.",
+      "SAMD21 MKR board with microSD, aimed at compact audio, logging, and battery projects.",
     tags: ["Arduino", "MKR", "SAMD21", "microSD", "Logging"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -8264,7 +8265,7 @@ const expansionBoards: Board[] = [
     vendor: "Arduino",
     category: "Development Board",
     family: "MKR",
-    processor: "Microchip SAMD21G18 + Murata LoRa module",
+    processor: "SAMD21G18 + Murata LoRa module",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB, Li-Po connector, VIN",
     formFactor: "MKR module",
@@ -8302,7 +8303,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, Li-Po connector, USB/3V rail",
     formFactor: "Feather module",
     description:
-      "A fast SAMD51 Feather with battery charging and QSPI flash, popular for CircuitPython and Arduino projects that need more speed than M0 boards.",
+      "Fast SAMD51 Feather with battery charging and QSPI flash, popular for CircuitPython and Arduino.",
     tags: ["Adafruit", "Feather", "SAMD51", "CircuitPython", "Battery"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -8335,7 +8336,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, Li-Po connector, USB/3V rail",
     formFactor: "Feather module",
     description:
-      "A BLE-capable Feather built around Nordic's nRF52840, with CircuitPython support and a familiar Feather expansion pinout.",
+      "BLE Feather built around Nordic's nRF52840, with CircuitPython support and the Feather pinout.",
     tags: ["Adafruit", "Feather", "nRF52840", "BLE", "CircuitPython"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Thread"],
     highlights: [
@@ -8368,7 +8369,7 @@ const expansionBoards: Board[] = [
     power: "USB-C, Li-Po connector, USB/3V rail",
     formFactor: "Feather module",
     description:
-      "A Feather-format ESP32-S3 board with native USB, Wi-Fi, Bluetooth LE, battery charging, and STEMMA QT.",
+      "Feather-format ESP32-S3 with native USB, Wi-Fi, Bluetooth LE, battery charging, and STEMMA QT.",
     tags: ["Adafruit", "Feather", "ESP32-S3", "Wi-Fi", "STEMMA QT"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -8401,7 +8402,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, BAT, USB, 3V",
     formFactor: "36 x 18 mm stick",
     description:
-      "A compact RP2040 stick board with more exposed pins than QT Py-style boards and official CircuitPython support.",
+      "Compact RP2040 stick board with more exposed pins than QT Py-style boards and CircuitPython.",
     tags: ["Adafruit", "ItsyBitsy", "RP2040", "CircuitPython", "Compact"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -8434,7 +8435,7 @@ const expansionBoards: Board[] = [
     power: "USB, barrel jack, VIN",
     formFactor: "UNO-compatible Metro layout",
     description:
-      "A SAMD51 Arduino-compatible board in the UNO shield footprint, with much higher performance and CircuitPython storage.",
+      "SAMD51 board in the UNO shield footprint with far more performance and CircuitPython storage.",
     tags: ["Adafruit", "Metro", "SAMD51", "UNO layout", "CircuitPython"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -8467,7 +8468,7 @@ const expansionBoards: Board[] = [
     power: "USB, barrel jack, VIN",
     formFactor: "Mega shield layout",
     description:
-      "A high-pin-count SAMD51 board in the Arduino Mega footprint, aimed at projects needing many headers plus CircuitPython support.",
+      "High-pin-count SAMD51 board in the Arduino Mega footprint, with CircuitPython support.",
     tags: ["Adafruit", "SAMD51", "Mega layout", "CircuitPython", "High IO"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -8500,7 +8501,7 @@ const expansionBoards: Board[] = [
     power: "USB-C or 5 V/3.3 V pins",
     formFactor: "Tiny castellated module",
     description:
-      "The original tiny Seeed XIAO board exposes SAMD21 pins on castellated edges for wearables, small sensors, and USB prototypes.",
+      "The original tiny Seeed XIAO, with SAMD21 pins on castellated edges for wearables and sensors.",
     tags: ["Seeed", "XIAO", "SAMD21", "Tiny", "Castellated"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -8533,7 +8534,7 @@ const expansionBoards: Board[] = [
     power: "USB-C, battery pads, 5 V/3.3 V pins",
     formFactor: "Tiny castellated module",
     description:
-      "A tiny XIAO board with Nordic BLE, NFC-capable pins, battery support, and a compact castellated footprint.",
+      "Tiny XIAO board with Nordic BLE, NFC-capable pins, battery support, and castellated edges.",
     tags: ["Seeed", "XIAO", "nRF52840", "BLE", "Tiny"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Thread"],
     highlights: [
@@ -8566,7 +8567,7 @@ const expansionBoards: Board[] = [
     power: "USB-C, battery pads, 5 V/3.3 V pins",
     formFactor: "Tiny castellated module",
     description:
-      "A tiny RISC-V ESP32-C3 XIAO board with Wi-Fi, Bluetooth LE, and battery pads for compact IoT projects.",
+      "Tiny RISC-V ESP32-C3 XIAO with Wi-Fi, Bluetooth LE, and battery pads for compact IoT.",
     tags: ["Seeed", "XIAO", "ESP32-C3", "Wi-Fi", "RISC-V"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -8599,7 +8600,7 @@ const expansionBoards: Board[] = [
     power: "USB-C, battery pads, 5 V/3.3 V pins",
     formFactor: "Tiny castellated module",
     description:
-      "A compact XIAO board with ESP32-C6 Wi-Fi 6, Bluetooth LE, Zigbee, and Thread radios for modern IoT prototypes.",
+      "Compact XIAO with ESP32-C6 Wi-Fi 6, Bluetooth LE, Zigbee, and Thread radios.",
     tags: ["Seeed", "XIAO", "ESP32-C6", "Matter", "Thread"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "Zigbee", "Thread"],
     highlights: [
@@ -8632,7 +8633,7 @@ const expansionBoards: Board[] = [
     power: "5 V USB-C",
     formFactor: "Handheld HMI with 40-pin expansion",
     description:
-      "A CM4-based industrial HMI device with display, sensors, and Raspberry Pi-style expansion for dashboards and edge control panels.",
+      "CM4-based industrial HMI with a display, sensors, and Raspberry Pi-style expansion.",
     tags: ["Seeed", "reTerminal", "CM4", "HMI", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -8665,7 +8666,7 @@ const expansionBoards: Board[] = [
     power: "USB-C, RAW, 3V3",
     formFactor: "Pro Micro footprint",
     description:
-      "SparkFun's RP2040 board in the popular Pro Micro footprint, useful for USB HID, keyboards, and compact embedded projects.",
+      "SparkFun's RP2040 board in the Pro Micro footprint, popular for USB HID and keyboards.",
     tags: ["SparkFun", "RP2040", "Pro Micro", "USB-C", "Keyboard"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -8698,7 +8699,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, barrel jack, VIN",
     formFactor: "UNO-compatible RedBoard layout",
     description:
-      "A SAMD21 RedBoard with Arduino shield ergonomics and 3.3 V logic for projects needing more memory and speed than classic AVR boards.",
+      "SAMD21 RedBoard with the Arduino shield layout, 3.3 V logic, and more memory than AVR boards.",
     tags: ["SparkFun", "RedBoard", "SAMD21", "UNO layout", "Qwiic"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -8736,7 +8737,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, Li-Po connector, 3.3 V rail",
     formFactor: "Thing module",
     description:
-      "A classic SparkFun ESP32 board with battery charging, USB serial, and a well-documented breakout of ESP32 pins.",
+      "Classic SparkFun ESP32 board with battery charging, USB serial, and a documented pin breakout.",
     tags: ["SparkFun", "ESP32", "Thing", "Wi-Fi", "Battery"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -8765,11 +8766,11 @@ const expansionBoards: Board[] = [
     category: "Microcontroller",
     family: "Teensy",
     processor: "NXP MK20DX256 Arm Cortex-M4 @ 72 MHz",
-    logicLevel: "3.3 V GPIO output, 5 V tolerant digital inputs",
+    logicLevel: "3.3 V out; 5 V tolerant inputs",
     power: "Micro-USB, VIN, 3.3 V rail",
     formFactor: "Small DIP-style module",
     description:
-      "A legacy but still widely used Teensy board with native USB, 34 digital IO signals, analog inputs, a DAC output, CAN, and rich Teensyduino support.",
+      "Legacy but widely used Teensy with native USB, 34 digital I/O, analog inputs, a DAC output, and CAN.",
     tags: ["Teensy", "PJRC", "Kinetis", "Native USB", "5 V tolerant"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB"],
     highlights: [
@@ -8808,12 +8809,12 @@ const expansionBoards: Board[] = [
     vendor: "PJRC",
     category: "Microcontroller",
     family: "Teensy",
-    processor: "NXP i.MX RT1062 Arm Cortex-M7 @ 600 MHz",
+    processor: "i.MX RT1062 Cortex-M7 @ 600 MHz",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB, VIN, 3.3 V rail",
     formFactor: "Small DIP-style module",
     description:
-      "A very fast compact Teensy board with extensive peripheral muxing and Arduino-compatible tooling through Teensyduino.",
+      "Very fast compact Teensy with extensive peripheral muxing and Teensyduino Arduino tooling.",
     tags: ["Teensy", "PJRC", "i.MX RT1062", "Audio", "Fast MCU"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB"],
     highlights: [
@@ -8851,7 +8852,7 @@ const expansionBoards: Board[] = [
     power: "Micro-USB, VIN, 3.3 V rail",
     formFactor: "Small DIP-style module",
     description:
-      "A low-cost Teensy board with native USB and a compact breadboard-friendly pinout for simple HID and control projects.",
+      "Low-cost Teensy with native USB and a compact breadboard pinout for simple HID and control.",
     tags: ["Teensy", "PJRC", "Kinetis", "USB", "Low cost"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB"],
     highlights: [
@@ -8884,7 +8885,7 @@ const expansionBoards: Board[] = [
     power: "USB, Li-Po connector, VIN",
     formFactor: "Particle Feather-like module",
     description:
-      "Particle's cellular IoT development board combines nRF52840 application logic with LTE connectivity and Particle Device OS.",
+      "Particle's cellular IoT board, pairing nRF52840 application logic with LTE and Particle Device OS.",
     tags: ["Particle", "Boron", "Cellular", "nRF52840", "Cloud"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth"],
     highlights: [
@@ -8913,12 +8914,12 @@ const expansionBoards: Board[] = [
     vendor: "Particle",
     category: "Development Board",
     family: "Argon",
-    processor: "Nordic nRF52840 + Espressif ESP32 radio",
+    processor: "Nordic nRF52840 + ESP32 radio",
     logicLevel: "3.3 V GPIO",
     power: "USB, Li-Po connector, VIN",
     formFactor: "Particle Feather-like module",
     description:
-      "A Particle Wi-Fi and BLE development board in the mesh-era Particle form factor, still useful for Device OS prototypes.",
+      "Particle's Wi-Fi and BLE board in the mesh-era form factor, still useful for Device OS prototypes.",
     tags: ["Particle", "Argon", "Wi-Fi", "nRF52840", "Cloud"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -8951,7 +8952,7 @@ const expansionBoards: Board[] = [
     power: "5 V DC barrel or micro-USB depending on kit",
     formFactor: "AI SBC developer kit",
     description:
-      "NVIDIA's entry Jetson developer kit exposes a Raspberry Pi-style 40-pin header alongside camera and display connectors for edge AI experiments.",
+      "NVIDIA's entry Jetson kit with a Pi-style 40-pin header plus camera and display connectors.",
     tags: ["NVIDIA", "Jetson", "AI", "CUDA", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet"],
     highlights: [
@@ -8989,7 +8990,7 @@ const expansionBoards: Board[] = [
     power: "19 V DC barrel jack",
     formFactor: "AI SBC developer kit",
     description:
-      "A compact Jetson developer kit with higher AI performance than Nano and a carrier exposing expansion headers and camera interfaces.",
+      "Compact Jetson kit with more AI performance than Nano, plus expansion headers and camera interfaces.",
     tags: ["NVIDIA", "Jetson", "Xavier NX", "AI", "CSI"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet"],
     highlights: [
@@ -9022,7 +9023,7 @@ const expansionBoards: Board[] = [
     power: "5 V USB-C",
     formFactor: "Raspberry Pi-style SBC",
     description:
-      "A BeagleBoard AI-focused SBC with a Pi-like form factor, expansion header, camera connectors, and TI neural acceleration.",
+      "BeagleBoard's AI SBC in a Pi-like form factor, with camera connectors and TI neural acceleration.",
     tags: ["BeagleBoard", "AM67A", "AI", "40-pin", "Linux"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet"],
     highlights: [
@@ -9055,7 +9056,7 @@ const expansionBoards: Board[] = [
     power: "USB-C or 5 V barrel jack",
     formFactor: "BeagleBone cape-compatible SBC",
     description:
-      "A high-performance BeagleBone-family board with TI vision/AI acceleration while retaining many cape-style expansion concepts.",
+      "High-performance BeagleBone-family board with TI vision/AI acceleration and cape-style expansion.",
     tags: ["BeagleBoard", "BeagleBone", "TDA4VM", "AI", "Cape"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CAN", "CSI", "USB", "Ethernet"],
     highlights: [
@@ -9094,7 +9095,7 @@ const expansionBoards: Board[] = [
     power: "USB-C Power Delivery",
     formFactor: "High-performance ARM SBC",
     description:
-      "A powerful RK3588 SBC with 40-pin expansion, PCIe, M.2, camera/display connectors, and strong Linux community interest.",
+      "Powerful RK3588 SBC with 40-pin expansion, PCIe, M.2, and camera/display connectors.",
     tags: ["Radxa", "RK3588", "PCIe", "M.2", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "PCIe", "USB", "Ethernet"],
     highlights: [
@@ -9132,7 +9133,7 @@ const expansionBoards: Board[] = [
     power: "5 V USB-C",
     formFactor: "Compact SBC with Ethernet",
     description:
-      "A tiny RK3566 Linux SBC with Ethernet and 40-pin expansion aimed at compact networking and embedded controller projects.",
+      "Tiny RK3566 Linux SBC with Ethernet and 40-pin expansion for compact networking projects.",
     tags: ["Radxa", "RK3566", "Zero", "Ethernet", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet"],
     highlights: [
@@ -9161,11 +9162,11 @@ const expansionBoards: Board[] = [
     category: "SBC",
     family: "ODROID-N",
     processor: "Amlogic S922X",
-    logicLevel: "3.3 V GPIO (analog input limits differ)",
+    logicLevel: "3.3 V GPIO (ADC limits differ)",
     power: "7.5-18 V DC barrel jack",
     formFactor: "Performance SBC with 40-pin header",
     description:
-      "Hardkernel's high-performance Amlogic SBC with a large heatsink, eMMC support, and a documented 40-pin expansion header.",
+      "Hardkernel's high-performance Amlogic SBC with a large heatsink, eMMC, and a 40-pin header.",
     tags: ["ODROID", "Amlogic", "S922X", "eMMC", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Ethernet"],
     highlights: [
@@ -9198,7 +9199,7 @@ const expansionBoards: Board[] = [
     power: "7.5-15 V DC barrel jack",
     formFactor: "SBC with M.2 and SATA",
     description:
-      "A storage-friendly Hardkernel SBC with RK3568, SATA, NVMe-capable M.2, and a documented GPIO expansion header.",
+      "Storage-friendly Hardkernel RK3568 SBC with SATA, NVMe-capable M.2, and a GPIO header.",
     tags: ["ODROID", "RK3568", "SATA", "M.2", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "PCIe", "USB", "Ethernet"],
     highlights: [
@@ -9264,7 +9265,7 @@ const expansionBoards: Board[] = [
     power: "USB-C Power Delivery",
     formFactor: "Compact media/AI SBC",
     description:
-      "A compact Amlogic SBC with OOWOW recovery, MIPI interfaces, 40-pin GPIO, and an NPU for media and edge AI prototypes.",
+      "Compact Amlogic SBC with OOWOW recovery, MIPI interfaces, 40-pin GPIO, and an NPU.",
     tags: ["Khadas", "VIM4", "A311D2", "NPU", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Ethernet", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -9302,7 +9303,7 @@ const expansionBoards: Board[] = [
     power: "USB, VIN/E5V/3V3 headers",
     formFactor: "Nucleo-64 with Arduino Uno + ST Morpho headers",
     description:
-      "A classic STM32F1 Nucleo-64 board with integrated ST-LINK and both Arduino Uno R3 and ST Morpho expansion connectors.",
+      "Classic STM32F1 Nucleo-64 with integrated ST-LINK plus Arduino Uno R3 and ST Morpho headers.",
     tags: ["STM32", "Nucleo", "STM32F1", "Cortex-M3", "Arduino headers"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "SWD"],
     highlights: [
@@ -9341,7 +9342,7 @@ const expansionBoards: Board[] = [
     power: "USB, VIN/E5V/3V3 headers",
     formFactor: "Nucleo-64 with Arduino Uno + ST Morpho headers",
     description:
-      "A popular STM32F4 Nucleo-64 board for DSP, control, and communication prototypes, with Arduino-compatible and ST Morpho headers.",
+      "Popular STM32F4 Nucleo-64 for DSP and control, with Arduino-compatible and ST Morpho headers.",
     tags: ["STM32", "Nucleo", "STM32F4", "Cortex-M4", "Arduino headers"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "SWD"],
     highlights: [
@@ -9380,7 +9381,7 @@ const expansionBoards: Board[] = [
     power: "USB, VIN/E5V/3V3 headers",
     formFactor: "Nucleo-64 with Arduino Uno headers",
     description:
-      "A low-power STM32 Nucleo board with Arduino Uno R3 and ST morpho headers for flexible embedded development.",
+      "Low-power STM32 Nucleo board with Arduino Uno R3 and ST morpho headers.",
     tags: ["STM32", "Nucleo", "STM32L4", "Low power", "Arduino headers"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "SWD"],
     highlights: [
@@ -9418,7 +9419,7 @@ const expansionBoards: Board[] = [
     power: "USB, VIN/E5V/3V3 headers",
     formFactor: "Nucleo-64 with Arduino Uno headers",
     description:
-      "A cost-effective STM32G0 Nucleo board with Arduino and morpho headers for control, interface, and low-cost MCU evaluation.",
+      "Cost-effective STM32G0 Nucleo board with Arduino and morpho headers for low-cost MCU evaluation.",
     tags: ["STM32", "Nucleo", "STM32G0", "Arduino headers", "SWD"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "SWD"],
     highlights: [
@@ -9447,11 +9448,11 @@ const expansionBoards: Board[] = [
     category: "Development Board",
     family: "STM32 Nucleo-144",
     processor: "STM32H753ZI Arm Cortex-M7 (480 MHz)",
-    logicLevel: "3.3 V GPIO (1.8 V selectable via JP5)",
+    logicLevel: "3.3 V GPIO (1.8 V via JP5)",
     power: "USB, VIN 7-12 V, 5V_EXT, 3V3_EXT",
     formFactor: "Nucleo-144 with ST Zio + ST morpho headers",
     description:
-      "ST's flagship Nucleo-144 for the 480 MHz STM32H753, exposing 100 Zio signals plus full ST morpho fan-out, onboard Ethernet, and the integrated STLINK-V3E debugger.",
+      "ST's flagship Nucleo-144 for the 480 MHz STM32H753, with Ethernet and an STLINK-V3E.",
     tags: ["STM32", "Nucleo-144", "STM32H7", "Cortex-M7", "Zio", "Ethernet"],
     interfaces: [
       "GPIO",
@@ -9505,12 +9506,12 @@ const expansionBoards: Board[] = [
     vendor: "Nordic Semiconductor",
     category: "Development Board",
     family: "nRF",
-    processor: "Nordic nRF5340 dual-core Arm Cortex-M33",
+    processor: "nRF5340 dual-core Cortex-M33",
     logicLevel: "3.3 V GPIO",
     power: "USB, coin cell, external supply",
     formFactor: "DK with Arduino headers",
     description:
-      "Nordic's dual-core Bluetooth LE development kit with Arduino-compatible headers, current measurement support, and Segger debugger.",
+      "Nordic's dual-core Bluetooth LE kit with Arduino-compatible headers and current measurement.",
     tags: ["Nordic", "nRF5340", "BLE", "Thread", "Arduino headers"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Thread", "SWD"],
     highlights: [
@@ -9543,7 +9544,7 @@ const expansionBoards: Board[] = [
     power: "USB, coin cell, external supply",
     formFactor: "DK with Arduino headers",
     description:
-      "A widely used Nordic Bluetooth LE development kit exposing nRF52832 IO through headers and debugger-friendly board resources.",
+      "Widely used Nordic Bluetooth LE kit that exposes nRF52832 I/O through headers.",
     tags: ["Nordic", "nRF52832", "BLE", "Arduino headers", "Low power"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "SWD"],
     highlights: [
@@ -9576,7 +9577,7 @@ const expansionBoards: Board[] = [
     power: "USB, BoosterPack headers",
     formFactor: "LaunchPad with BoosterPack headers",
     description:
-      "A modern low-cost TI LaunchPad for MSPM0 development with onboard debugger and BoosterPack expansion.",
+      "Modern low-cost TI LaunchPad for MSPM0, with an onboard debugger and BoosterPack headers.",
     tags: ["TI", "LaunchPad", "MSPM0", "Cortex-M0+", "BoosterPack"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "SWD"],
     highlights: [
@@ -9615,7 +9616,7 @@ const expansionBoards: Board[] = [
     power: "USB-C or coin cell/external supply",
     formFactor: "Explorer kit with mikroBUS and breakout pads",
     description:
-      "A Silicon Labs wireless explorer kit for Bluetooth LE, Matter, OpenThread, and Zigbee development on EFR32xG24 devices.",
+      "Silicon Labs EFR32xG24 kit for Bluetooth LE, Matter, OpenThread, and Zigbee development.",
     tags: ["Silicon Labs", "EFR32", "Matter", "Thread", "Zigbee"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Zigbee", "Thread", "SWD"],
     highlights: [
@@ -9648,12 +9649,12 @@ const expansionBoards: Board[] = [
     vendor: "Raspberry Pi",
     category: "Microcontroller",
     family: "RP2350",
-    processor: "RP2350 dual-core Arm Cortex-M33 / RISC-V Hazard3 + CYW43439",
+    processor: "RP2350 (M33 / Hazard3) + CYW43439",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB, VSYS, VBUS",
     formFactor: "40-pin DIP module",
     description:
-      "The wireless Pico 2 adds Wi-Fi and Bluetooth via a CYW43439 to the RP2350, keeping the identical 40-pin castellated header of the Pico 2 for drop-in upgrades of networked embedded projects.",
+      "Pico 2 with Wi-Fi and Bluetooth via a CYW43439, keeping the same 40-pin castellated header.",
     tags: ["RP2350", "Pico 2 W", "MicroPython", "Wi-Fi", "DIP"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD", "Wi-Fi", "Bluetooth"],
     highlights: [
@@ -9691,7 +9692,7 @@ const expansionBoards: Board[] = [
     power: "USB-C or 5V pad",
     formFactor: "Seeed XIAO-compatible 14-pad castellated module",
     description:
-      "A tiny RP2040 board in the Seeed XIAO footprint with a STEMMA QT connector, NeoPixel, and CircuitPython support — an easy stepping stone from the QT Py SAMD21.",
+      "Tiny RP2040 board in the Seeed XIAO footprint with STEMMA QT, a NeoPixel, and CircuitPython support.",
     tags: ["Adafruit", "QT Py", "RP2040", "STEMMA QT", "CircuitPython"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -9729,7 +9730,7 @@ const expansionBoards: Board[] = [
     power: "USB-C or 5V pad",
     formFactor: "Ultra-compact castellated module (23.5 × 18 mm)",
     description:
-      "An ultra-compact RP2040 breakout from Waveshare with castellated pads on three edges, a USB-C connector, onboard WS2812 RGB LED, and BOOT/RESET buttons.",
+      "Ultra-compact RP2040 board with castellated pads on three edges, USB-C, and a WS2812 LED.",
     tags: ["Waveshare", "RP2040", "Zero", "Compact", "RGB LED"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
     highlights: [
@@ -10072,15 +10073,16 @@ const latticeBoards: Board[] = [
     vendor: "Lattice Semiconductor",
     category: "Development Board",
     family: "MachXO2",
-    processor: "Lattice LCMXO2-7000HE-4TG144C (144-pin TQFP, 6,864 LUTs, instant-on NV Flash)",
-    logicLevel: "3.3 V VCCIO defaults on all banks (1.2 V core)",
+    processor: "Lattice MachXO2 LCMXO2-7000HE",
+    logicLevel: "3.3 V VCCIO on all banks",
     power: "USB mini-B (5 V); onboard regulator provides 3.3 V and 1.2 V",
     formFactor: "3\" × 3\" PCB with four 2x20 100-mil expansion header landings",
     description:
-      "A low-cost breakout board for the MachXO2-7000HE FPGA in a 144-pin TQFP package. Four unpopulated 2x20 header landings expose 108 FPGA I/Os plus bank power, core power, ground, and configuration signals. The device provides embedded Flash for instant-on operation, two PLLs, 256 kbits of embedded RAM, and hardened I2C/SPI blocks.",
+      "Low-cost MachXO2-7000HE FPGA breakout with four unpopulated 2x20 header landings exposing 108 I/Os.",
     tags: ["Lattice", "MachXO2", "FPGA", "CPLD", "breakout", "instant-on", "non-volatile", "TQFP"],
     interfaces: ["GPIO", "SPI", "I2C", "UART", "JTAG", "USB"],
     highlights: [
+      "1.2 V core; every VCCIO bank defaults to 3.3 V.",
       "LCMXO2-7000HE: 6,864 LUTs, embedded NV Flash (no external config device needed), instant-on.",
       "108 I/Os from the 144-pin TQFP are accessible through four 100-mil expansion header landings.",
       "Hardened I2C, SPI, timer/counter blocks, and 256 kbits embedded SRAM in fabric.",
@@ -10129,12 +10131,12 @@ const latticeBoards: Board[] = [
     vendor: "Lattice Semiconductor",
     category: "Development Board",
     family: "MachXO3D",
-    processor: "Lattice LCMXO3D-9400HC-5BG256C (256-ball caBGA, 9,400 LUTs, Hardware Root of Trust)",
+    processor: "Lattice MachXO3D LCMXO3D-9400HC",
     logicLevel: "3.3 V VCCIO on Banks 0-5",
     power: "USB mini-B (5 V); on-board LDO generates 3.3 V and 1.2 V",
     formFactor: "3\" × 3\" PCB with four 2×20 expansion header landings plus 1×8 JTAG and 1×6 SPI/I2C headers",
     description:
-      "A breakout board for the MachXO3D security-enhanced FPGA (9,400 LUTs, embedded Hardware Root of Trust, instant-on NV Flash). The MachXO3D adds an immutable security block with hardware attestation, secure boot, and cryptographic services on top of the MachXO3 fabric. Four 2×20 expansion header landings expose 127 FPGA signal positions plus bank power and ground. Includes 8 LEDs, 16 Mbit SPI flash, and a 40-hole prototype area.",
+      "MachXO3D security FPGA breakout (9,400 LUTs, hardware root of trust) with four 2×20 header landings.",
     tags: ["Lattice", "MachXO3D", "FPGA", "CPLD", "security", "hardware root of trust", "secure boot", "breakout"],
     interfaces: ["GPIO", "SPI", "I2C", "UART", "JTAG", "USB"],
     highlights: [
@@ -10182,12 +10184,12 @@ const latticeBoards: Board[] = [
     vendor: "Lattice Semiconductor",
     category: "Development Board",
     family: "iCE40",
-    processor: "Lattice iCE40HX1K-TQ144 (144-pin TQFP, 1,280 LUTs, 2 PLLs)",
-    logicLevel: "3.3 V LVCMOS I/O (not 5 V tolerant)",
+    processor: "Lattice iCE40HX1K-TQ144",
+    logicLevel: "3.3 V LVCMOS; not 5 V tolerant",
     power: "USB-A bus powered (5 V); on-board regulators provide 3.3 V and 1.2 V",
     formFactor: "USB-stick PCB with a male USB-A edge, two 1x10 headers, and one 2x6 Pmod",
     description:
-      "A USB-stick evaluation board for the low-power iCE40HX-1K FPGA. Two unpopulated 1x10 expansion headers (J1, J3) and a populated 2x6 Digilent Pmod (J2) break out 24 FPGA I/Os, alongside five LEDs, an IrDA transceiver, and an FT2232H for USB programming. It was one of the first boards to gain open-source (Project IceStorm) toolchain support.",
+      "USB-stick iCE40HX-1K FPGA board with a Pmod; an early open-source toolchain target.",
     tags: ["Lattice", "iCE40", "iCEstick", "FPGA", "Pmod", "IceStorm", "USB", "low-power"],
     interfaces: ["GPIO", "SPI", "UART", "JTAG", "USB"],
     highlights: [
@@ -10234,12 +10236,12 @@ const latticeBoards: Board[] = [
     vendor: "Lattice Semiconductor",
     category: "Development Board",
     family: "MachXO3",
-    processor: "Lattice LCMXO3L-6900C-5BG256C / LCMXO3LF-6900C-5BG256C (256-ball caBGA, 6,900 LUTs)",
-    logicLevel: "3.3 V VCCIO on all expansion banks",
+    processor: "Lattice LCMXO3L/LF-6900C",
+    logicLevel: "3.3 V VCCIO on expansion banks",
     power: "USB mini-B (5 V); on-board regulators generate 3.3 V, 2.5 V, and 1.2 V",
     formFactor: "~85 x 55 mm PCB with four 2x20 expansion headers plus 1x8 JTAG and 1x6 SPI/I2C headers",
     description:
-      "A starter board that exposes all six I/O banks of the MachXO3L (NVCM) or MachXO3LF (Flash) device through four 2x20 expansion headers (J3, J4, J6, J8). It carries an FT2232H for USB JTAG/UART, eight LEDs, an 8-position DIP switch, and a 12 MHz oscillator, and is supported by Lattice Diamond. The same board is sold as the MachXO3L and MachXO3LF Starter Kit.",
+      "MachXO3L/LF starter board exposing all six I/O banks on four 2x20 headers, with FT2232H USB JTAG.",
     tags: ["Lattice", "MachXO3", "MachXO3L", "MachXO3LF", "FPGA", "CPLD", "starter kit", "caBGA"],
     interfaces: ["GPIO", "SPI", "I2C", "UART", "JTAG", "USB"],
     highlights: [
@@ -10287,12 +10289,12 @@ const latticeBoards: Board[] = [
     vendor: "Lattice Semiconductor",
     category: "Development Board",
     family: "CrossLink-NX",
-    processor: "Lattice LIFCL-40-9BG400C (CrossLink-NX, 28 nm FD-SOI Nexus, 400-ball caBGA)",
-    logicLevel: "3.3 V on the Pmod banks; 1.2-1.8 V on the camera / MIPI banks",
+    processor: "Lattice CrossLink-NX LIFCL-40",
+    logicLevel: "3.3 V Pmod; 1.2-1.8 V MIPI banks",
     power: "USB-B for programming; separate 12 V jack for PCIe and full-board power",
     formFactor: "~100 x 80 mm PCB with FMC LPC, Raspberry Pi GPIO, MIPI/D-PHY, and three Pmod headers",
     description:
-      "An evaluation board for the CrossLink-NX LIFCL-40 FPGA, targeting video bridging, imaging, and edge-AI designs. Three Digilent-compatible Pmod headers (J17, J18, J19) provide a general-purpose GPIO breakout alongside an FMC LPC connector, a Raspberry Pi GPIO header, MIPI CSI-2 camera connectors, a D-PHY header, and a PCIe x1 interface. It is supported by Lattice Radiant software.",
+      "CrossLink-NX LIFCL-40 FPGA board for video bridging, with Pmod, FMC, Pi GPIO, MIPI CSI-2, and PCIe.",
     tags: ["Lattice", "CrossLink-NX", "Nexus", "LIFCL-40", "FPGA", "Pmod", "MIPI", "edge AI"],
     interfaces: ["GPIO", "SPI", "I2C", "JTAG", "USB", "CSI", "PCIe"],
     highlights: [
@@ -10721,12 +10723,12 @@ const industryEducationBoards: Board[] = [
     vendor: "NXP Semiconductors",
     category: "Development Board",
     family: "Freedom Development Platform",
-    processor: "MKL25Z128VLK4 Arm Cortex-M0+ @ 48 MHz, 128 KB flash",
+    processor: "MKL25Z128VLK4 Cortex-M0+ @ 48 MHz",
     logicLevel: "3.3 V GPIO (not 5 V tolerant)",
     power: "OpenSDA USB, KL25Z USB, 4.3-9 V VIN, or regulated 1.71-3.6 V",
     formFactor: "Arduino R3-compatible board with four dual-row I/O headers",
     description:
-      "A Cortex-M0+ teaching platform used in embedded-systems and microprocessor laboratories, with onboard OpenSDA debugging, an accelerometer, capacitive touch, and a position-complete Rev. E expansion map.",
+      "Cortex-M0+ teaching board with OpenSDA debugging, an accelerometer, and capacitive touch.",
     tags: ["NXP", "Kinetis", "KL25Z", "Cortex-M0+", "OpenSDA", "education"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "SWD"],
     highlights: [
@@ -10772,12 +10774,12 @@ const industryEducationBoards: Board[] = [
     vendor: "Digilent",
     category: "Development Board",
     family: "Nexys A7",
-    processor: "AMD/Xilinx Artix-7 XC7A100T-1CSG324C FPGA",
-    logicLevel: "3.3 V LVCMOS on Pmod ports (not 5 V tolerant)",
+    processor: "Artix-7 XC7A100T-1CSG324C FPGA",
+    logicLevel: "3.3 V Pmod I/O; not 5 V tolerant",
     power: "USB or 4.5-5.5 V external supply; JP3 selects source",
     formFactor: "FPGA trainer with five 2x6 Pmod expansion ports",
     description:
-      "A feature-rich Artix-7 trainer used in digital-system design and computer-architecture laboratories, with five fully mapped Pmod ports, DDR2, Ethernet, USB HID, VGA, audio, and onboard I/O.",
+      "Feature-rich Artix-7 trainer with five Pmod ports, DDR2, Ethernet, VGA, audio, and onboard I/O.",
     tags: ["Digilent", "Nexys A7", "Artix-7", "FPGA", "Vivado", "Pmod", "education"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG", "Ethernet"],
     highlights: [
@@ -10819,11 +10821,11 @@ const industryEducationBoards: Board[] = [
     category: "Development Board",
     family: "DE10",
     processor: "Intel MAX 10 10M50DAF484C7G FPGA",
-    logicLevel: "3.3 V LVTTL digital I/O; Arduino analog inputs accept up to 5 V",
+    logicLevel: "3.3 V LVTTL; analog in up to 5 V",
     power: "5 V from USB or external power connector",
     formFactor: "FPGA education board with JP1 2x20 and Arduino Uno R3 headers",
     description:
-      "Intel's entry academic MAX 10 board, used across digital-logic and FPGA courses, with a complete 40-pin GPIO and Arduino R3 expansion map plus onboard SDRAM, VGA, ADC, accelerometer, switches, LEDs, and displays.",
+      "Intel's entry MAX 10 FPGA board with GPIO and Arduino headers, SDRAM, VGA, and an ADC.",
     tags: ["Terasic", "DE10-Lite", "Intel", "Altera", "MAX 10", "FPGA", "Quartus", "education"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "JTAG"],
     highlights: [
@@ -10869,15 +10871,16 @@ const industryEducationBoards: Board[] = [
     vendor: "STMicroelectronics",
     category: "Development Board",
     family: "STM32 Discovery",
-    processor: "STM32F407VGT6 Arm Cortex-M4F @ 168 MHz, 1 MB flash",
+    processor: "STM32F407VGT6 Cortex-M4F @ 168 MHz",
     logicLevel: "3.3 V GPIO",
     power: "USB (ST-LINK or OTG) or external 5 V via P1/P2",
     formFactor: "66 × 97 mm board, two 2.54 mm 50-pin headers",
     description:
-      "The classic low-cost Cortex-M4 board that introduced a generation of embedded-systems students to STM32, with an onboard ST-LINK/V2-A debugger, accelerometer, digital mic, and audio DAC for signal-processing labs.",
+      "Classic low-cost Cortex-M4 board with ST-LINK/V2-A, accelerometer, mic, and audio DAC.",
     tags: ["stm32", "cortex-m4", "discovery", "st-link", "education"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "SWD", "JTAG"],
     highlights: [
+      "1 MB flash on the STM32F407VGT6.",
       "Onboard ST-LINK/V2-A doubles as an external SWD programmer for other STM32 targets.",
       "All 100 LQFP I/Os broken out to the P1/P2 headers for probing and prototyping.",
       "ST-MEMS accelerometer, digital microphone, and audio DAC with speaker driver on board.",
@@ -10908,12 +10911,12 @@ const industryEducationBoards: Board[] = [
     vendor: "Texas Instruments",
     category: "Development Board",
     family: "LaunchPad",
-    processor: "TM4C123GH6PMI Arm Cortex-M4F @ 80 MHz",
+    processor: "TM4C123GH6PMI Cortex-M4F, 80 MHz",
     logicLevel: "3.3 V GPIO",
     power: "5 V via ICDI or device USB Micro-B, switch-selected",
     formFactor: "50 × 57 mm LaunchPad with BoosterPack XL headers",
     description:
-      "TI's classic Cortex-M4F evaluation board and a staple of university embedded-systems courses, with an onboard ICDI debugger, BoosterPack ecosystem, and native USB on the target MCU.",
+      "TI's Cortex-M4F LaunchPad with an onboard ICDI debugger, BoosterPack headers, and native USB.",
     tags: ["tiva", "launchpad", "cortex-m4f", "boosterpack", "education"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "SWD", "JTAG"],
     highlights: [
@@ -10947,12 +10950,12 @@ const industryEducationBoards: Board[] = [
     vendor: "Digilent",
     category: "Development Board",
     family: "Arty",
-    processor: "AMD/Xilinx Artix-7 FPGA (XC7A35T or XC7A100T)",
+    processor: "Artix-7 FPGA (XC7A35T or XC7A100T)",
     logicLevel: "3.3 V logic (not 5 V tolerant)",
     power: "USB 5 V or 7–15 V DC barrel jack, auto-arbitrated",
     formFactor: "Arduino/chipKIT shield-compatible FPGA board",
     description:
-      "A widely used low-cost Artix-7 board built around MicroBlaze soft-processor designs, common in university digital-design and computer-architecture courses thanks to free Vivado licensing and Digilent's tutorial ecosystem.",
+      "Low-cost Artix-7 board for MicroBlaze designs, common in university digital-design courses.",
     tags: ["fpga", "xilinx", "artix-7", "vivado", "microblaze"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "Ethernet", "USB", "JTAG"],
     highlights: [
@@ -10996,7 +10999,7 @@ const industryEducationBoards: Board[] = [
     power: "USB-JTAG port or external 4.5–5.5 V via J6 (JP2 selects)",
     formFactor: "Self-contained trainer board with switches, LEDs, 7-segment display",
     description:
-      "The most common introductory FPGA teaching board in university digital-design courses: 16 switches, 16 LEDs, a 4-digit 7-segment display, VGA, and USB-HID host mean intro labs need no external hardware.",
+      "The standard intro FPGA teaching board: 16 switches, 16 LEDs, a 4-digit 7-segment display, and VGA.",
     tags: ["fpga", "xilinx", "artix-7", "vivado", "education"],
     interfaces: ["GPIO", "SPI", "USB", "JTAG"],
     highlights: [
@@ -11030,15 +11033,16 @@ const industryEducationBoards: Board[] = [
     vendor: "Google Coral",
     category: "AI Dev Kit",
     family: "Coral",
-    processor: "NXP i.MX 8M (quad Cortex-A53 + M4F) + Google Edge TPU",
+    processor: "NXP i.MX 8M + Google Edge TPU",
     logicLevel: "3.3 V GPIO (~82 mA max per pin)",
     power: "USB-C 5 V at 2–3 A (not powerable from a PC USB port)",
     formFactor: "85 × 56 mm SBC with 40-pin header",
     description:
-      "A Raspberry-Pi-header-compatible single-board computer built for on-device ML inferencing with the Edge TPU (4 TOPS at ~2 W); an early and influential edge-AI dev board still widely deployed and taught.",
+      "Pi-header-compatible SBC built for on-device ML with the Edge TPU (4 TOPS at ~2 W).",
     tags: ["edge-tpu", "machine-learning", "imx8m", "tensorflow-lite", "sbc"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "CSI", "USB", "Wi-Fi", "Bluetooth", "Ethernet"],
     highlights: [
+      "The i.MX 8M pairs four Cortex-A53 cores with a Cortex-M4F.",
       "Edge TPU runs MobileNet v2 at ~400 FPS via TensorFlow Lite at low power.",
       "40-pin Raspberry-Pi-style header exposes UART, I2C, SPI, PWM, and GPIO from the i.MX 8M.",
       "MIPI-DSI display and MIPI-CSI-2 camera connectors plus HDMI 2.0a and Gigabit Ethernet.",
@@ -11070,12 +11074,12 @@ const industryEducationBoards: Board[] = [
     vendor: "Arduino",
     category: "Microcontroller",
     family: "Portenta",
-    processor: "STM32H747XI dual-core Cortex-M7 @ 480 MHz + M4 @ 240 MHz",
+    processor: "STM32H747XI, M7 480 + M4 240 MHz",
     logicLevel: "3.3 V GPIO",
     power: "USB-C, VIN, or Li-Po 3.7 V with onboard charger",
     formFactor: "MKR-style footprint plus two 80-pin high-density connectors",
     description:
-      "An industrial-grade dual-core Arduino for edge-AI and industrial-IoT products, used as the reference platform for Arduino's PRO ecosystem with vision, motor-control, and secure-boot workloads split across two cores.",
+      "Dual-core industrial Arduino for edge AI and IIoT, the reference board for Arduino's PRO ecosystem.",
     tags: ["stm32h7", "dual-core", "industrial", "portenta", "edge-ai"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "Wi-Fi", "Bluetooth", "SWD", "Ethernet"],
     highlights: [
@@ -11114,12 +11118,12 @@ const industryEducationBoards: Board[] = [
     vendor: "Nordic Semiconductor",
     category: "Development Board",
     family: "Nordic DK",
-    processor: "nRF9160 SiP Cortex-M33 @ 64 MHz with LTE-M/NB-IoT/GNSS modem",
+    processor: "nRF9160 SiP, Cortex-M33 @ 64 MHz",
     logicLevel: "3.3 V GPIO",
     power: "USB (debug, programming, and power)",
     formFactor: "Arduino Uno R3-compatible shield form factor",
     description:
-      "The reference cellular-IoT development kit pairing Nordic's nRF9160 LTE-M/NB-IoT/GNSS SiP with an nRF52840 board controller; widely used in industry for asset-tracking and telemetry prototypes.",
+      "Nordic's cellular-IoT kit for the nRF9160 LTE-M/NB-IoT/GNSS SiP.",
     tags: ["cellular-iot", "lte-m", "nb-iot", "nrf9160", "gnss"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "Bluetooth", "SWD"],
     highlights: [
@@ -11584,12 +11588,12 @@ const riscvFrontierBoards: Board[] = [
     vendor: "StarFive",
     category: "SBC",
     family: "VisionFive",
-    processor: "StarFive JH7110 — quad-core SiFive U74 RV64GC @ 1.5 GHz with IMG BXE-4-32 GPU",
-    logicLevel: "3.3 V GPIO (5 V tolerance not documented by StarFive)",
+    processor: "JH7110, 4× U74 RV64GC @ 1.5 GHz",
+    logicLevel: "3.3 V GPIO",
     power: "5 V / 3 A via USB-C, or the header 5 V pins",
     formFactor: "Credit-card SBC with a Raspberry-Pi-compatible 40-pin header footprint",
     description:
-      "The mainstream affordable RISC-V Linux SBC: a JH7110 quad-core RV64GC board in a Raspberry-Pi-shaped footprint, and the usual first target for RISC-V Linux and bare-metal work.",
+      "Affordable RISC-V Linux SBC: a quad-core JH7110 in a Raspberry Pi-shaped footprint.",
     tags: ["risc-v", "riscv", "jh7110", "starfive", "sifive-u74", "single-board-computer"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "PCIe", "Ethernet"],
     highlights: [
@@ -11628,12 +11632,12 @@ const riscvFrontierBoards: Board[] = [
     vendor: "Flipper Devices",
     category: "Development Board",
     family: "Flipper Zero",
-    processor: "STM32WB55RG — Arm Cortex-M4 @ 64 MHz application core plus a Cortex-M0+ radio co-processor",
-    logicLevel: "3.3 V I/O, 20 mA per pin, 5 W total across all I/O",
+    processor: "STM32WB55RG (M4 @ 64 MHz + M0+)",
+    logicLevel: "3.3 V I/O (20 mA per pin)",
     power: "Internal LiPo with USB-C charging; switchable 5 V and 3.3 V outputs on the header",
     formFactor: "Handheld multi-tool with an 18-pin 2.54 mm header on the top edge",
     description:
-      "A pocket multi-tool for hardware and RF work whose 18-pin top header exposes STM32WB55 GPIO, UART, SWD, and 1-Wire — widely used as an interactive bench tool for probing and bring-up.",
+      "Pocket hardware and RF multi-tool whose 18-pin header exposes STM32WB55 GPIO, UART, SWD, and 1-Wire.",
     tags: ["hardware-hacking", "stm32wb55", "1-wire", "ibutton", "handheld", "sub-ghz"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "SWD"],
     highlights: [
@@ -11675,12 +11679,12 @@ const riscvFrontierBoards: Board[] = [
     vendor: "Espressif",
     category: "Development Board",
     family: "ESP32-P4",
-    processor: "ESP32-P4 dual-core RISC-V @ 400 MHz, paired with an ESP32-C6-MINI-1 for Wi-Fi 6 and Bluetooth",
-    logicLevel: "3.3 V GPIO (5 V tolerance not documented by Espressif)",
+    processor: "ESP32-P4 dual-core RISC-V @ 400 MHz",
+    logicLevel: "3.3 V GPIO",
     power: "USB-C (Full-speed, USB 2.0 Type-C, or the 5 V rail) with a power switch",
     formFactor: "Function evaluation board with a 40-pin J1 header, MIPI DSI and CSI FPC connectors",
     description:
-      "Espressif's evaluation board for the ESP32-P4 — a high-performance RISC-V application MCU with MIPI display and camera interfaces that has no radio of its own and pairs with an onboard ESP32-C6 for wireless.",
+      "ESP32-P4 board: a radio-less RISC-V MCU with MIPI display/camera, plus an onboard ESP32-C6.",
     tags: ["risc-v", "riscv", "esp32-p4", "mipi-dsi", "mipi-csi", "hmi", "espressif"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth", "CSI", "JTAG"],
     highlights: [
@@ -11716,12 +11720,12 @@ const riscvFrontierBoards: Board[] = [
     vendor: "Radxa",
     category: "SBC",
     family: "ROCK 3",
-    processor: "Rockchip RK3568 — quad-core Cortex-A55 @ 2.0 GHz with Mali-G52 GPU and a 0.8 TOPS NPU",
-    logicLevel: "3.3 V GPIO (5 V tolerance not documented by Radxa)",
+    processor: "Rockchip RK3568 (4× A55 @ 2.0 GHz)",
+    logicLevel: "3.3 V GPIO",
     power: "USB-C power delivery, or the header 5 V pins",
     formFactor: "Pi-sized SBC with a 40-pin GPIO header",
     description:
-      "A Rockchip RK3568 SBC in the Raspberry Pi footprint with an M.2 slot and a 40-pin header, aimed at NAS, edge, and general Linux use.",
+      "Rockchip RK3568 SBC in the Raspberry Pi footprint, with an M.2 slot and a 40-pin header.",
     tags: ["rockchip", "rk3568", "rock-3", "radxa", "single-board-computer", "npu"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "PCIe", "Ethernet"],
     highlights: [
@@ -12230,15 +12234,16 @@ const professionalDevKitBoards: Board[] = [
     vendor: "Digilent",
     category: "Development Board",
     family: "Zybo Z7",
-    processor: "Xilinx Zynq-7020 (XC7Z020-1CLG400C) — dual-core ARM Cortex-A9 @ 667 MHz processing system plus an Artix-7-class programmable logic fabric (53,200 LUTs)",
-    logicLevel: "3.3 V fixed on all Pmods (PL fabric pins and PS MIO pins alike) — no VADJ-style bank voltage jumper; 5 V tolerance is not documented by Digilent",
+    processor: "Zynq-7020 FPGA SoC, XC7Z020-1CLG400C",
+    logicLevel: "3.3 V fixed on all Pmods",
     power: "USB (micro-USB) or any 5 V external supply, selected by jumper JP6",
     formFactor: "Zybo-family development board with six Pmod ports, HDMI in/out, and a Pcam MIPI CSI-2 connector",
     description:
-      "A Zynq-7000 development board that pairs a dual Cortex-A9 processing system with Artix-7-class programmable logic, aimed at embedded vision work via its HDMI in/out and Pcam MIPI CSI-2 connector. The Zybo Z7-20 is the larger-FPGA variant of the Zybo Z7 family.",
+      "Zynq-7000 board pairing dual Cortex-A9 cores with FPGA logic, with HDMI in/out and Pcam.",
     tags: ["zynq", "zynq-7000", "fpga", "digilent", "zybo", "arm-cortex-a9", "mipi-csi", "embedded-vision"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "USB", "Ethernet", "JTAG", "CSI"],
     highlights: [
+      "Zynq-7020 pairs a dual-core Cortex-A9 at 667 MHz with Artix-7-class logic (53,200 LUTs).",
       "Six Pmod ports cover every Digilent connector type in one board: XADC (JA), high-speed (JB/JC/JD), standard (JE), and MIO-connected (JF) — a compact tour of Zynq's PS/PL split.",
       "Gigabit Ethernet PHY, USB 2.0 OTG, HDMI sink and source ports, and a Pcam MIPI CSI-2 connector make this a capable embedded-vision Linux target, not just a bare FPGA board.",
       "1 GB DDR3L on the PS side plus 16 MB Quad-SPI flash; boots from JTAG, Quad-SPI, or a microSD card.",
@@ -12272,15 +12277,16 @@ const professionalDevKitBoards: Board[] = [
     vendor: "Digilent",
     category: "Development Board",
     family: "Arty",
-    processor: "Xilinx Spartan-7 (XC7S50CSGA324-1) — 8,150 logic slices, 120 DSP slices, on-chip XADC",
-    logicLevel: "3.3 V fixed on all Pmod and shield pins — no VADJ-style bank voltage jumper; Digilent states the board is not compatible with 5 V shields",
+    processor: "Spartan-7 FPGA XC7S50CSGA324-1",
+    logicLevel: "3.3 V fixed; no 5 V shields",
     power: "USB (micro-USB) or 7-15 V external supply via barrel jack, selected by jumper",
     formFactor: "Arty-family board with 4 Pmod ports plus a dual-row Arduino/chipKIT shield header",
     description:
-      "A Spartan-7 FPGA board in the Arty form factor, built to mount standard Arduino/chipKIT shields as well as Digilent Pmods, with on-chip XADC exposed through both connector families. Aimed at MicroBlaze soft-core and general Spartan-7 FPGA development.",
+      "Spartan-7 FPGA board that takes Arduino/chipKIT shields and Pmods, with XADC on both.",
     tags: ["spartan-7", "fpga", "digilent", "arty", "microblaze", "arduino-shield", "chipkit"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "USB"],
     highlights: [
+      "XC7S50: 8,150 logic slices and 120 DSP slices.",
       "Dual-row Arduino/chipKIT shield header plus 4 Pmod ports gives two parallel, well-documented expansion ecosystems — 45 shield I/O pins, 16 of which are also reachable through Pmod JC/JD.",
       "On-chip XADC is exposed on the shield header two ways: 6 single-ended 0-3.3 V inputs (A0-A5) and 3 differential 0-1.0 V pairs (A6-A9, plus dedicated V_P/V_N).",
       "256 MB DDR3L and 16 MB Quad-SPI flash support MicroBlaze soft-core designs out of the box under Xilinx's free WebPACK license.",
@@ -12315,15 +12321,16 @@ const professionalDevKitBoards: Board[] = [
     vendor: "Digilent",
     category: "Development Board",
     family: "Cmod A7",
-    processor: "Xilinx Artix-7 (XC7A35T-1CPG236C) — 20,800 logic slices, on-chip XADC; also sold as the smaller Cmod A7-15T (XC7A15T)",
-    logicLevel: "3.3 V fixed LVCMOS on every DIP and Pmod pin — no VADJ-style bank voltage jumper",
+    processor: "Artix-7 FPGA XC7A35T-1CPG236C",
+    logicLevel: "3.3 V LVCMOS on all pins",
     power: "USB (micro-USB) or an external 3.32-5.5 V supply wired to DIP pin 24 (VU)",
     formFactor: "Breadboard-compatible 48-pin DIP module, 0.7\" x 2.75\", plus one 12-pin Pmod header",
     description:
-      "A breadboardable Artix-7 FPGA module in a 48-pin DIP form factor, exposing 44 digital I/O and 2 analog inputs directly to 100-mil through-hole pins for solderless-breadboard FPGA and MicroBlaze work.",
+      "Breadboardable Artix-7 FPGA module in a 48-pin DIP, with 44 digital I/O and 2 analog inputs.",
     tags: ["artix-7", "fpga", "digilent", "cmod-a7", "dip", "breadboard", "microblaze"],
     interfaces: ["GPIO", "SPI", "UART", "ADC", "USB", "JTAG"],
     highlights: [
+      "XC7A35T: 20,800 logic slices.",
       "44 of the 48 DIP pins are direct FPGA digital I/O — one of the highest I/O-pins-per-package-pin ratios of any breadboardable FPGA module.",
       "Two DIP pins (15, 16) are hard-wired through an on-board divider into the FPGA's dual-channel 1 MSPS XADC, giving breadboard-level analog input without external ADC parts.",
       "512 KB SRAM (8-bit bus, 8 ns access) and 4 MB Quad-SPI flash are on-module, leaving the DIP pins free for user I/O instead of memory expansion.",
@@ -12356,12 +12363,12 @@ const professionalDevKitBoards: Board[] = [
     vendor: "NVIDIA",
     category: "AI Dev Kit",
     family: "Jetson AGX Orin",
-    processor: "NVIDIA Jetson AGX Orin module — up to 12-core ARM Cortex-A78AE CPU, NVIDIA Ampere GPU, and a dedicated DLA/PVA accelerator pipeline (up to 275 TOPS INT8)",
-    logicLevel: "3.3 V fixed on the 40-pin expansion header (NVIDIA's own spec: \"All the signal pins are 3.3V level\")",
+    processor: "Jetson AGX Orin, up to 12× A78AE",
+    logicLevel: "3.3 V fixed on 40-pin header",
     power: "19 V power adapter via USB-C (included), 7-20 V via DC jack as an alternative",
     formFactor: "Full-size Jetson developer kit carrier board with a 40-pin (2x20) expansion header, M.2 slots, and a Raspberry-Pi-shaped but electrically distinct GPIO connector",
     description:
-      "NVIDIA's flagship Jetson developer kit, carrying the Jetson AGX Orin module (up to 275 TOPS) on a full-featured carrier board with PCIe x16, dual CSI camera headers, and a 40-pin expansion header for I2C/SPI/UART/CAN/I2S peripherals.",
+      "NVIDIA's flagship Jetson kit (up to 275 TOPS) with PCIe x16, dual CSI, and a 40-pin header.",
     tags: ["jetson", "jetson-agx-orin", "nvidia", "ampere-gpu", "ai-accelerator", "edge-ai", "cuda"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "CAN", "USB", "PCIe", "CSI", "Ethernet"],
     highlights: [
@@ -12638,12 +12645,12 @@ const espressifModuleBoards: Board[] = [
     vendor: "Espressif",
     category: "Development Board",
     family: "ESP32-C61",
-    processor: "ESP32-C61-WROOM-1 module (ESP32-C61, single-core 32-bit RISC-V, Wi-Fi 6 + Bluetooth LE 5)",
+    processor: "ESP32-C61-WROOM-1 (RISC-V)",
     logicLevel: "3.3 V GPIO",
     power: "USB Type-C, or the 5 V or 3.3 V header pins (use only one source at a time)",
     formFactor: "Dual-header breadboard-compatible dev kit, 16 pins per side",
     description:
-      "Espressif's reference board for the ESP32-C61, a low-cost single-core RISC-V part with Wi-Fi 6 and Bluetooth LE 5. Both 16-pin headers are documented pin-by-pin in the official user guide.",
+      "Espressif's reference board for the low-cost ESP32-C61 RISC-V chip, with Wi-Fi 6 and Bluetooth LE 5.",
     tags: ["esp32-c61", "espressif", "risc-v", "wi-fi-6", "bluetooth-le"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
@@ -12673,15 +12680,16 @@ const espressifModuleBoards: Board[] = [
     vendor: "Espressif",
     category: "Development Board",
     family: "ESP32-C2",
-    processor: "ESP8684-MINI-1 module (ESP32-C2 / ESP8684, single-core 32-bit RISC-V, Wi-Fi 4 + Bluetooth LE 5)",
+    processor: "ESP8684-MINI-1 (ESP32-C2, RISC-V)",
     logicLevel: "3.3 V GPIO",
     power: "Micro-USB, or the 5 V or 3.3 V header pins (use only one source at a time)",
     formFactor: "Compact dual-header breadboard dev kit, 15 pins per side",
     description:
-      "Espressif's entry-level RISC-V Wi-Fi and Bluetooth LE reference board, built on the cost-optimised ESP32-C2 (ESP8684) for high-volume IoT designs.",
+      "Espressif's entry RISC-V Wi-Fi and BLE board, built on the cost-optimised ESP32-C2 (ESP8684).",
     tags: ["esp32-c2", "esp8684", "espressif", "risc-v", "wi-fi"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
+      "Wi-Fi 4 and Bluetooth LE 5 radio.",
       "Espressif's lowest-cost RISC-V dev kit with a fully published header table.",
       "Nine of the 30 header positions are ground, giving unusually good return paths for a board this size.",
       "Discrete-input RGB LED on GPIO0/GPIO1/GPIO8 makes three-channel status output available without addressable-LED timing code.",
@@ -12708,15 +12716,16 @@ const espressifModuleBoards: Board[] = [
     vendor: "Espressif",
     category: "Development Board",
     family: "ESP32-S3",
-    processor: "ESP32-S3-MINI-1 / MINI-1U module (dual-core 32-bit Xtensa LX7, Wi-Fi + Bluetooth LE 5)",
+    processor: "ESP32-S3-MINI-1/1U, 2× Xtensa LX7",
     logicLevel: "3.3 V GPIO",
     power: "USB, or the 5 V or 3.3 V header pins (use only one source at a time)",
     formFactor: "Dual-header breadboard dev kit, 22 pins per side",
     description:
-      "The MINI-module counterpart to the ESP32-S3-DevKitC-1. It exposes the same 44 header positions but in a different order — GPIO0-GPIO18 run sequentially down J1, while the flash/PSRAM bus and JTAG pins sit on J3.",
+      "MINI-module version of the ESP32-S3-DevKitC-1: the same 44 header positions in a different order.",
     tags: ["esp32-s3", "espressif", "xtensa", "wi-fi", "bluetooth-le", "mini-module"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "JTAG"],
     highlights: [
+      "Wi-Fi and Bluetooth LE 5 from the ESP32-S3-MINI module.",
       "GPIO0-GPIO18 appear in strict numeric order down J1, which makes breadboard wiring far easier to reason about than the DevKitC-1 layout.",
       "Fourteen J1 pins carry a capacitive touch channel (TOUCH1-TOUCH14) alongside their ADC function.",
       "Native USB D+/D- (GPIO20/GPIO19) and an addressable RGB LED on GPIO48 are both broken out.",
@@ -12743,12 +12752,12 @@ const espressifModuleBoards: Board[] = [
     vendor: "Espressif",
     category: "Development Board",
     family: "ESP32-C6",
-    processor: "ESP32-C6-MINI-1 / MINI-1U module (ESP32-C6, 32-bit RISC-V, Wi-Fi 6 + Bluetooth LE 5 + IEEE 802.15.4)",
+    processor: "ESP32-C6-MINI-1 / MINI-1U (RISC-V)",
     logicLevel: "3.3 V GPIO",
     power: "USB, or the 5 V or 3.3 V header pins (use only one source at a time)",
     formFactor: "Compact dual-header breadboard dev kit, 15 pins per side",
     description:
-      "The MINI-module counterpart to the ESP32-C6-DevKitC-1, in a smaller footprint with a 30-pin header instead of 32. Supports Wi-Fi 6, Bluetooth LE 5, and 802.15.4 for Thread and Zigbee.",
+      "Smaller MINI-module ESP32-C6-DevKitC-1 with a 30-pin header, for Wi-Fi 6, BLE 5, Thread, and Zigbee.",
     tags: ["esp32-c6", "espressif", "risc-v", "wi-fi-6", "zigbee", "thread", "mini-module"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "Zigbee", "Thread", "JTAG"],
     highlights: [
@@ -13139,15 +13148,16 @@ const august2026ResearchBoards: Board[] = [
     vendor: "Arduino",
     category: "Development Board",
     family: "Nicla",
-    processor: "u-blox ANNA-B112 module with Nordic nRF52832 Arm Cortex-M4F @ 64 MHz, plus Bosch BHI260AP sensor hub",
-    logicLevel: "VDDIO_EXT-selectable 1.8 V or 3.3 V on J1/J2; mixed fixed voltages on ADC and debug pins",
+    processor: "nRF52832 (ANNA-B112) + BHI260AP",
+    logicLevel: "VDDIO_EXT 1.8 V or 3.3 V; mixed",
     power: "3.5-5.5 V VIN, 5 V micro-USB/ESLOV, or one 3.7 V LiPo/Li-ion cell",
     formFactor: "Compact Nicla-format wireless sensor board with two edge headers and 1.27 mm debug fins",
     description:
-      "Arduino's compact industrial sensor node combining an nRF52832 Bluetooth controller with a programmable BHI260AP sensor hub, 6-axis IMU, magnetometer, barometer, and BME688 environmental sensor.",
+      "Compact Arduino sensor node: nRF52832 BLE, a BHI260AP sensor hub, IMU, and BME688.",
     tags: ["nicla", "nrf52832", "bluetooth-le", "sensor-fusion", "imu", "environmental-sensing", "edge-ai"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "SWD", "JTAG"],
     highlights: [
+      "The ANNA-B112 module carries an nRF52832 Cortex-M4F at 64 MHz.",
       "BHI260AP sensor hub runs programmable recognition and fusion workloads beside the nRF52832 application MCU.",
       "Onboard BME688, BMP390, BMM150, and 6-axis IMU cover gas, temperature, humidity, pressure, motion, and magnetic sensing.",
       "J1/J2 expose SPI, I2C, UART, ADC, low-power GPIO, VIN, ground, and a programmable external-I/O voltage reference.",
@@ -13186,15 +13196,16 @@ const august2026ResearchBoards: Board[] = [
     vendor: "Milk-V",
     category: "SBC",
     family: "Duo",
-    processor: "SOPHGO SG2000 - selectable 1 GHz C906 RISC-V or Cortex-A53 application core, 700 MHz C906 RTOS core, 8051 core, and 0.5 TOPS INT8 TPU",
-    logicLevel: "3.3 V on J3, 1.8 V on J4; camera-control levels depend on connector",
+    processor: "SOPHGO SG2000 (C906 / A53 + TPU)",
+    logicLevel: "3.3 V on J3, 1.8 V on J4",
     power: "5 V / 1 A via USB-C or J3 VSYS; optional PoE HAT through the dedicated header",
     formFactor: "43 x 43 mm compact SBC with two 26-pin headers and dual camera FPCs",
     description:
-      "A compact heterogeneous Linux/RTOS edge-AI board with selectable RISC-V or Arm application core, 512 MB memory, a 0.5 TOPS TPU, Ethernet, wireless, dual CSI, and MIPI DSI.",
+      "Compact Linux/RTOS board with a selectable RISC-V or Arm core and a 0.5 TOPS TPU.",
     tags: ["risc-v", "arm", "sg2000", "tpu", "edge-ai", "linux", "rtos", "milk-v", "dual-camera"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth", "CSI", "JTAG", "Ethernet"],
     highlights: [
+      "The SG2000 also includes an 8051 core.",
       "Hardware switch selects the 1 GHz C906 RISC-V or Cortex-A53 application core; a second 700 MHz C906 can run RTOS workloads.",
       "512 MB SIP DRAM and an integrated 0.5 TOPS INT8 TPU support compact edge-AI deployments.",
       "J3 exposes 3.3 V GPIO, serial buses, PWM, and JTAG while J4 carries 1.8 V display, audio, and control signals.",
@@ -13237,12 +13248,12 @@ const august2026ResearchBoards: Board[] = [
     vendor: "Espressif",
     category: "Development Board",
     family: "ESP32-C5",
-    processor: "ESP32-C5 - 32-bit RISC-V high-performance core up to 240 MHz plus low-power RISC-V core up to 48 MHz",
+    processor: "ESP32-C5 (RISC-V HP + LP cores)",
     logicLevel: "3.3 V GPIO; not 5 V tolerant",
     power: "Either USB-C path, 5 V/GND headers, or regulated 3V3/GND headers; header and USB/external sources must not be combined",
     formFactor: "Breadboard development board with two 1x16 headers and dual USB-C",
     description:
-      "Espressif's dual-band Wi-Fi 6 and 802.15.4 reference board, exposing all available non-flash GPIO through revision-specific J1/J3 headers.",
+      "Espressif's dual-band Wi-Fi 6 and 802.15.4 board, with revision-specific J1/J3 headers.",
     tags: ["espressif", "esp32-c5", "risc-v", "dual-band-wifi-6", "bluetooth-le", "zigbee", "thread", "802.15.4"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "CAN", "USB", "Wi-Fi", "Bluetooth", "Zigbee", "Thread", "JTAG"],
     highlights: [

@@ -81,6 +81,21 @@ describe("board catalog integrity", () => {
     expect(validateBoardSources(boards)).toEqual([]);
   });
 
+  // Regression: newer entries grew paragraph-length descriptions (up to 430
+  // characters), processor fields (up to 153), and logic levels (up to 144)
+  // that turned each catalog card into a wall of text. The card shows these
+  // three fields; details belong in highlights, warnings, and pin notes.
+  it.each([
+    ["description", 100],
+    ["processor", 36],
+    ["logicLevel", 32],
+  ] as const)("keeps every card %s within %i characters", (field, limit) => {
+    const tooLong = boards
+      .filter((board) => board[field].length > limit)
+      .map((board) => `${board.id} (${board[field].length})`);
+    expect(tooLong).toEqual([]);
+  });
+
   it("keeps board identity, search fields, and source metadata valid", () => {
     const ids = new Set<string>();
 

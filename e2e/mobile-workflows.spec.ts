@@ -134,6 +134,23 @@ for (const viewport of viewports) {
       await page.screenshot({ path: testInfo.outputPath("comparison.png") });
       await page.getByRole("button", { name: "Remove Arduino UNO Rev3 from comparison" }).filter({ visible: true }).tap();
       await expect(page).not.toHaveURL(/arduino-uno-rev3/);
+      // Regression: a long board name sized the stacked "Comparing" list's
+      // grid column to its content, pushing the page 25px wide at 360.
+      await page.goto("/compare?boards=raspberry-pi-5,nvidia-jetson-agx-orin-devkit");
+      await expect(page.getByRole("heading", { name: "Pin-conflict analysis" })).toBeVisible();
+      await expectPageFits(page);
+      // The list's Overview links and remove buttons were 16px and 40px tall.
+      if (viewport.width < 768) {
+        const list = page.getByRole("list").filter({ has: page.getByRole("button", { name: /^Remove .* from comparison$/ }) }).filter({ visible: true }).first();
+        const targets = [
+          ...(await list.getByRole("link", { name: "Overview", exact: true }).all()),
+          ...(await list.getByRole("button", { name: /^Remove / }).all()),
+        ];
+        expect(targets.length).toBe(4);
+        for (const target of targets) {
+          expect(Math.round((await target.boundingBox())!.height)).toBeGreaterThanOrEqual(44);
+        }
+      }
       await page.goto("/prices");
       await expectPageFits(page);
       await page.screenshot({ path: testInfo.outputPath("prices.png") });
@@ -172,21 +189,25 @@ for (const viewport of viewports) {
         expect(box!.x).toBeGreaterThanOrEqual(0);
         expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width);
       }
-      // Every sort label must fit the select, including the longest ones and
-      // "Best match" (shown once a query exists). A native select does not
-      // report clipped text through scrollWidth, so measure each label in the
-      // control's own font; 44px covers the side padding, border, and arrow.
+      // The sort menu, including "Best match" (shown once a query exists),
+      // opens fully on screen with every option a full touch target.
       await toolbar.getByRole("searchbox", { name: "Search boards" }).or(toolbar.getByRole("textbox", { name: "Search boards" })).fill("esp32");
       const sort = toolbar.getByRole("combobox", { name: "Sort boards" });
-      await expect(sort).toHaveValue("relevance");
-      const fit = await sort.evaluate((select: HTMLSelectElement) => {
-        const style = getComputedStyle(select);
-        const context = document.createElement("canvas").getContext("2d")!;
-        context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-        const widest = Math.max(...[...select.options].map((option) => context.measureText(option.text).width));
-        return { widest, width: select.getBoundingClientRect().width };
-      });
-      expect(fit.widest + 44).toBeLessThanOrEqual(fit.width);
+      await expect(sort).toHaveText("Best match");
+      await sort.tap();
+      const menu = toolbar.getByRole("listbox", { name: "Sort boards" });
+      await expect(menu).toBeVisible();
+      const menuBox = await menu.boundingBox();
+      expect(menuBox!.x).toBeGreaterThanOrEqual(0);
+      expect(menuBox!.x + menuBox!.width).toBeLessThanOrEqual(viewport.width);
+      for (const option of await menu.getByRole("option").all()) {
+        const box = await option.boundingBox();
+        // Mobile device scale factors report 44px as 43.99997.
+        expect(Math.round(box!.height)).toBeGreaterThanOrEqual(44);
+      }
+      await menu.getByRole("option", { name: "Recently added" }).tap();
+      await expect(sort).toHaveText("Recently added");
+      await expect(menu).toBeHidden();
       await toolbar.getByRole("button", { name: /^Filters/ }).tap();
       await expect(page.getByText("Discovery facets", { exact: true })).toBeVisible();
     });
