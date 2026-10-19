@@ -57,7 +57,8 @@ logic level in the subtitle were as wordy as the old descriptions.
 `logicLevel` up to 144 (Zybo, Arty S7), so cards wrapped to five or six
 lines.
 
-- Descriptions: 100 characters or fewer (78 more rewritten), so each card is
+- Descriptions: 100 characters or fewer (78 rewritten in this pass; 141 of
+  147 now differ from `main`), so each card is
   one line at desktop width.
 - `processor`: 36 characters or fewer, 53 shortened to the part name and its
   key cores or clock.
