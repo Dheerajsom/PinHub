@@ -82,12 +82,17 @@ describe("board catalog integrity", () => {
   });
 
   // Regression: newer entries grew paragraph-length descriptions (up to 430
-  // characters) that a catalog card clamps to two lines anyway. Details
-  // belong in highlights, warnings, and the spec table.
-  it("keeps every card description to one short sentence", () => {
+  // characters), processor fields (up to 153), and logic levels (up to 144)
+  // that turned each catalog card into a wall of text. The card shows these
+  // three fields; details belong in highlights, warnings, and pin notes.
+  it.each([
+    ["description", 100],
+    ["processor", 36],
+    ["logicLevel", 32],
+  ] as const)("keeps every card %s within %i characters", (field, limit) => {
     const tooLong = boards
-      .filter((board) => board.description.length > 120)
-      .map((board) => `${board.id} (${board.description.length})`);
+      .filter((board) => board[field].length > limit)
+      .map((board) => `${board.id} (${board[field].length})`);
     expect(tooLong).toEqual([]);
   });
 

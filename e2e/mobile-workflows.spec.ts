@@ -134,6 +134,23 @@ for (const viewport of viewports) {
       await page.screenshot({ path: testInfo.outputPath("comparison.png") });
       await page.getByRole("button", { name: "Remove Arduino UNO Rev3 from comparison" }).filter({ visible: true }).tap();
       await expect(page).not.toHaveURL(/arduino-uno-rev3/);
+      // Regression: a long board name sized the stacked "Comparing" list's
+      // grid column to its content, pushing the page 25px wide at 360.
+      await page.goto("/compare?boards=raspberry-pi-5,nvidia-jetson-agx-orin-devkit");
+      await expect(page.getByRole("heading", { name: "Pin-conflict analysis" })).toBeVisible();
+      await expectPageFits(page);
+      // The list's Overview links and remove buttons were 16px and 40px tall.
+      if (viewport.width < 768) {
+        const list = page.getByRole("list").filter({ has: page.getByRole("button", { name: /^Remove .* from comparison$/ }) }).filter({ visible: true }).first();
+        const targets = [
+          ...(await list.getByRole("link", { name: "Overview", exact: true }).all()),
+          ...(await list.getByRole("button", { name: /^Remove / }).all()),
+        ];
+        expect(targets.length).toBe(4);
+        for (const target of targets) {
+          expect(Math.round((await target.boundingBox())!.height)).toBeGreaterThanOrEqual(44);
+        }
+      }
       await page.goto("/prices");
       await expectPageFits(page);
       await page.screenshot({ path: testInfo.outputPath("prices.png") });

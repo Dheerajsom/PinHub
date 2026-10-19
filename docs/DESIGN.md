@@ -214,7 +214,8 @@ else is a note on the specific pin).
   offers name, vendor, recently added, and most interfaces in both the
   catalog and discovery toolbars: an opaque raised list, a neutral fill for
   the highlighted row, cyan for the chosen sort. No native `<select>` here.
-- **Card descriptions**: one sentence, at most 120 characters (enforced in
+- **Card text**: one-sentence description (at most 100 characters), processor
+  at most 36, logic level at most 32 (enforced in
   `test/catalog-integrity.test.ts`). Lead with what the board is and the one
   or two things that set it apart; details go in highlights and warnings.
 - **No results**: dashed panel, plain-language suggestion, single Reset
