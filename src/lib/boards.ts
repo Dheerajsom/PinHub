@@ -13299,6 +13299,836 @@ const august2026ResearchBoards: Board[] = [
   },
 ];
 
+// October 2026 additions. Every pin row below was checked against at least two
+// machine-readable sources that agree: the vendor's own table (an Arduino
+// datasheet connector table or a Seeed wiki "Pin Map" table), the vendor
+// schematic's net names, and the Zephyr board devicetree connector map
+// (zephyrproject-rtos/zephyr @ 2a9e8ac) or the board's Arduino core variant.
+// Physical XIAO pad numbers come from the schematic header symbol (pads 1-7
+// D0-D6 down the left edge, 8-11 D7-D10 up the right, then 3V3, GND, 5V).
+const zephyrBoards =
+  "https://github.com/zephyrproject-rtos/zephyr/blob/2a9e8ac155a3f2fd85d4559753be86a47b44ccf0/boards";
+
+const arduinoUnoQHeaders: Pinout = {
+  connector: "UNO-style JDIGITAL (18-pin) and JANALOG (14-pin) headers",
+  layout: "grouped",
+  notes: [
+    "Positions are the datasheet's JDIGITAL1 and JANALOG1 pin numbers; MCU pins are STM32U585 ports.",
+    "All JDIGITAL and JANALOG signals are 3.3 V STM32U585 I/O. The 1.8 V MPU lines are on JMISC, JMEDIA, and JCTL, not on these headers.",
+    "D20/D21 next to AREF carry I2C2; A4/A5 can instead act as I2C3 (PC1/PC0).",
+  ],
+  groups: [
+    {
+      label: "JDIGITAL",
+      pins: [
+        { position: 1, label: "D0 / RX", role: "uart", aliases: ["PB7", "USART1_RX"] },
+        { position: 2, label: "D1 / TX", role: "uart", aliases: ["PB6", "USART1_TX"] },
+        { position: 3, label: "D2", role: "gpio", aliases: ["PB3"] },
+        { position: 4, label: "D3", role: "pwm", aliases: ["PB0"], note: "3.6 V max; never 5 V." },
+        { position: 5, label: "D4 / CAN TX", role: "gpio", aliases: ["PA12", "FDCAN1_TX"] },
+        { position: 6, label: "D5 / CAN RX", role: "pwm", aliases: ["PA11", "FDCAN1_RX"] },
+        { position: 7, label: "D6", role: "pwm", aliases: ["PB1"] },
+        { position: 8, label: "D7", role: "gpio", aliases: ["PB2"] },
+        { position: 9, label: "D8", role: "gpio", aliases: ["PB4"] },
+        { position: 10, label: "D9", role: "pwm", aliases: ["PB8"] },
+        { position: 11, label: "D10 / CS", role: "spi", aliases: ["PB9", "SPI2_SS"] },
+        { position: 12, label: "D11 / COPI", role: "spi", aliases: ["PB15", "SPI2_MOSI"] },
+        { position: 13, label: "D12 / CIPO", role: "spi", aliases: ["PB14", "SPI2_MISO"] },
+        { position: 14, label: "D13 / SCK", role: "spi", aliases: ["PB13", "SPI2_SCK"] },
+        { position: 15, label: "GND", role: "ground" },
+        { position: 16, label: "AREF", role: "special", note: "Not a GPIO." },
+        { position: 17, label: "D20 / SDA", role: "i2c", aliases: ["PB11", "I2C2_SDA"] },
+        { position: 18, label: "D21 / SCL", role: "i2c", aliases: ["PB10", "I2C2_SCL"] },
+      ],
+    },
+    {
+      label: "JANALOG",
+      pins: [
+        { position: 1, label: "BOOT", role: "system", note: "BOOT0 strap." },
+        { position: 2, label: "IOREF", role: "power", note: "Output only." },
+        { position: 3, label: "RESET", role: "system", aliases: ["MCU_NRST"] },
+        { position: 4, label: "3V3", role: "power" },
+        { position: 5, label: "5V", role: "power", note: "Input or output." },
+        { position: 6, label: "GND", role: "ground" },
+        { position: 7, label: "GND", role: "ground" },
+        { position: 8, label: "VIN", role: "power", note: "7-24 V input." },
+        { position: 9, label: "A0 / DAC0", role: "adc", aliases: ["D14", "PA4", "DAC0"] },
+        { position: 10, label: "A1 / DAC1", role: "adc", aliases: ["D15", "PA5", "DAC1"] },
+        { position: 11, label: "A2", role: "adc", aliases: ["D16", "PA6"] },
+        { position: 12, label: "A3", role: "adc", aliases: ["D17", "PA7"] },
+        { position: 13, label: "A4", role: "adc", aliases: ["D18", "PC1", "I2C3_SDA"] },
+        { position: 14, label: "A5", role: "adc", aliases: ["D19", "PC0", "I2C3_SCL"] },
+      ],
+    },
+  ],
+};
+
+const arduinoNanoR4Headers: Pinout = {
+  connector: "Arduino Nano JP1/JP2 dual 15-pin headers",
+  layout: "dual-row",
+  notes: [
+    "USB-C at the top. Left is JP1 pins 1-15; right is JP2 pins 15-1, shown as positions 16-30.",
+    "Labels and functions follow the ABX00142 datasheet tables; MCU ports from Arduino's NANOR4 core variant.",
+    "Header I/O runs at 5 V. Only the Qwiic connector (Wire1, P401 SDA / P400 SCL behind a level translator) is 3.3 V.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D13 / SCK", role: "spi", aliases: ["P111"] },
+      { position: 2, label: "3V3", role: "power", note: "LDO output; the board may run very hot above 150 mA." },
+      { position: 3, label: "AREF", role: "special" },
+      { position: 4, label: "A0 / DAC", role: "adc", aliases: ["D14", "P014", "DAC"] },
+      { position: 5, label: "A1 / OPAMP+", role: "adc", aliases: ["D15", "P000"] },
+      { position: 6, label: "A2 / OPAMP-", role: "adc", aliases: ["D16", "P001"] },
+      { position: 7, label: "A3 / OPAMP OUT", role: "adc", aliases: ["D17", "P002"] },
+      { position: 8, label: "A4 / SDA", role: "i2c", aliases: ["D18", "P101"] },
+      { position: 9, label: "A5 / SCL", role: "i2c", aliases: ["D19", "P100"] },
+      { position: 10, label: "A6", role: "adc", aliases: ["D20", "P004"] },
+      { position: 11, label: "A7", role: "adc", aliases: ["D21", "P003"] },
+      { position: 12, label: "5V", role: "power" },
+      { position: 13, label: "BOOT", role: "system", note: "Mode selection; this position is RESET on the classic Nano." },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 15, label: "VIN", role: "power", note: "6-21 V input." },
+    ],
+    right: [
+      { position: 16, label: "D12 / CIPO", role: "spi", aliases: ["P110", "MISO"] },
+      { position: 17, label: "D11 / COPI", role: "spi", aliases: ["P109", "MOSI"] },
+      { position: 18, label: "D10 / CS", role: "spi", aliases: ["P112"] },
+      { position: 19, label: "D9", role: "pwm", aliases: ["P303"] },
+      { position: 20, label: "D8", role: "gpio", aliases: ["P304"] },
+      { position: 21, label: "D7", role: "gpio", aliases: ["P107"] },
+      { position: 22, label: "D6", role: "pwm", aliases: ["P106"] },
+      { position: 23, label: "D5 / CAN RX", role: "pwm", aliases: ["P102", "CRX0"] },
+      { position: 24, label: "D4 / CAN TX", role: "gpio", aliases: ["P103", "CTX0"] },
+      { position: 25, label: "D3", role: "pwm", aliases: ["P104"] },
+      { position: 26, label: "D2", role: "gpio", aliases: ["P105"] },
+      { position: 27, label: "GND", role: "ground" },
+      { position: 28, label: "RST", role: "system" },
+      { position: 29, label: "D0 / RX", role: "uart", aliases: ["P301", "Serial1 RX"] },
+      { position: 30, label: "D1 / TX", role: "uart", aliases: ["P302", "Serial1 TX"] },
+    ],
+  },
+};
+
+const arduinoNanoMatterHeaders: Pinout = {
+  connector: "Arduino Nano dual 15-pin headers",
+  layout: "dual-row",
+  notes: [
+    "USB-C at the top. Pin order from the ABX00112 full-pinout figure; MCU ports from the Silicon Labs Arduino core variant and the Zephyr connector map.",
+    "D0 is TX and D1 is RX (Serial1), the reverse of a classic Nano. The pad at the bottom-right corner is D0 / TX1.",
+    "Every digital pin is PWM-capable, but at most five PWM channels can run at once.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D13 / SCK", role: "spi", aliases: ["PB4"] },
+      { position: 2, label: "3V3", role: "power", note: "Low-power input point after cutting the LED jumper; does not power the USB bridge." },
+      { position: 3, label: "AREF", role: "special", note: "Not connected until the AREF solder jumper is closed; shared with the user button." },
+      { position: 4, label: "A0 / DAC0", role: "adc", aliases: ["D14", "PB0"] },
+      { position: 5, label: "A1 / DAC2", role: "adc", aliases: ["D15", "PB2"] },
+      { position: 6, label: "A2", role: "adc", aliases: ["D16", "PB5"] },
+      { position: 7, label: "A3", role: "adc", aliases: ["D17", "PC0"] },
+      { position: 8, label: "A4 / SDA", role: "i2c", aliases: ["D18", "PA6"] },
+      { position: 9, label: "A5 / SCL", role: "i2c", aliases: ["D19", "PA7"] },
+      { position: 10, label: "A6 / DAC1", role: "adc", aliases: ["D20", "PB1"] },
+      { position: 11, label: "A7 / DAC3", role: "adc", aliases: ["D21", "PB3"] },
+      { position: 12, label: "5V", role: "power", note: "Outputs 5 V only when the board is USB powered." },
+      { position: 13, label: "NC", role: "reserved" },
+      { position: 14, label: "GND", role: "ground" },
+      { position: 15, label: "VIN", role: "power", note: "6-21 V input." },
+    ],
+    right: [
+      { position: 16, label: "D12 / CIPO", role: "spi", aliases: ["PA8", "MISO"] },
+      { position: 17, label: "D11 / COPI", role: "spi", aliases: ["PA9", "MOSI"] },
+      { position: 18, label: "D10 / CS", role: "spi", aliases: ["PD5", "SS"] },
+      { position: 19, label: "D9", role: "gpio", aliases: ["PD4"] },
+      { position: 20, label: "D8", role: "gpio", aliases: ["PD3"] },
+      { position: 21, label: "D7", role: "gpio", aliases: ["PD2"] },
+      { position: 22, label: "D6", role: "gpio", aliases: ["PC9"] },
+      { position: 23, label: "D5 / SCL1", role: "i2c", aliases: ["PC8"] },
+      { position: 24, label: "D4 / SDA1", role: "i2c", aliases: ["PC7"] },
+      { position: 25, label: "D3 / SS1", role: "spi", aliases: ["PC6"] },
+      { position: 26, label: "D2 / SCK1", role: "spi", aliases: ["PA3"] },
+      { position: 27, label: "GND", role: "ground" },
+      { position: 28, label: "RST", role: "system" },
+      { position: 29, label: "D1 / RX1", role: "uart", aliases: ["PA5", "MISO1"] },
+      { position: 30, label: "D0 / TX1", role: "uart", aliases: ["PA4", "MOSI1"] },
+    ],
+  },
+};
+
+const seeedXiaoMg24Pinout: Pinout = {
+  connector: "XIAO 14 castellated pads",
+  layout: "dual-row",
+  notes: [
+    "USB-C at top, component side up; labels follow Seeed's XIAO MG24 pin map and schematic net names.",
+    "EFR32MG24 GPIO runs from the board's 3.3 V rail.",
+    "Back-side pads D11-D18 are not shown on this 14-pad map.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D0 / A0", role: "adc", aliases: ["PC00"], note: "Default SPI SS in the Silicon Labs Arduino core." },
+      { position: 2, label: "D1 / A1", role: "adc", aliases: ["PC01"] },
+      { position: 3, label: "D2 / A2", role: "adc", aliases: ["PC02"] },
+      { position: 4, label: "D3 / A3", role: "adc", aliases: ["PC03"] },
+      { position: 5, label: "D4 / SDA", role: "i2c", aliases: ["PC04", "A4"] },
+      { position: 6, label: "D5 / SCL", role: "i2c", aliases: ["PC05", "A5"] },
+      { position: 7, label: "D6 / TX", role: "uart", aliases: ["PC06", "A6", "Serial1 TX"] },
+    ],
+    right: [
+      { position: 14, label: "5V / VBUS", role: "power" },
+      { position: 13, label: "GND", role: "ground" },
+      { position: 12, label: "3V3", role: "power" },
+      { position: 11, label: "D10 / MOSI", role: "spi", aliases: ["PA05", "A10"] },
+      { position: 10, label: "D9 / MISO", role: "spi", aliases: ["PA04", "A9"] },
+      { position: 9, label: "D8 / SCK", role: "spi", aliases: ["PA03", "A8"] },
+      { position: 8, label: "D7 / RX", role: "uart", aliases: ["PC07", "A7", "Serial1 RX"] },
+    ],
+  },
+};
+
+const seeedXiaoRp2350Pinout: Pinout = {
+  connector: "XIAO 14 castellated pads",
+  layout: "dual-row",
+  notes: [
+    "USB-C at top, component side up; labels follow Seeed's XIAO RP2350 pin map, cross-checked with the arduino-pico variant and Zephyr.",
+    "D labels are board labels, not raw RP2350 GPIO numbers; aliases give the GPIO.",
+    "Back-side pads D11-D18 (UART1, I2C0, SPI1) are not shown on this 14-pad map.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D0 / A0", role: "adc", aliases: ["GPIO26", "ADC0"] },
+      { position: 2, label: "D1 / A1", role: "adc", aliases: ["GPIO27", "ADC1"] },
+      { position: 3, label: "D2 / A2", role: "adc", aliases: ["GPIO28", "ADC2"] },
+      { position: 4, label: "D3 / CS", role: "spi", aliases: ["GPIO5", "SPI0 CSn"] },
+      { position: 5, label: "D4 / SDA1", role: "i2c", aliases: ["GPIO6"], note: "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here." },
+      { position: 6, label: "D5 / SCL1", role: "i2c", aliases: ["GPIO7"], note: "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here." },
+      { position: 7, label: "D6 / TX", role: "uart", aliases: ["GPIO0", "UART0 TX"] },
+    ],
+    right: [
+      { position: 14, label: "5V / VBUS", role: "power" },
+      { position: 13, label: "GND", role: "ground" },
+      { position: 12, label: "3V3", role: "power" },
+      { position: 11, label: "D10 / MOSI", role: "spi", aliases: ["GPIO3", "SPI0 TX"] },
+      { position: 10, label: "D9 / MISO", role: "spi", aliases: ["GPIO4", "SPI0 RX"] },
+      { position: 9, label: "D8 / SCK", role: "spi", aliases: ["GPIO2", "SPI0 SCK"] },
+      { position: 8, label: "D7 / RX", role: "uart", aliases: ["GPIO1", "UART0 RX"] },
+    ],
+  },
+};
+
+const seeedXiaoNrf54l15Pinout: Pinout = {
+  connector: "XIAO 14 castellated pads",
+  layout: "dual-row",
+  notes: [
+    "USB-C at top, component side up; labels follow Seeed's XIAO nRF54L15 pin map, schematic, and the Zephyr xiao_d connector map.",
+    "The nRF54L15 runs from the board's VSYS_3V3 rail.",
+    "Back-side pads D11-D15, SWD, and NFC are not shown on this 14-pad map.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D0 / A0", role: "adc", aliases: ["P1.04", "AIN0"] },
+      { position: 2, label: "D1 / A1", role: "adc", aliases: ["P1.05", "AIN1"] },
+      { position: 3, label: "D2 / A2", role: "adc", aliases: ["P1.06", "AIN2"] },
+      { position: 4, label: "D3 / A3", role: "adc", aliases: ["P1.07", "AIN3"] },
+      { position: 5, label: "D4 / SDA", role: "i2c", aliases: ["P1.10"] },
+      { position: 6, label: "D5 / SCL", role: "i2c", aliases: ["P1.11"] },
+      { position: 7, label: "D6 / TX", role: "uart", aliases: ["P2.08"] },
+    ],
+    right: [
+      { position: 14, label: "5V / VBUS", role: "power" },
+      { position: 13, label: "GND", role: "ground" },
+      { position: 12, label: "3V3", role: "power" },
+      { position: 11, label: "D10 / MOSI", role: "spi", aliases: ["P2.02"] },
+      { position: 10, label: "D9 / MISO", role: "spi", aliases: ["P2.04"] },
+      { position: 9, label: "D8 / SCK", role: "spi", aliases: ["P2.01"] },
+      { position: 8, label: "D7 / RX", role: "uart", aliases: ["P2.07"] },
+    ],
+  },
+};
+
+const seeedXiaoNrf54lm20aPinout: Pinout = {
+  connector: "XIAO 14 castellated pads",
+  layout: "dual-row",
+  notes: [
+    "USB-C at top, component side up; D numbers from the Zephyr xiao_d connector map, matched to Seeed's pin map and schematic net names.",
+    "The nRF54LM20A runs from the nPM1300 BUCK2 VSYS_3V3 rail.",
+    "Back-side pads D11-D27, battery, SHPHLD, SWD, and NFC are not shown on this 14-pad map.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D0 / A0", role: "adc", aliases: ["P1.00", "AIN0"] },
+      { position: 2, label: "D1 / A1", role: "adc", aliases: ["P1.31", "AIN1"] },
+      { position: 3, label: "D2 / A2", role: "adc", aliases: ["P1.30", "AIN2"] },
+      { position: 4, label: "D3 / A3", role: "adc", aliases: ["P1.29", "AIN3"] },
+      { position: 5, label: "D4 / SDA", role: "i2c", aliases: ["P1.03", "A7"] },
+      { position: 6, label: "D5 / SCL", role: "i2c", aliases: ["P1.07", "A8"] },
+      { position: 7, label: "D6 / TX", role: "uart", aliases: ["P1.08"] },
+    ],
+    right: [
+      { position: 14, label: "5V / VBUS", role: "power" },
+      { position: 13, label: "GND", role: "ground" },
+      { position: 12, label: "3V3", role: "power" },
+      { position: 11, label: "D10 / MOSI", role: "spi", aliases: ["P1.06", "A4"] },
+      { position: 10, label: "D9 / MISO", role: "spi", aliases: ["P1.05", "A5"] },
+      { position: 9, label: "D8 / SCK", role: "spi", aliases: ["P1.04", "A6"] },
+      { position: 8, label: "D7 / RX", role: "uart", aliases: ["P1.09"] },
+    ],
+  },
+};
+
+const seeedXiaoEsp32C5Pinout: Pinout = {
+  connector: "XIAO 14 castellated pads",
+  layout: "dual-row",
+  notes: [
+    "USB-C at top, component side up; labels follow Seeed's XIAO ESP32-C5 pin map, schematic, and the Zephyr xiao_d connector map.",
+    "Only D0 (GPIO1, ADC1_CH0) is an analog input on the edge pads.",
+    "Back-side JTAG (MTMS/MTDI/MTCK/MTDO) and battery pads are not shown on this 14-pad map.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D0 / A0", role: "adc", aliases: ["GPIO1"] },
+      { position: 2, label: "D1", role: "gpio", aliases: ["GPIO0"] },
+      { position: 3, label: "D2", role: "gpio", aliases: ["GPIO25"], note: "Strapping pin; external pulls or a driven peripheral can change boot behavior." },
+      { position: 4, label: "D3", role: "gpio", aliases: ["GPIO7"], note: "Strapping pin; external pulls or a driven peripheral can change boot behavior." },
+      { position: 5, label: "D4 / SDA", role: "i2c", aliases: ["GPIO23"] },
+      { position: 6, label: "D5 / SCL", role: "i2c", aliases: ["GPIO24"] },
+      { position: 7, label: "D6 / TX", role: "uart", aliases: ["GPIO11"] },
+    ],
+    right: [
+      { position: 14, label: "5V / VBUS", role: "power" },
+      { position: 13, label: "GND", role: "ground" },
+      { position: 12, label: "3V3", role: "power" },
+      { position: 11, label: "D10 / MOSI", role: "spi", aliases: ["GPIO10"] },
+      { position: 10, label: "D9 / MISO", role: "spi", aliases: ["GPIO9"] },
+      { position: 9, label: "D8 / SCK", role: "spi", aliases: ["GPIO8"] },
+      { position: 8, label: "D7 / RX", role: "uart", aliases: ["GPIO12"] },
+    ],
+  },
+};
+
+const seeedXiaoRa4m1Pinout: Pinout = {
+  connector: "XIAO 14 castellated pads",
+  layout: "dual-row",
+  notes: [
+    "USB-C at top, component side up; labels follow Seeed's XIAO RA4M1 pin map, schematic, and the Zephyr xiao_d connector map.",
+    "The RA4M1 runs from the board's 3.3 V rail here, unlike the 5 V UNO R4 and Nano R4.",
+    "Back-side pads D11-D18 are not shown on this 14-pad map.",
+  ],
+  pins: {
+    left: [
+      { position: 1, label: "D0 / A0", role: "adc", aliases: ["P014", "AN009", "DAC"] },
+      { position: 2, label: "D1 / A1", role: "adc", aliases: ["P000", "AN000"] },
+      { position: 3, label: "D2 / A2", role: "adc", aliases: ["P001", "AN001"] },
+      { position: 4, label: "D3 / A3", role: "adc", aliases: ["P002", "AN002"] },
+      { position: 5, label: "D4 / SDA", role: "i2c", aliases: ["P206", "SDA1"] },
+      { position: 6, label: "D5 / SCL", role: "i2c", aliases: ["P100", "SCL1"], note: "Also an analog input when I2C is not in use." },
+      { position: 7, label: "D6 / TX", role: "uart", aliases: ["P302", "TXD2"] },
+    ],
+    right: [
+      { position: 14, label: "5V / VBUS", role: "power" },
+      { position: 13, label: "GND", role: "ground" },
+      { position: 12, label: "3V3", role: "power" },
+      { position: 11, label: "D10 / MOSI", role: "spi", aliases: ["P109", "CTX0"] },
+      { position: 10, label: "D9 / MISO", role: "spi", aliases: ["P110", "CRX0"] },
+      { position: 9, label: "D8 / SCK", role: "spi", aliases: ["P111"] },
+      { position: 8, label: "D7 / RX", role: "uart", aliases: ["P301", "RXD2"] },
+    ],
+  },
+};
+
+const october2026Boards: Board[] = [
+  {
+    id: "arduino-uno-q",
+    name: "Arduino UNO Q",
+    vendor: "Arduino",
+    category: "SBC",
+    family: "UNO",
+    processor: "Qualcomm QRB2210 + STM32U585",
+    logicLevel: "3.3 V MCU headers; 1.8 V MPU",
+    power: "USB-C 5 V / 3 A, 7-24 V VIN, or 5 V on 5V_SYS",
+    formFactor: "UNO-format board with 60-pin bottom connectors",
+    description:
+      "UNO-footprint board pairing a Debian-capable Qualcomm MPU with an STM32U585 real-time MCU.",
+    tags: ["Arduino", "UNO", "UNO Q", "QRB2210", "STM32U585", "Linux", "Zephyr", "Qwiic"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB", "Wi-Fi", "Bluetooth", "CSI"],
+    highlights: [
+      "Quad Cortex-A53 QRB2210 runs Debian; the STM32U585 Cortex-M33 runs the Arduino core on Zephyr.",
+      "The MPU and MCU talk through Arduino Bridge, an RPC layer on both sides.",
+      "UNO-style JDIGITAL/JANALOG headers, plus JSPI and Qwiic, are all driven by the STM32U585.",
+      "Two variants: ABX00162 (2 GB RAM, 16 GB eMMC) and ABX00173 (4 GB RAM, 32 GB eMMC).",
+    ],
+    warnings: [
+      "JDIGITAL lines are 3.3 V outputs. Most are 5 V-tolerant only as inputs; D3 (PB0) is 3.6 V-tolerant and must never see 5 V in any mode.",
+      "A0-A5 are not 5 V-tolerant when used as ADC or any analog function; keep them at or below VDD + 0.3 V.",
+      "JANALOG pin 1 is the MCU BOOT0 strap where a classic UNO header has NC; check that a shield leaves that position unconnected.",
+      "IOREF mirrors the 3.3 V rail and is output only; do not back-feed it.",
+      "JMEDIA, JCTL, and the MPU lines on JMISC are 1.8 V. Level-shift before joining them to the 3.3 V MCU side.",
+      "The JCTL SE4 UART is the Linux system console and should not be repurposed for user I/O.",
+      "USB-C DisplayPort and JMEDIA MIPI-DSI share one signal; only one display output can be active.",
+      "USB Power Delivery requests only 5 V / 3 A; use a supply and cable rated for it.",
+      "This map covers JDIGITAL and JANALOG only. JSPI (PC2 MISO, PC3 MOSI, PD1 SCK), Qwiic (PD13 SDA, PD12 SCL), and the 60-pin JMISC/JMEDIA connectors are not drawn.",
+    ],
+    sourceLinks: [
+      {
+        label: "UNO Q datasheet - JDIGITAL/JANALOG pin maps and voltage domains (Arduino, ABX00162/ABX00173)",
+        url: "https://docs.arduino.cc/resources/datasheets/ABX00162-datasheet.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "UNO Q full pinout (Arduino, ABX00162)",
+        url: "https://docs.arduino.cc/resources/pinouts/ABX00162-full-pinout.pdf",
+        type: "Pinout",
+      },
+      {
+        label: "UNO Q hardware documentation (Arduino)",
+        url: "https://docs.arduino.cc/hardware/uno-q/",
+        type: "Docs",
+      },
+      {
+        label: "UNO Q Arduino header connector map - independent cross-check (Zephyr Project)",
+        url: `${zephyrBoards}/arduino/uno_q/arduino_r3_connector.dtsi`,
+        type: "Docs",
+      },
+    ],
+    pinout: arduinoUnoQHeaders,
+  },
+  {
+    id: "arduino-nano-r4",
+    name: "Arduino Nano R4",
+    vendor: "Arduino",
+    category: "Microcontroller",
+    family: "Nano",
+    processor: "Renesas RA4M1 (Cortex-M4 @ 48 MHz)",
+    logicLevel: "5 V GPIO",
+    power: "USB-C 5 V or 6-21 V on VIN",
+    formFactor: "Nano module (18 x 45 mm), castellated",
+    description:
+      "Nano-format board on the UNO R4's RA4M1, keeping 5 V I/O and adding a Qwiic connector.",
+    tags: ["Arduino", "Nano", "RA4M1", "5 V", "Qwiic", "Renesas"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB"],
+    highlights: [
+      "Same RA4M1 as the UNO R4 family: 256 kB flash, 32 kB RAM, 8 kB EEPROM.",
+      "8 analog inputs with a 14-bit ADC, a 12-bit DAC on A0, and an op-amp on A1-A3.",
+      "RTC with an external crystal and a VBATT backup pin.",
+      "Qwiic connector on a second I2C bus (Wire1) for Modulino nodes.",
+    ],
+    warnings: [
+      "Header I/O operates at 5 V. Level-shift 3.3 V-only peripherals; only the Qwiic connector is 3.3 V.",
+      "RA4M1 GPIO can handle up to 8 mA; drive heavier loads through a transistor or MOSFET.",
+      "JP1 pin 13 is BOOT (mode selection), not RESET as on the classic Nano. Check carrier boards that expect RESET there.",
+      "A4/A5 are the main I2C bus (Wire); do not use them as ADC inputs while the bus is in use.",
+      "Do not supply more than 5 V through USB-C. VIN accepts 6-21 V.",
+      "Above 150 mA from the 3V3 pin the board may become very hot.",
+      "VBATT (RTC backup) accepts 1.6-3.6 V.",
+      "LED_BUILTIN is on P204, not D13 as on AVR Nanos.",
+      "CAN on D4/D5 needs an external transceiver.",
+    ],
+    sourceLinks: [
+      {
+        label: "Nano R4 datasheet - JP1/JP2 tables and ratings (Arduino, ABX00142)",
+        url: "https://docs.arduino.cc/resources/datasheets/ABX00142-datasheet.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "Nano R4 full pinout (Arduino, ABX00142)",
+        url: "https://docs.arduino.cc/resources/pinouts/ABX00142-full-pinout.pdf",
+        type: "Pinout",
+      },
+      {
+        label: "Nano R4 hardware documentation (Arduino)",
+        url: "https://docs.arduino.cc/hardware/nano-r4/",
+        type: "Docs",
+      },
+      {
+        label: "NANOR4 core variant - pin to RA4M1 port map (Arduino core, ArduinoCore-renesas)",
+        url: "https://github.com/arduino/ArduinoCore-renesas/blob/424e86eff92d37f72123c2b641dd8bbf06a38b47/variants/NANOR4/variant.cpp",
+        type: "Docs",
+      },
+    ],
+    pinout: arduinoNanoR4Headers,
+  },
+  {
+    id: "arduino-nano-matter",
+    name: "Arduino Nano Matter",
+    vendor: "Arduino",
+    category: "Microcontroller",
+    family: "Nano",
+    processor: "Silicon Labs MGM240S (EFR32MG24)",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C 5 V, 6-21 V on VIN, or 3.3 V pin",
+    formFactor: "Nano module (18 x 45 mm), castellated",
+    description:
+      "Nano-format Matter, Thread, Zigbee, and Bluetooth LE board built on a Silicon Labs MGM240S module.",
+    tags: ["Arduino", "Nano", "Matter", "Thread", "Zigbee", "MGM240S", "EFR32MG24"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "USB", "Bluetooth", "Zigbee", "Thread"],
+    highlights: [
+      "78 MHz Cortex-M33 with 1536 kB flash, 256 kB RAM, and Secure Vault.",
+      "Two UART, I2C, and SPI buses, a 12-bit ADC, and four DAC outputs on A0, A1, A6, and A7.",
+      "ABX00112 is castellated; ABX00137 is the same board with headers fitted.",
+    ],
+    warnings: [
+      "D0 is Serial1 TX and D1 is Serial1 RX, the reverse of the classic Nano. Re-check wiring copied from an older Nano design.",
+      "3.3 V GPIO; the 5 V pin is a supply rail, not a logic level.",
+      "PWM is available on every digital pin, but at most five channels can run simultaneously.",
+      "AREF is not connected until its solder jumper is closed, and it is shared with the user button.",
+      "JP1 pin 13 is NC on this board.",
+      "Powering through the 3V3 pin (after cutting the LED jumper) does not power the USB bridge.",
+      "SWD is available only on test pads, not on the headers.",
+    ],
+    sourceLinks: [
+      {
+        label: "Nano Matter datasheet (Arduino, ABX00112/ABX00137)",
+        url: "https://docs.arduino.cc/resources/datasheets/ABX00112-ABX00137-datasheet.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "Nano Matter full pinout - header order and MCU ports (Arduino, ABX00112)",
+        url: "https://docs.arduino.cc/resources/pinouts/ABX00112-full-pinout.pdf",
+        type: "Pinout",
+      },
+      {
+        label: "Nano Matter hardware documentation (Arduino)",
+        url: "https://docs.arduino.cc/hardware/nano-matter/",
+        type: "Docs",
+      },
+      {
+        label: "Nano Matter core variant - pin to port map (Silicon Labs Arduino core)",
+        url: "https://github.com/SiliconLabs/arduino/blob/74f6af53dcc6fd55db38a26e9b123b2a62305362/variants/nano_matter/arduino_variant.cpp",
+        type: "Docs",
+      },
+    ],
+    pinout: arduinoNanoMatterHeaders,
+  },
+  {
+    id: "seeed-xiao-mg24",
+    name: "Seeed Studio XIAO MG24",
+    vendor: "Seeed Studio",
+    category: "Development Board",
+    family: "XIAO",
+    processor: "Silicon Labs EFR32MG24 @ 78 MHz",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, battery pads, 5 V/3.3 V pins",
+    formFactor: "Tiny castellated module (21 x 17.8 mm)",
+    description:
+      "Thumb-sized XIAO with Silicon Labs' EFR32MG24 for Matter, Thread, Zigbee, and Bluetooth LE.",
+    tags: ["Seeed", "XIAO", "EFR32MG24", "Matter", "Thread", "Zigbee"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Zigbee", "Thread"],
+    highlights: [
+      "Every edge pad except power is analog-capable and PWM-capable.",
+      "1536 kB flash and 256 kB RAM on a single Cortex-M33.",
+      "A Sense variant adds an IMU and a microphone.",
+    ],
+    warnings: [
+      "3.3 V GPIO; the 5 V pad is USB power, not a logic level.",
+      "Zephyr's xiao_mg24 devicetree routes I2C0 SCL to PC4 (D4) and SDA to PC5 (D5), the reverse of Seeed's pin map and the Arduino core. Swap the lines, or override the pinctrl, when moving between the two.",
+      "In the Silicon Labs Arduino core, Serial is on back pads D11/D12 (the SAMD11 USB bridge); the D6/D7 edge pads are Serial1.",
+      "USB goes through an onboard SAMD11 bridge; the EFR32MG24 has no native USB.",
+    ],
+    sourceLinks: [
+      {
+        label: "XIAO MG24 getting started - pin map (Seeed Studio)",
+        url: "https://wiki.seeedstudio.com/xiao_mg24_getting_started/",
+        type: "Pinout",
+      },
+      {
+        label: "XIAO MG24 schematic (Seeed Studio)",
+        url: "https://files.seeedstudio.com/wiki/XIAO_MG24/Getting_Start/XIAO_MGM240S_KICAD_Prj.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "XIAO MG24 core variant - pin to port map (Silicon Labs Arduino core)",
+        url: "https://github.com/SiliconLabs/arduino/blob/74f6af53dcc6fd55db38a26e9b123b2a62305362/variants/xiao_mg24/arduino_variant.cpp",
+        type: "Docs",
+      },
+      {
+        label: "xiao_mg24 connector map - independent cross-check (Zephyr Project)",
+        url: `${zephyrBoards}/seeed/xiao_mg24/seeed_xiao_connector.dtsi`,
+        type: "Docs",
+      },
+    ],
+    pinout: seeedXiaoMg24Pinout,
+  },
+  {
+    id: "seeed-xiao-rp2350",
+    name: "Seeed Studio XIAO RP2350",
+    vendor: "Seeed Studio",
+    category: "Development Board",
+    family: "XIAO",
+    processor: "Raspberry Pi RP2350A",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, battery pads, 5 V/3.3 V pins",
+    formFactor: "Tiny castellated module (21 x 17.8 mm)",
+    description:
+      "XIAO-format RP2350 with dual Cortex-M33 or Hazard3 RISC-V cores and 19 GPIO.",
+    tags: ["Seeed", "XIAO", "RP2350", "RISC-V", "MicroPython"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB"],
+    highlights: [
+      "RP2350A can boot either its Arm Cortex-M33 or its Hazard3 RISC-V cores.",
+      "Three analog inputs on the edge pads; a fourth ADC channel (GPIO29) reads the battery.",
+      "Extra back pads add UART1, I2C0, and SPI1 for 19 GPIO in total.",
+    ],
+    warnings: [
+      "3.3 V GPIO.",
+      "D4/D5 are I2C1. The arduino-pico Wire object defaults to I2C0 on back pads D13/D14 (GPIO17/16); use Wire1 for the edge pads.",
+      "GPIO25 drives the user LED and GPIO22 the RGB LED; GPIO29 and GPIO19 are reserved for battery sensing.",
+    ],
+    sourceLinks: [
+      {
+        label: "XIAO RP2350 with Arduino - pin map (Seeed Studio)",
+        url: "https://wiki.seeedstudio.com/xiao_rp2350_arduino/",
+        type: "Pinout",
+      },
+      {
+        label: "XIAO RP2350 schematic (Seeed Studio)",
+        url: "https://files.seeedstudio.com/wiki/XIAO-RP2350/res/Seeed-Studio-XIAO-RP2350-v1.0.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "RP2350 datasheet (Raspberry Pi)",
+        url: "https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "seeed_xiao_rp2350 pins_arduino.h - independent cross-check (arduino-pico)",
+        url: "https://github.com/earlephilhower/arduino-pico/blob/master/variants/seeed_xiao_rp2350/pins_arduino.h",
+        type: "Docs",
+      },
+    ],
+    pinout: seeedXiaoRp2350Pinout,
+  },
+  {
+    id: "seeed-xiao-nrf54l15",
+    name: "Seeed Studio XIAO nRF54L15",
+    vendor: "Seeed Studio",
+    category: "Development Board",
+    family: "XIAO",
+    processor: "Nordic nRF54L15 (M33 + RISC-V)",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, battery pads, 5 V/3.3 V pins",
+    formFactor: "Tiny castellated module (21 x 17.8 mm)",
+    description:
+      "XIAO on Nordic's nRF54L15, with Bluetooth LE, Thread, Zigbee, and Matter support.",
+    tags: ["Seeed", "XIAO", "nRF54L15", "Nordic", "Bluetooth LE", "Matter", "Zephyr"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Zigbee", "Thread", "SWD"],
+    highlights: [
+      "128 MHz Cortex-M33 application core plus a 128 MHz RISC-V (FLPR) coprocessor.",
+      "Programmed through nRF Connect SDK / Zephyr; an onboard SAMD11 provides USB and SWD.",
+      "A Sense variant adds an IMU and a PDM microphone.",
+    ],
+    warnings: [
+      "3.3 V GPIO; the 5 V pad is USB power, not a logic level.",
+      "USB goes through an onboard SAMD11 bridge; the nRF54L15 has no native USB.",
+      "On the Sense variant, back pads D11/D12 (P0.03/P0.04) are the onboard IMU's I2C bus.",
+      "P1.02/P1.03 are the NFC antenna pads; P2.03/P2.05 control the RF switch.",
+    ],
+    sourceLinks: [
+      {
+        label: "XIAO nRF54L15 getting started - pin map (Seeed Studio)",
+        url: "https://wiki.seeedstudio.com/xiao_nrf54l15_sense_getting_started/",
+        type: "Pinout",
+      },
+      {
+        label: "XIAO nRF54L15 schematic (Seeed Studio)",
+        url: "https://files.seeedstudio.com/wiki/XIAO_nRF54L15/Getting_Start/nRF54L15_Schematic.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "nRF54L15 datasheet (Nordic Semiconductor, via Seeed)",
+        url: "https://files.seeedstudio.com/wiki/XIAO_nRF54L15/Getting_Start/Nordic_nRF54L15_Datasheet_v1.0.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "xiao_nrf54l15 connector map - independent cross-check (Zephyr Project)",
+        url: `${zephyrBoards}/seeed/xiao_nrf54l15/seeed_xiao_connector.dtsi`,
+        type: "Docs",
+      },
+    ],
+    pinout: seeedXiaoNrf54l15Pinout,
+  },
+  {
+    id: "seeed-xiao-nrf54lm20a",
+    name: "Seeed Studio XIAO nRF54LM20A",
+    vendor: "Seeed Studio",
+    category: "Development Board",
+    family: "XIAO",
+    processor: "Nordic nRF54LM20A (M33 + RISC-V)",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C 5 V or 3.7 V battery via nPM1300 PMIC",
+    formFactor: "Tiny castellated module (21 x 17.8 mm)",
+    description:
+      "XIAO on Nordic's nRF54LM20A, with an nPM1300 PMIC, Bluetooth LE 6.0, Thread, and Zigbee.",
+    tags: ["Seeed", "XIAO", "nRF54LM20A", "Nordic", "Bluetooth LE", "nPM1300", "Zephyr"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Bluetooth", "Zigbee", "Thread", "SWD"],
+    highlights: [
+      "128 MHz Cortex-M33 plus a 128 MHz RISC-V coprocessor, 2 MB NVM, and 512 kB RAM.",
+      "nPM1300 PMIC handles regulation, battery charging, and ship mode.",
+      "28 GPIO in total once the back pads are used.",
+    ],
+    warnings: [
+      "3.3 V GPIO; the 5 V pad is USB power, not a logic level.",
+      "Seeed lists nRF Connect SDK (Zephyr) and PlatformIO as the supported toolchains; the Arduino IDE is not listed.",
+      "USB goes through an onboard SAMD11 bridge.",
+      "Seeed's wiki table names pins by chip port and A number only; the D numbers here come from Zephyr and the schematic net names, which agree.",
+    ],
+    sourceLinks: [
+      {
+        label: "XIAO nRF54LM20A getting started - pin map (Seeed Studio)",
+        url: "https://wiki.seeedstudio.com/xiao_nrf54lm20a_getting_started/",
+        type: "Pinout",
+      },
+      {
+        label: "XIAO nRF54LM20A schematic (Seeed Studio)",
+        url: "https://files.seeedstudio.com/wiki/XIAO_nRF54LM20A/getting_start/RES/XIAO_nRF54LM20A_Schematic.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "nRF54LM20A datasheet (Nordic Semiconductor, via Seeed)",
+        url: "https://files.seeedstudio.com/wiki/XIAO_nRF54LM20A/getting_start/RES/nRF54LM20A_nRF54LM20B_Datasheet_v1.0.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "xiao_nrf54lm20a connector map - D-number source (Zephyr Project)",
+        url: `${zephyrBoards}/seeed/xiao_nrf54lm20a/seeed_xiao_connector.dtsi`,
+        type: "Docs",
+      },
+    ],
+    pinout: seeedXiaoNrf54lm20aPinout,
+  },
+  {
+    id: "seeed-xiao-esp32c5",
+    name: "Seeed Studio XIAO ESP32-C5",
+    vendor: "Seeed Studio",
+    category: "Development Board",
+    family: "XIAO",
+    processor: "Espressif ESP32-C5 (RISC-V)",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, battery pads, 5 V/3.3 V pins",
+    formFactor: "Tiny castellated module (21 x 17.8 mm)",
+    description:
+      "XIAO with ESP32-C5 dual-band Wi-Fi 6, Bluetooth LE, Zigbee, and Thread.",
+    tags: ["Seeed", "XIAO", "ESP32-C5", "Wi-Fi 6", "5 GHz", "Thread"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "Wi-Fi", "Bluetooth", "Zigbee", "Thread"],
+    highlights: [
+      "2.4 GHz and 5 GHz Wi-Fi 6 on a 240 MHz RISC-V core.",
+      "U.FL connector for an external antenna.",
+      "GPIO-matrix routing lets most edge pads carry other serial buses or PWM.",
+    ],
+    warnings: [
+      "3.3 V GPIO; the 5 V pad is USB power, not a logic level.",
+      "D2 (GPIO25) and D3 (GPIO7) are ESP32-C5 strapping pins; external pulls or driven peripherals can change boot behavior.",
+      "GPIO27 drives the user LED and GPIO28 is the Boot button; GPIO6 and GPIO26 are battery sensing.",
+      "Only D0 is an analog input on the edge pads.",
+    ],
+    sourceLinks: [
+      {
+        label: "XIAO ESP32-C5 getting started - pin map (Seeed Studio)",
+        url: "https://wiki.seeedstudio.com/xiao_esp32c5_getting_started/",
+        type: "Pinout",
+      },
+      {
+        label: "XIAO ESP32-C5 schematic (Seeed Studio)",
+        url: "https://files.seeedstudio.com/wiki/XIAO_ESP32C5/res/Seeed_Studio_XIAO_ESP32C5.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "ESP32-C5 series datasheet (Espressif)",
+        url: "https://www.espressif.com/sites/default/files/documentation/esp32-c5_datasheet_en.pdf",
+        type: "Datasheet",
+      },
+      {
+        label: "xiao_esp32c5 connector map - independent cross-check (Zephyr Project)",
+        url: `${zephyrBoards}/seeed/xiao_esp32c5/seeed_xiao_connector.dtsi`,
+        type: "Docs",
+      },
+    ],
+    pinout: seeedXiaoEsp32C5Pinout,
+  },
+  {
+    id: "seeed-xiao-ra4m1",
+    name: "Seeed Studio XIAO RA4M1",
+    vendor: "Seeed Studio",
+    category: "Development Board",
+    family: "XIAO",
+    processor: "Renesas RA4M1 (Cortex-M4 @ 48 MHz)",
+    logicLevel: "3.3 V GPIO",
+    power: "USB-C, battery pads, 5 V/3.3 V pins",
+    formFactor: "Tiny castellated module (21 x 17.8 mm)",
+    description:
+      "XIAO-format RA4M1, the UNO R4's microcontroller, running at 3.3 V with 19 GPIO.",
+    tags: ["Seeed", "XIAO", "RA4M1", "Renesas", "Arduino"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "DAC", "PWM", "CAN", "USB"],
+    highlights: [
+      "Native USB on the RA4M1; no separate USB bridge.",
+      "Five analog inputs on the edge pads, with the DAC on D0 (P014).",
+      "Back pads add a second UART and more analog-capable GPIO.",
+    ],
+    warnings: [
+      "3.3 V GPIO on this board, even though the RA4M1 runs at 5 V on the UNO R4 and Nano R4. Do not reuse 5 V shield wiring.",
+      "CAN (CRX0/CTX0 on D9/D10) needs an external transceiver and shares those pads with SPI1.",
+      "P112/P500 drive the RGB LED and P011 the user LED.",
+    ],
+    sourceLinks: [
+      {
+        label: "XIAO RA4M1 getting started - pin map (Seeed Studio)",
+        url: "https://wiki.seeedstudio.com/getting_started_xiao_ra4m1/",
+        type: "Pinout",
+      },
+      {
+        label: "XIAO RA4M1 schematic v1.01 (Seeed Studio)",
+        url: "https://files.seeedstudio.com/wiki/XIAO-R4AM1/res/XIAO%20RA4M1%20V1.01_SCH_PDF_260114%20.pdf.pdf",
+        type: "Schematic",
+      },
+      {
+        label: "xiao_ra4m1 connector map - independent cross-check (Zephyr Project)",
+        url: `${zephyrBoards}/seeed/xiao_ra4m1/seeed_xiao_connector.dtsi`,
+        type: "Docs",
+      },
+    ],
+    pinout: seeedXiaoRa4m1Pinout,
+  },
+  {
+    id: "raspberry-pi-500-plus",
+    name: "Raspberry Pi 500+",
+    vendor: "Raspberry Pi",
+    category: "SBC",
+    family: "Raspberry Pi 500",
+    processor: "Broadcom BCM2712 (4× Cortex-A76)",
+    logicLevel: "3.3 V GPIO",
+    power: "5 V / 5 A USB-C",
+    formFactor: "Mechanical-keyboard computer",
+    description:
+      "Pi 5-class keyboard computer with 16 GB RAM, an M.2 SSD slot, and the 40-pin header.",
+    tags: ["Pi 500+", "BCM2712", "Keyboard PC", "40-pin", "M.2", "Desktop"],
+    interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi", "Bluetooth", "Ethernet", "PCIe"],
+    highlights: [
+      "BCM2712 with the RP1 I/O controller, as on Raspberry Pi 5 and 500.",
+      "Ships with a 256 GB M.2 SSD; the M.2 M-key slot also accepts other PCIe devices.",
+      "Low-profile mechanical keys with per-key RGB lighting.",
+    ],
+    warnings: [
+      "GPIO is 3.3 V only and not 5 V tolerant.",
+      "The 40-pin header is horizontal on the rear edge; identify pin 1 before wiring rather than assuming a bare Pi's orientation.",
+    ],
+    sourceLinks: [
+      {
+        label: "Keyboard computers documentation - Pi 500+ specification (Raspberry Pi)",
+        url: "https://www.raspberrypi.com/documentation/computers/keyboard-computers.html",
+        type: "Docs",
+      },
+      {
+        label: "Raspberry Pi 500+ product information portal (Raspberry Pi)",
+        url: "https://pip.raspberrypi.com/categories/1282-raspberry-pi-500plus",
+        type: "Docs",
+      },
+      {
+        label: "Raspberry Pi computers documentation - GPIO header (Raspberry Pi)",
+        url: "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
+        type: "Pinout",
+      },
+    ],
+    pinout: raspberryPi40Pin,
+  },
+];
+
 export const boards: Board[] = [
   ...baseBoards,
   ...additionalBoards,
@@ -13309,4 +14139,5 @@ export const boards: Board[] = [
   ...professionalDevKitBoards,
   ...espressifModuleBoards,
   ...august2026ResearchBoards,
+  ...october2026Boards,
 ];

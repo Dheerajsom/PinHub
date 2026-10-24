@@ -28,6 +28,7 @@ export const raspberryPiModels: Record<string, RaspberryPiModel> = {
   "raspberry-pi-pico-2-w": { family: "pico", silicon: "RP2350", generation: 2, wireless: true },
   "raspberry-pi-400": { family: "keyboard", silicon: "BCM2711", generation: 4 },
   "raspberry-pi-500": { family: "keyboard", silicon: "BCM2712", generation: 5 },
+  "raspberry-pi-500-plus": { family: "keyboard", silicon: "BCM2712", generation: 5 },
 };
 
 export function raspberryPiModel(id: string): RaspberryPiModel | undefined {
