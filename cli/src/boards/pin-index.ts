@@ -48924,5 +48924,2076 @@ export const pinIndex: PinIndexBoard[] = [
         "group": "J3"
       }
     ]
+  },
+  {
+    "id": "arduino-uno-q",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0 / RX",
+        "role": "uart",
+        "aliases": [
+          "PB7",
+          "USART1_RX"
+        ],
+        "group": "JDIGITAL",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1 / TX",
+        "role": "uart",
+        "aliases": [
+          "PB6",
+          "USART1_TX"
+        ],
+        "group": "JDIGITAL",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "aliases": [
+          "PB3"
+        ],
+        "group": "JDIGITAL"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "aliases": [
+          "PB0"
+        ],
+        "note": "3.6 V max; never 5 V.",
+        "group": "JDIGITAL"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4 / CAN TX",
+        "role": "gpio",
+        "aliases": [
+          "PA12",
+          "FDCAN1_TX"
+        ],
+        "group": "JDIGITAL",
+        "net": "CAN"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5 / CAN RX",
+        "role": "pwm",
+        "aliases": [
+          "PA11",
+          "FDCAN1_RX"
+        ],
+        "group": "JDIGITAL",
+        "net": "CAN"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "aliases": [
+          "PB1"
+        ],
+        "group": "JDIGITAL"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "aliases": [
+          "PB2"
+        ],
+        "group": "JDIGITAL"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "aliases": [
+          "PB4"
+        ],
+        "group": "JDIGITAL"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "aliases": [
+          "PB8"
+        ],
+        "group": "JDIGITAL"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10 / CS",
+        "role": "spi",
+        "aliases": [
+          "PB9",
+          "SPI2_SS"
+        ],
+        "group": "JDIGITAL",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11 / COPI",
+        "role": "spi",
+        "aliases": [
+          "PB15",
+          "SPI2_MOSI"
+        ],
+        "group": "JDIGITAL",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12 / CIPO",
+        "role": "spi",
+        "aliases": [
+          "PB14",
+          "SPI2_MISO"
+        ],
+        "group": "JDIGITAL",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13 / SCK",
+        "role": "spi",
+        "aliases": [
+          "PB13",
+          "SPI2_SCK"
+        ],
+        "group": "JDIGITAL",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "JDIGITAL",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "special",
+        "note": "Not a GPIO.",
+        "group": "JDIGITAL"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D20 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "PB11",
+          "I2C2_SDA"
+        ],
+        "group": "JDIGITAL",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D21 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "PB10",
+          "I2C2_SCL"
+        ],
+        "group": "JDIGITAL",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 1,
+        "label": "BOOT",
+        "role": "system",
+        "note": "BOOT0 strap.",
+        "group": "JANALOG"
+      },
+      {
+        "key": "g1:1",
+        "position": 2,
+        "label": "IOREF",
+        "role": "power",
+        "note": "Output only.",
+        "group": "JANALOG",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 3,
+        "label": "RESET",
+        "role": "system",
+        "aliases": [
+          "MCU_NRST"
+        ],
+        "group": "JANALOG"
+      },
+      {
+        "key": "g1:3",
+        "position": 4,
+        "label": "3V3",
+        "role": "power",
+        "group": "JANALOG",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 5,
+        "label": "5V",
+        "role": "power",
+        "note": "Input or output.",
+        "group": "JANALOG",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "group": "JANALOG",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 7,
+        "label": "GND",
+        "role": "ground",
+        "group": "JANALOG",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 8,
+        "label": "VIN",
+        "role": "power",
+        "note": "7-24 V input.",
+        "group": "JANALOG",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 9,
+        "label": "A0 / DAC0",
+        "role": "adc",
+        "aliases": [
+          "D14",
+          "PA4",
+          "DAC0"
+        ],
+        "group": "JANALOG"
+      },
+      {
+        "key": "g1:9",
+        "position": 10,
+        "label": "A1 / DAC1",
+        "role": "adc",
+        "aliases": [
+          "D15",
+          "PA5",
+          "DAC1"
+        ],
+        "group": "JANALOG"
+      },
+      {
+        "key": "g1:10",
+        "position": 11,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "D16",
+          "PA6"
+        ],
+        "group": "JANALOG"
+      },
+      {
+        "key": "g1:11",
+        "position": 12,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "D17",
+          "PA7"
+        ],
+        "group": "JANALOG"
+      },
+      {
+        "key": "g1:12",
+        "position": 13,
+        "label": "A4",
+        "role": "adc",
+        "aliases": [
+          "D18",
+          "PC1",
+          "I2C3_SDA"
+        ],
+        "group": "JANALOG"
+      },
+      {
+        "key": "g1:13",
+        "position": 14,
+        "label": "A5",
+        "role": "adc",
+        "aliases": [
+          "D19",
+          "PC0",
+          "I2C3_SCL"
+        ],
+        "group": "JANALOG"
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-r4",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D13 / SCK",
+        "role": "spi",
+        "aliases": [
+          "P111"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "note": "LDO output; the board may run very hot above 150 mA.",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "AREF",
+        "role": "special"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "A0 / DAC",
+        "role": "adc",
+        "aliases": [
+          "D14",
+          "P014",
+          "DAC"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A1 / OPAMP+",
+        "role": "adc",
+        "aliases": [
+          "D15",
+          "P000"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A2 / OPAMP-",
+        "role": "adc",
+        "aliases": [
+          "D16",
+          "P001"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A3 / OPAMP OUT",
+        "role": "adc",
+        "aliases": [
+          "D17",
+          "P002"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "D18",
+          "P101"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "A5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "D19",
+          "P100"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "A6",
+        "role": "adc",
+        "aliases": [
+          "D20",
+          "P004"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "A7",
+        "role": "adc",
+        "aliases": [
+          "D21",
+          "P003"
+        ]
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "BOOT",
+        "role": "system",
+        "note": "Mode selection; this position is RESET on the classic Nano."
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "VIN",
+        "role": "power",
+        "note": "6-21 V input.",
+        "net": "VIN"
+      },
+      {
+        "key": "pR:0",
+        "position": 16,
+        "label": "D12 / CIPO",
+        "role": "spi",
+        "aliases": [
+          "P110",
+          "MISO"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:1",
+        "position": 17,
+        "label": "D11 / COPI",
+        "role": "spi",
+        "aliases": [
+          "P109",
+          "MOSI"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:2",
+        "position": 18,
+        "label": "D10 / CS",
+        "role": "spi",
+        "aliases": [
+          "P112"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:3",
+        "position": 19,
+        "label": "D9",
+        "role": "pwm",
+        "aliases": [
+          "P303"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 20,
+        "label": "D8",
+        "role": "gpio",
+        "aliases": [
+          "P304"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 21,
+        "label": "D7",
+        "role": "gpio",
+        "aliases": [
+          "P107"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 22,
+        "label": "D6",
+        "role": "pwm",
+        "aliases": [
+          "P106"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 23,
+        "label": "D5 / CAN RX",
+        "role": "pwm",
+        "aliases": [
+          "P102",
+          "CRX0"
+        ],
+        "net": "CAN"
+      },
+      {
+        "key": "pR:8",
+        "position": 24,
+        "label": "D4 / CAN TX",
+        "role": "gpio",
+        "aliases": [
+          "P103",
+          "CTX0"
+        ],
+        "net": "CAN"
+      },
+      {
+        "key": "pR:9",
+        "position": 25,
+        "label": "D3",
+        "role": "pwm",
+        "aliases": [
+          "P104"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 26,
+        "label": "D2",
+        "role": "gpio",
+        "aliases": [
+          "P105"
+        ]
+      },
+      {
+        "key": "pR:11",
+        "position": 27,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pR:13",
+        "position": 29,
+        "label": "D0 / RX",
+        "role": "uart",
+        "aliases": [
+          "P301",
+          "Serial1 RX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "D1 / TX",
+        "role": "uart",
+        "aliases": [
+          "P302",
+          "Serial1 TX"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-matter",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D13 / SCK",
+        "role": "spi",
+        "aliases": [
+          "PB4"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "note": "Low-power input point after cutting the LED jumper; does not power the USB bridge.",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "AREF",
+        "role": "special",
+        "note": "Not connected until the AREF solder jumper is closed; shared with the user button."
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "A0 / DAC0",
+        "role": "adc",
+        "aliases": [
+          "D14",
+          "PB0"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A1 / DAC2",
+        "role": "adc",
+        "aliases": [
+          "D15",
+          "PB2"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "D16",
+          "PB5"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "D17",
+          "PC0"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "D18",
+          "PA6"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "A5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "D19",
+          "PA7"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "A6 / DAC1",
+        "role": "adc",
+        "aliases": [
+          "D20",
+          "PB1"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "A7 / DAC3",
+        "role": "adc",
+        "aliases": [
+          "D21",
+          "PB3"
+        ]
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "5V",
+        "role": "power",
+        "note": "Outputs 5 V only when the board is USB powered.",
+        "net": "5V"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "NC",
+        "role": "reserved"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "VIN",
+        "role": "power",
+        "note": "6-21 V input.",
+        "net": "VIN"
+      },
+      {
+        "key": "pR:0",
+        "position": 16,
+        "label": "D12 / CIPO",
+        "role": "spi",
+        "aliases": [
+          "PA8",
+          "MISO"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:1",
+        "position": 17,
+        "label": "D11 / COPI",
+        "role": "spi",
+        "aliases": [
+          "PA9",
+          "MOSI"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:2",
+        "position": 18,
+        "label": "D10 / CS",
+        "role": "spi",
+        "aliases": [
+          "PD5",
+          "SS"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:3",
+        "position": 19,
+        "label": "D9",
+        "role": "gpio",
+        "aliases": [
+          "PD4"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 20,
+        "label": "D8",
+        "role": "gpio",
+        "aliases": [
+          "PD3"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 21,
+        "label": "D7",
+        "role": "gpio",
+        "aliases": [
+          "PD2"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 22,
+        "label": "D6",
+        "role": "gpio",
+        "aliases": [
+          "PC9"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 23,
+        "label": "D5 / SCL1",
+        "role": "i2c",
+        "aliases": [
+          "PC8"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pR:8",
+        "position": 24,
+        "label": "D4 / SDA1",
+        "role": "i2c",
+        "aliases": [
+          "PC7"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pR:9",
+        "position": 25,
+        "label": "D3 / SS1",
+        "role": "spi",
+        "aliases": [
+          "PC6"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:10",
+        "position": 26,
+        "label": "D2 / SCK1",
+        "role": "spi",
+        "aliases": [
+          "PA3"
+        ],
+        "net": "SPI1"
+      },
+      {
+        "key": "pR:11",
+        "position": 27,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pR:13",
+        "position": 29,
+        "label": "D1 / RX1",
+        "role": "uart",
+        "aliases": [
+          "PA5",
+          "MISO1"
+        ],
+        "net": "UART1"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "D0 / TX1",
+        "role": "uart",
+        "aliases": [
+          "PA4",
+          "MOSI1"
+        ],
+        "net": "UART1"
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-mg24",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "PC00"
+        ],
+        "note": "Default SPI SS in the Silicon Labs Arduino core."
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1 / A1",
+        "role": "adc",
+        "aliases": [
+          "PC01"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2 / A2",
+        "role": "adc",
+        "aliases": [
+          "PC02"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3 / A3",
+        "role": "adc",
+        "aliases": [
+          "PC03"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "PC04",
+          "A4"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "PC05",
+          "A5"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "PC06",
+          "A6",
+          "Serial1 TX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "PA05",
+          "A10"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "PA04",
+          "A9"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "PA03",
+          "A8"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX",
+        "role": "uart",
+        "aliases": [
+          "PC07",
+          "A7",
+          "Serial1 RX"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-rp2350",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "GPIO26",
+          "ADC0"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1 / A1",
+        "role": "adc",
+        "aliases": [
+          "GPIO27",
+          "ADC1"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2 / A2",
+        "role": "adc",
+        "aliases": [
+          "GPIO28",
+          "ADC2"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3 / CS",
+        "role": "spi",
+        "aliases": [
+          "GPIO5",
+          "SPI0 CSn"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA1",
+        "role": "i2c",
+        "aliases": [
+          "GPIO6"
+        ],
+        "note": "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here.",
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL1",
+        "role": "i2c",
+        "aliases": [
+          "GPIO7"
+        ],
+        "note": "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here.",
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "GPIO0",
+          "UART0 TX"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO3",
+          "SPI0 TX"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO4",
+          "SPI0 RX"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO2",
+          "SPI0 SCK"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX",
+        "role": "uart",
+        "aliases": [
+          "GPIO1",
+          "UART0 RX"
+        ],
+        "net": "UART0"
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-nrf54l15",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "P1.04",
+          "AIN0"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1 / A1",
+        "role": "adc",
+        "aliases": [
+          "P1.05",
+          "AIN1"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2 / A2",
+        "role": "adc",
+        "aliases": [
+          "P1.06",
+          "AIN2"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3 / A3",
+        "role": "adc",
+        "aliases": [
+          "P1.07",
+          "AIN3"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "P1.10"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "P1.11"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "P2.08"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "P2.02"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "P2.04"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "P2.01"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX",
+        "role": "uart",
+        "aliases": [
+          "P2.07"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-nrf54lm20a",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "P1.00",
+          "AIN0"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1 / A1",
+        "role": "adc",
+        "aliases": [
+          "P1.31",
+          "AIN1"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2 / A2",
+        "role": "adc",
+        "aliases": [
+          "P1.30",
+          "AIN2"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3 / A3",
+        "role": "adc",
+        "aliases": [
+          "P1.29",
+          "AIN3"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "P1.03",
+          "A7"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "P1.07",
+          "A8"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "P1.08"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "P1.06",
+          "A4"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "P1.05",
+          "A5"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "P1.04",
+          "A6"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX",
+        "role": "uart",
+        "aliases": [
+          "P1.09"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-esp32c5",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "GPIO1"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1",
+        "role": "gpio",
+        "aliases": [
+          "GPIO0"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "aliases": [
+          "GPIO25"
+        ],
+        "note": "Strapping pin; external pulls or a driven peripheral can change boot behavior."
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3",
+        "role": "gpio",
+        "aliases": [
+          "GPIO7"
+        ],
+        "note": "Strapping pin; external pulls or a driven peripheral can change boot behavior."
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "GPIO23"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "GPIO24"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "GPIO11"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO10"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO9"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO8"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX",
+        "role": "uart",
+        "aliases": [
+          "GPIO12"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-ra4m1",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "P014",
+          "AN009",
+          "DAC"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1 / A1",
+        "role": "adc",
+        "aliases": [
+          "P000",
+          "AN000"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2 / A2",
+        "role": "adc",
+        "aliases": [
+          "P001",
+          "AN001"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3 / A3",
+        "role": "adc",
+        "aliases": [
+          "P002",
+          "AN002"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "P206",
+          "SDA1"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "P100",
+          "SCL1"
+        ],
+        "note": "Also an analog input when I2C is not in use.",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "P302",
+          "TXD2"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "P109",
+          "CTX0"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "P110",
+          "CRX0"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "P111"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX",
+        "role": "uart",
+        "aliases": [
+          "P301",
+          "RXD2"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "raspberry-pi-500-plus",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "GPIO2",
+        "role": "i2c",
+        "aliases": [
+          "SDA1"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "GPIO3",
+        "role": "i2c",
+        "aliases": [
+          "SCL1"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "GPIO4",
+        "role": "gpio",
+        "aliases": [
+          "GPCLK0"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "GPIO17",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "GPIO27",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "GPIO22",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "GPIO10",
+        "role": "spi",
+        "aliases": [
+          "SPI0 MOSI"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "GPIO9",
+        "role": "spi",
+        "aliases": [
+          "SPI0 MISO"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "GPIO11",
+        "role": "spi",
+        "aliases": [
+          "SPI0 SCLK"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "GPIO0",
+        "role": "reserved",
+        "aliases": [
+          "ID_SD"
+        ]
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "GPIO5",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "GPIO6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "GPIO13",
+        "role": "pwm",
+        "aliases": [
+          "PWM1"
+        ]
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "GPIO19",
+        "role": "special",
+        "aliases": [
+          "PCM FS"
+        ]
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "GPIO26",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "GPIO14",
+        "role": "uart",
+        "aliases": [
+          "TXD0"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "GPIO15",
+        "role": "uart",
+        "aliases": [
+          "RXD0"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "GPIO18",
+        "role": "pwm",
+        "aliases": [
+          "PWM0"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "GPIO23",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "GPIO24",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "GPIO25",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "GPIO8",
+        "role": "spi",
+        "aliases": [
+          "SPI0 CE0"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "GPIO7",
+        "role": "spi",
+        "aliases": [
+          "SPI0 CE1"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "GPIO1",
+        "role": "reserved",
+        "aliases": [
+          "ID_SC"
+        ]
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "GPIO12",
+        "role": "pwm",
+        "aliases": [
+          "PWM0"
+        ]
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "GPIO16",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "GPIO20",
+        "role": "special",
+        "aliases": [
+          "PCM DIN"
+        ]
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "GPIO21",
+        "role": "special",
+        "aliases": [
+          "PCM DOUT"
+        ]
+      }
+    ]
   }
 ];

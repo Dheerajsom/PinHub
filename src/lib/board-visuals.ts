@@ -609,6 +609,24 @@ export const boardVisuals: Record<string, BoardVisual> = {
     revisionNote:
       "Header map is for board v1.2, production order PW-2025-04-0446 and later.",
   }),
+  // --- October 2026 additions ---------------------------------------------
+  "arduino-uno-q": preset("arduinoUno", {
+    ports: ["usb-c"],
+    revisionNote: "UNO-style headers only; JSPI, Qwiic, JMISC, and JMEDIA are not drawn.",
+  }),
+  "arduino-nano-r4": preset("nano", { ports: ["usb-c"] }),
+  "arduino-nano-matter": preset("nano", { ports: ["usb-c"] }),
+  "seeed-xiao-mg24": preset("xiao"),
+  "seeed-xiao-rp2350": preset("xiao"),
+  "seeed-xiao-nrf54l15": preset("xiao"),
+  "seeed-xiao-nrf54lm20a": preset("xiao"),
+  "seeed-xiao-esp32c5": preset("xiao"),
+  "seeed-xiao-ra4m1": preset("xiao"),
+  "raspberry-pi-500-plus": preset("sbc", {
+    aspect: 2.6,
+    ports: ["usb-a", "hdmi", "ethernet"],
+    revisionNote: "Header sits on the rear edge of the keyboard unit.",
+  }),
 };
 
 // Default PCB accent by vendor, used when a visual does not specify one.

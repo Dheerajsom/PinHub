@@ -69601,5 +69601,3374 @@ export const generatedBoards: Board[] = [
         ]
       }
     ]
+  },
+  {
+    "id": "arduino-uno-q",
+    "name": "Arduino UNO Q",
+    "manufacturer": "Arduino",
+    "aliases": [],
+    "description": "UNO-footprint board pairing a Debian-capable Qualcomm MPU with an STM32U585 real-time MCU.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "JDIGITAL lines are 3.3 V outputs. Most are 5 V-tolerant only as inputs; D3 (PB0) is 3.6 V-tolerant and must never see 5 V in any mode."
+      },
+      {
+        "severity": "warning",
+        "text": "A0-A5 are not 5 V-tolerant when used as ADC or any analog function; keep them at or below VDD + 0.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "JANALOG pin 1 is the MCU BOOT0 strap where a classic UNO header has NC; check that a shield leaves that position unconnected."
+      },
+      {
+        "severity": "warning",
+        "text": "IOREF mirrors the 3.3 V rail and is output only; do not back-feed it."
+      },
+      {
+        "severity": "warning",
+        "text": "JMEDIA, JCTL, and the MPU lines on JMISC are 1.8 V. Level-shift before joining them to the 3.3 V MCU side."
+      },
+      {
+        "severity": "warning",
+        "text": "The JCTL SE4 UART is the Linux system console and should not be repurposed for user I/O."
+      },
+      {
+        "severity": "warning",
+        "text": "USB-C DisplayPort and JMEDIA MIPI-DSI share one signal; only one display output can be active."
+      },
+      {
+        "severity": "warning",
+        "text": "USB Power Delivery requests only 5 V / 3 A; use a supply and cable rated for it."
+      },
+      {
+        "severity": "warning",
+        "text": "This map covers JDIGITAL and JANALOG only. JSPI (PC2 MISO, PC3 MOSI, PD1 SCK), Qwiic (PD13 SDA, PD12 SCL), and the 60-pin JMISC/JMEDIA connectors are not drawn."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU headers; 1.8 V MPU. Power: USB-C 5 V / 3 A, 7-24 V VIN, or 5 V on 5V_SYS."
+      },
+      {
+        "severity": "info",
+        "text": "Positions are the datasheet's JDIGITAL1 and JANALOG1 pin numbers; MCU pins are STM32U585 ports."
+      },
+      {
+        "severity": "info",
+        "text": "All JDIGITAL and JANALOG signals are 3.3 V STM32U585 I/O. The 1.8 V MPU lines are on JMISC, JMEDIA, and JCTL, not on these headers."
+      },
+      {
+        "severity": "info",
+        "text": "D20/D21 next to AREF carry I2C2; A4/A5 can instead act as I2C3 (PC1/PC0)."
+      }
+    ],
+    "sources": [
+      {
+        "title": "UNO Q datasheet - JDIGITAL/JANALOG pin maps and voltage domains (Arduino, ABX00162/ABX00173)",
+        "url": "https://docs.arduino.cc/resources/datasheets/ABX00162-datasheet.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "UNO Q full pinout (Arduino, ABX00162)",
+        "url": "https://docs.arduino.cc/resources/pinouts/ABX00162-full-pinout.pdf",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "UNO Q hardware documentation (Arduino)",
+        "url": "https://docs.arduino.cc/hardware/uno-q/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "UNO Q Arduino header connector map - independent cross-check (Zephyr Project)",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/2a9e8ac155a3f2fd85d4559753be86a47b44ccf0/boards/arduino/uno_q/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "jdigital",
+        "name": "JDIGITAL",
+        "description": "UNO-style JDIGITAL (18-pin) and JANALOG (14-pin) headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / RX",
+            "category": "communication",
+            "functions": [
+              "PB7",
+              "USART1_RX"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / TX",
+            "category": "communication",
+            "functions": [
+              "PB6",
+              "USART1_TX"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "PB3"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "PB0"
+            ],
+            "notes": [
+              "3.6 V max; never 5 V."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / CAN TX",
+            "category": "gpio",
+            "functions": [
+              "PA12",
+              "FDCAN1_TX"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / CAN RX",
+            "category": "gpio",
+            "functions": [
+              "PA11",
+              "FDCAN1_RX"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "PB1"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "PB2"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio",
+            "functions": [
+              "PB4"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "PB8"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10 / CS",
+            "category": "communication",
+            "functions": [
+              "PB9",
+              "SPI2_SS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11 / COPI",
+            "category": "communication",
+            "functions": [
+              "PB15",
+              "SPI2_MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12 / CIPO",
+            "category": "communication",
+            "functions": [
+              "PB14",
+              "SPI2_MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13 / SCK",
+            "category": "communication",
+            "functions": [
+              "PB13",
+              "SPI2_SCK"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "special",
+            "notes": [
+              "Not a GPIO."
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D20 / SDA",
+            "category": "communication",
+            "functions": [
+              "PB11",
+              "I2C2_SDA"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D21 / SCL",
+            "category": "communication",
+            "functions": [
+              "PB10",
+              "I2C2_SCL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "janalog",
+        "name": "JANALOG",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "BOOT",
+            "category": "reserved",
+            "notes": [
+              "BOOT0 strap."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power",
+            "notes": [
+              "Output only."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved",
+            "functions": [
+              "MCU_NRST"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power",
+            "notes": [
+              "Input or output."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "7-24 V input."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0 / DAC0",
+            "category": "analog",
+            "functions": [
+              "D14",
+              "PA4",
+              "DAC0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1 / DAC1",
+            "category": "analog",
+            "functions": [
+              "D15",
+              "PA5",
+              "DAC1"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "D16",
+              "PA6"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "D17",
+              "PA7"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog",
+            "functions": [
+              "D18",
+              "PC1",
+              "I2C3_SDA"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog",
+            "functions": [
+              "D19",
+              "PC0",
+              "I2C3_SCL"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-r4",
+    "name": "Arduino Nano R4",
+    "manufacturer": "Arduino",
+    "aliases": [],
+    "description": "Nano-format board on the UNO R4's RA4M1, keeping 5 V I/O and adding a Qwiic connector.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Header I/O operates at 5 V. Level-shift 3.3 V-only peripherals; only the Qwiic connector is 3.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "RA4M1 GPIO can handle up to 8 mA; drive heavier loads through a transistor or MOSFET."
+      },
+      {
+        "severity": "warning",
+        "text": "JP1 pin 13 is BOOT (mode selection), not RESET as on the classic Nano. Check carrier boards that expect RESET there."
+      },
+      {
+        "severity": "warning",
+        "text": "A4/A5 are the main I2C bus (Wire); do not use them as ADC inputs while the bus is in use."
+      },
+      {
+        "severity": "warning",
+        "text": "Do not supply more than 5 V through USB-C. VIN accepts 6-21 V."
+      },
+      {
+        "severity": "warning",
+        "text": "Above 150 mA from the 3V3 pin the board may become very hot."
+      },
+      {
+        "severity": "warning",
+        "text": "VBATT (RTC backup) accepts 1.6-3.6 V."
+      },
+      {
+        "severity": "warning",
+        "text": "LED_BUILTIN is on P204, not D13 as on AVR Nanos."
+      },
+      {
+        "severity": "warning",
+        "text": "CAN on D4/D5 needs an external transceiver."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 5 V GPIO. Power: USB-C 5 V or 6-21 V on VIN."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at the top. Left is JP1 pins 1-15; right is JP2 pins 15-1, shown as positions 16-30."
+      },
+      {
+        "severity": "info",
+        "text": "Labels and functions follow the ABX00142 datasheet tables; MCU ports from Arduino's NANOR4 core variant."
+      },
+      {
+        "severity": "info",
+        "text": "Header I/O runs at 5 V. Only the Qwiic connector (Wire1, P401 SDA / P400 SCL behind a level translator) is 3.3 V."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Nano R4 datasheet - JP1/JP2 tables and ratings (Arduino, ABX00142)",
+        "url": "https://docs.arduino.cc/resources/datasheets/ABX00142-datasheet.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "Nano R4 full pinout (Arduino, ABX00142)",
+        "url": "https://docs.arduino.cc/resources/pinouts/ABX00142-full-pinout.pdf",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Nano R4 hardware documentation (Arduino)",
+        "url": "https://docs.arduino.cc/hardware/nano-r4/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "NANOR4 core variant - pin to RA4M1 port map (Arduino core, ArduinoCore-renesas)",
+        "url": "https://github.com/arduino/ArduinoCore-renesas/blob/424e86eff92d37f72123c2b641dd8bbf06a38b47/variants/NANOR4/variant.cpp",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Arduino Nano JP1/JP2 dual 15-pin headers",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D13 / SCK",
+            "category": "communication",
+            "functions": [
+              "P111"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power",
+            "notes": [
+              "LDO output; the board may run very hot above 150 mA."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "special"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A0 / DAC",
+            "category": "analog",
+            "functions": [
+              "D14",
+              "P014",
+              "DAC"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A1 / OPAMP+",
+            "category": "analog",
+            "functions": [
+              "D15",
+              "P000"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A2 / OPAMP-",
+            "category": "analog",
+            "functions": [
+              "D16",
+              "P001"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A3 / OPAMP OUT",
+            "category": "analog",
+            "functions": [
+              "D17",
+              "P002"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A4 / SDA",
+            "category": "communication",
+            "functions": [
+              "D18",
+              "P101"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A5 / SCL",
+            "category": "communication",
+            "functions": [
+              "D19",
+              "P100"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A6",
+            "category": "analog",
+            "functions": [
+              "D20",
+              "P004"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A7",
+            "category": "analog",
+            "functions": [
+              "D21",
+              "P003"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "BOOT",
+            "category": "reserved",
+            "notes": [
+              "Mode selection; this position is RESET on the classic Nano."
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "6-21 V input."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D12 / CIPO",
+            "category": "communication",
+            "functions": [
+              "P110",
+              "MISO"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "D11 / COPI",
+            "category": "communication",
+            "functions": [
+              "P109",
+              "MOSI"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "D10 / CS",
+            "category": "communication",
+            "functions": [
+              "P112"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "P303"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D8",
+            "category": "gpio",
+            "functions": [
+              "P304"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "P107"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "P106"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D5 / CAN RX",
+            "category": "gpio",
+            "functions": [
+              "P102",
+              "CRX0"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D4 / CAN TX",
+            "category": "gpio",
+            "functions": [
+              "P103",
+              "CTX0"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "P104"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "P105"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "D0 / RX",
+            "category": "communication",
+            "functions": [
+              "P301",
+              "Serial1 RX"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "D1 / TX",
+            "category": "communication",
+            "functions": [
+              "P302",
+              "Serial1 TX"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-matter",
+    "name": "Arduino Nano Matter",
+    "manufacturer": "Arduino",
+    "aliases": [],
+    "description": "Nano-format Matter, Thread, Zigbee, and Bluetooth LE board built on a Silicon Labs MGM240S module.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "D0 is Serial1 TX and D1 is Serial1 RX, the reverse of the classic Nano. Re-check wiring copied from an older Nano design."
+      },
+      {
+        "severity": "warning",
+        "text": "3.3 V GPIO; the 5 V pin is a supply rail, not a logic level."
+      },
+      {
+        "severity": "warning",
+        "text": "PWM is available on every digital pin, but at most five channels can run simultaneously."
+      },
+      {
+        "severity": "warning",
+        "text": "AREF is not connected until its solder jumper is closed, and it is shared with the user button."
+      },
+      {
+        "severity": "warning",
+        "text": "JP1 pin 13 is NC on this board."
+      },
+      {
+        "severity": "warning",
+        "text": "Powering through the 3V3 pin (after cutting the LED jumper) does not power the USB bridge."
+      },
+      {
+        "severity": "warning",
+        "text": "SWD is available only on test pads, not on the headers."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C 5 V, 6-21 V on VIN, or 3.3 V pin."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at the top. Pin order from the ABX00112 full-pinout figure; MCU ports from the Silicon Labs Arduino core variant and the Zephyr connector map."
+      },
+      {
+        "severity": "info",
+        "text": "D0 is TX and D1 is RX (Serial1), the reverse of a classic Nano. The pad at the bottom-right corner is D0 / TX1."
+      },
+      {
+        "severity": "info",
+        "text": "Every digital pin is PWM-capable, but at most five PWM channels can run at once."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Nano Matter datasheet (Arduino, ABX00112/ABX00137)",
+        "url": "https://docs.arduino.cc/resources/datasheets/ABX00112-ABX00137-datasheet.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "Nano Matter full pinout - header order and MCU ports (Arduino, ABX00112)",
+        "url": "https://docs.arduino.cc/resources/pinouts/ABX00112-full-pinout.pdf",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Nano Matter hardware documentation (Arduino)",
+        "url": "https://docs.arduino.cc/hardware/nano-matter/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "Nano Matter core variant - pin to port map (Silicon Labs Arduino core)",
+        "url": "https://github.com/SiliconLabs/arduino/blob/74f6af53dcc6fd55db38a26e9b123b2a62305362/variants/nano_matter/arduino_variant.cpp",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Arduino Nano dual 15-pin headers",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D13 / SCK",
+            "category": "communication",
+            "functions": [
+              "PB4"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power",
+            "notes": [
+              "Low-power input point after cutting the LED jumper; does not power the USB bridge."
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "special",
+            "notes": [
+              "Not connected until the AREF solder jumper is closed; shared with the user button."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A0 / DAC0",
+            "category": "analog",
+            "functions": [
+              "D14",
+              "PB0"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A1 / DAC2",
+            "category": "analog",
+            "functions": [
+              "D15",
+              "PB2"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "D16",
+              "PB5"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "D17",
+              "PC0"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A4 / SDA",
+            "category": "communication",
+            "functions": [
+              "D18",
+              "PA6"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A5 / SCL",
+            "category": "communication",
+            "functions": [
+              "D19",
+              "PA7"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A6 / DAC1",
+            "category": "analog",
+            "functions": [
+              "D20",
+              "PB1"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A7 / DAC3",
+            "category": "analog",
+            "functions": [
+              "D21",
+              "PB3"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power",
+            "notes": [
+              "Outputs 5 V only when the board is USB powered."
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "6-21 V input."
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D12 / CIPO",
+            "category": "communication",
+            "functions": [
+              "PA8",
+              "MISO"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "D11 / COPI",
+            "category": "communication",
+            "functions": [
+              "PA9",
+              "MOSI"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "D10 / CS",
+            "category": "communication",
+            "functions": [
+              "PD5",
+              "SS"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "PD4"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D8",
+            "category": "gpio",
+            "functions": [
+              "PD3"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "PD2"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "PC9"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D5 / SCL1",
+            "category": "communication",
+            "functions": [
+              "PC8"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D4 / SDA1",
+            "category": "communication",
+            "functions": [
+              "PC7"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D3 / SS1",
+            "category": "communication",
+            "functions": [
+              "PC6"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "D2 / SCK1",
+            "category": "communication",
+            "functions": [
+              "PA3"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "D1 / RX1",
+            "category": "communication",
+            "functions": [
+              "PA5",
+              "MISO1"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "D0 / TX1",
+            "category": "communication",
+            "functions": [
+              "PA4",
+              "MOSI1"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-mg24",
+    "name": "Seeed Studio XIAO MG24",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "Thumb-sized XIAO with Silicon Labs' EFR32MG24 for Matter, Thread, Zigbee, and Bluetooth LE.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "3.3 V GPIO; the 5 V pad is USB power, not a logic level."
+      },
+      {
+        "severity": "warning",
+        "text": "Zephyr's xiao_mg24 devicetree routes I2C0 SCL to PC4 (D4) and SDA to PC5 (D5), the reverse of Seeed's pin map and the Arduino core. Swap the lines, or override the pinctrl, when moving between the two."
+      },
+      {
+        "severity": "warning",
+        "text": "In the Silicon Labs Arduino core, Serial is on back pads D11/D12 (the SAMD11 USB bridge); the D6/D7 edge pads are Serial1."
+      },
+      {
+        "severity": "warning",
+        "text": "USB goes through an onboard SAMD11 bridge; the EFR32MG24 has no native USB."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, battery pads, 5 V/3.3 V pins."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; labels follow Seeed's XIAO MG24 pin map and schematic net names."
+      },
+      {
+        "severity": "info",
+        "text": "EFR32MG24 GPIO runs from the board's 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Back-side pads D11-D18 are not shown on this 14-pad map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "XIAO MG24 getting started - pin map (Seeed Studio)",
+        "url": "https://wiki.seeedstudio.com/xiao_mg24_getting_started/",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "XIAO MG24 schematic (Seeed Studio)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO_MG24/Getting_Start/XIAO_MGM240S_KICAD_Prj.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "XIAO MG24 core variant - pin to port map (Silicon Labs Arduino core)",
+        "url": "https://github.com/SiliconLabs/arduino/blob/74f6af53dcc6fd55db38a26e9b123b2a62305362/variants/xiao_mg24/arduino_variant.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "xiao_mg24 connector map - independent cross-check (Zephyr Project)",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/2a9e8ac155a3f2fd85d4559753be86a47b44ccf0/boards/seeed/xiao_mg24/seeed_xiao_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "PC00"
+            ],
+            "notes": [
+              "Default SPI SS in the Silicon Labs Arduino core."
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / A1",
+            "category": "analog",
+            "functions": [
+              "PC01"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2 / A2",
+            "category": "analog",
+            "functions": [
+              "PC02"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3 / A3",
+            "category": "analog",
+            "functions": [
+              "PC03"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA",
+            "category": "communication",
+            "functions": [
+              "PC04",
+              "A4"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL",
+            "category": "communication",
+            "functions": [
+              "PC05",
+              "A5"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "PC06",
+              "A6",
+              "Serial1 TX"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "PA05",
+              "A10"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "PA04",
+              "A9"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "PA03",
+              "A8"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX",
+            "category": "communication",
+            "functions": [
+              "PC07",
+              "A7",
+              "Serial1 RX"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-rp2350",
+    "name": "Seeed Studio XIAO RP2350",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "XIAO-format RP2350 with dual Cortex-M33 or Hazard3 RISC-V cores and 19 GPIO.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "3.3 V GPIO."
+      },
+      {
+        "severity": "warning",
+        "text": "D4/D5 are I2C1. The arduino-pico Wire object defaults to I2C0 on back pads D13/D14 (GPIO17/16); use Wire1 for the edge pads."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO25 drives the user LED and GPIO22 the RGB LED; GPIO29 and GPIO19 are reserved for battery sensing."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, battery pads, 5 V/3.3 V pins."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; labels follow Seeed's XIAO RP2350 pin map, cross-checked with the arduino-pico variant and Zephyr."
+      },
+      {
+        "severity": "info",
+        "text": "D labels are board labels, not raw RP2350 GPIO numbers; aliases give the GPIO."
+      },
+      {
+        "severity": "info",
+        "text": "Back-side pads D11-D18 (UART1, I2C0, SPI1) are not shown on this 14-pad map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "XIAO RP2350 with Arduino - pin map (Seeed Studio)",
+        "url": "https://wiki.seeedstudio.com/xiao_rp2350_arduino/",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "XIAO RP2350 schematic (Seeed Studio)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO-RP2350/res/Seeed-Studio-XIAO-RP2350-v1.0.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "RP2350 datasheet (Raspberry Pi)",
+        "url": "https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf",
+        "official": false,
+        "type": "Datasheet"
+      },
+      {
+        "title": "seeed_xiao_rp2350 pins_arduino.h - independent cross-check (arduino-pico)",
+        "url": "https://github.com/earlephilhower/arduino-pico/blob/master/variants/seeed_xiao_rp2350/pins_arduino.h",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "GPIO26",
+              "ADC0"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / A1",
+            "category": "analog",
+            "functions": [
+              "GPIO27",
+              "ADC1"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2 / A2",
+            "category": "analog",
+            "functions": [
+              "GPIO28",
+              "ADC2"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3 / CS",
+            "category": "communication",
+            "functions": [
+              "GPIO5",
+              "SPI0 CSn"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA1",
+            "category": "communication",
+            "functions": [
+              "GPIO6"
+            ],
+            "notes": [
+              "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here."
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL1",
+            "category": "communication",
+            "functions": [
+              "GPIO7"
+            ],
+            "notes": [
+              "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here."
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "GPIO0",
+              "UART0 TX"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO3",
+              "SPI0 TX"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO4",
+              "SPI0 RX"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO2",
+              "SPI0 SCK"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX",
+            "category": "communication",
+            "functions": [
+              "GPIO1",
+              "UART0 RX"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-nrf54l15",
+    "name": "Seeed Studio XIAO nRF54L15",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "XIAO on Nordic's nRF54L15, with Bluetooth LE, Thread, Zigbee, and Matter support.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "3.3 V GPIO; the 5 V pad is USB power, not a logic level."
+      },
+      {
+        "severity": "warning",
+        "text": "USB goes through an onboard SAMD11 bridge; the nRF54L15 has no native USB."
+      },
+      {
+        "severity": "warning",
+        "text": "On the Sense variant, back pads D11/D12 (P0.03/P0.04) are the onboard IMU's I2C bus."
+      },
+      {
+        "severity": "warning",
+        "text": "P1.02/P1.03 are the NFC antenna pads; P2.03/P2.05 control the RF switch."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, battery pads, 5 V/3.3 V pins."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; labels follow Seeed's XIAO nRF54L15 pin map, schematic, and the Zephyr xiao_d connector map."
+      },
+      {
+        "severity": "info",
+        "text": "The nRF54L15 runs from the board's VSYS_3V3 rail."
+      },
+      {
+        "severity": "info",
+        "text": "Back-side pads D11-D15, SWD, and NFC are not shown on this 14-pad map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "XIAO nRF54L15 getting started - pin map (Seeed Studio)",
+        "url": "https://wiki.seeedstudio.com/xiao_nrf54l15_sense_getting_started/",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "XIAO nRF54L15 schematic (Seeed Studio)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO_nRF54L15/Getting_Start/nRF54L15_Schematic.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "nRF54L15 datasheet (Nordic Semiconductor, via Seeed)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO_nRF54L15/Getting_Start/Nordic_nRF54L15_Datasheet_v1.0.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "xiao_nrf54l15 connector map - independent cross-check (Zephyr Project)",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/2a9e8ac155a3f2fd85d4559753be86a47b44ccf0/boards/seeed/xiao_nrf54l15/seeed_xiao_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "P1.04",
+              "AIN0"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / A1",
+            "category": "analog",
+            "functions": [
+              "P1.05",
+              "AIN1"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2 / A2",
+            "category": "analog",
+            "functions": [
+              "P1.06",
+              "AIN2"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3 / A3",
+            "category": "analog",
+            "functions": [
+              "P1.07",
+              "AIN3"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA",
+            "category": "communication",
+            "functions": [
+              "P1.10"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL",
+            "category": "communication",
+            "functions": [
+              "P1.11"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "P2.08"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "P2.02"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "P2.04"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "P2.01"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX",
+            "category": "communication",
+            "functions": [
+              "P2.07"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-nrf54lm20a",
+    "name": "Seeed Studio XIAO nRF54LM20A",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "XIAO on Nordic's nRF54LM20A, with an nPM1300 PMIC, Bluetooth LE 6.0, Thread, and Zigbee.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "3.3 V GPIO; the 5 V pad is USB power, not a logic level."
+      },
+      {
+        "severity": "warning",
+        "text": "Seeed lists nRF Connect SDK (Zephyr) and PlatformIO as the supported toolchains; the Arduino IDE is not listed."
+      },
+      {
+        "severity": "warning",
+        "text": "USB goes through an onboard SAMD11 bridge."
+      },
+      {
+        "severity": "warning",
+        "text": "Seeed's wiki table names pins by chip port and A number only; the D numbers here come from Zephyr and the schematic net names, which agree."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C 5 V or 3.7 V battery via nPM1300 PMIC."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; D numbers from the Zephyr xiao_d connector map, matched to Seeed's pin map and schematic net names."
+      },
+      {
+        "severity": "info",
+        "text": "The nRF54LM20A runs from the nPM1300 BUCK2 VSYS_3V3 rail."
+      },
+      {
+        "severity": "info",
+        "text": "Back-side pads D11-D27, battery, SHPHLD, SWD, and NFC are not shown on this 14-pad map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "XIAO nRF54LM20A getting started - pin map (Seeed Studio)",
+        "url": "https://wiki.seeedstudio.com/xiao_nrf54lm20a_getting_started/",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "XIAO nRF54LM20A schematic (Seeed Studio)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO_nRF54LM20A/getting_start/RES/XIAO_nRF54LM20A_Schematic.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "nRF54LM20A datasheet (Nordic Semiconductor, via Seeed)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO_nRF54LM20A/getting_start/RES/nRF54LM20A_nRF54LM20B_Datasheet_v1.0.pdf",
+        "official": true,
+        "type": "Datasheet"
+      },
+      {
+        "title": "xiao_nrf54lm20a connector map - D-number source (Zephyr Project)",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/2a9e8ac155a3f2fd85d4559753be86a47b44ccf0/boards/seeed/xiao_nrf54lm20a/seeed_xiao_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "P1.00",
+              "AIN0"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / A1",
+            "category": "analog",
+            "functions": [
+              "P1.31",
+              "AIN1"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2 / A2",
+            "category": "analog",
+            "functions": [
+              "P1.30",
+              "AIN2"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3 / A3",
+            "category": "analog",
+            "functions": [
+              "P1.29",
+              "AIN3"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA",
+            "category": "communication",
+            "functions": [
+              "P1.03",
+              "A7"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL",
+            "category": "communication",
+            "functions": [
+              "P1.07",
+              "A8"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "P1.08"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "P1.06",
+              "A4"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "P1.05",
+              "A5"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "P1.04",
+              "A6"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX",
+            "category": "communication",
+            "functions": [
+              "P1.09"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-esp32c5",
+    "name": "Seeed Studio XIAO ESP32-C5",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "XIAO with ESP32-C5 dual-band Wi-Fi 6, Bluetooth LE, Zigbee, and Thread.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "3.3 V GPIO; the 5 V pad is USB power, not a logic level."
+      },
+      {
+        "severity": "warning",
+        "text": "D2 (GPIO25) and D3 (GPIO7) are ESP32-C5 strapping pins; external pulls or driven peripherals can change boot behavior."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO27 drives the user LED and GPIO28 is the Boot button; GPIO6 and GPIO26 are battery sensing."
+      },
+      {
+        "severity": "warning",
+        "text": "Only D0 is an analog input on the edge pads."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, battery pads, 5 V/3.3 V pins."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; labels follow Seeed's XIAO ESP32-C5 pin map, schematic, and the Zephyr xiao_d connector map."
+      },
+      {
+        "severity": "info",
+        "text": "Only D0 (GPIO1, ADC1_CH0) is an analog input on the edge pads."
+      },
+      {
+        "severity": "info",
+        "text": "Back-side JTAG (MTMS/MTDI/MTCK/MTDO) and battery pads are not shown on this 14-pad map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "XIAO ESP32-C5 getting started - pin map (Seeed Studio)",
+        "url": "https://wiki.seeedstudio.com/xiao_esp32c5_getting_started/",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "XIAO ESP32-C5 schematic (Seeed Studio)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO_ESP32C5/res/Seeed_Studio_XIAO_ESP32C5.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "ESP32-C5 series datasheet (Espressif)",
+        "url": "https://www.espressif.com/sites/default/files/documentation/esp32-c5_datasheet_en.pdf",
+        "official": false,
+        "type": "Datasheet"
+      },
+      {
+        "title": "xiao_esp32c5 connector map - independent cross-check (Zephyr Project)",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/2a9e8ac155a3f2fd85d4559753be86a47b44ccf0/boards/seeed/xiao_esp32c5/seeed_xiao_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "GPIO1"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "gpio",
+            "functions": [
+              "GPIO0"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "GPIO25"
+            ],
+            "notes": [
+              "Strapping pin; external pulls or a driven peripheral can change boot behavior."
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "GPIO7"
+            ],
+            "notes": [
+              "Strapping pin; external pulls or a driven peripheral can change boot behavior."
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA",
+            "category": "communication",
+            "functions": [
+              "GPIO23"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL",
+            "category": "communication",
+            "functions": [
+              "GPIO24"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "GPIO11"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO10"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO9"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO8"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX",
+            "category": "communication",
+            "functions": [
+              "GPIO12"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-ra4m1",
+    "name": "Seeed Studio XIAO RA4M1",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "XIAO-format RA4M1, the UNO R4's microcontroller, running at 3.3 V with 19 GPIO.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "3.3 V GPIO on this board, even though the RA4M1 runs at 5 V on the UNO R4 and Nano R4. Do not reuse 5 V shield wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "CAN (CRX0/CTX0 on D9/D10) needs an external transceiver and shares those pads with SPI1."
+      },
+      {
+        "severity": "warning",
+        "text": "P112/P500 drive the RGB LED and P011 the user LED."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, battery pads, 5 V/3.3 V pins."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; labels follow Seeed's XIAO RA4M1 pin map, schematic, and the Zephyr xiao_d connector map."
+      },
+      {
+        "severity": "info",
+        "text": "The RA4M1 runs from the board's 3.3 V rail here, unlike the 5 V UNO R4 and Nano R4."
+      },
+      {
+        "severity": "info",
+        "text": "Back-side pads D11-D18 are not shown on this 14-pad map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "XIAO RA4M1 getting started - pin map (Seeed Studio)",
+        "url": "https://wiki.seeedstudio.com/getting_started_xiao_ra4m1/",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "XIAO RA4M1 schematic v1.01 (Seeed Studio)",
+        "url": "https://files.seeedstudio.com/wiki/XIAO-R4AM1/res/XIAO%20RA4M1%20V1.01_SCH_PDF_260114%20.pdf.pdf",
+        "official": true,
+        "type": "Schematic"
+      },
+      {
+        "title": "xiao_ra4m1 connector map - independent cross-check (Zephyr Project)",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/2a9e8ac155a3f2fd85d4559753be86a47b44ccf0/boards/seeed/xiao_ra4m1/seeed_xiao_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "P014",
+              "AN009",
+              "DAC"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / A1",
+            "category": "analog",
+            "functions": [
+              "P000",
+              "AN000"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2 / A2",
+            "category": "analog",
+            "functions": [
+              "P001",
+              "AN001"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3 / A3",
+            "category": "analog",
+            "functions": [
+              "P002",
+              "AN002"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA",
+            "category": "communication",
+            "functions": [
+              "P206",
+              "SDA1"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL",
+            "category": "communication",
+            "functions": [
+              "P100",
+              "SCL1"
+            ],
+            "notes": [
+              "Also an analog input when I2C is not in use."
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "P302",
+              "TXD2"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "P109",
+              "CTX0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "P110",
+              "CRX0"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "P111"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX",
+            "category": "communication",
+            "functions": [
+              "P301",
+              "RXD2"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raspberry-pi-500-plus",
+    "name": "Raspberry Pi 500+",
+    "manufacturer": "Raspberry Pi",
+    "aliases": [],
+    "description": "Pi 5-class keyboard computer with 16 GB RAM, an M.2 SSD slot, and the 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only and not 5 V tolerant."
+      },
+      {
+        "severity": "warning",
+        "text": "The 40-pin header is horizontal on the rear edge; identify pin 1 before wiring rather than assuming a bare Pi's orientation."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V / 5 A USB-C."
+      },
+      {
+        "severity": "info",
+        "text": "Physical pins 1 and 17 are 3.3 V; pins 2 and 4 are 5 V."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO0 and GPIO1 on pins 27 and 28 are reserved for HAT ID EEPROM use on most setups."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO pins are 3.3 V logic and are not 5 V tolerant."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Keyboard computers documentation - Pi 500+ specification (Raspberry Pi)",
+        "url": "https://www.raspberrypi.com/documentation/computers/keyboard-computers.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "Raspberry Pi 500+ product information portal (Raspberry Pi)",
+        "url": "https://pip.raspberrypi.com/categories/1282-raspberry-pi-500plus",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "Raspberry Pi computers documentation - GPIO header (Raspberry Pi)",
+        "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
+        "official": true,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "J8 40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "communication",
+            "functions": [
+              "SDA1"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "communication",
+            "functions": [
+              "SCL1"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "gpio",
+            "functions": [
+              "GPCLK0"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO17",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO27",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO22",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "functions": [
+              "SPI0 MOSI"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "communication",
+            "functions": [
+              "SPI0 MISO"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO11",
+            "category": "communication",
+            "functions": [
+              "SPI0 SCLK"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "reserved",
+            "functions": [
+              "ID_SD"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "gpio",
+            "functions": [
+              "PWM1"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO19",
+            "category": "special",
+            "functions": [
+              "PCM FS"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO26",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO14",
+            "category": "communication",
+            "functions": [
+              "TXD0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIO15",
+            "category": "communication",
+            "functions": [
+              "RXD0"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIO18",
+            "category": "gpio",
+            "functions": [
+              "PWM0"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO23",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO24",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO25",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIO8",
+            "category": "communication",
+            "functions": [
+              "SPI0 CE0"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO7",
+            "category": "communication",
+            "functions": [
+              "SPI0 CE1"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIO1",
+            "category": "reserved",
+            "functions": [
+              "ID_SC"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO12",
+            "category": "gpio",
+            "functions": [
+              "PWM0"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO16",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO20",
+            "category": "special",
+            "functions": [
+              "PCM DIN"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO21",
+            "category": "special",
+            "functions": [
+              "PCM DOUT"
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
