@@ -101,6 +101,11 @@ its source says so.
   - Not checked: device safe-area insets, hit-area padding on SVG pin
     circles, and keyboard focus beyond the first tab stop.
 
+**Update, 2026-10-24 (shipping):** after `main` was merged in, bringing
+Next.js 16.4.3 and the dependency patches from PR #48, `npm run build` exits
+0 and the security notice is gone. On the merged branch, 614 unit tests and
+85/85 Playwright tests pass, and the CLI checks report 152 boards.
+
 ## Known limits
 
 - Only the main connector of each board is mapped. Not drawn: UNO Q JSPI,
