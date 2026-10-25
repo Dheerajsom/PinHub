@@ -1576,20 +1576,24 @@ button {
   border-color: rgba(8, 145, 178, 0.85);
 }
 
-.ph-sort-option {
+.ph-sort-option,
+.ph-menu-option {
   color: #d4d4d8;
 }
 
-.ph-sort-option[data-active] {
+.ph-sort-option[data-active],
+.ph-menu-option[data-active] {
   background-color: rgba(255, 255, 255, 0.06);
   color: #fafafa;
 }
 
-.ph-sort-option[aria-selected="true"] {
+.ph-sort-option[aria-selected="true"],
+.ph-menu-option[aria-selected="true"] {
   color: #a5f3fc;
 }
 
-.ph-sort-option[aria-selected="true"][data-active] {
+.ph-sort-option[aria-selected="true"][data-active],
+.ph-menu-option[aria-selected="true"][data-active] {
   background-color: rgba(103, 232, 249, 0.1);
 }
 
@@ -1599,25 +1603,114 @@ button {
     0 12px 28px rgba(23, 32, 42, 0.2);
 }
 
-:root[data-theme="light"] .ph-sort-option {
+:root[data-theme="light"] .ph-sort-option,
+:root[data-theme="light"] .ph-menu-option {
   color: #334155;
 }
 
-:root[data-theme="light"] .ph-sort-option[data-active] {
+:root[data-theme="light"] .ph-sort-option[data-active],
+:root[data-theme="light"] .ph-menu-option[data-active] {
   background-color: rgba(31, 48, 58, 0.08);
   color: #17202a;
 }
 
-:root[data-theme="light"] .ph-sort-option[aria-selected="true"] {
+:root[data-theme="light"] .ph-sort-option[aria-selected="true"],
+:root[data-theme="light"] .ph-menu-option[aria-selected="true"] {
   color: #0e7490;
 }
 
-:root[data-theme="light"] .ph-sort-option[aria-selected="true"][data-active] {
+:root[data-theme="light"] .ph-sort-option[aria-selected="true"][data-active],
+:root[data-theme="light"] .ph-menu-option[aria-selected="true"][data-active] {
   background-color: rgba(8, 145, 178, 0.1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ph-sort-menu { animation: none; }
+}
+
+/* Facet menus (Manufacturer, Processor family in the filter rail). The list
+   opens in place inside its panel, so it shares the sort menu's option rows
+   but not its floating shadow. Counts sit in the mono face; the chosen
+   option and its count turn cyan, because selection is cyan. */
+.ph-facet-trigger {
+  font-size: 13px;
+  background-color: var(--well);
+}
+
+.ph-facet-trigger:focus-visible {
+  outline-offset: 0;
+  border-color: rgba(103, 232, 249, 0.7);
+}
+
+:root[data-theme="light"] .ph-facet-trigger:focus-visible {
+  border-color: rgba(8, 145, 178, 0.85);
+}
+
+/* 16px below lg keeps iOS from zooming the page when the field takes focus. */
+.ph-facet-input {
+  font-size: 16px;
+}
+
+@media (min-width: 1024px) {
+  .ph-facet-input { font-size: 13px; }
+}
+
+.ph-facet-panel {
+  animation: ph-sort-in 120ms ease-out;
+}
+
+/* The field sits flush inside the clipped panel, where an outline would be
+   cut off; its focus cue is the underline turning cyan instead. */
+.ph-facet-input:focus-visible {
+  outline: none;
+}
+
+.ph-facet-search:focus-within {
+  border-bottom-color: rgba(103, 232, 249, 0.7);
+}
+
+:root[data-theme="light"] .ph-facet-search:focus-within {
+  border-bottom-color: rgba(8, 145, 178, 0.85);
+}
+
+.ph-facet-count {
+  color: #91919b;
+}
+
+.ph-menu-option[aria-selected="true"] .ph-facet-count {
+  color: #67e8f9;
+}
+
+:root[data-theme="light"] .ph-facet-count {
+  color: #475569;
+}
+
+:root[data-theme="light"] .ph-menu-option[aria-selected="true"] .ph-facet-count {
+  color: #0e7490;
+}
+
+/* Rail option hover fills live here, not as `hover:bg-white/…` utilities,
+   which the light theme's `bg-white/` substring rule would paint at rest.
+
+   Token grid for short facet values (interfaces, logic levels): mono, because
+   these are names an engineer types into code and datasheet searches. */
+.ph-token {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.ph-token:hover:not([aria-pressed="true"]),
+.ph-filter-option:hover:not([aria-pressed="true"]) {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="light"] .ph-token:hover:not([aria-pressed="true"]),
+:root[data-theme="light"] .ph-filter-option:hover:not([aria-pressed="true"]) {
+  background-color: rgba(31, 48, 58, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-facet-panel { animation: none; }
 }
 
 /* Planner pin editor: it floats over the sheet, so it carries a shadow to
