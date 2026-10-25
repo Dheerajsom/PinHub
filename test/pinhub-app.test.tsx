@@ -141,7 +141,10 @@ describe("PinHubApp result list", () => {
     expect(select.getAttribute("aria-pressed")).toBe("true");
   });
 
-  it("ranks an exact board name first and says what matched", () => {
+  // Regression: every result carried a "name match" chip, which only repeats
+  // the visible name. Name and spec hits are self-evident and show no chip;
+  // a less obvious reason, such as a description hit, still does.
+  it("ranks an exact board name first and badges only non-obvious matches", () => {
     setViewport(true);
     renderApp();
 
@@ -153,12 +156,33 @@ describe("PinHubApp result list", () => {
       .getByRole("region", { name: "Board results" })
       .querySelectorAll('article[id^="board-result-"]');
     expect(results[0].id).toBe("board-result-raspberry-pi-5");
-    expect(
-      within(results[0] as HTMLElement).getByText("Matched by name"),
-    ).toBeTruthy();
+    expect(within(results[0] as HTMLElement).queryByText(/Matched by/)).toBeNull();
     expect(
       within(results[1] as HTMLElement).getByText("Matched by description"),
     ).toBeTruthy();
+  });
+
+  it("filters by manufacturer from the themed menu, with board counts", () => {
+    setViewport(true);
+    renderApp();
+
+    expect(document.querySelector("#mobile-filters select")).toBeNull();
+    const trigger = screen.getByRole("button", { name: /^Manufacturer All manufacturers/ });
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+
+    const narrow = screen.getByRole("combobox", { name: "Narrow manufacturer list" });
+    fireEvent.change(narrow, { target: { value: "acm" } });
+    const acme = screen.getByRole("option", { name: /^Acme/ });
+    expect(acme.textContent).toContain("1");
+    expect(screen.queryByRole("option", { name: /^Raspberry Pi/ })).toBeNull();
+
+    fireEvent.keyDown(narrow, { key: "Enter" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    const results = screen
+      .getByRole("region", { name: "Board results" })
+      .querySelectorAll('article[id^="board-result-"]');
+    expect([...results].map((result) => result.id)).toEqual(["board-result-sensor-hat"]);
   });
 
   it("bounds scripted search input before storing or filtering it", () => {

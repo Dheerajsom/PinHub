@@ -19,6 +19,7 @@ import {
   Factory,
   Layers3,
   LoaderCircle,
+  Plug,
   Radio,
   Search,
   SlidersHorizontal,
@@ -29,12 +30,13 @@ import {
 import { clsx } from "clsx";
 import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
-import { createBoardSearchIndex } from "@/lib/board-search";
+import { createBoardSearchIndex, shownMatchReason } from "@/lib/board-search";
 import { createBoardDetailLoader } from "@/lib/board-detail-loader";
 import { useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { VendorLogo } from "@/components/VendorLogo";
-import { ActiveFilterChip, BoardResult, FilterPanel, FilterSelect } from "@/components/catalog/CatalogListParts";
+import { ActiveFilterChip, BoardResult, FilterPanel } from "@/components/catalog/CatalogListParts";
+import { FacetMenu } from "@/components/catalog/FacetMenu";
 import { BoardDetailPanel, type DetailState } from "@/components/BoardDetailPanel";
 import { SectionNav } from "@/components/SectionNav";
 import { LibraryRail } from "@/components/ProjectShelf";
@@ -53,6 +55,7 @@ import {
   activeCatalogFilterCount,
   boundCatalogQuery,
   defaultCatalogState,
+  matchesCatalogFilters,
   maxCatalogQueryLength,
   type CatalogFilterKey,
   type CatalogSort,
@@ -131,6 +134,32 @@ const documentationOptions: Record<TriState, string> = {
   has: "Official documentation",
   none: "No official source",
 };
+
+const noFavorites: ReadonlySet<string> = new Set();
+
+// Boards in the whole catalog per option, as the Category panel has always
+// shown. Counted with the same predicate the filters apply, so a count is
+// exactly what choosing that option alone returns.
+function catalogCounts(
+  catalog: readonly BoardSummary[],
+  items: readonly string[],
+  stateFor: (item: string) => Partial<CatalogState>,
+): Map<string, number> {
+  return new Map(
+    items.map((item) => [
+      item,
+      item === all
+        ? catalog.length
+        : catalog.filter((board) =>
+            matchesCatalogFilters(
+              board,
+              { ...defaultCatalogState, ...stateFor(item) },
+              noFavorites,
+            ),
+          ).length,
+    ]),
+  );
+}
 
 function optionKey(options: Record<TriState, string>, label: string): TriState {
   return (Object.keys(options) as TriState[]).find((key) => options[key] === label) ?? "any";
@@ -216,13 +245,25 @@ export function PinHubApp({
     }),
     [catalog],
   );
-  const categoryCounts = useMemo(() => {
-    const counts = new Map<string, number>([[all, catalog.length]]);
-    for (const board of catalog) {
-      counts.set(board.category, (counts.get(board.category) ?? 0) + 1);
-    }
-    return counts;
-  }, [catalog]);
+  const facetCounts = useMemo(() => {
+    const byKey = (key: CatalogFilterKey) =>
+      catalogCounts(catalog, facetItems[key as keyof typeof facetItems], (item) => ({ [key]: [item] }));
+    return {
+      category: byKey("category"),
+      vendor: byKey("vendor"),
+      family: byKey("family"),
+      interface: byKey("interface"),
+      logic: byKey("logic"),
+      power: byKey("power"),
+      form: byKey("form"),
+      wireless: catalogCounts(catalog, Object.values(wirelessOptions), (item) => ({
+        wirelessCapability: optionKey(wirelessOptions, item),
+      })),
+      documentation: catalogCounts(catalog, Object.values(documentationOptions), (item) => ({
+        officialDocumentation: optionKey(documentationOptions, item),
+      })),
+    };
+  }, [catalog, facetItems]);
   const commonBoards = useMemo(
     () =>
       commonBoardIds.flatMap((id) => {
@@ -239,7 +280,9 @@ export function PinHubApp({
   );
   const matchReasons = useMemo(
     () =>
-      new Map(results.map((result) => [result.board.id, result.matchedBy])),
+      new Map(
+        results.map((result) => [result.board.id, shownMatchReason(result.matchedBy)]),
+      ),
     [results],
   );
 
@@ -454,22 +497,29 @@ export function PinHubApp({
   const facetIcon = (Icon: typeof Layers3) => (
     <Icon className="size-4 text-cyan-200" aria-hidden="true" />
   );
-  const listFacets: {
+  const panelFacets: {
     key: CatalogFilterKey;
     title: string;
     icon: ReactNode;
-    control: "panel" | "select";
-    items: string[];
-    counts?: Map<string, number>;
+    layout: "list" | "tokens";
   }[] = [
-    { key: "category", title: "Category", icon: facetIcon(Layers3), control: "panel", items: facetItems.category, counts: categoryCounts },
-    { key: "vendor", title: "Manufacturer", icon: facetIcon(Factory), control: "select", items: facetItems.vendor },
-    { key: "family", title: "Processor family", icon: facetIcon(Cpu), control: "select", items: facetItems.family },
-    { key: "interface", title: "Interface", icon: facetIcon(SlidersHorizontal), control: "panel", items: facetItems.interface },
-    { key: "logic", title: "Logic level", icon: facetIcon(Zap), control: "panel", items: facetItems.logic },
-    { key: "power", title: "Power input", icon: facetIcon(Zap), control: "panel", items: facetItems.power },
-    { key: "form", title: "Form factor", icon: facetIcon(CircuitBoard), control: "panel", items: facetItems.form },
+    { key: "interface", title: "Interface", icon: facetIcon(SlidersHorizontal), layout: "tokens" },
+    { key: "logic", title: "Logic level", icon: facetIcon(Zap), layout: "tokens" },
+    { key: "power", title: "Power input", icon: facetIcon(Plug), layout: "list" },
+    { key: "form", title: "Form factor", icon: facetIcon(CircuitBoard), layout: "list" },
   ];
+  const renderPanelFacet = ({ key, title, icon, layout }: (typeof panelFacets)[number]) => (
+    <FilterPanel
+      key={key}
+      title={title}
+      icon={icon}
+      layout={layout}
+      items={facetItems[key as keyof typeof facetItems]}
+      active={catalogState[key][0] ?? all}
+      counts={facetCounts[key as keyof typeof facetCounts]}
+      onChange={(value) => selectFacet(key, value)}
+    />
+  );
 
   return (
     <main className="relative isolate min-h-screen">
@@ -480,7 +530,7 @@ export function PinHubApp({
         sourceCount={sourceCount}
       />
 
-      <div className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
+      <div data-sticky-header className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6 lg:px-8">
           <SectionNav current="/" />
           <label className="ph-search-shell relative block w-full min-w-44 flex-1 rounded-xl shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] max-sm:order-first sm:w-auto">
@@ -660,33 +710,42 @@ export function PinHubApp({
             mobileFiltersOpen ? "block" : "hidden xl:block",
           )}
         >
-          {listFacets.map(({ key, title, icon, control, items, counts }) =>
-            control === "select" ? (
-              <FilterSelect
-                key={key}
-                title={title}
-                icon={icon}
-                items={items}
-                active={catalogState[key][0] ?? all}
-                onChange={(value) => selectFacet(key, value)}
-              />
-            ) : (
-              <FilterPanel
-                key={key}
-                title={title}
-                icon={icon}
-                items={items}
-                active={catalogState[key][0] ?? all}
-                counts={counts}
-                onChange={(value) => selectFacet(key, value)}
-              />
-            ),
-          )}
+          <FilterPanel
+            title="Category"
+            icon={facetIcon(Layers3)}
+            items={facetItems.category}
+            active={catalogState.category[0] ?? all}
+            counts={facetCounts.category}
+            onChange={(value) => selectFacet("category", value)}
+          />
+          <FacetMenu
+            title="Manufacturer"
+            icon={facetIcon(Factory)}
+            items={facetItems.vendor}
+            active={catalogState.vendor[0] ?? all}
+            counts={facetCounts.vendor}
+            allLabel="All manufacturers"
+            noun="manufacturers"
+            renderMark={(vendor) => <VendorLogo vendor={vendor} size={16} />}
+            onChange={(value) => selectFacet("vendor", value)}
+          />
+          <FacetMenu
+            title="Processor family"
+            icon={facetIcon(Cpu)}
+            items={facetItems.family}
+            active={catalogState.family[0] ?? all}
+            counts={facetCounts.family}
+            allLabel="All families"
+            noun="families"
+            onChange={(value) => selectFacet("family", value)}
+          />
+          {panelFacets.map(renderPanelFacet)}
           <FilterPanel
             title="Wireless capability"
             icon={facetIcon(Radio)}
             items={Object.values(wirelessOptions)}
             active={wirelessOptions[catalogState.wirelessCapability]}
+            counts={facetCounts.wireless}
             onChange={(value) =>
               updateFilters(() => ({ wirelessCapability: optionKey(wirelessOptions, value) }), {
                 closeFilters: true,
@@ -698,6 +757,7 @@ export function PinHubApp({
             icon={facetIcon(BookCheck)}
             items={Object.values(documentationOptions)}
             active={documentationOptions[catalogState.officialDocumentation]}
+            counts={facetCounts.documentation}
             onChange={(value) =>
               updateFilters(
                 () => ({ officialDocumentation: optionKey(documentationOptions, value) }),

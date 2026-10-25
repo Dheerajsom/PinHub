@@ -36,7 +36,12 @@ type FilterPanelProps = {
   icon: ReactNode;
   items: readonly string[];
   active: string;
-  counts?: Map<string, number>;
+  counts?: ReadonlyMap<string, number>;
+  /**
+   * "list" stacks options with their counts; "tokens" packs short values
+   * (interface names, logic levels) into a wrapping grid of mono tokens.
+   */
+  layout?: "list" | "tokens";
   onChange: (value: string) => void;
 };
 
@@ -46,6 +51,7 @@ export function FilterPanel({
   items,
   active,
   counts,
+  layout = "list",
   onChange,
 }: FilterPanelProps) {
   return (
@@ -58,76 +64,67 @@ export function FilterPanel({
           {title}
         </span>
       </div>
-      <div className="flex flex-wrap gap-1.5 lg:flex-col lg:gap-0.5">
-        {items.map((item) => {
-          const isActive = active === item;
-          return (
-            <button
-              key={item}
-              type="button"
-              onClick={() => onChange(item)}
-              className={clsx(
-                "flex min-h-10 items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[13px] transition lg:min-h-0 lg:py-[7px]",
-                isActive
-                  ? "border-cyan-300/60 bg-cyan-300/10 font-medium text-cyan-50 shadow-[inset_0_1px_0_rgba(103,232,249,0.12)]"
-                  : "border-transparent text-zinc-400 hover:bg-white/[0.06] hover:text-white",
-              )}
-              aria-pressed={isActive}
-            >
-              <span className="truncate">{item}</span>
-              {counts?.has(item) ? (
-                <span
-                  className={clsx(
-                    "shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[10px] tabular-nums",
-                    isActive
-                      ? "bg-cyan-300/15 text-cyan-100"
-                      : "bg-white/[0.05] text-zinc-500",
-                  )}
-                >
-                  {counts.get(item)}
-                </span>
-              ) : null}
-            </button>
-          );
-        })}
-      </div>
+      {layout === "tokens" ? (
+        <div className="flex flex-wrap gap-1">
+          {items.map((item) => {
+            const isActive = active === item;
+            const count = counts?.get(item);
+            return (
+              <button
+                key={item}
+                type="button"
+                onClick={() => onChange(item)}
+                aria-pressed={isActive}
+                aria-label={count === undefined ? undefined : `${item}, ${count} boards`}
+                title={count === undefined ? undefined : `${count} boards`}
+                className={clsx(
+                  "ph-token flex min-h-11 min-w-11 items-center justify-center rounded-md border px-2 transition lg:min-h-8 lg:min-w-0",
+                  isActive
+                    ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50"
+                    : "border-white/10 text-zinc-400 hover:border-white/25 hover:text-white",
+                )}
+              >
+                {item}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-1.5 lg:flex-col lg:gap-0.5">
+          {items.map((item) => {
+            const isActive = active === item;
+            return (
+              <button
+                key={item}
+                type="button"
+                onClick={() => onChange(item)}
+                className={clsx(
+                  "flex min-h-11 items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[13px] transition lg:min-h-0 lg:py-[7px]",
+                  isActive
+                    ? "border-cyan-300/60 bg-cyan-300/10 font-medium text-cyan-50 shadow-[inset_0_1px_0_rgba(103,232,249,0.12)]"
+                    : "ph-filter-option border-transparent text-zinc-400 hover:text-white",
+                )}
+                aria-pressed={isActive}
+              >
+                <span className="truncate">{item}</span>
+                {counts?.has(item) ? (
+                  <span
+                    className={clsx(
+                      "shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[10px] tabular-nums",
+                      isActive
+                        ? "bg-cyan-300/15 text-cyan-100"
+                        : "bg-white/[0.05] text-zinc-500",
+                    )}
+                  >
+                    {counts.get(item)}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </section>
-  );
-}
-
-type FilterSelectProps = {
-  title: string;
-  icon: ReactNode;
-  items: readonly string[];
-  active: string;
-  onChange: (value: string) => void;
-};
-
-export function FilterSelect({
-  title,
-  icon,
-  items,
-  active,
-  onChange,
-}: FilterSelectProps) {
-  return (
-    <label className="surface-panel block rounded-xl p-3">
-      <span className="mb-2 flex items-center gap-2 px-1">
-        <span className="grid size-7 shrink-0 place-items-center rounded-md border border-white/10 bg-[#0a0c11]">
-          {icon}
-        </span>
-        <span className="text-[13px] font-semibold tracking-tight text-white">
-          {title}
-        </span>
-      </span>
-      <select
-        value={active}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-10 w-full cursor-pointer rounded-lg border border-white/10 bg-[#0a0c11] px-2.5 text-[13px] text-zinc-200 outline-none transition focus:border-cyan-300/60 hover:border-white/20"
-      >
-        {items.map((item) => <option key={item} value={item}>{item}</option>)}
-      </select>
-    </label>
   );
 }
 
