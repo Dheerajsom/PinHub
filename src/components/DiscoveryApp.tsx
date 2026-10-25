@@ -33,6 +33,7 @@ import type { BoardSummary } from "@/lib/board-summary";
 import {
   createBoardSearchIndex,
   matchFieldLabels,
+  shownMatchReason,
   type BoardMatchField,
 } from "@/lib/board-search";
 import { useFavorites } from "@/lib/favorites";
@@ -284,7 +285,7 @@ export function DiscoveryApp({
           <FavoriteLimitToast message={favoriteMessage} />
           <div className="grid gap-3 xl:grid-cols-2">
             {filtered.slice(0, visible).map(({ board, matchedBy }, index) => (
-              <BoardCard key={board.id} board={board} matchedBy={matchedBy} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === maxComparedBoards} onFavorite={onToggleFavorite} onCompare={toggleCompare} index={index} />
+              <BoardCard key={board.id} board={board} matchedBy={shownMatchReason(matchedBy)} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === maxComparedBoards} onFavorite={onToggleFavorite} onCompare={toggleCompare} index={index} />
             ))}
           </div>
           {visible < filtered.length ? (

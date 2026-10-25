@@ -30,6 +30,18 @@ export const matchFieldLabels: Record<BoardMatchField, string> = {
   description: "description",
 };
 
+// A name or spec hit is visible in the row itself (the name, the processor
+// line), so a badge saying so is noise. The badge is kept for reasons a reader
+// cannot see at a glance: vendor, interface, warning, and description hits.
+const selfEvidentMatches: ReadonlySet<BoardMatchField> = new Set(["name", "spec"]);
+
+/** The match reason worth showing on a result row, or null to show none. */
+export function shownMatchReason(
+  matchedBy: BoardMatchField | null,
+): BoardMatchField | null {
+  return matchedBy && !selfEvidentMatches.has(matchedBy) ? matchedBy : null;
+}
+
 export type BoardSearchMatch = {
   score: number;
   /** Null only for an empty query, where nothing was matched on. */

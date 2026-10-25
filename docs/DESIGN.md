@@ -46,8 +46,8 @@ encodes a real electrical or provenance fact.
 - **Command bar** — sticky. Search input (`/` shortcut), mobile Filters
   toggle with active-count badge, live result count, Favorites toggle,
   removable active-filter chips, Reset.
-- **Filter rail** (left, 15rem) — Category and Interface panels with counts;
-  planned: Logic-level and Has-pin-map facets. Curation note explains why
+- **Filter rail** (left, 15rem) — every facet with per-option counts; see
+  §7 for the menu and token controls. Curation note explains why
   some boards lack in-app maps.
 - **Catalog** (center, fluid) — single-column list of compact result rows,
   relevance-ranked when a query is present.
@@ -203,10 +203,24 @@ else is a note on the specific pin).
   "RP2040" all work today.
 - **Ranking**: per-token scoring, all tokens must match, word-boundary name
   matches dominate.
-- **Filters**: Category (with counts), Interface, Favorites; active filters
-  render as removable chips in the command bar plus a Reset link. Planned
-  facets: logic level (1.8/3.3/5V), has-pin-map, source-type availability,
-  has-warnings.
+- **Filters**: the rail carries Category, Manufacturer, Processor family,
+  Interface, Logic level, Power input, Form factor, Wireless, Documentation,
+  and Has-pin-map. Every option shows how many catalog boards it holds
+  (counted with the filter predicate itself). Active filters render as
+  removable chips in the command bar plus a Reset link.
+  - Long facets (Manufacturer, Processor family) use `FacetMenu`
+    (`src/components/catalog/FacetMenu.tsx`): a themed list that opens in
+    place inside its panel (the rail scrolls, so a floating popup would be
+    clipped), with a type-to-narrow field, counts in Geist Mono, a cyan check
+    on the chosen value, and vendor marks beside manufacturers. No native
+    `<select>` in the rail.
+  - Short machine-name facets (Interface, Logic level) are a wrapping grid of
+    mono tokens (`.ph-token`); prose-label facets stay as stacked lists.
+  - Option hover fills are CSS classes (`.ph-token`, `.ph-filter-option`), not
+    `hover:bg-white/…` utilities, which the light theme would paint at rest.
+- **Match reason badge**: a result row names the field that matched only when
+  the reader cannot see it already. Name and spec hits get no badge; vendor,
+  interface, warning, and description hits do (`shownMatchReason`).
 - **Clear behavior**: chips remove one filter; Reset clears query + all
   filters + favorites-only in one tap.
 - **Sorting**: relevance when a query exists, curated catalog order
