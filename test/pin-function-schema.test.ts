@@ -34,9 +34,9 @@ describe("board payload validation with pin planner fields", () => {
     delete (record as MutablePayload).pinFunctions;
     expect(isBoardPayload(record, "raspberry-pi-pico")).toBe(false);
 
-    const plain = payload("raspberry-pi-4-model-b");
+    const plain = payload("seeed-reterminal");
     firstPin(plain).functions = [{ peripheral: "I2C", instance: "I2C1", signal: "SDA" }];
-    expect(isBoardPayload(plain, "raspberry-pi-4-model-b")).toBe(false);
+    expect(isBoardPayload(plain, "seeed-reterminal")).toBe(false);
   });
 
   const invalidPins: [string, (pin: Record<string, unknown>) => void][] = [
@@ -44,7 +44,7 @@ describe("board payload validation with pin planner fields", () => {
     ["a markup instance", (pin) => { pin.functions = [{ peripheral: "I2C", instance: "<img>", signal: "SDA" }]; }],
     ["a lowercase signal", (pin) => { pin.functions = [{ peripheral: "I2C", instance: "I2C0", signal: "sda" }]; }],
     ["too many functions", (pin) => {
-      pin.functions = Array.from({ length: 17 }, (_, index) => ({ peripheral: "PWM", instance: `PWM${index}`, signal: "A" }));
+      pin.functions = Array.from({ length: 25 }, (_, index) => ({ peripheral: "PWM", instance: `PWM${index}`, signal: "A" }));
     }],
     ["duplicate functions", (pin) => {
       pin.functions = [
@@ -87,25 +87,11 @@ describe("board payload validation with pin planner fields", () => {
     });
   }
 
-  it("keeps planner data on the boards whose sources back it", () => {
-    const pilots = boards.filter((board: Board) => board.pinFunctions).map((board) => board.id);
-    expect(pilots.sort()).toEqual([
-      "adafruit-feather-rp2040",
-      "adafruit-itsybitsy-rp2040",
-      "adafruit-qt-py-rp2040",
-      "arduino-nano-rp2040-connect",
-      "arduino-uno-rev3",
-      "esp32-devkitc",
-      "raspberry-pi-5",
-      "raspberry-pi-pico",
-      "raspberry-pi-pico-2",
-      "raspberry-pi-pico-2-w",
-      "raspberry-pi-pico-w",
-      "seeed-xiao-rp2040",
-      "seeed-xiao-rp2350",
-      "sparkfun-pro-micro-rp2040",
-      "sparkfun-thing-plus-rp2040",
-      "waveshare-rp2040-zero",
-    ]);
+  it("accepts the planner data of every board that carries it", () => {
+    const withData = boards.filter((board: Board) => board.pinFunctions);
+    expect(withData.length).toBeGreaterThan(90);
+    for (const board of withData) {
+      expect(isBoardPayload(JSON.parse(JSON.stringify(board)), board.id), board.id).toBe(true);
+    }
   });
 });

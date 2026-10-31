@@ -22,7 +22,7 @@ type PinFunctionRow = {
 /** Pin function rows keyed by the catalog pin label they apply to. */
 export type PinFunctionTable = Record<string, PinFunctionRow>;
 
-function fn(
+export function fn(
   peripheral: PinPeripheral,
   instance: string,
   signal: string,
@@ -603,6 +603,66 @@ export const rp2BoardSpecs = {
     },
     sdkBoard: "waveshare_rp2040_zero",
     circuitPythonBoard: "waveshare_rp2040_zero",
+  },
+  "adafruit-feather-rp2350": {
+    spec: {
+      chip: "RP2350",
+      pins: {
+        A0: 26, A1: 27, A2: 28, A3: 29, D24: 24, D25: 25, SCK: 22, "MO / MOSI": 23, "MI / MISO": 20,
+        "RX / D0": 1, "TX / D1": 0, D13: 7, D12: 4, D11: 11, D10: 10, D9: 9, D6: 6, D5: 5, SCL: 3, SDA: 2,
+      },
+      defaults: {
+        uart: { instance: "UART0", TX: 0, RX: 1 },
+        i2c: { instance: "I2C1", SDA: 2, SCL: 3 },
+        spi: { instance: "SPI0", SCK: 22, MOSI: 23, MISO: 20 },
+      },
+      led: 7,
+    },
+    sdkBoard: "adafruit_feather_rp2350",
+    circuitPythonBoard: "adafruit_feather_rp2350",
+  },
+  "adafruit-kb2040": {
+    spec: {
+      chip: "RP2040",
+      pins: {
+        "TX / D0": 0, "RX / D1": 1, D2: 2, D3: 3, D4: 4, D5: 5, D6: 6, D7: 7, D8: 8, D9: 9, D10: 10,
+        "MO / MOSI": 19, "MI / MISO": 20, SCK: 18, A0: 26, A1: 27, A2: 28, A3: 29,
+      },
+      defaults: {
+        uart: { instance: "UART0", TX: 0, RX: 1 },
+        spi: { instance: "SPI0", SCK: 18, MOSI: 19, MISO: 20 },
+      },
+    },
+    sdkBoard: "adafruit_kb2040",
+    circuitPythonBoard: "adafruit_kb2040",
+  },
+  "waveshare-rp2350-plus": {
+    spec: {
+      chip: "RP2350",
+      pins: picoHeaderPins,
+      defaults: {
+        uart: { instance: "UART0", TX: 0, RX: 1 },
+        i2c: { instance: "I2C1", SDA: 6, SCL: 7 },
+        spi: { instance: "SPI0", SCK: 18, MOSI: 19, MISO: 16, CS: 17 },
+      },
+    },
+    sdkBoard: "waveshare_rp2350_plus_4mb",
+    circuitPythonBoard: "waveshare_rp2350_plus",
+  },
+  "waveshare-rp2350-zero": {
+    spec: {
+      chip: "RP2350",
+      pins: Object.fromEntries(
+        [...Array.from({ length: 16 }, (_, gpio) => gpio), 26, 27, 28, 29].map((gpio) => [`GP${gpio}`, gpio]),
+      ),
+      defaults: {
+        uart: { instance: "UART0", TX: 0, RX: 1 },
+        i2c: { instance: "I2C1", SDA: 6, SCL: 7 },
+        spi: { instance: "SPI1", SCK: 10, MOSI: 11, MISO: 12, CS: 13 },
+      },
+    },
+    sdkBoard: "waveshare_rp2350_zero",
+    circuitPythonBoard: "waveshare_rp2350_zero",
   },
 } satisfies Record<string, { spec: Rp2BoardSpec; sdkBoard: string; circuitPythonBoard: string }>;
 

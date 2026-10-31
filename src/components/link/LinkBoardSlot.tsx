@@ -61,9 +61,9 @@ export function LinkBoardSlot({
           <div className="min-w-0 flex-1">
             <p className="flex min-w-0 items-center gap-2">
               <VendorLogo vendor={board.vendor} />
-              <span className="truncate text-[15px] font-semibold text-white">{board.name}</span>
+              <span className="min-w-0 break-words text-[15px] font-semibold text-white">{board.name}</span>
             </p>
-            <p className="mt-1 truncate font-mono text-[11px] text-zinc-500">
+            <p className="mt-1 break-words font-mono text-[11px] text-zinc-500">
               {board.vendor} / {board.processor}
             </p>
             <p className="mt-1.5 font-mono text-[12px] leading-5 text-zinc-300">{board.logicLevel}</p>
@@ -158,8 +158,8 @@ export function LinkBoardSlot({
           >
             <VendorLogo vendor={item.vendor} />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-medium text-white">{item.name}</span>
-              <span className="block truncate font-mono text-[11px] text-zinc-500">{item.logicLevel}</span>
+              <span className="block break-words text-sm font-medium text-white">{item.name}</span>
+              <span className="block break-words font-mono text-[11px] text-zinc-500">{item.logicLevel}</span>
             </span>
             {item.hasPinout ? null : (
               <span className="shrink-0 rounded border border-white/10 px-1.5 py-0.5 font-mono text-[10px] text-zinc-400">

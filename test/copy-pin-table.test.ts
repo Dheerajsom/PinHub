@@ -109,7 +109,7 @@ describe("board-aware pin table exports", () => {
   it("gives boards that share a connector map distinct CSV filenames", () => {
     const pi4 = byId("raspberry-pi-4-model-b");
     const zero = byId("raspberry-pi-zero-2-w");
-    expect(pi4.pinout).toBe(zero.pinout);
+    expect(pi4.pinout?.connector).toBe(zero.pinout?.connector);
     expect(pinExportFilename(pi4.pinout!, pi4)).not.toBe(
       pinExportFilename(zero.pinout!, zero),
     );

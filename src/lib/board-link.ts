@@ -51,6 +51,10 @@ const signalWords: Record<string, { family: Family; signal: Signal; needsI2cPref
   RXI: { family: "UART", signal: "RX" },
 };
 
+// Controllers named by a letter or mux tag instead of a number: "UART_A TX",
+// "I2C_M2 SDA", "I2C_AO SCL". The tag is the instance, as a number would be.
+const taggedPattern = /^(I2C|USART|UART)([A-Z][A-Z0-9]{0,3})(SDA|SCL|TXD|RXD|TX|RX)$/;
+
 // Power-domain prefixes some SoCs put before a controller name
 // ("MCU_I2C0_SDA", "WKUP_UART0_TXD"): part of the instance, not a new bus.
 const domainPattern = /^(MCU|WKUP|MAIN)[-_ ]+(?=(I2C|UART|USART)\d)/;
@@ -60,11 +64,25 @@ function parsePart(part: string): BusSignal | null {
   const upper = part.toUpperCase().trim();
   const domain = domainPattern.exec(upper)?.[1];
   const compact = upper
+    // A socket name in front of the signal: "mikroBUS SDA".
+    .replace(/^MIKROBUS[-_ ]+/, "")
     .replace(domainPattern, "")
     // Pin-mux and active-low suffixes: "I2C4_SDA_M0", "SPI1_CS0_N".
     .replace(/[-_ ]M\d+$/, "")
     .replace(/[-_ ]N$/, "")
     .replace(/[-_ .]+/g, "");
+  const tagged = taggedPattern.exec(compact);
+  if (tagged) {
+    const [, controller, tag, word] = tagged;
+    const meaning = signalWords[word];
+    if ((controller === "I2C") !== (meaning.family === "I2C")) return null;
+    return {
+      family: meaning.family,
+      instance: `${controller}_${tag}`,
+      signal: meaning.signal,
+      isDefault: false,
+    };
+  }
   const match = signalPattern.exec(compact);
   if (!match) return null;
   const [, prefix = "", prefixNumber, word, trailingNumber] = match;

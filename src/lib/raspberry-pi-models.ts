@@ -17,6 +17,8 @@ export const raspberryPiModels: Record<string, RaspberryPiModel> = {
   "raspberry-pi-4-model-b": { family: "sbc", silicon: "BCM2711", generation: 4, wireless: true },
   "raspberry-pi-3-model-b-plus": { family: "sbc", silicon: "BCM2837B0", generation: 3, wireless: true },
   "raspberry-pi-3-model-a-plus": { family: "sbc", silicon: "BCM2837B0", generation: 3, wireless: true, compact: true },
+  "raspberry-pi-3-model-b": { family: "sbc", silicon: "BCM2837", generation: 3, wireless: true },
+  "raspberry-pi-1-model-a-plus": { family: "sbc", silicon: "BCM2835", generation: 1, compact: true },
   "raspberry-pi-2-model-b": { family: "sbc", silicon: "BCM2836 / 2837", generation: 2 },
   "raspberry-pi-1-model-b-plus": { family: "sbc", silicon: "BCM2835", generation: 1 },
   "raspberry-pi-zero-2-w": { family: "zero", silicon: "RP3A0", generation: 2, wireless: true },

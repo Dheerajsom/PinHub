@@ -219,13 +219,6 @@ describe("board catalog integrity", () => {
     }
   });
 
-  it("retains reference identity for intentionally shared connector maps", () => {
-    const byId = (id: string) => boards.find((board) => board.id === id)?.pinout;
-    expect(byId("raspberry-pi-zero-2-w")).toBe(byId("raspberry-pi-4-model-b"));
-    expect(byId("arduino-uno-r4-minima")).toBe(byId("arduino-uno-r4-wifi"));
-    expect(byId("stm32-nucleo-f103rb")).toBe(byId("stm32-nucleo-f401re"));
-  });
-
   it("keeps pin-planner boards' wiring identical to the connector map they share", () => {
     // Planner data is chip-specific, so pilot boards carry it on a copy of the
     // shared map. Everything else on that copy must stay the shared data, so a
@@ -243,6 +236,9 @@ describe("board catalog integrity", () => {
       ["raspberry-pi-pico", "raspberry-pi-pico-2"],
       ["raspberry-pi-pico", "raspberry-pi-pico-2-w"],
       ["arduino-uno-rev3", "arduino-uno-r4-minima"],
+      ["raspberry-pi-4-model-b", "raspberry-pi-zero-2-w"],
+      ["arduino-uno-r4-minima", "arduino-uno-r4-wifi"],
+      ["stm32-nucleo-f401re", "stm32-nucleo-f103rb"],
     ]) {
       expect(byId(pilot), pilot).not.toBe(byId(sharer));
       expect(withoutPlannerFields(byId(pilot)), pilot).toEqual(

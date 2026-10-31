@@ -60,8 +60,10 @@ describe("PlannerBoardPicker", () => {
   it("lists the auto-assign boards as quick picks", () => {
     const onPick = vi.fn();
     render(<PlannerBoardPicker catalog={catalog} autoAssignIds={autoAssignIds} onPick={onPick} />);
-    const group = screen.getByRole("group", { name: "Boards with auto-assign" });
-    expect(within(group).getAllByRole("button")).toHaveLength(autoAssignIds.length);
+    const group = screen.getByRole("group", {
+      name: `Common boards · ${autoAssignIds.length} can auto-assign`,
+    });
+    expect(within(group).getAllByRole("button")).toHaveLength(12);
     fireEvent.click(within(group).getByRole("button", { name: /Arduino UNO/ }));
     expect(onPick).toHaveBeenCalledWith("arduino-uno-rev3");
   });
@@ -150,7 +152,7 @@ describe("PlannerWorkspace", () => {
 
   it("offers manual claims but no guessed plan on a board without pin functions", async () => {
     window.history.replaceState(null, "", "/planner?board=raspberry-pi-4-model-b&plan=i2c1");
-    render(<PlannerWorkspace board={board("raspberry-pi-4-model-b")} onChangeBoard={() => {}} />);
+    render(<PlannerWorkspace board={board("seeed-reterminal")} onChangeBoard={() => {}} />);
     await settle();
     const section = screen.getByRole("region", { name: "Pin planner" });
     expect(section.textContent).toContain("Auto-assign isn't available for this board yet.");

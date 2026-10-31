@@ -38,7 +38,7 @@ export const pinPlanExportFormats: readonly PinPlanExportFormat[] = [
   "json",
 ];
 
-const maxFunctionsPerPin = 16;
+const maxFunctionsPerPin = 24;
 const maxSources = 16;
 const maxRoutable = 8;
 const maxRoutableEntries = 16;
@@ -158,6 +158,7 @@ export function isPinFunctionData(value: unknown): value is PinFunctionData {
     !isRecord(mux) ||
     (mux.model !== "fixed" && mux.model !== "matrix") ||
     !isShortText(mux.note, maxNoteLength) ||
+    (mux.softwareCs !== undefined && mux.softwareCs !== true) ||
     (mux.routable !== undefined &&
       (mux.model !== "matrix" ||
         !Array.isArray(mux.routable) ||

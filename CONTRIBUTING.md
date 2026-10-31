@@ -175,7 +175,9 @@ machine-readable source (an SDK pin header, a core variant file, or an HTML
 pin table), pinned to a release or commit. See
 [docs/pin-planner-2026-09-26.md](docs/pin-planner-2026-09-26.md#adding-functions-data-for-a-new-board)
 for the schema, the rules, and the checklist. A board without that data is
-better left out of the planner than filled in from memory.
+better left out of the planner than filled in from memory. Tables live in
+[`src/lib/pin-functions/`](src/lib/pin-functions/), one module per chip family,
+and most new boards only need a row there.
 
 ## Reporting a pinout error
 

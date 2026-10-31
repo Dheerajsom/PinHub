@@ -1386,6 +1386,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 14,
         "label": "D13 / SCK",
         "role": "spi",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "Digital",
         "net": "SPI"
       },
@@ -1526,6 +1529,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "adc",
         "aliases": [
           "GPIO3"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -1761,7 +1767,10 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO36",
           "ADC1_CH0"
         ],
-        "note": "Input only; no internal pull resistors"
+        "note": "Input only; no internal pull resistors",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pL:2",
@@ -1772,7 +1781,10 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO39",
           "ADC1_CH3"
         ],
-        "note": "Input only; no internal pull resistors"
+        "note": "Input only; no internal pull resistors",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pL:3",
@@ -1783,7 +1795,10 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO34",
           "ADC1_CH6"
         ],
-        "note": "Input only; no internal pull resistors"
+        "note": "Input only; no internal pull resistors",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pL:4",
@@ -1794,7 +1809,10 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO35",
           "ADC1_CH7"
         ],
-        "note": "Input only; no internal pull resistors"
+        "note": "Input only; no internal pull resistors",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pL:5",
@@ -1827,6 +1845,9 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO25",
           "DAC1",
           "ADC2_CH8"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -1838,6 +1859,9 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO26",
           "DAC2",
           "ADC2_CH9"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -1849,6 +1873,9 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO27",
           "ADC2_CH7",
           "Touch7"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -1860,6 +1887,10 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO14",
           "HSPI CLK",
           "ADC2_CH6"
+        ],
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
         ],
         "net": "SPI"
       },
@@ -1874,6 +1905,11 @@ export const pinIndex: PinIndexBoard[] = [
           "ADC2_CH5"
         ],
         "note": "Boot strap: must be low at reset",
+        "flags": [
+          "strapping",
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ],
         "net": "SPI"
       },
       {
@@ -1885,6 +1921,10 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO13",
           "HSPI MOSI",
           "ADC2_CH4"
+        ],
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
         ],
         "net": "SPI"
       },
@@ -1934,6 +1974,9 @@ export const pinIndex: PinIndexBoard[] = [
           "UART0 TX"
         ],
         "note": "USB serial console and flashing",
+        "flags": [
+          "usb"
+        ],
         "net": "UART0"
       },
       {
@@ -1946,6 +1989,9 @@ export const pinIndex: PinIndexBoard[] = [
           "UART0 RX"
         ],
         "note": "USB serial console and flashing",
+        "flags": [
+          "usb"
+        ],
         "net": "UART0"
       },
       {
@@ -1991,6 +2037,9 @@ export const pinIndex: PinIndexBoard[] = [
           "VSPI CS"
         ],
         "note": "Boot strap: keep high at reset",
+        "flags": [
+          "strapping"
+        ],
         "net": "SPI"
       },
       {
@@ -2024,6 +2073,9 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO4",
           "ADC2_CH0",
           "Touch0"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -2036,7 +2088,11 @@ export const pinIndex: PinIndexBoard[] = [
           "ADC2_CH2",
           "Touch2"
         ],
-        "note": "Onboard LED and boot strap"
+        "note": "Onboard LED and boot strap",
+        "flags": [
+          "strapping",
+          "adc-unavailable-with-wifi"
+        ]
       },
       {
         "key": "pR:12",
@@ -2049,6 +2105,11 @@ export const pinIndex: PinIndexBoard[] = [
           "ADC2_CH3"
         ],
         "note": "Boot strap",
+        "flags": [
+          "strapping",
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ],
         "net": "SPI"
       },
       {
@@ -2555,6 +2616,9 @@ export const pinIndex: PinIndexBoard[] = [
           "RX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -2567,6 +2631,9 @@ export const pinIndex: PinIndexBoard[] = [
           "TX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -2668,6 +2735,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SPI SCK"
         ],
         "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "CN5/CN9 digital",
         "net": "SPI"
       },
@@ -4014,498 +4084,423 @@ export const pinIndex: PinIndexBoard[] = [
     "id": "teensy-41",
     "pins": [
       {
-        "key": "g0:0",
+        "key": "pL:0",
         "position": 1,
-        "label": "VIN",
-        "role": "power",
-        "note": "3.6-5.5 V input when USB is not used.",
-        "group": "Power",
-        "net": "VIN"
-      },
-      {
-        "key": "g0:1",
-        "position": 2,
-        "label": "3V3",
-        "role": "power",
-        "note": "Regulated 3.3 V output, 250 mA max.",
-        "group": "Power",
-        "net": "3V3"
-      },
-      {
-        "key": "g0:2",
-        "position": 3,
         "label": "GND",
         "role": "ground",
-        "group": "Power",
         "net": "GND"
       },
       {
-        "key": "g0:3",
-        "position": 4,
-        "label": "VBAT",
-        "role": "power",
-        "note": "Coin-cell input for the onboard RTC.",
-        "group": "Power",
-        "net": "VBAT"
-      },
-      {
-        "key": "g1:0",
-        "position": 4,
+        "key": "pL:1",
+        "position": 2,
         "label": "0",
         "role": "uart",
         "aliases": [
           "RX1",
-          "CRX2"
+          "CRX2",
+          "CS1"
         ],
-        "group": "Serial / digital",
         "net": "UART1"
       },
       {
-        "key": "g1:1",
-        "position": 5,
+        "key": "pL:2",
+        "position": 3,
         "label": "1",
         "role": "uart",
         "aliases": [
           "TX1",
-          "CTX2"
+          "CTX2",
+          "MISO1"
         ],
-        "group": "Serial / digital",
         "net": "UART1"
       },
       {
-        "key": "g1:2",
+        "key": "pL:3",
+        "position": 4,
+        "label": "2",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "3",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:5",
         "position": 6,
+        "label": "4",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "5",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "6",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
         "label": "7",
         "role": "uart",
         "aliases": [
           "RX2"
         ],
-        "group": "Serial / digital",
         "net": "UART2"
       },
       {
-        "key": "g1:3",
-        "position": 7,
+        "key": "pL:9",
+        "position": 10,
         "label": "8",
         "role": "uart",
         "aliases": [
           "TX2"
         ],
-        "group": "Serial / digital",
         "net": "UART2"
       },
       {
-        "key": "g1:4",
-        "position": 8,
-        "label": "15 / A1",
-        "role": "uart",
-        "aliases": [
-          "RX3"
-        ],
-        "group": "Serial / digital",
-        "net": "UART3"
-      },
-      {
-        "key": "g1:5",
-        "position": 9,
-        "label": "14 / A0",
-        "role": "uart",
-        "aliases": [
-          "TX3"
-        ],
-        "group": "Serial / digital",
-        "net": "UART3"
-      },
-      {
-        "key": "g1:6",
-        "position": 10,
-        "label": "16 / A2",
-        "role": "uart",
-        "aliases": [
-          "RX4"
-        ],
-        "group": "Serial / digital",
-        "net": "UART4"
-      },
-      {
-        "key": "g1:7",
+        "key": "pL:10",
         "position": 11,
-        "label": "17 / A3",
-        "role": "uart",
-        "aliases": [
-          "TX4"
-        ],
-        "group": "Serial / digital",
-        "net": "UART4"
+        "label": "9",
+        "role": "pwm"
       },
       {
-        "key": "g1:8",
+        "key": "pL:11",
         "position": 12,
-        "label": "21 / A7",
-        "role": "uart",
+        "label": "10",
+        "role": "spi",
         "aliases": [
-          "RX5"
+          "CS0"
         ],
-        "group": "Serial / digital",
-        "net": "UART5"
+        "net": "SPI"
       },
       {
-        "key": "g1:9",
+        "key": "pL:12",
         "position": 13,
-        "label": "20 / A6",
-        "role": "uart",
-        "aliases": [
-          "TX5"
-        ],
-        "group": "Serial / digital",
-        "net": "UART5"
-      },
-      {
-        "key": "g1:10",
-        "position": 14,
-        "label": "25 / A11",
-        "role": "uart",
-        "aliases": [
-          "RX6"
-        ],
-        "group": "Serial / digital",
-        "net": "UART6"
-      },
-      {
-        "key": "g1:11",
-        "position": 15,
-        "label": "24 / A10",
-        "role": "uart",
-        "aliases": [
-          "TX6"
-        ],
-        "group": "Serial / digital",
-        "net": "UART6"
-      },
-      {
-        "key": "g1:12",
-        "position": 16,
-        "label": "28",
-        "role": "uart",
-        "aliases": [
-          "RX7"
-        ],
-        "group": "Serial / digital",
-        "net": "UART7"
-      },
-      {
-        "key": "g1:13",
-        "position": 17,
-        "label": "29",
-        "role": "uart",
-        "aliases": [
-          "TX7"
-        ],
-        "group": "Serial / digital",
-        "net": "UART7"
-      },
-      {
-        "key": "g1:14",
-        "position": 18,
-        "label": "34",
-        "role": "uart",
-        "aliases": [
-          "RX8"
-        ],
-        "group": "Serial / digital",
-        "net": "UART8"
-      },
-      {
-        "key": "g1:15",
-        "position": 19,
-        "label": "35",
-        "role": "uart",
-        "aliases": [
-          "TX8"
-        ],
-        "group": "Serial / digital",
-        "net": "UART8"
-      },
-      {
-        "key": "g2:0",
-        "position": 20,
-        "label": "18 / A4",
-        "role": "i2c",
-        "aliases": [
-          "SDA0"
-        ],
-        "group": "I2C / SPI",
-        "net": "I2C0"
-      },
-      {
-        "key": "g2:1",
-        "position": 21,
-        "label": "19 / A5",
-        "role": "i2c",
-        "aliases": [
-          "SCL0"
-        ],
-        "group": "I2C / SPI",
-        "net": "I2C0"
-      },
-      {
-        "key": "g2:2",
-        "position": 22,
-        "label": "17 / A3",
-        "role": "i2c",
-        "aliases": [
-          "SDA1"
-        ],
-        "group": "I2C / SPI",
-        "net": "I2C1"
-      },
-      {
-        "key": "g2:3",
-        "position": 23,
-        "label": "16 / A2",
-        "role": "i2c",
-        "aliases": [
-          "SCL1"
-        ],
-        "group": "I2C / SPI",
-        "net": "I2C1"
-      },
-      {
-        "key": "g2:4",
-        "position": 24,
-        "label": "25 / A11",
-        "role": "i2c",
-        "aliases": [
-          "SDA2"
-        ],
-        "group": "I2C / SPI",
-        "net": "I2C2"
-      },
-      {
-        "key": "g2:5",
-        "position": 25,
-        "label": "24 / A10",
-        "role": "i2c",
-        "aliases": [
-          "SCL2"
-        ],
-        "group": "I2C / SPI",
-        "net": "I2C2"
-      },
-      {
-        "key": "g2:6",
-        "position": 26,
         "label": "11",
         "role": "spi",
         "aliases": [
           "MOSI0"
         ],
-        "group": "I2C / SPI",
         "net": "SPI0"
       },
       {
-        "key": "g2:7",
-        "position": 27,
+        "key": "pL:13",
+        "position": 14,
         "label": "12",
         "role": "spi",
         "aliases": [
           "MISO0"
         ],
-        "group": "I2C / SPI",
         "net": "SPI0"
       },
       {
-        "key": "g2:8",
+        "key": "pL:14",
+        "position": 15,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:15",
+        "position": 16,
+        "label": "24 / A10",
+        "role": "uart",
+        "aliases": [
+          "TX6",
+          "SCL2"
+        ],
+        "net": "UART6"
+      },
+      {
+        "key": "pL:16",
+        "position": 17,
+        "label": "25 / A11",
+        "role": "uart",
+        "aliases": [
+          "RX6",
+          "SDA2"
+        ],
+        "net": "UART6"
+      },
+      {
+        "key": "pL:17",
+        "position": 18,
+        "label": "26 / A12",
+        "role": "adc",
+        "aliases": [
+          "MOSI1"
+        ],
+        "net": "SPI1"
+      },
+      {
+        "key": "pL:18",
+        "position": 19,
+        "label": "27 / A13",
+        "role": "adc",
+        "aliases": [
+          "SCK1"
+        ],
+        "net": "SPI1"
+      },
+      {
+        "key": "pL:19",
+        "position": 20,
+        "label": "28",
+        "role": "uart",
+        "aliases": [
+          "RX7"
+        ],
+        "net": "UART7"
+      },
+      {
+        "key": "pL:20",
+        "position": 21,
+        "label": "29",
+        "role": "uart",
+        "aliases": [
+          "TX7"
+        ],
+        "net": "UART7"
+      },
+      {
+        "key": "pL:21",
+        "position": 22,
+        "label": "30",
+        "role": "gpio",
+        "aliases": [
+          "CRX3"
+        ],
+        "net": "CAN3"
+      },
+      {
+        "key": "pL:22",
+        "position": 23,
+        "label": "31",
+        "role": "gpio",
+        "aliases": [
+          "CTX3"
+        ],
+        "net": "CAN3"
+      },
+      {
+        "key": "pL:23",
+        "position": 24,
+        "label": "32",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:0",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "note": "3.6-5.5 V input when USB is not used.",
+        "net": "VIN"
+      },
+      {
+        "key": "pR:1",
+        "position": 26,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 27,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
         "position": 28,
+        "label": "23 / A9",
+        "role": "adc",
+        "aliases": [
+          "CRX1"
+        ],
+        "net": "CAN1"
+      },
+      {
+        "key": "pR:4",
+        "position": 29,
+        "label": "22 / A8",
+        "role": "adc",
+        "aliases": [
+          "CTX1"
+        ],
+        "net": "CAN1"
+      },
+      {
+        "key": "pR:5",
+        "position": 30,
+        "label": "21 / A7",
+        "role": "uart",
+        "aliases": [
+          "RX5"
+        ],
+        "net": "UART5"
+      },
+      {
+        "key": "pR:6",
+        "position": 31,
+        "label": "20 / A6",
+        "role": "uart",
+        "aliases": [
+          "TX5"
+        ],
+        "net": "UART5"
+      },
+      {
+        "key": "pR:7",
+        "position": 32,
+        "label": "19 / A5",
+        "role": "i2c",
+        "aliases": [
+          "SCL0"
+        ],
+        "net": "I2C0"
+      },
+      {
+        "key": "pR:8",
+        "position": 33,
+        "label": "18 / A4",
+        "role": "i2c",
+        "aliases": [
+          "SDA0"
+        ],
+        "net": "I2C0"
+      },
+      {
+        "key": "pR:9",
+        "position": 34,
+        "label": "17 / A3",
+        "role": "uart",
+        "aliases": [
+          "TX4",
+          "SDA1"
+        ],
+        "net": "UART4"
+      },
+      {
+        "key": "pR:10",
+        "position": 35,
+        "label": "16 / A2",
+        "role": "uart",
+        "aliases": [
+          "RX4",
+          "SCL1"
+        ],
+        "net": "UART4"
+      },
+      {
+        "key": "pR:11",
+        "position": 36,
+        "label": "15 / A1",
+        "role": "uart",
+        "aliases": [
+          "RX3"
+        ],
+        "net": "UART3"
+      },
+      {
+        "key": "pR:12",
+        "position": 37,
+        "label": "14 / A0",
+        "role": "uart",
+        "aliases": [
+          "TX3"
+        ],
+        "net": "UART3"
+      },
+      {
+        "key": "pR:13",
+        "position": 38,
         "label": "13",
         "role": "spi",
         "aliases": [
           "SCK0",
           "LED"
         ],
-        "group": "I2C / SPI",
+        "flags": [
+          "onboard-led"
+        ],
         "net": "SPI0"
       },
       {
-        "key": "g2:9",
-        "position": 29,
-        "label": "10",
-        "role": "spi",
-        "aliases": [
-          "CS0"
-        ],
-        "group": "I2C / SPI",
-        "net": "SPI"
-      },
-      {
-        "key": "g3:0",
-        "position": 30,
-        "label": "14 / A0",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:1",
-        "position": 31,
-        "label": "15 / A1",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:2",
-        "position": 32,
-        "label": "16 / A2",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:3",
-        "position": 33,
-        "label": "17 / A3",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:4",
-        "position": 34,
-        "label": "18 / A4",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:5",
-        "position": 35,
-        "label": "19 / A5",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:6",
-        "position": 36,
-        "label": "20 / A6",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:7",
-        "position": 37,
-        "label": "21 / A7",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:8",
-        "position": 38,
-        "label": "22 / A8",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:9",
+        "key": "pR:14",
         "position": 39,
-        "label": "23 / A9",
-        "role": "adc",
-        "group": "Analog inputs"
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
       },
       {
-        "key": "g3:10",
+        "key": "pR:15",
         "position": 40,
-        "label": "24 / A10",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:11",
-        "position": 41,
-        "label": "25 / A11",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:12",
-        "position": 42,
-        "label": "26 / A12",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:13",
-        "position": 43,
-        "label": "27 / A13",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:14",
-        "position": 44,
-        "label": "38 / A14",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:15",
-        "position": 45,
-        "label": "39 / A15",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:16",
-        "position": 46,
-        "label": "40 / A16",
-        "role": "adc",
-        "group": "Analog inputs"
-      },
-      {
-        "key": "g3:17",
-        "position": 47,
         "label": "41 / A17",
-        "role": "adc",
-        "group": "Analog inputs"
+        "role": "adc"
       },
       {
-        "key": "g4:0",
+        "key": "pR:16",
+        "position": 41,
+        "label": "40 / A16",
+        "role": "adc"
+      },
+      {
+        "key": "pR:17",
+        "position": 42,
+        "label": "39 / A15",
+        "role": "adc"
+      },
+      {
+        "key": "pR:18",
+        "position": 43,
+        "label": "38 / A14",
+        "role": "adc"
+      },
+      {
+        "key": "pR:19",
+        "position": 44,
+        "label": "37",
+        "role": "pwm"
+      },
+      {
+        "key": "pR:20",
+        "position": 45,
+        "label": "36",
+        "role": "pwm"
+      },
+      {
+        "key": "pR:21",
+        "position": 46,
+        "label": "35",
+        "role": "uart",
+        "aliases": [
+          "TX8"
+        ],
+        "net": "UART8"
+      },
+      {
+        "key": "pR:22",
+        "position": 47,
+        "label": "34",
+        "role": "uart",
+        "aliases": [
+          "RX8"
+        ],
+        "net": "UART8"
+      },
+      {
+        "key": "pR:23",
         "position": 48,
-        "label": "23 / A9",
-        "role": "special",
-        "aliases": [
-          "CRX1"
-        ],
-        "group": "CAN",
-        "net": "CAN1"
-      },
-      {
-        "key": "g4:1",
-        "position": 49,
-        "label": "22 / A8",
-        "role": "special",
-        "aliases": [
-          "CTX1"
-        ],
-        "group": "CAN",
-        "net": "CAN1"
-      },
-      {
-        "key": "g4:2",
-        "position": 50,
-        "label": "0",
-        "role": "special",
-        "aliases": [
-          "CRX2"
-        ],
-        "group": "CAN",
-        "net": "CAN2"
-      },
-      {
-        "key": "g4:3",
-        "position": 51,
-        "label": "1",
-        "role": "special",
-        "aliases": [
-          "CTX2"
-        ],
-        "group": "CAN",
-        "net": "CAN2"
+        "label": "33",
+        "role": "pwm"
       }
     ]
   },
@@ -6004,6 +5999,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 1,
         "label": "D0 / RX0",
         "role": "uart",
+        "flags": [
+          "usb"
+        ],
         "group": "Digital",
         "net": "UART0"
       },
@@ -6012,6 +6010,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 2,
         "label": "D1 / TX0",
         "role": "uart",
+        "flags": [
+          "usb"
+        ],
         "group": "Digital",
         "net": "UART0"
       },
@@ -6097,6 +6098,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 14,
         "label": "D13",
         "role": "pwm",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "Digital"
       },
       {
@@ -6563,6 +6567,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "TXD"
         ],
+        "flags": [
+          "usb"
+        ],
         "net": "UART"
       },
       {
@@ -6572,6 +6579,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "uart",
         "aliases": [
           "RXD"
+        ],
+        "flags": [
+          "usb"
         ],
         "net": "UART"
       },
@@ -6680,6 +6690,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "SCK",
           "LED"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "net": "SPI"
       },
@@ -7300,6 +7313,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "pwm",
         "aliases": [
           "PA20"
+        ],
+        "flags": [
+          "onboard-led"
         ]
       }
     ]
@@ -7391,6 +7407,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -7400,6 +7419,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -7519,19 +7541,28 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:10",
         "position": 33,
         "label": "GPIO37",
-        "role": "gpio"
+        "role": "gpio",
+        "flags": [
+          "module-memory"
+        ]
       },
       {
         "key": "pR:11",
         "position": 34,
         "label": "GPIO36",
-        "role": "gpio"
+        "role": "gpio",
+        "flags": [
+          "module-memory"
+        ]
       },
       {
         "key": "pR:12",
         "position": 35,
         "label": "GPIO35",
-        "role": "gpio"
+        "role": "gpio",
+        "flags": [
+          "module-memory"
+        ]
       },
       {
         "key": "pR:13",
@@ -7540,6 +7571,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "BOOT"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -7549,13 +7583,19 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
         "key": "pR:15",
         "position": 38,
         "label": "GPIO48",
-        "role": "gpio"
+        "role": "gpio",
+        "flags": [
+          "onboard-led"
+        ]
       },
       {
         "key": "pR:16",
@@ -7576,6 +7616,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D+"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -7585,6 +7628,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D-"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -7634,6 +7680,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -7744,6 +7793,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "BOOT",
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -7754,6 +7806,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "RGB LED",
           "Strapping"
+        ],
+        "flags": [
+          "strapping",
+          "onboard-led"
         ]
       },
       {
@@ -7801,6 +7857,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D-"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -7810,6 +7869,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D+"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -7921,7 +7983,11 @@ export const pinIndex: PinIndexBoard[] = [
           "Strapping",
           "RGB LED"
         ],
-        "note": "Strapping pin; also drives the on-board addressable RGB LED."
+        "note": "Strapping pin; also drives the on-board addressable RGB LED.",
+        "flags": [
+          "strapping",
+          "onboard-led"
+        ]
       },
       {
         "key": "pL:11",
@@ -7932,7 +7998,10 @@ export const pinIndex: PinIndexBoard[] = [
           "Strapping",
           "BOOT"
         ],
-        "note": "Strapping pin; held low at reset by the Boot button."
+        "note": "Strapping pin; held low at reset by the Boot button.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:12",
@@ -7992,7 +8061,10 @@ export const pinIndex: PinIndexBoard[] = [
           "ADC1_CH2",
           "FSPIQ"
         ],
-        "note": "Strapping pin; also ADC1_CH2."
+        "note": "Strapping pin; also ADC1_CH2.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:4",
@@ -8062,7 +8134,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "USB Serial/JTAG"
         ],
-        "note": "Used by USB-JTAG by default; drivers disable USB-JTAG to free it."
+        "note": "Used by USB-JTAG by default; drivers disable USB-JTAG to free it.",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:12",
@@ -8072,7 +8147,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "USB Serial/JTAG"
         ],
-        "note": "Used by USB-JTAG by default; drivers disable USB-JTAG to free it."
+        "note": "Used by USB-JTAG by default; drivers disable USB-JTAG to free it.",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:13",
@@ -8110,7 +8188,10 @@ export const pinIndex: PinIndexBoard[] = [
           "BOOT",
           "RTC_GPIO0"
         ],
-        "note": "Strapping pin; held low at reset by the Boot button."
+        "note": "Strapping pin; held low at reset by the Boot button.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:2",
@@ -8347,7 +8428,11 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "Input only and fixed pull-down; with GPIO0 it selects boot mode."
+        "note": "Input only and fixed pull-down; with GPIO0 it selects boot mode.",
+        "flags": [
+          "strapping",
+          "input-only"
+        ]
       },
       {
         "key": "pR:3",
@@ -8357,7 +8442,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "Strapping pin, pulled down at reset."
+        "note": "Strapping pin, pulled down at reset.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:4",
@@ -8389,6 +8477,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "MTMS"
         ],
+        "flags": [
+          "jtag"
+        ],
         "net": "JTAG"
       },
       {
@@ -8399,6 +8490,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "MTDI",
           "CLK_OUT1"
+        ],
+        "flags": [
+          "jtag"
         ],
         "net": "JTAG"
       },
@@ -8411,6 +8505,9 @@ export const pinIndex: PinIndexBoard[] = [
           "MTDO",
           "CLK_OUT2"
         ],
+        "flags": [
+          "jtag"
+        ],
         "net": "JTAG"
       },
       {
@@ -8421,6 +8518,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "MTCK",
           "CLK_OUT3"
+        ],
+        "flags": [
+          "jtag"
         ],
         "net": "JTAG"
       },
@@ -8541,7 +8641,10 @@ export const pinIndex: PinIndexBoard[] = [
           "U1RXD",
           "RGB LED"
         ],
-        "note": "Also drives the on-board addressable RGB LED."
+        "note": "Also drives the on-board addressable RGB LED.",
+        "flags": [
+          "onboard-led"
+        ]
       }
     ]
   },
@@ -8569,6 +8672,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "MTMS",
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -8579,6 +8685,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "MTDI",
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -8620,6 +8729,10 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping",
+          "onboard-led"
         ]
       },
       {
@@ -8694,6 +8807,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -8739,6 +8855,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -8755,6 +8874,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D+"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -8764,6 +8886,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D-"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -8799,6 +8924,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "BOOT",
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -9008,6 +9136,10 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping",
+          "input-only"
         ]
       },
       {
@@ -9017,6 +9149,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -9047,6 +9182,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "MTMS"
         ],
+        "flags": [
+          "jtag"
+        ],
         "net": "JTAG"
       },
       {
@@ -9056,6 +9194,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "debug",
         "aliases": [
           "MTDI"
+        ],
+        "flags": [
+          "jtag"
         ],
         "net": "JTAG"
       },
@@ -9067,6 +9208,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "MTDO"
         ],
+        "flags": [
+          "jtag"
+        ],
         "net": "JTAG"
       },
       {
@@ -9076,6 +9220,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "debug",
         "aliases": [
           "MTCK"
+        ],
+        "flags": [
+          "jtag"
         ],
         "net": "JTAG"
       },
@@ -9119,7 +9266,10 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:16",
         "position": 38,
         "label": "GPIO26",
-        "role": "gpio"
+        "role": "gpio",
+        "flags": [
+          "module-memory"
+        ]
       },
       {
         "key": "pR:17",
@@ -9156,6 +9306,9 @@ export const pinIndex: PinIndexBoard[] = [
           "RGB LED",
           "DAC2",
           "ADC2_CH7"
+        ],
+        "flags": [
+          "onboard-led"
         ]
       }
     ]
@@ -9563,6 +9716,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "adc",
         "aliases": [
           "GPIO3"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -9909,6 +10065,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO8"
         ],
+        "flags": [
+          "strapping"
+        ],
         "net": "SPI"
       },
       {
@@ -9975,6 +10134,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "pwm",
         "aliases": [
           "GPIO3"
+        ],
+        "flags": [
+          "strapping"
         ],
         "group": "Digital (D0-D13)"
       },
@@ -10457,6 +10619,10 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 3,
         "label": "D4 / GPIO14",
         "role": "adc",
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ],
         "group": "Left header"
       },
       {
@@ -10475,6 +10641,11 @@ export const pinIndex: PinIndexBoard[] = [
           "Strapping",
           "Touch 3"
         ],
+        "flags": [
+          "strapping",
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ],
         "group": "Left header"
       },
       {
@@ -10489,6 +10660,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 7,
         "label": "D11 / GPIO27",
         "role": "adc",
+        "flags": [
+          "adc-unavailable-with-wifi"
+        ],
         "group": "Left header"
       },
       {
@@ -10500,6 +10674,11 @@ export const pinIndex: PinIndexBoard[] = [
           "Strapping",
           "ADC2 CH5"
         ],
+        "flags": [
+          "strapping",
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ],
         "group": "Left header"
       },
       {
@@ -10507,6 +10686,10 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 9,
         "label": "LED / GPIO13",
         "role": "gpio",
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ],
         "group": "Left header"
       },
       {
@@ -10537,6 +10720,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 1,
         "label": "FREE / GPIO4",
         "role": "adc",
+        "flags": [
+          "adc-unavailable-with-wifi"
+        ],
         "group": "Right header"
       },
       {
@@ -10584,6 +10770,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 7,
         "label": "A5 / GPIO35",
         "role": "adc",
+        "flags": [
+          "input-only"
+        ],
         "group": "Right header"
       },
       {
@@ -10591,6 +10780,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 8,
         "label": "A4 / GPIO36",
         "role": "adc",
+        "flags": [
+          "input-only"
+        ],
         "group": "Right header"
       },
       {
@@ -10598,6 +10790,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 9,
         "label": "A3 / GPIO39",
         "role": "adc",
+        "flags": [
+          "input-only"
+        ],
         "group": "Right header"
       },
       {
@@ -10605,6 +10800,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 10,
         "label": "A2 / GPIO34",
         "role": "adc",
+        "flags": [
+          "input-only"
+        ],
         "group": "Right header"
       },
       {
@@ -10615,6 +10813,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "ADC2 CH8"
         ],
+        "flags": [
+          "adc-unavailable-with-wifi"
+        ],
         "group": "Right header"
       },
       {
@@ -10624,6 +10825,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "dac",
         "aliases": [
           "ADC2 CH9"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ],
         "group": "Right header"
       },
@@ -11717,7 +11921,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "LED"
         ],
-        "note": "Onboard LED (active low); low-drive pin."
+        "note": "Onboard LED (active low); low-drive pin.",
+        "flags": [
+          "onboard-led"
+        ]
       },
       {
         "key": "pL:2",
@@ -12006,7 +12213,10 @@ export const pinIndex: PinIndexBoard[] = [
           "USB_D+",
           "CAN_TX"
         ],
-        "note": "Shared with USB D+."
+        "note": "Shared with USB D+.",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:12",
@@ -12017,7 +12227,10 @@ export const pinIndex: PinIndexBoard[] = [
           "USB_D-",
           "CAN_RX"
         ],
-        "note": "Shared with USB D-."
+        "note": "Shared with USB D-.",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:13",
@@ -12108,7 +12321,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "LED"
         ],
-        "note": "Onboard LED (active low)."
+        "note": "Onboard LED (active low).",
+        "flags": [
+          "onboard-led"
+        ]
       },
       {
         "key": "pL:2",
@@ -12391,7 +12607,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "USB_D+"
         ],
-        "note": "Shared with USB D+."
+        "note": "Shared with USB D+.",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:12",
@@ -12401,7 +12620,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "USB_D-"
         ],
-        "note": "Shared with USB D-."
+        "note": "Shared with USB D-.",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:13",
@@ -13967,8 +14189,8 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "GPIOAO_5",
         "role": "i2c",
         "aliases": [
-          "I2C SDA AO",
-          "UART RX AO B"
+          "I2C_AO SDA",
+          "UART_AOB RX"
         ],
         "net": "I2C"
       },
@@ -13978,8 +14200,8 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "GPIOAO_4",
         "role": "i2c",
         "aliases": [
-          "I2C SCL AO",
-          "UART TX AO B"
+          "I2C_AO SCL",
+          "UART_AOB TX"
         ],
         "net": "I2C"
       },
@@ -14328,13 +14550,23 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pL:0",
         "position": 1,
         "label": "GP0",
-        "role": "gpio"
+        "role": "i2c",
+        "aliases": [
+          "I2C0_SCL",
+          "UART1_TX"
+        ],
+        "net": "I2C"
       },
       {
         "key": "pL:1",
         "position": 2,
         "label": "GP1",
-        "role": "gpio"
+        "role": "i2c",
+        "aliases": [
+          "I2C0_SDA",
+          "UART1_RX"
+        ],
+        "net": "I2C"
       },
       {
         "key": "pL:2",
@@ -14347,25 +14579,47 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pL:3",
         "position": 4,
         "label": "GP2",
-        "role": "gpio"
+        "role": "uart",
+        "aliases": [
+          "UART4_TX",
+          "PWM10"
+        ],
+        "net": "UART"
       },
       {
         "key": "pL:4",
         "position": 5,
         "label": "GP3",
-        "role": "gpio"
+        "role": "uart",
+        "aliases": [
+          "UART4_RX",
+          "PWM11"
+        ],
+        "net": "UART"
       },
       {
         "key": "pL:5",
         "position": 6,
         "label": "GP4",
-        "role": "gpio"
+        "role": "i2c",
+        "aliases": [
+          "I2C1_SCL",
+          "UART3_TX",
+          "PWM5"
+        ],
+        "net": "I2C"
       },
       {
         "key": "pL:6",
         "position": 7,
         "label": "GP5",
-        "role": "gpio"
+        "role": "i2c",
+        "aliases": [
+          "I2C1_SDA",
+          "UART3_RX",
+          "PWM6"
+        ],
+        "net": "I2C"
       },
       {
         "key": "pL:7",
@@ -14378,25 +14632,47 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pL:8",
         "position": 9,
         "label": "GP6",
-        "role": "gpio"
+        "role": "spi",
+        "aliases": [
+          "SPI2_SCK",
+          "I2C3_SDA",
+          "PWM9"
+        ],
+        "net": "SPI"
       },
       {
         "key": "pL:9",
         "position": 10,
         "label": "GP7",
-        "role": "gpio"
+        "role": "spi",
+        "aliases": [
+          "SPI2_SDO",
+          "I2C3_SCL",
+          "PWM8"
+        ],
+        "net": "SPI"
       },
       {
         "key": "pL:10",
         "position": 11,
         "label": "GP8",
-        "role": "gpio"
+        "role": "spi",
+        "aliases": [
+          "SPI2_SDI",
+          "PWM7"
+        ],
+        "net": "SPI"
       },
       {
         "key": "pL:11",
         "position": 12,
         "label": "GP9",
-        "role": "gpio"
+        "role": "spi",
+        "aliases": [
+          "SPI2_CS_X",
+          "PWM4"
+        ],
+        "net": "SPI"
       },
       {
         "key": "pL:12",
@@ -14421,13 +14697,23 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pL:15",
         "position": 16,
         "label": "GP12",
-        "role": "gpio"
+        "role": "uart",
+        "aliases": [
+          "UART0_TX",
+          "PWM4"
+        ],
+        "net": "UART"
       },
       {
         "key": "pL:16",
         "position": 17,
         "label": "GP13",
-        "role": "gpio"
+        "role": "uart",
+        "aliases": [
+          "UART0_RX",
+          "PWM5"
+        ],
+        "net": "UART"
       },
       {
         "key": "pL:17",
@@ -14619,6 +14905,9 @@ export const pinIndex: PinIndexBoard[] = [
           "ADC1 CH2",
           "Touch 3",
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ],
         "group": "P2 left header (top to bottom)"
       },
@@ -14872,6 +15161,9 @@ export const pinIndex: PinIndexBoard[] = [
           "HSPI CS"
         ],
         "note": "Boot-strap: must be LOW at reset.",
+        "flags": [
+          "strapping"
+        ],
         "net": "SPI"
       },
       {
@@ -14889,6 +15181,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "UART0 TX"
         ],
+        "flags": [
+          "usb"
+        ],
         "net": "UART0"
       },
       {
@@ -14898,6 +15193,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "uart",
         "aliases": [
           "UART0 RX"
+        ],
+        "flags": [
+          "usb"
         ],
         "net": "UART0"
       },
@@ -14926,7 +15224,10 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 10,
         "label": "D3 / GPIO0",
         "role": "special",
-        "note": "Boot-strap: LOW = flash mode, must be HIGH for normal boot."
+        "note": "Boot-strap: LOW = flash mode, must be HIGH for normal boot.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:5",
@@ -14937,6 +15238,9 @@ export const pinIndex: PinIndexBoard[] = [
           "TXD1"
         ],
         "note": "Onboard LED; boot-strap: must be HIGH at reset.",
+        "flags": [
+          "strapping"
+        ],
         "net": "UART1"
       },
       {
@@ -15350,7 +15654,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO0"
         ],
-        "note": "boot/strapping; FLASH button"
+        "note": "boot/strapping; FLASH button",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:4",
@@ -15360,7 +15667,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO2"
         ],
-        "note": "boot/strapping; onboard LED"
+        "note": "boot/strapping; onboard LED",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:5",
@@ -15418,6 +15728,9 @@ export const pinIndex: PinIndexBoard[] = [
           "GPIO15"
         ],
         "note": "HSPI CS; boot/strapping",
+        "flags": [
+          "strapping"
+        ],
         "net": "SPI"
       },
       {
@@ -15428,6 +15741,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO3"
         ],
+        "flags": [
+          "usb"
+        ],
         "net": "UART"
       },
       {
@@ -15437,6 +15753,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "uart",
         "aliases": [
           "GPIO1"
+        ],
+        "flags": [
+          "usb"
         ],
         "net": "UART"
       },
@@ -16141,26 +16460,26 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g0:2",
         "position": 3,
-        "label": "3V3",
-        "role": "power",
-        "group": "Bottom edge",
-        "net": "3V3"
+        "label": "AREF",
+        "role": "special",
+        "group": "Bottom edge"
       },
       {
         "key": "g0:3",
         "position": 4,
         "label": "VHI",
         "role": "power",
-        "note": "Level-shifted 5 V output (tracks VBAT/USB).",
+        "note": "The higher of BAT and USB; unregulated.",
         "group": "Bottom edge",
         "net": "VHI"
       },
       {
         "key": "g0:4",
         "position": 5,
-        "label": "A0 / D14",
+        "label": "A0",
         "role": "dac",
         "aliases": [
+          "D14",
           "DAC0",
           "PA02"
         ],
@@ -16169,9 +16488,10 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g0:5",
         "position": 6,
-        "label": "A1 / D15",
+        "label": "A1",
         "role": "dac",
         "aliases": [
+          "D15",
           "DAC1",
           "PA05"
         ],
@@ -16180,9 +16500,10 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g0:6",
         "position": 7,
-        "label": "A2 / D16",
+        "label": "A2",
         "role": "adc",
         "aliases": [
+          "D16",
           "PB08"
         ],
         "group": "Bottom edge"
@@ -16190,9 +16511,10 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g0:7",
         "position": 8,
-        "label": "A3 / D17",
+        "label": "A3",
         "role": "adc",
         "aliases": [
+          "D17",
           "PB09"
         ],
         "group": "Bottom edge"
@@ -16200,20 +16522,22 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g0:8",
         "position": 9,
-        "label": "D24",
-        "role": "gpio",
+        "label": "A4",
+        "role": "adc",
         "aliases": [
-          "PA17"
+          "D18",
+          "PA04"
         ],
         "group": "Bottom edge"
       },
       {
         "key": "g0:9",
         "position": 10,
-        "label": "D25",
-        "role": "gpio",
+        "label": "A5",
+        "role": "adc",
         "aliases": [
-          "PA16"
+          "D19",
+          "PA06"
         ],
         "group": "Bottom edge"
       },
@@ -16223,7 +16547,7 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "SCK",
         "role": "spi",
         "aliases": [
-          "PA13"
+          "PA01"
         ],
         "group": "Bottom edge",
         "net": "SPI"
@@ -16234,7 +16558,7 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "MO / MOSI",
         "role": "spi",
         "aliases": [
-          "PA12"
+          "PA00"
         ],
         "group": "Bottom edge",
         "net": "SPI"
@@ -16245,31 +16569,41 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "MI / MISO",
         "role": "spi",
         "aliases": [
-          "PA14"
+          "PB23"
         ],
         "group": "Bottom edge",
         "net": "SPI"
       },
       {
-        "key": "g1:0",
+        "key": "g0:13",
         "position": 14,
+        "label": "D2",
+        "role": "gpio",
+        "aliases": [
+          "PA07"
+        ],
+        "group": "Bottom edge"
+      },
+      {
+        "key": "g1:0",
+        "position": 15,
         "label": "BAT",
         "role": "power",
-        "note": "Battery voltage input.",
+        "note": "Battery input, 3.5 to 6 V.",
         "group": "Top edge",
         "net": "BAT"
       },
       {
         "key": "g1:1",
-        "position": 15,
-        "label": "EN",
-        "role": "system",
-        "note": "3.3 V regulator enable (active HIGH).",
-        "group": "Top edge"
+        "position": 16,
+        "label": "GND",
+        "role": "ground",
+        "group": "Top edge",
+        "net": "GND"
       },
       {
         "key": "g1:2",
-        "position": 16,
+        "position": 17,
         "label": "USB",
         "role": "power",
         "note": "USB 5 V bus.",
@@ -16278,47 +16612,50 @@ export const pinIndex: PinIndexBoard[] = [
       },
       {
         "key": "g1:3",
-        "position": 17,
-        "label": "D13",
+        "position": 18,
+        "label": "D13 / LED",
         "role": "gpio",
         "aliases": [
-          "PA11"
+          "PA22"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "group": "Top edge"
       },
       {
         "key": "g1:4",
-        "position": 18,
+        "position": 19,
         "label": "D12",
         "role": "gpio",
         "aliases": [
-          "PA10"
+          "PA23"
         ],
         "group": "Top edge"
       },
       {
         "key": "g1:5",
-        "position": 19,
+        "position": 20,
         "label": "D11",
         "role": "gpio",
         "aliases": [
-          "PA16"
+          "PA21"
         ],
         "group": "Top edge"
       },
       {
         "key": "g1:6",
-        "position": 20,
+        "position": 21,
         "label": "D10",
         "role": "gpio",
         "aliases": [
-          "PA18"
+          "PA20"
         ],
         "group": "Top edge"
       },
       {
         "key": "g1:7",
-        "position": 21,
+        "position": 22,
         "label": "D9",
         "role": "gpio",
         "aliases": [
@@ -16328,17 +16665,17 @@ export const pinIndex: PinIndexBoard[] = [
       },
       {
         "key": "g1:8",
-        "position": 22,
+        "position": 23,
         "label": "D7",
         "role": "gpio",
         "aliases": [
-          "PA20"
+          "PA18"
         ],
         "group": "Top edge"
       },
       {
         "key": "g1:9",
-        "position": 23,
+        "position": 24,
         "label": "D5",
         "role": "special",
         "aliases": [
@@ -16349,74 +16686,90 @@ export const pinIndex: PinIndexBoard[] = [
       },
       {
         "key": "g1:10",
-        "position": 24,
-        "label": "SCL / D3",
+        "position": 25,
+        "label": "SCL",
         "role": "i2c",
         "aliases": [
-          "PA22"
+          "PA13"
         ],
         "group": "Top edge",
         "net": "I2C"
       },
       {
         "key": "g1:11",
-        "position": 25,
-        "label": "SDA / D2",
+        "position": 26,
+        "label": "SDA",
         "role": "i2c",
         "aliases": [
-          "PA23"
+          "PA12"
         ],
         "group": "Top edge",
         "net": "I2C"
       },
       {
         "key": "g1:12",
-        "position": 26,
-        "label": "RX / D0",
+        "position": 27,
+        "label": "TX / D1",
         "role": "uart",
         "aliases": [
-          "PA09"
+          "PA17"
         ],
         "group": "Top edge",
         "net": "UART"
       },
       {
         "key": "g1:13",
-        "position": 27,
-        "label": "TX / D1",
+        "position": 28,
+        "label": "RX / D0",
         "role": "uart",
         "aliases": [
-          "PA08"
+          "PA16"
         ],
         "group": "Top edge",
         "net": "UART"
       },
       {
         "key": "g2:0",
-        "position": 28,
-        "label": "E / EN",
+        "position": 29,
+        "label": "EN",
         "role": "system",
+        "note": "3.3 V regulator enable, on battery only.",
         "group": "Short edge"
       },
       {
         "key": "g2:1",
-        "position": 29,
-        "label": "D2",
-        "role": "gpio",
-        "group": "Short edge"
+        "position": 30,
+        "label": "SWDIO",
+        "role": "debug",
+        "group": "Short edge",
+        "net": "SWD"
       },
       {
         "key": "g2:2",
-        "position": 30,
-        "label": "D3",
-        "role": "gpio",
-        "group": "Short edge"
+        "position": 31,
+        "label": "SWCLK",
+        "role": "debug",
+        "group": "Short edge",
+        "net": "SWD"
       },
       {
         "key": "g2:3",
-        "position": 31,
+        "position": 32,
+        "label": "D3",
+        "role": "gpio",
+        "aliases": [
+          "PB22"
+        ],
+        "group": "Short edge"
+      },
+      {
+        "key": "g2:4",
+        "position": 33,
         "label": "D4",
         "role": "gpio",
+        "aliases": [
+          "PA14"
+        ],
         "group": "Short edge"
       }
     ]
@@ -17316,6 +17669,9 @@ export const pinIndex: PinIndexBoard[] = [
           "PD0",
           "RXD"
         ],
+        "flags": [
+          "usb"
+        ],
         "group": "Digital / communication",
         "net": "UART"
       },
@@ -17327,6 +17683,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "PD1",
           "TXD"
+        ],
+        "flags": [
+          "usb"
         ],
         "group": "Digital / communication",
         "net": "UART"
@@ -17456,6 +17815,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "PB5",
           "LED"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "group": "Digital / communication",
         "net": "SPI"
@@ -17663,6 +18025,9 @@ export const pinIndex: PinIndexBoard[] = [
           "FSPIWP",
           "ADC1_CH1",
           "MTMS"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -17674,6 +18039,9 @@ export const pinIndex: PinIndexBoard[] = [
           "FSPIHD",
           "ADC1_CH2",
           "MTDO"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -17805,6 +18173,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "FSPICS3"
         ],
+        "flags": [
+          "strapping"
+        ],
         "net": "SPI"
       },
       {
@@ -17821,6 +18192,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "RGB LED",
           "LOG"
+        ],
+        "flags": [
+          "strapping",
+          "onboard-led"
         ]
       },
       {
@@ -17840,7 +18215,10 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:10",
         "position": 26,
         "label": "GPIO9 / BOOT",
-        "role": "system"
+        "role": "system",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:11",
@@ -17853,13 +18231,19 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:12",
         "position": 28,
         "label": "GPIO27 / USB_D+",
-        "role": "special"
+        "role": "special",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:13",
         "position": 29,
         "label": "GPIO26 / USB_D-",
-        "role": "special"
+        "role": "special",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:14",
@@ -21145,6 +21529,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 14,
         "label": "D13 / SCK",
         "role": "spi",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "Digital",
         "net": "SPI"
       },
@@ -21383,6 +21770,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "pwm",
         "aliases": [
           "PC7"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "group": "Digital"
       },
@@ -21711,6 +22101,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "pwm",
         "aliases": [
           "PC7"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "group": "Digital / communication"
       },
@@ -22042,48 +22435,45 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g0:10",
         "position": 11,
-        "label": "D10 / SS",
-        "role": "spi",
+        "label": "D10",
+        "role": "pwm",
         "aliases": [
           "PA18"
         ],
-        "group": "Digital",
-        "net": "SPI"
+        "group": "Digital"
       },
       {
         "key": "g0:11",
         "position": 12,
-        "label": "D11 / COPI",
-        "role": "spi",
+        "label": "D11",
+        "role": "pwm",
         "aliases": [
-          "PA16",
-          "MOSI"
+          "PA16"
         ],
-        "group": "Digital",
-        "net": "SPI"
+        "group": "Digital"
       },
       {
         "key": "g0:12",
         "position": 13,
-        "label": "D12 / CIPO",
-        "role": "spi",
+        "label": "D12",
+        "role": "pwm",
         "aliases": [
-          "PA19",
-          "MISO"
+          "PA19"
         ],
-        "group": "Digital",
-        "net": "SPI"
+        "group": "Digital"
       },
       {
         "key": "g0:13",
         "position": 14,
-        "label": "D13 / SCK / LED",
-        "role": "spi",
+        "label": "D13 / LED",
+        "role": "pwm",
         "aliases": [
           "PA17"
         ],
-        "group": "Digital",
-        "net": "SPI"
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "Digital"
       },
       {
         "key": "g0:14",
@@ -22964,6 +23354,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SCK",
           "LED"
         ],
+        "flags": [
+          "onboard-led"
+        ],
         "net": "SPI"
       },
       {
@@ -23069,6 +23462,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "spi",
         "aliases": [
           "PA17"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "net": "SPI"
       },
@@ -23854,6 +24250,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "pwm",
         "aliases": [
           "PA20"
+        ],
+        "flags": [
+          "onboard-led"
         ]
       }
     ]
@@ -24112,6 +24511,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "pwm",
         "aliases": [
           "PA20"
+        ],
+        "flags": [
+          "onboard-led"
         ]
       }
     ]
@@ -24292,7 +24694,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "PA23"
         ],
-        "note": "onboard red LED"
+        "note": "onboard red LED",
+        "flags": [
+          "onboard-led"
+        ]
       },
       {
         "key": "pR:4",
@@ -24763,12 +25168,12 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "pL:15",
         "position": 16,
-        "label": "D13",
-        "role": "gpio",
+        "label": "DB",
+        "role": "debug",
         "aliases": [
-          "GPIO13"
+          "Debug TX"
         ],
-        "note": "onboard LED"
+        "note": "Hardware UART debug output."
       },
       {
         "key": "pR:0",
@@ -24874,6 +25279,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "i2c",
         "aliases": [
           "GPIO3"
+        ],
+        "flags": [
+          "strapping"
         ],
         "net": "I2C"
       }
@@ -25179,26 +25587,26 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g0:11",
         "position": 12,
-        "label": "D11 / MOSI",
-        "role": "spi",
-        "group": "Digital (D0–D13)",
-        "net": "SPI"
+        "label": "D11",
+        "role": "pwm",
+        "group": "Digital (D0–D13)"
       },
       {
         "key": "g0:12",
         "position": 13,
-        "label": "D12 / MISO",
-        "role": "spi",
-        "group": "Digital (D0–D13)",
-        "net": "SPI"
+        "label": "D12",
+        "role": "pwm",
+        "group": "Digital (D0–D13)"
       },
       {
         "key": "g0:13",
         "position": 14,
-        "label": "D13 / SCK / LED",
-        "role": "spi",
-        "group": "Digital (D0–D13)",
-        "net": "SPI"
+        "label": "D13 / LED",
+        "role": "pwm",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "Digital (D0–D13)"
       },
       {
         "key": "g1:0",
@@ -25233,18 +25641,16 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "g1:4",
         "position": 19,
-        "label": "A4 / SDA",
-        "role": "i2c",
-        "group": "Analog (A0–A5 + AREF)",
-        "net": "I2C"
+        "label": "A4",
+        "role": "adc",
+        "group": "Analog (A0–A5 + AREF)"
       },
       {
         "key": "g1:5",
         "position": 20,
-        "label": "A5 / SCL",
-        "role": "i2c",
-        "group": "Analog (A0–A5 + AREF)",
-        "net": "I2C"
+        "label": "A5",
+        "role": "adc",
+        "group": "Analog (A0–A5 + AREF)"
       },
       {
         "key": "g1:6",
@@ -25253,6 +25659,28 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "adc",
         "note": "Analog reference; leave unconnected or tie to 3.3 V.",
         "group": "Analog (A0–A5 + AREF)"
+      },
+      {
+        "key": "g1:7",
+        "position": 35,
+        "label": "SDA",
+        "role": "i2c",
+        "aliases": [
+          "PB02"
+        ],
+        "group": "Analog (A0–A5 + AREF)",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:8",
+        "position": 36,
+        "label": "SCL",
+        "role": "i2c",
+        "aliases": [
+          "PB03"
+        ],
+        "group": "Analog (A0–A5 + AREF)",
+        "net": "I2C"
       },
       {
         "key": "g2:0",
@@ -25458,6 +25886,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 14,
         "label": "D13",
         "role": "gpio",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "Digital D0-D53"
       },
       {
@@ -26203,6 +26634,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "adc",
         "aliases": [
           "GPIO2"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -26301,6 +26735,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO9"
         ],
+        "flags": [
+          "strapping"
+        ],
         "net": "SPI"
       },
       {
@@ -26310,6 +26747,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "spi",
         "aliases": [
           "GPIO8"
+        ],
+        "flags": [
+          "strapping"
         ],
         "net": "SPI"
       },
@@ -27046,33 +27486,32 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "g0:10",
         "position": 11,
         "label": "D10",
-        "role": "spi",
-        "group": "Digital",
-        "net": "SPI"
+        "role": "gpio",
+        "group": "Digital"
       },
       {
         "key": "g0:11",
         "position": 12,
         "label": "D11",
-        "role": "spi",
-        "group": "Digital",
-        "net": "SPI"
+        "role": "gpio",
+        "group": "Digital"
       },
       {
         "key": "g0:12",
         "position": 13,
         "label": "D12",
-        "role": "spi",
-        "group": "Digital",
-        "net": "SPI"
+        "role": "gpio",
+        "group": "Digital"
       },
       {
         "key": "g0:13",
         "position": 14,
         "label": "D13",
-        "role": "spi",
-        "group": "Digital",
-        "net": "SPI"
+        "role": "gpio",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "Digital"
       },
       {
         "key": "g1:0",
@@ -27212,7 +27651,11 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 3,
         "label": "GPIO0",
         "role": "special",
-        "note": "BOOT button; ADC2_CH1; must be HIGH at reset."
+        "note": "BOOT button; ADC2_CH1; must be HIGH at reset.",
+        "flags": [
+          "strapping",
+          "adc-unavailable-with-wifi"
+        ]
       },
       {
         "key": "pL:2",
@@ -27221,13 +27664,19 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "gpio",
         "aliases": [
           "ADC2_CH0"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
         "key": "pL:3",
         "position": 7,
         "label": "GPIO5",
-        "role": "gpio"
+        "role": "gpio",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:4",
@@ -27267,6 +27716,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "UART0 RX"
         ],
+        "flags": [
+          "usb"
+        ],
         "net": "UART0"
       },
       {
@@ -27276,6 +27728,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "uart",
         "aliases": [
           "UART0 TX"
+        ],
+        "flags": [
+          "usb"
         ],
         "net": "UART0"
       },
@@ -27307,6 +27762,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "DAC1",
           "ADC2_CH8"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -27317,6 +27775,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "DAC2",
           "ADC2_CH9"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -27326,6 +27787,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "gpio",
         "aliases": [
           "ADC2_CH7"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -27347,28 +27811,40 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 6,
         "label": "GPIO36 / SVP",
         "role": "adc",
-        "note": "Input only; ADC1_CH0."
+        "note": "Input only; ADC1_CH0.",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pR:3",
         "position": 8,
         "label": "GPIO39 / SVN",
         "role": "adc",
-        "note": "Input only; ADC1_CH3."
+        "note": "Input only; ADC1_CH3.",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pR:4",
         "position": 10,
         "label": "GPIO34",
         "role": "adc",
-        "note": "Input only; ADC1_CH6."
+        "note": "Input only; ADC1_CH6.",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pR:5",
         "position": 12,
         "label": "GPIO35",
         "role": "adc",
-        "note": "Input only; ADC1_CH7."
+        "note": "Input only; ADC1_CH7.",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pR:6",
@@ -27395,6 +27871,10 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "gpio",
         "aliases": [
           "ADC2_CH4"
+        ],
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -27405,7 +27885,12 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "ADC2_CH5"
         ],
-        "note": "Boot strapping: must be LOW at reset."
+        "note": "Boot strapping: must be LOW at reset.",
+        "flags": [
+          "strapping",
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ]
       },
       {
         "key": "pR:10",
@@ -27414,6 +27899,10 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "gpio",
         "aliases": [
           "ADC2_CH6"
+        ],
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
         ]
       },
       {
@@ -28088,6 +28577,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SCK",
           "LED"
         ],
+        "flags": [
+          "onboard-led"
+        ],
         "net": "SPI"
       }
     ]
@@ -28252,16 +28744,20 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 22,
         "label": "19 / A5",
         "role": "i2c",
-        "note": "SCL0",
-        "net": "I2C"
+        "aliases": [
+          "SCL0"
+        ],
+        "net": "I2C0"
       },
       {
         "key": "pR:8",
         "position": 23,
         "label": "18 / A4",
         "role": "i2c",
-        "note": "SDA0",
-        "net": "I2C"
+        "aliases": [
+          "SDA0"
+        ],
+        "net": "I2C0"
       },
       {
         "key": "pR:9",
@@ -32163,6 +32659,9 @@ export const pinIndex: PinIndexBoard[] = [
           "RX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -32175,6 +32674,9 @@ export const pinIndex: PinIndexBoard[] = [
           "TX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -32276,6 +32778,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SPI SCK"
         ],
         "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "CN5/CN9 digital",
         "net": "SPI"
       },
@@ -32429,6 +32934,9 @@ export const pinIndex: PinIndexBoard[] = [
           "RX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -32441,6 +32949,9 @@ export const pinIndex: PinIndexBoard[] = [
           "TX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -32542,6 +33053,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SPI SCK"
         ],
         "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "CN5/CN9 digital",
         "net": "SPI"
       },
@@ -32695,6 +33209,9 @@ export const pinIndex: PinIndexBoard[] = [
           "RX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -32707,6 +33224,9 @@ export const pinIndex: PinIndexBoard[] = [
           "TX"
         ],
         "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
         "group": "CN5/CN9 digital",
         "net": "UART"
       },
@@ -32808,6 +33328,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SPI SCK"
         ],
         "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "CN5/CN9 digital",
         "net": "SPI"
       },
@@ -33095,6 +33618,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "PA5",
           "DAC2"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "group": "CN9/CN5 digital",
         "net": "SPI"
@@ -34260,6 +34786,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "TIM3 CH3",
           "TIM_D_PWM1"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "group": "CN10 Zio (lower right)"
       },
@@ -42927,17 +43456,25 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "g0:14",
         "position": 15,
         "label": "PC1",
-        "role": "gpio",
+        "role": "i2c",
+        "aliases": [
+          "I2C3_SDA"
+        ],
         "note": "ADC-capable.",
-        "group": "GPIO header (pins 1-18)"
+        "group": "GPIO header (pins 1-18)",
+        "net": "I2C"
       },
       {
         "key": "g0:15",
         "position": 16,
         "label": "PC0",
-        "role": "gpio",
+        "role": "i2c",
+        "aliases": [
+          "I2C3_SCL"
+        ],
         "note": "ADC-capable.",
-        "group": "GPIO header (pins 1-18)"
+        "group": "GPIO header (pins 1-18)",
+        "net": "I2C"
       },
       {
         "key": "g0:16",
@@ -43024,6 +43561,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "U0TXD"
         ],
+        "flags": [
+          "strapping"
+        ],
         "group": "J1 header (pins 1-40)",
         "net": "UART"
       },
@@ -43042,6 +43582,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "uart",
         "aliases": [
           "U0RXD"
+        ],
+        "flags": [
+          "strapping"
         ],
         "group": "J1 header (pins 1-40)",
         "net": "UART"
@@ -43153,6 +43696,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 24,
         "label": "GPIO36",
         "role": "gpio",
+        "flags": [
+          "strapping"
+        ],
         "group": "J1 header (pins 1-40)"
       },
       {
@@ -46377,7 +46923,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "FSPID"
+        "note": "FSPID",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:6",
@@ -46401,7 +46950,11 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "ZCD0, FSPICS0"
+        "note": "ZCD0, FSPICS0",
+        "flags": [
+          "strapping",
+          "onboard-led"
+        ]
       },
       {
         "key": "pL:9",
@@ -46538,7 +47091,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "ZCD1"
+        "note": "ZCD1",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:11",
@@ -46554,6 +47110,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D+"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -46563,6 +47122,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D-"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -46731,6 +47293,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -46741,7 +47306,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "Also drives the blue channel of the onboard LED on v1.1."
+        "note": "Also drives the blue channel of the onboard LED on v1.1.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:6",
@@ -46841,7 +47409,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "RTC_GPIO0. Boot strapping pin per the ESP32-S3 datasheet."
+        "note": "RTC_GPIO0. Boot strapping pin per the ESP32-S3 datasheet.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:2",
@@ -46865,7 +47436,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "RTC_GPIO3, TOUCH3, ADC1_CH2. Boot strapping pin per the ESP32-S3 datasheet."
+        "note": "RTC_GPIO3, TOUCH3, ADC1_CH2. Boot strapping pin per the ESP32-S3 datasheet.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:5",
@@ -47020,7 +47594,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "Boot strapping pin per the ESP32-S3 datasheet."
+        "note": "Boot strapping pin per the ESP32-S3 datasheet.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:3",
@@ -47030,7 +47607,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "Boot strapping pin per the ESP32-S3 datasheet."
+        "note": "Boot strapping pin per the ESP32-S3 datasheet.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pR:4",
@@ -47180,7 +47760,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "USB_D+"
         ],
-        "note": "RTC_GPIO20, U1CTS, ADC2_CH9, CLK_OUT1"
+        "note": "RTC_GPIO20, U1CTS, ADC2_CH9, CLK_OUT1",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:19",
@@ -47190,14 +47773,20 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "USB_D-"
         ],
-        "note": "RTC_GPIO19, U1RTS, ADC2_CH8, CLK_OUT2"
+        "note": "RTC_GPIO19, U1RTS, ADC2_CH8, CLK_OUT2",
+        "flags": [
+          "usb"
+        ]
       },
       {
         "key": "pR:20",
         "position": 21,
         "label": "GPIO48",
         "role": "special",
-        "note": "SPICLK_N, SUBSPICLK_N_DIFF. Drives the onboard addressable RGB LED."
+        "note": "SPICLK_N, SUBSPICLK_N_DIFF. Drives the onboard addressable RGB LED.",
+        "flags": [
+          "onboard-led"
+        ]
       },
       {
         "key": "pR:21",
@@ -47247,7 +47836,10 @@ export const pinIndex: PinIndexBoard[] = [
           "MTMS",
           "Strapping"
         ],
-        "note": "LP_UART_RXD, ADC1_CH4, FSPIHD"
+        "note": "LP_UART_RXD, ADC1_CH4, FSPIHD",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:5",
@@ -47258,7 +47850,10 @@ export const pinIndex: PinIndexBoard[] = [
           "MTDI",
           "Strapping"
         ],
-        "note": "LP_UART_TXD, ADC1_CH5, FSPIWP"
+        "note": "LP_UART_TXD, ADC1_CH5, FSPIWP",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:6",
@@ -47282,7 +47877,11 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "Strapping"
         ],
-        "note": "Drives the onboard addressable RGB LED."
+        "note": "Drives the onboard addressable RGB LED.",
+        "flags": [
+          "strapping",
+          "onboard-led"
+        ]
       },
       {
         "key": "pL:9",
@@ -47411,6 +48010,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -47420,6 +48022,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "system",
         "aliases": [
           "Strapping"
+        ],
+        "flags": [
+          "strapping"
         ]
       },
       {
@@ -47436,6 +48041,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D+"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -47445,6 +48053,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "special",
         "aliases": [
           "USB_D-"
+        ],
+        "flags": [
+          "usb"
         ]
       },
       {
@@ -48626,6 +49237,9 @@ export const pinIndex: PinIndexBoard[] = [
           "FSPIQ"
         ],
         "note": "MTMS strapping pin; external loading is sampled at reset.",
+        "flags": [
+          "strapping"
+        ],
         "group": "J1",
         "net": "JTAG"
       },
@@ -48692,6 +49306,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SDIO_DATA1"
         ],
         "note": "Strapping pin controlling the early-boot JTAG signal source.",
+        "flags": [
+          "strapping"
+        ],
         "group": "J1"
       },
       {
@@ -48742,6 +49359,9 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "GPIO25",
         "role": "system",
         "note": "Strapping pin used for SDIO sampling/driving clock-edge configuration.",
+        "flags": [
+          "strapping"
+        ],
         "group": "J1"
       },
       {
@@ -48836,6 +49456,10 @@ export const pinIndex: PinIndexBoard[] = [
           "RGB LED"
         ],
         "note": "Boot/ROM-print strapping pin shared with the onboard addressable RGB LED.",
+        "flags": [
+          "strapping",
+          "onboard-led"
+        ],
         "group": "J3"
       },
       {
@@ -48883,6 +49507,9 @@ export const pinIndex: PinIndexBoard[] = [
           "BOOT"
         ],
         "note": "Boot-mode strapping pin shared with the Boot button and automatic-download circuit.",
+        "flags": [
+          "strapping"
+        ],
         "group": "J3"
       },
       {
@@ -48903,6 +49530,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SDIO_DATA2"
         ],
         "note": "Shared with the ESP32-C5 native USB Serial/JTAG port.",
+        "flags": [
+          "usb"
+        ],
         "group": "J3"
       },
       {
@@ -48915,6 +49545,9 @@ export const pinIndex: PinIndexBoard[] = [
           "SDIO_DATA3"
         ],
         "note": "Shared with the ESP32-C5 native USB Serial/JTAG port.",
+        "flags": [
+          "usb"
+        ],
         "group": "J3"
       },
       {
@@ -49286,6 +49919,9 @@ export const pinIndex: PinIndexBoard[] = [
         "role": "spi",
         "aliases": [
           "P111"
+        ],
+        "flags": [
+          "onboard-led"
         ],
         "net": "SPI"
       },
@@ -50437,7 +51073,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO25"
         ],
-        "note": "Strapping pin; external pulls or a driven peripheral can change boot behavior."
+        "note": "Strapping pin; external pulls or a driven peripheral can change boot behavior.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:3",
@@ -50447,7 +51086,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO7"
         ],
-        "note": "Strapping pin; external pulls or a driven peripheral can change boot behavior."
+        "note": "Strapping pin; external pulls or a driven peripheral can change boot behavior.",
+        "flags": [
+          "strapping"
+        ]
       },
       {
         "key": "pL:4",
@@ -51003,6 +51645,10069 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "PCM DOUT"
         ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f411re",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f072rb",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f091rc",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f303re",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f334r8",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g431rb",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g474re",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g0b1re",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-c031c6",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l053r8",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l073rz",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l152re",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "flags": [
+          "usb"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-h503rb",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "note": "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART",
+        "group": "CN5/CN9 digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "CN5/CN9 digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10",
+        "role": "spi",
+        "aliases": [
+          "SPI CS"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11",
+        "role": "spi",
+        "aliases": [
+          "SPI MOSI"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12",
+        "role": "spi",
+        "aliases": [
+          "SPI MISO"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SPI SCK"
+        ],
+        "note": "Also drives user LED LD2, so the LED flickers with SPI clock traffic",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "CN5/CN9 digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN5/CN9 digital",
+        "net": "GND"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "AREF",
+        "role": "power",
+        "group": "CN5/CN9 digital",
+        "net": "AREF"
+      },
+      {
+        "key": "g0:16",
+        "position": 17,
+        "label": "D14 / SDA",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g0:17",
+        "position": 18,
+        "label": "D15 / SCL",
+        "role": "i2c",
+        "group": "CN5/CN9 digital",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:0",
+        "position": 18,
+        "label": "NC",
+        "role": "reserved",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:1",
+        "position": 19,
+        "label": "IOREF",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "IOREF"
+      },
+      {
+        "key": "g1:2",
+        "position": 20,
+        "label": "RESET",
+        "role": "system",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:3",
+        "position": 21,
+        "label": "3V3",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:4",
+        "position": 22,
+        "label": "5V",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "5V"
+      },
+      {
+        "key": "g1:5",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:6",
+        "position": 24,
+        "label": "GND",
+        "role": "ground",
+        "group": "CN6/CN8 power and analog",
+        "net": "GND"
+      },
+      {
+        "key": "g1:7",
+        "position": 25,
+        "label": "VIN",
+        "role": "power",
+        "group": "CN6/CN8 power and analog",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:8",
+        "position": 26,
+        "label": "A0",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:9",
+        "position": 27,
+        "label": "A1",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:10",
+        "position": 28,
+        "label": "A2",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:11",
+        "position": 29,
+        "label": "A3",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:12",
+        "position": 30,
+        "label": "A4",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      },
+      {
+        "key": "g1:13",
+        "position": 31,
+        "label": "A5",
+        "role": "adc",
+        "group": "CN6/CN8 power and analog"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l432kc",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "NRST",
+        "role": "system"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D3",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D4",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "D5",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "D6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "D7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "D8",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "D9",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "D10",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "D11",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "D12",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:0",
+        "position": 16,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SCK"
+        ],
+        "flags": [
+          "onboard-led"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:1",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:2",
+        "position": 18,
+        "label": "AREF",
+        "role": "special"
+      },
+      {
+        "key": "pR:3",
+        "position": 19,
+        "label": "A0",
+        "role": "adc"
+      },
+      {
+        "key": "pR:4",
+        "position": 20,
+        "label": "A1",
+        "role": "adc"
+      },
+      {
+        "key": "pR:5",
+        "position": 21,
+        "label": "A2",
+        "role": "adc"
+      },
+      {
+        "key": "pR:6",
+        "position": 22,
+        "label": "A3",
+        "role": "adc"
+      },
+      {
+        "key": "pR:7",
+        "position": 23,
+        "label": "A4",
+        "role": "adc"
+      },
+      {
+        "key": "pR:8",
+        "position": 24,
+        "label": "A5",
+        "role": "adc"
+      },
+      {
+        "key": "pR:9",
+        "position": 25,
+        "label": "A6",
+        "role": "adc"
+      },
+      {
+        "key": "pR:10",
+        "position": 26,
+        "label": "A7",
+        "role": "adc"
+      },
+      {
+        "key": "pR:11",
+        "position": 27,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "NRST",
+        "role": "system"
+      },
+      {
+        "key": "pR:13",
+        "position": 29,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "VIN",
+        "role": "power",
+        "net": "VIN"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g431kb",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "NRST",
+        "role": "system"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D3",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D4",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "D5",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "D6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "D7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "D8",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "D9",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "D10",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "D11",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "D12",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:0",
+        "position": 16,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SCK"
+        ],
+        "flags": [
+          "onboard-led"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:1",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:2",
+        "position": 18,
+        "label": "AREF",
+        "role": "special"
+      },
+      {
+        "key": "pR:3",
+        "position": 19,
+        "label": "A0",
+        "role": "adc"
+      },
+      {
+        "key": "pR:4",
+        "position": 20,
+        "label": "A1",
+        "role": "adc"
+      },
+      {
+        "key": "pR:5",
+        "position": 21,
+        "label": "A2",
+        "role": "adc",
+        "flags": [
+          "usb"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 22,
+        "label": "A3",
+        "role": "adc"
+      },
+      {
+        "key": "pR:7",
+        "position": 23,
+        "label": "A4",
+        "role": "adc"
+      },
+      {
+        "key": "pR:8",
+        "position": 24,
+        "label": "A5",
+        "role": "adc"
+      },
+      {
+        "key": "pR:9",
+        "position": 25,
+        "label": "A6",
+        "role": "adc"
+      },
+      {
+        "key": "pR:10",
+        "position": 26,
+        "label": "A7",
+        "role": "adc",
+        "flags": [
+          "usb"
+        ]
+      },
+      {
+        "key": "pR:11",
+        "position": 27,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "NRST",
+        "role": "system"
+      },
+      {
+        "key": "pR:13",
+        "position": 29,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "VIN",
+        "role": "power",
+        "net": "VIN"
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f303k8",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D1",
+        "role": "uart",
+        "aliases": [
+          "TX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D0",
+        "role": "uart",
+        "aliases": [
+          "RX"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "NRST",
+        "role": "system"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D3",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D4",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "D5",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "D6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "D7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "D8",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "D9",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "D10",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "D11",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "D12",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:0",
+        "position": 16,
+        "label": "D13",
+        "role": "spi",
+        "aliases": [
+          "SCK"
+        ],
+        "flags": [
+          "onboard-led"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:1",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:2",
+        "position": 18,
+        "label": "AREF",
+        "role": "special"
+      },
+      {
+        "key": "pR:3",
+        "position": 19,
+        "label": "A0",
+        "role": "adc"
+      },
+      {
+        "key": "pR:4",
+        "position": 20,
+        "label": "A1",
+        "role": "adc"
+      },
+      {
+        "key": "pR:5",
+        "position": 21,
+        "label": "A2",
+        "role": "adc"
+      },
+      {
+        "key": "pR:6",
+        "position": 22,
+        "label": "A3",
+        "role": "adc"
+      },
+      {
+        "key": "pR:7",
+        "position": 23,
+        "label": "A4",
+        "role": "adc"
+      },
+      {
+        "key": "pR:8",
+        "position": 24,
+        "label": "A5",
+        "role": "adc"
+      },
+      {
+        "key": "pR:9",
+        "position": 25,
+        "label": "A6",
+        "role": "adc"
+      },
+      {
+        "key": "pR:10",
+        "position": 26,
+        "label": "A7",
+        "role": "adc"
+      },
+      {
+        "key": "pR:11",
+        "position": 27,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "NRST",
+        "role": "system"
+      },
+      {
+        "key": "pR:13",
+        "position": 29,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "VIN",
+        "role": "power",
+        "net": "VIN"
+      }
+    ]
+  },
+  {
+    "id": "raspberry-pi-3-model-b",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "GPIO2",
+        "role": "i2c",
+        "aliases": [
+          "SDA1"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "GPIO3",
+        "role": "i2c",
+        "aliases": [
+          "SCL1"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "GPIO4",
+        "role": "gpio",
+        "aliases": [
+          "GPCLK0"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "GPIO17",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "GPIO27",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "GPIO22",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "GPIO10",
+        "role": "spi",
+        "aliases": [
+          "SPI0 MOSI"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "GPIO9",
+        "role": "spi",
+        "aliases": [
+          "SPI0 MISO"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "GPIO11",
+        "role": "spi",
+        "aliases": [
+          "SPI0 SCLK"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "GPIO0",
+        "role": "reserved",
+        "aliases": [
+          "ID_SD"
+        ]
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "GPIO5",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "GPIO6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "GPIO13",
+        "role": "pwm",
+        "aliases": [
+          "PWM1"
+        ]
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "GPIO19",
+        "role": "special",
+        "aliases": [
+          "PCM FS"
+        ]
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "GPIO26",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "GPIO14",
+        "role": "uart",
+        "aliases": [
+          "TXD0"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "GPIO15",
+        "role": "uart",
+        "aliases": [
+          "RXD0"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "GPIO18",
+        "role": "pwm",
+        "aliases": [
+          "PWM0"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "GPIO23",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "GPIO24",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "GPIO25",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "GPIO8",
+        "role": "spi",
+        "aliases": [
+          "SPI0 CE0"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "GPIO7",
+        "role": "spi",
+        "aliases": [
+          "SPI0 CE1"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "GPIO1",
+        "role": "reserved",
+        "aliases": [
+          "ID_SC"
+        ]
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "GPIO12",
+        "role": "pwm",
+        "aliases": [
+          "PWM0"
+        ]
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "GPIO16",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "GPIO20",
+        "role": "special",
+        "aliases": [
+          "PCM DIN"
+        ]
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "GPIO21",
+        "role": "special",
+        "aliases": [
+          "PCM DOUT"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raspberry-pi-1-model-a-plus",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "GPIO2",
+        "role": "i2c",
+        "aliases": [
+          "SDA1"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "GPIO3",
+        "role": "i2c",
+        "aliases": [
+          "SCL1"
+        ],
+        "net": "I2C1"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "GPIO4",
+        "role": "gpio",
+        "aliases": [
+          "GPCLK0"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "GPIO17",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "GPIO27",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "GPIO22",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "GPIO10",
+        "role": "spi",
+        "aliases": [
+          "SPI0 MOSI"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "GPIO9",
+        "role": "spi",
+        "aliases": [
+          "SPI0 MISO"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "GPIO11",
+        "role": "spi",
+        "aliases": [
+          "SPI0 SCLK"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "GPIO0",
+        "role": "reserved",
+        "aliases": [
+          "ID_SD"
+        ]
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "GPIO5",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "GPIO6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "GPIO13",
+        "role": "pwm",
+        "aliases": [
+          "PWM1"
+        ]
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "GPIO19",
+        "role": "special",
+        "aliases": [
+          "PCM FS"
+        ]
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "GPIO26",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "GPIO14",
+        "role": "uart",
+        "aliases": [
+          "TXD0"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "GPIO15",
+        "role": "uart",
+        "aliases": [
+          "RXD0"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "GPIO18",
+        "role": "pwm",
+        "aliases": [
+          "PWM0"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "GPIO23",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "GPIO24",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "GPIO25",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "GPIO8",
+        "role": "spi",
+        "aliases": [
+          "SPI0 CE0"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "GPIO7",
+        "role": "spi",
+        "aliases": [
+          "SPI0 CE1"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "GPIO1",
+        "role": "reserved",
+        "aliases": [
+          "ID_SC"
+        ]
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "GPIO12",
+        "role": "pwm",
+        "aliases": [
+          "PWM0"
+        ]
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "GPIO16",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "GPIO20",
+        "role": "special",
+        "aliases": [
+          "PCM DIN"
+        ]
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "GPIO21",
+        "role": "special",
+        "aliases": [
+          "PCM DOUT"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-rp2350",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A0",
+        "role": "adc",
+        "aliases": [
+          "GPIO26"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "GPIO27"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "GPIO28"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "GPIO29"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "D24",
+        "role": "gpio",
+        "aliases": [
+          "GPIO24"
+        ]
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "D25",
+        "role": "gpio",
+        "aliases": [
+          "GPIO25"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO22"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "MO / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO23"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "MI / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO20"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "RX / D0",
+        "role": "uart",
+        "aliases": [
+          "GPIO1"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "TX / D1",
+        "role": "uart",
+        "aliases": [
+          "GPIO0"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:15",
+        "position": 16,
+        "label": "PSRAM CS",
+        "role": "reserved",
+        "aliases": [
+          "GPIO8"
+        ],
+        "note": "Chip select for the optional PSRAM footprint.",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:0",
+        "position": 17,
+        "label": "BAT",
+        "role": "power",
+        "net": "BAT"
+      },
+      {
+        "key": "pR:1",
+        "position": 18,
+        "label": "EN",
+        "role": "system"
+      },
+      {
+        "key": "pR:2",
+        "position": 19,
+        "label": "USB",
+        "role": "power",
+        "net": "USB"
+      },
+      {
+        "key": "pR:3",
+        "position": 20,
+        "label": "D13",
+        "role": "gpio",
+        "aliases": [
+          "GPIO7",
+          "LED"
+        ],
+        "flags": [
+          "onboard-led"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 21,
+        "label": "D12",
+        "role": "gpio",
+        "aliases": [
+          "GPIO4"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 22,
+        "label": "D11",
+        "role": "gpio",
+        "aliases": [
+          "GPIO11"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 23,
+        "label": "D10",
+        "role": "gpio",
+        "aliases": [
+          "GPIO10"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 24,
+        "label": "D9",
+        "role": "gpio",
+        "aliases": [
+          "GPIO9"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 25,
+        "label": "D6",
+        "role": "gpio",
+        "aliases": [
+          "GPIO6"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 26,
+        "label": "D5",
+        "role": "gpio",
+        "aliases": [
+          "GPIO5"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 27,
+        "label": "SCL",
+        "role": "i2c",
+        "aliases": [
+          "GPIO3"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:11",
+        "position": 28,
+        "label": "SDA",
+        "role": "i2c",
+        "aliases": [
+          "GPIO2"
+        ],
+        "net": "I2C"
+      }
+    ]
+  },
+  {
+    "id": "adafruit-kb2040",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D+",
+        "role": "special",
+        "aliases": [
+          "USB D+"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "TX / D0",
+        "role": "uart",
+        "aliases": [
+          "GPIO0"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "RX / D1",
+        "role": "uart",
+        "aliases": [
+          "GPIO1"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D2",
+        "role": "gpio",
+        "aliases": [
+          "GPIO2"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D3",
+        "role": "gpio",
+        "aliases": [
+          "GPIO3"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "D4",
+        "role": "gpio",
+        "aliases": [
+          "GPIO4"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "D5",
+        "role": "gpio",
+        "aliases": [
+          "GPIO5"
+        ]
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "D6",
+        "role": "gpio",
+        "aliases": [
+          "GPIO6"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "D7",
+        "role": "gpio",
+        "aliases": [
+          "GPIO7"
+        ]
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "D8",
+        "role": "gpio",
+        "aliases": [
+          "GPIO8"
+        ]
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "D9",
+        "role": "gpio",
+        "aliases": [
+          "GPIO9"
+        ]
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "D-",
+        "role": "special",
+        "aliases": [
+          "USB D-"
+        ]
+      },
+      {
+        "key": "pR:1",
+        "position": 15,
+        "label": "RAW",
+        "role": "power",
+        "net": "RAW"
+      },
+      {
+        "key": "pR:2",
+        "position": 16,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 17,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pR:4",
+        "position": 18,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:5",
+        "position": 19,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "GPIO29"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 20,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "GPIO28"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 21,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "GPIO27"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 22,
+        "label": "A0",
+        "role": "adc",
+        "aliases": [
+          "GPIO26"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 23,
+        "label": "SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO18"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:10",
+        "position": 24,
+        "label": "MI / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO20"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:11",
+        "position": 25,
+        "label": "MO / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO19"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "D10",
+        "role": "gpio",
+        "aliases": [
+          "GPIO10"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "waveshare-rp2350-plus",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "GP0",
+        "role": "uart",
+        "aliases": [
+          "UART0 TX"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "GP1",
+        "role": "uart",
+        "aliases": [
+          "UART0 RX"
+        ],
+        "net": "UART0"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GP2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "GP3",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "GP4",
+        "role": "i2c",
+        "aliases": [
+          "I2C0 SDA"
+        ],
+        "net": "I2C0"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "GP5",
+        "role": "i2c",
+        "aliases": [
+          "I2C0 SCL"
+        ],
+        "net": "I2C0"
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "GP6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "GP7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "GP8",
+        "role": "spi",
+        "aliases": [
+          "SPI1 RX"
+        ],
+        "net": "SPI1"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "GP9",
+        "role": "spi",
+        "aliases": [
+          "SPI1 CS"
+        ],
+        "net": "SPI1"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "GP10",
+        "role": "spi",
+        "aliases": [
+          "SPI1 SCK"
+        ],
+        "net": "SPI1"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "GP11",
+        "role": "spi",
+        "aliases": [
+          "SPI1 TX"
+        ],
+        "net": "SPI1"
+      },
+      {
+        "key": "pL:15",
+        "position": 16,
+        "label": "GP12",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 17,
+        "label": "GP13",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:17",
+        "position": 18,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:18",
+        "position": 19,
+        "label": "GP14",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 20,
+        "label": "GP15",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:0",
+        "position": 40,
+        "label": "VBUS",
+        "role": "power",
+        "net": "VBUS"
+      },
+      {
+        "key": "pR:1",
+        "position": 39,
+        "label": "VSYS",
+        "role": "power",
+        "net": "VSYS"
+      },
+      {
+        "key": "pR:2",
+        "position": 38,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 37,
+        "label": "3V3_EN",
+        "role": "system"
+      },
+      {
+        "key": "pR:4",
+        "position": 36,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:5",
+        "position": 35,
+        "label": "ADC_VREF",
+        "role": "adc"
+      },
+      {
+        "key": "pR:6",
+        "position": 34,
+        "label": "GP28",
+        "role": "adc",
+        "aliases": [
+          "ADC2"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 33,
+        "label": "AGND",
+        "role": "ground",
+        "net": "AGND"
+      },
+      {
+        "key": "pR:8",
+        "position": 32,
+        "label": "GP27",
+        "role": "adc",
+        "aliases": [
+          "ADC1"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 31,
+        "label": "GP26",
+        "role": "adc",
+        "aliases": [
+          "ADC0"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 30,
+        "label": "RUN",
+        "role": "system"
+      },
+      {
+        "key": "pR:11",
+        "position": 29,
+        "label": "GP22",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:13",
+        "position": 27,
+        "label": "GP21",
+        "role": "i2c",
+        "aliases": [
+          "I2C0 SCL"
+        ],
+        "net": "I2C0"
+      },
+      {
+        "key": "pR:14",
+        "position": 26,
+        "label": "GP20",
+        "role": "i2c",
+        "aliases": [
+          "I2C0 SDA"
+        ],
+        "net": "I2C0"
+      },
+      {
+        "key": "pR:15",
+        "position": 25,
+        "label": "GP19",
+        "role": "spi",
+        "aliases": [
+          "SPI0 TX"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:16",
+        "position": 24,
+        "label": "GP18",
+        "role": "spi",
+        "aliases": [
+          "SPI0 SCK"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:17",
+        "position": 23,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:18",
+        "position": 22,
+        "label": "GP17",
+        "role": "spi",
+        "aliases": [
+          "SPI0 CS"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:19",
+        "position": 21,
+        "label": "GP16",
+        "role": "spi",
+        "aliases": [
+          "SPI0 RX"
+        ],
+        "net": "SPI0"
+      }
+    ]
+  },
+  {
+    "id": "waveshare-rp2350-zero",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "GP0",
+        "role": "uart",
+        "aliases": [
+          "UART0 TX"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "UART0"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "GP1",
+        "role": "uart",
+        "aliases": [
+          "UART0 RX"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "UART0"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "GP2",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "GP3",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "GP4",
+        "role": "i2c",
+        "aliases": [
+          "I2C0 SDA"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "I2C0"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "GP5",
+        "role": "i2c",
+        "aliases": [
+          "I2C0 SCL"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "I2C0"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "GP6",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "GP7",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "GP8",
+        "role": "spi",
+        "aliases": [
+          "SPI1 RX"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "SPI1"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "GP9",
+        "role": "spi",
+        "aliases": [
+          "SPI1 CS"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "SPI1"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "GP10",
+        "role": "spi",
+        "aliases": [
+          "SPI1 SCK"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "SPI1"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "GP11",
+        "role": "spi",
+        "aliases": [
+          "SPI1 TX"
+        ],
+        "group": "Left/bottom edge (GP0–GP15)",
+        "net": "SPI1"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "GP12",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "GP13",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g0:14",
+        "position": 15,
+        "label": "GP14",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g0:15",
+        "position": 16,
+        "label": "GP15",
+        "role": "gpio",
+        "group": "Left/bottom edge (GP0–GP15)"
+      },
+      {
+        "key": "g1:0",
+        "position": 17,
+        "label": "GP26",
+        "role": "adc",
+        "aliases": [
+          "ADC0"
+        ],
+        "group": "Bottom-right edge (GP26–GP29)"
+      },
+      {
+        "key": "g1:1",
+        "position": 18,
+        "label": "GP27",
+        "role": "adc",
+        "aliases": [
+          "ADC1"
+        ],
+        "group": "Bottom-right edge (GP26–GP29)"
+      },
+      {
+        "key": "g1:2",
+        "position": 19,
+        "label": "GP28",
+        "role": "adc",
+        "aliases": [
+          "ADC2"
+        ],
+        "group": "Bottom-right edge (GP26–GP29)"
+      },
+      {
+        "key": "g1:3",
+        "position": 20,
+        "label": "GP29",
+        "role": "adc",
+        "aliases": [
+          "ADC3"
+        ],
+        "group": "Bottom-right edge (GP26–GP29)"
+      },
+      {
+        "key": "g2:0",
+        "position": 21,
+        "label": "5V",
+        "role": "power",
+        "group": "Top edge",
+        "net": "5V"
+      },
+      {
+        "key": "g2:1",
+        "position": 22,
+        "label": "GND",
+        "role": "ground",
+        "group": "Top edge",
+        "net": "GND"
+      },
+      {
+        "key": "g2:2",
+        "position": 23,
+        "label": "3V3",
+        "role": "power",
+        "group": "Top edge",
+        "net": "3V3"
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-esp32-v2",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "NC",
+        "role": "reserved"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A0 / DAC2",
+        "role": "dac",
+        "aliases": [
+          "GPIO26"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A1 / DAC1",
+        "role": "dac",
+        "aliases": [
+          "GPIO25"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "GPIO34"
+        ],
+        "note": "Input only.",
+        "flags": [
+          "input-only"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "GPIO39"
+        ],
+        "note": "Input only.",
+        "flags": [
+          "input-only"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "A4",
+        "role": "adc",
+        "aliases": [
+          "GPIO36"
+        ],
+        "note": "Input only.",
+        "flags": [
+          "input-only"
+        ]
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "A5",
+        "role": "adc",
+        "aliases": [
+          "GPIO4"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO5"
+        ],
+        "flags": [
+          "strapping"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "MO / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO19"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "MI / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO21"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "RX",
+        "role": "uart",
+        "aliases": [
+          "GPIO7"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "TX",
+        "role": "uart",
+        "aliases": [
+          "GPIO8"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:15",
+        "position": 16,
+        "label": "I37",
+        "role": "gpio",
+        "aliases": [
+          "GPIO37"
+        ],
+        "note": "Input only.",
+        "flags": [
+          "input-only"
+        ]
+      },
+      {
+        "key": "pR:0",
+        "position": 17,
+        "label": "BAT",
+        "role": "power",
+        "net": "BAT"
+      },
+      {
+        "key": "pR:1",
+        "position": 18,
+        "label": "EN",
+        "role": "system"
+      },
+      {
+        "key": "pR:2",
+        "position": 19,
+        "label": "USB",
+        "role": "power",
+        "net": "USB"
+      },
+      {
+        "key": "pR:3",
+        "position": 20,
+        "label": "D13",
+        "role": "gpio",
+        "aliases": [
+          "GPIO13",
+          "LED"
+        ],
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 21,
+        "label": "D12",
+        "role": "gpio",
+        "aliases": [
+          "GPIO12"
+        ],
+        "flags": [
+          "strapping",
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 22,
+        "label": "D27",
+        "role": "gpio",
+        "aliases": [
+          "GPIO27"
+        ],
+        "flags": [
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 23,
+        "label": "D33",
+        "role": "gpio",
+        "aliases": [
+          "GPIO33"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 24,
+        "label": "D15",
+        "role": "gpio",
+        "aliases": [
+          "GPIO15"
+        ],
+        "flags": [
+          "strapping",
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 25,
+        "label": "D32",
+        "role": "gpio",
+        "aliases": [
+          "GPIO32"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 26,
+        "label": "D14",
+        "role": "gpio",
+        "aliases": [
+          "GPIO14"
+        ],
+        "flags": [
+          "jtag",
+          "adc-unavailable-with-wifi"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 27,
+        "label": "SCL",
+        "role": "i2c",
+        "aliases": [
+          "GPIO20"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:11",
+        "position": 28,
+        "label": "SDA",
+        "role": "i2c",
+        "aliases": [
+          "GPIO22"
+        ],
+        "net": "I2C"
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-esp32-s2",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A0",
+        "role": "adc",
+        "aliases": [
+          "GPIO18"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "GPIO17"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "GPIO16"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "GPIO15"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "A4",
+        "role": "adc",
+        "aliases": [
+          "GPIO14"
+        ]
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "A5",
+        "role": "adc",
+        "aliases": [
+          "GPIO8"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO36"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "MO / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO35"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "MI / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO37"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "RX",
+        "role": "uart",
+        "aliases": [
+          "GPIO38"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "TX",
+        "role": "uart",
+        "aliases": [
+          "GPIO39"
+        ],
+        "flags": [
+          "jtag"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:15",
+        "position": 16,
+        "label": "DB",
+        "role": "debug",
+        "aliases": [
+          "Debug TX",
+          "TXD0"
+        ]
+      },
+      {
+        "key": "pR:0",
+        "position": 17,
+        "label": "BAT",
+        "role": "power",
+        "net": "BAT"
+      },
+      {
+        "key": "pR:1",
+        "position": 18,
+        "label": "EN",
+        "role": "system"
+      },
+      {
+        "key": "pR:2",
+        "position": 19,
+        "label": "USB",
+        "role": "power",
+        "net": "USB"
+      },
+      {
+        "key": "pR:3",
+        "position": 20,
+        "label": "D13",
+        "role": "gpio",
+        "aliases": [
+          "GPIO13",
+          "LED"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 21,
+        "label": "D12",
+        "role": "gpio",
+        "aliases": [
+          "GPIO12"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 22,
+        "label": "D11",
+        "role": "gpio",
+        "aliases": [
+          "GPIO11"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 23,
+        "label": "D10",
+        "role": "gpio",
+        "aliases": [
+          "GPIO10"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 24,
+        "label": "D9",
+        "role": "gpio",
+        "aliases": [
+          "GPIO9"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 25,
+        "label": "D6",
+        "role": "gpio",
+        "aliases": [
+          "GPIO6"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 26,
+        "label": "D5",
+        "role": "gpio",
+        "aliases": [
+          "GPIO5"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 27,
+        "label": "SCL",
+        "role": "i2c",
+        "aliases": [
+          "GPIO4"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:11",
+        "position": 28,
+        "label": "SDA",
+        "role": "i2c",
+        "aliases": [
+          "GPIO3"
+        ],
+        "net": "I2C"
+      }
+    ]
+  },
+  {
+    "id": "adafruit-qt-py-esp32-s2",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "A0",
+        "role": "adc",
+        "aliases": [
+          "GPIO18"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "GPIO17"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "GPIO9"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "GPIO8"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "SDA",
+        "role": "i2c",
+        "aliases": [
+          "GPIO7"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "SCL",
+        "role": "i2c",
+        "aliases": [
+          "GPIO6"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "TX",
+        "role": "uart",
+        "aliases": [
+          "GPIO5"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "MO / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO35"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "MI / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO37"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO36"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "RX",
+        "role": "uart",
+        "aliases": [
+          "GPIO16"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-m0-express",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "AREF",
+        "role": "special"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A0",
+        "role": "dac",
+        "aliases": [
+          "PA02"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "PB08"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "PB09"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "PA04"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "A4",
+        "role": "adc",
+        "aliases": [
+          "PA05"
+        ]
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "A5",
+        "role": "adc",
+        "aliases": [
+          "PB02"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "SCK",
+        "role": "spi",
+        "aliases": [
+          "PB11"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "MO / MOSI",
+        "role": "spi",
+        "aliases": [
+          "PB10"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "MI / MISO",
+        "role": "spi",
+        "aliases": [
+          "PA12"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "RX / D0",
+        "role": "uart",
+        "aliases": [
+          "PA11"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "TX / D1",
+        "role": "uart",
+        "aliases": [
+          "PA10"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:15",
+        "position": 16,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 17,
+        "label": "BAT",
+        "role": "power",
+        "net": "BAT"
+      },
+      {
+        "key": "pR:1",
+        "position": 18,
+        "label": "EN",
+        "role": "system"
+      },
+      {
+        "key": "pR:2",
+        "position": 19,
+        "label": "USB",
+        "role": "power",
+        "net": "USB"
+      },
+      {
+        "key": "pR:3",
+        "position": 20,
+        "label": "D13",
+        "role": "gpio",
+        "aliases": [
+          "PA17",
+          "LED"
+        ],
+        "flags": [
+          "onboard-led"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 21,
+        "label": "D12",
+        "role": "gpio",
+        "aliases": [
+          "PA19"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 22,
+        "label": "D11",
+        "role": "gpio",
+        "aliases": [
+          "PA16"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 23,
+        "label": "D10",
+        "role": "gpio",
+        "aliases": [
+          "PA18"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 24,
+        "label": "D9",
+        "role": "gpio",
+        "aliases": [
+          "PA07"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 25,
+        "label": "D6",
+        "role": "gpio",
+        "aliases": [
+          "PA20"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 26,
+        "label": "D5",
+        "role": "gpio",
+        "aliases": [
+          "PA15"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 27,
+        "label": "SCL",
+        "role": "i2c",
+        "aliases": [
+          "PA23"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:11",
+        "position": 28,
+        "label": "SDA",
+        "role": "i2c",
+        "aliases": [
+          "PA22"
+        ],
+        "net": "I2C"
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-33-ble",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D13 / SCK",
+        "role": "spi",
+        "aliases": [
+          "P0.13"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "AREF",
+        "role": "special",
+        "note": "analog reference"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "A0",
+        "role": "adc",
+        "aliases": [
+          "P0.04"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "P0.05"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "P0.30"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "P0.29"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "P0.31"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "A5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "P0.02"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "A6",
+        "role": "adc",
+        "aliases": [
+          "P0.28"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "A7",
+        "role": "adc",
+        "aliases": [
+          "P0.03"
+        ]
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "5V",
+        "role": "power",
+        "note": "off unless VBUS solder jumper bridged",
+        "net": "5V"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "RESET",
+        "role": "system"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "VIN",
+        "role": "power",
+        "note": "5-21 V input",
+        "net": "VIN"
+      },
+      {
+        "key": "pR:0",
+        "position": 16,
+        "label": "D12 / CIPO",
+        "role": "spi",
+        "aliases": [
+          "P1.08"
+        ],
+        "note": "MISO",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:1",
+        "position": 17,
+        "label": "D11 / COPI",
+        "role": "spi",
+        "aliases": [
+          "P1.01"
+        ],
+        "note": "MOSI",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:2",
+        "position": 18,
+        "label": "D10",
+        "role": "pwm",
+        "aliases": [
+          "P1.02"
+        ]
+      },
+      {
+        "key": "pR:3",
+        "position": 19,
+        "label": "D9",
+        "role": "pwm",
+        "aliases": [
+          "P0.27"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 20,
+        "label": "D8",
+        "role": "pwm",
+        "aliases": [
+          "P0.21"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 21,
+        "label": "D7",
+        "role": "pwm",
+        "aliases": [
+          "P0.23"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 22,
+        "label": "D6",
+        "role": "pwm",
+        "aliases": [
+          "P1.14"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 23,
+        "label": "D5",
+        "role": "pwm",
+        "aliases": [
+          "P1.13"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 24,
+        "label": "D4",
+        "role": "pwm",
+        "aliases": [
+          "P1.15"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 25,
+        "label": "D3",
+        "role": "pwm",
+        "aliases": [
+          "P1.12"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 26,
+        "label": "D2",
+        "role": "gpio",
+        "aliases": [
+          "P1.11"
+        ]
+      },
+      {
+        "key": "pR:11",
+        "position": 27,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "RESET",
+        "role": "system"
+      },
+      {
+        "key": "pR:13",
+        "position": 29,
+        "label": "D0 / RX",
+        "role": "uart",
+        "aliases": [
+          "P1.03"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "D1 / TX",
+        "role": "uart",
+        "aliases": [
+          "P1.10"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-33-ble-sense-rev2",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D13 / SCK",
+        "role": "spi",
+        "aliases": [
+          "P0.13"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "AREF",
+        "role": "special",
+        "note": "analog reference"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "A0",
+        "role": "adc",
+        "aliases": [
+          "P0.04"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "P0.05"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "P0.30"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "P0.29"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "P0.31"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "A5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "P0.02"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "A6",
+        "role": "adc",
+        "aliases": [
+          "P0.28"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "A7",
+        "role": "adc",
+        "aliases": [
+          "P0.03"
+        ]
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "5V",
+        "role": "power",
+        "note": "off unless VBUS solder jumper bridged",
+        "net": "5V"
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "RESET",
+        "role": "system"
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:14",
+        "position": 15,
+        "label": "VIN",
+        "role": "power",
+        "note": "5-21 V input",
+        "net": "VIN"
+      },
+      {
+        "key": "pR:0",
+        "position": 16,
+        "label": "D12 / CIPO",
+        "role": "spi",
+        "aliases": [
+          "P1.08"
+        ],
+        "note": "MISO",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:1",
+        "position": 17,
+        "label": "D11 / COPI",
+        "role": "spi",
+        "aliases": [
+          "P1.01"
+        ],
+        "note": "MOSI",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:2",
+        "position": 18,
+        "label": "D10",
+        "role": "pwm",
+        "aliases": [
+          "P1.02"
+        ]
+      },
+      {
+        "key": "pR:3",
+        "position": 19,
+        "label": "D9",
+        "role": "pwm",
+        "aliases": [
+          "P0.27"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 20,
+        "label": "D8",
+        "role": "pwm",
+        "aliases": [
+          "P0.21"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 21,
+        "label": "D7",
+        "role": "pwm",
+        "aliases": [
+          "P0.23"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 22,
+        "label": "D6",
+        "role": "pwm",
+        "aliases": [
+          "P1.14"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 23,
+        "label": "D5",
+        "role": "pwm",
+        "aliases": [
+          "P1.13"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 24,
+        "label": "D4",
+        "role": "pwm",
+        "aliases": [
+          "P1.15"
+        ]
+      },
+      {
+        "key": "pR:9",
+        "position": 25,
+        "label": "D3",
+        "role": "pwm",
+        "aliases": [
+          "P1.12"
+        ]
+      },
+      {
+        "key": "pR:10",
+        "position": 26,
+        "label": "D2",
+        "role": "gpio",
+        "aliases": [
+          "P1.11"
+        ]
+      },
+      {
+        "key": "pR:11",
+        "position": 27,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:12",
+        "position": 28,
+        "label": "RESET",
+        "role": "system"
+      },
+      {
+        "key": "pR:13",
+        "position": 29,
+        "label": "D0 / RX",
+        "role": "uart",
+        "aliases": [
+          "P1.03"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "D1 / TX",
+        "role": "uart",
+        "aliases": [
+          "P1.10"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "arduino-mkr-1000-wifi",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "AREF",
+        "role": "special",
+        "aliases": [
+          "PA03"
+        ],
+        "note": "analog reference"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "A0 / DAC0",
+        "role": "dac",
+        "aliases": [
+          "PA02"
+        ],
+        "note": "true DAC output"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "A1",
+        "role": "adc",
+        "aliases": [
+          "PB02"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "A2",
+        "role": "adc",
+        "aliases": [
+          "PB03"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "A3",
+        "role": "adc",
+        "aliases": [
+          "PA04"
+        ]
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "A4",
+        "role": "adc",
+        "aliases": [
+          "PA05"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "A5",
+        "role": "adc",
+        "aliases": [
+          "PA06"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "A6",
+        "role": "adc",
+        "aliases": [
+          "PA07"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "D0",
+        "role": "pwm",
+        "aliases": [
+          "PA22"
+        ]
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "D1",
+        "role": "pwm",
+        "aliases": [
+          "PA23"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "D2",
+        "role": "pwm",
+        "aliases": [
+          "PA10"
+        ]
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "D3",
+        "role": "pwm",
+        "aliases": [
+          "PA11"
+        ]
+      },
+      {
+        "key": "pL:12",
+        "position": 13,
+        "label": "D4",
+        "role": "pwm",
+        "aliases": [
+          "PB10"
+        ]
+      },
+      {
+        "key": "pL:13",
+        "position": 14,
+        "label": "D5",
+        "role": "pwm",
+        "aliases": [
+          "PB11"
+        ]
+      },
+      {
+        "key": "pR:0",
+        "position": 15,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 16,
+        "label": "VIN",
+        "role": "power",
+        "note": "input voltage to the board",
+        "net": "VIN"
+      },
+      {
+        "key": "pR:2",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 18,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:4",
+        "position": 19,
+        "label": "RESET",
+        "role": "system"
+      },
+      {
+        "key": "pR:5",
+        "position": 20,
+        "label": "D14 / TX",
+        "role": "uart",
+        "aliases": [
+          "PB22"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:6",
+        "position": 21,
+        "label": "D13 / RX",
+        "role": "uart",
+        "aliases": [
+          "PB23"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:7",
+        "position": 22,
+        "label": "D12 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "PA09"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:8",
+        "position": 23,
+        "label": "D11 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "PA08"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:9",
+        "position": 24,
+        "label": "D10 / CIPO",
+        "role": "spi",
+        "aliases": [
+          "PA19"
+        ],
+        "note": "MISO",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:10",
+        "position": 25,
+        "label": "D9 / SCK",
+        "role": "spi",
+        "aliases": [
+          "PA17"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:11",
+        "position": 26,
+        "label": "D8 / COPI",
+        "role": "spi",
+        "aliases": [
+          "PA16"
+        ],
+        "note": "MOSI",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:12",
+        "position": 27,
+        "label": "D7",
+        "role": "pwm",
+        "aliases": [
+          "PA21"
+        ]
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "D6",
+        "role": "pwm",
+        "aliases": [
+          "PA20"
+        ],
+        "flags": [
+          "onboard-led"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sparkfun-redboard-qwiic",
+    "pins": [
+      {
+        "key": "g0:0",
+        "position": 1,
+        "label": "D0 / RX",
+        "role": "uart",
+        "flags": [
+          "usb"
+        ],
+        "group": "Digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:1",
+        "position": 2,
+        "label": "D1 / TX",
+        "role": "uart",
+        "flags": [
+          "usb"
+        ],
+        "group": "Digital",
+        "net": "UART"
+      },
+      {
+        "key": "g0:2",
+        "position": 3,
+        "label": "D2",
+        "role": "gpio",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:3",
+        "position": 4,
+        "label": "D3",
+        "role": "pwm",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:4",
+        "position": 5,
+        "label": "D4",
+        "role": "gpio",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:5",
+        "position": 6,
+        "label": "D5",
+        "role": "pwm",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:6",
+        "position": 7,
+        "label": "D6",
+        "role": "pwm",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:7",
+        "position": 8,
+        "label": "D7",
+        "role": "gpio",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:8",
+        "position": 9,
+        "label": "D8",
+        "role": "gpio",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:9",
+        "position": 10,
+        "label": "D9",
+        "role": "pwm",
+        "group": "Digital"
+      },
+      {
+        "key": "g0:10",
+        "position": 11,
+        "label": "D10 / CS",
+        "role": "spi",
+        "group": "Digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:11",
+        "position": 12,
+        "label": "D11 / COPI",
+        "role": "spi",
+        "group": "Digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:12",
+        "position": 13,
+        "label": "D12 / CIPO",
+        "role": "spi",
+        "group": "Digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g0:13",
+        "position": 14,
+        "label": "D13 / SCK",
+        "role": "spi",
+        "flags": [
+          "onboard-led"
+        ],
+        "group": "Digital",
+        "net": "SPI"
+      },
+      {
+        "key": "g1:0",
+        "position": 14,
+        "label": "A0",
+        "role": "adc",
+        "group": "Analog / Power"
+      },
+      {
+        "key": "g1:1",
+        "position": 15,
+        "label": "A1",
+        "role": "adc",
+        "group": "Analog / Power"
+      },
+      {
+        "key": "g1:2",
+        "position": 16,
+        "label": "A2",
+        "role": "adc",
+        "group": "Analog / Power"
+      },
+      {
+        "key": "g1:3",
+        "position": 17,
+        "label": "A3",
+        "role": "adc",
+        "group": "Analog / Power"
+      },
+      {
+        "key": "g1:4",
+        "position": 18,
+        "label": "A4 / SDA",
+        "role": "i2c",
+        "group": "Analog / Power",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:5",
+        "position": 19,
+        "label": "A5 / SCL",
+        "role": "i2c",
+        "group": "Analog / Power",
+        "net": "I2C"
+      },
+      {
+        "key": "g1:6",
+        "position": 20,
+        "label": "3V3",
+        "role": "power",
+        "group": "Analog / Power",
+        "net": "3V3"
+      },
+      {
+        "key": "g1:7",
+        "position": 21,
+        "label": "5V",
+        "role": "power",
+        "group": "Analog / Power",
+        "net": "5V"
+      },
+      {
+        "key": "g1:8",
+        "position": 22,
+        "label": "GND",
+        "role": "ground",
+        "group": "Analog / Power",
+        "net": "GND"
+      },
+      {
+        "key": "g1:9",
+        "position": 23,
+        "label": "VIN",
+        "role": "power",
+        "group": "Analog / Power",
+        "net": "VIN"
+      },
+      {
+        "key": "g1:10",
+        "position": 24,
+        "label": "RESET",
+        "role": "system",
+        "group": "Analog / Power"
+      }
+    ]
+  },
+  {
+    "id": "sparkfun-pro-micro",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D1 / TX",
+        "role": "uart",
+        "aliases": [
+          "PD3",
+          "TXD1"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D0 / RX",
+        "role": "uart",
+        "aliases": [
+          "PD2",
+          "RXD1"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D2 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "PD1"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D3 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "PD0"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D4 / A6",
+        "role": "adc",
+        "aliases": [
+          "PD4"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 8,
+        "label": "D5",
+        "role": "pwm",
+        "aliases": [
+          "PC6"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 9,
+        "label": "D6 / A7",
+        "role": "adc",
+        "aliases": [
+          "PD7"
+        ]
+      },
+      {
+        "key": "pL:9",
+        "position": 10,
+        "label": "D7",
+        "role": "gpio",
+        "aliases": [
+          "PE6"
+        ]
+      },
+      {
+        "key": "pL:10",
+        "position": 11,
+        "label": "D8 / A8",
+        "role": "adc",
+        "aliases": [
+          "PB4"
+        ]
+      },
+      {
+        "key": "pL:11",
+        "position": 12,
+        "label": "D9 / A9",
+        "role": "adc",
+        "aliases": [
+          "PB5"
+        ]
+      },
+      {
+        "key": "pR:0",
+        "position": 13,
+        "label": "RAW",
+        "role": "power",
+        "net": "RAW"
+      },
+      {
+        "key": "pR:1",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 15,
+        "label": "RST",
+        "role": "system"
+      },
+      {
+        "key": "pR:3",
+        "position": 16,
+        "label": "VCC",
+        "role": "power",
+        "net": "VCC"
+      },
+      {
+        "key": "pR:4",
+        "position": 17,
+        "label": "A3 / D21",
+        "role": "adc",
+        "aliases": [
+          "PF4"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 18,
+        "label": "A2 / D20",
+        "role": "adc",
+        "aliases": [
+          "PF5"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 19,
+        "label": "A1 / D19",
+        "role": "adc",
+        "aliases": [
+          "PF6"
+        ]
+      },
+      {
+        "key": "pR:7",
+        "position": 20,
+        "label": "A0 / D18",
+        "role": "adc",
+        "aliases": [
+          "PF7"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 21,
+        "label": "D15 / SCK",
+        "role": "spi",
+        "aliases": [
+          "PB1"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:9",
+        "position": 22,
+        "label": "D14 / MISO",
+        "role": "spi",
+        "aliases": [
+          "PB3"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:10",
+        "position": 23,
+        "label": "D16 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "PB2"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "D10 / A10",
+        "role": "adc",
+        "aliases": [
+          "PB6"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-esp32s3-sense",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "GPIO1"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1 / A1",
+        "role": "adc",
+        "aliases": [
+          "GPIO2"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2 / A2",
+        "role": "adc",
+        "aliases": [
+          "GPIO3"
+        ],
+        "flags": [
+          "strapping"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3 / A3",
+        "role": "adc",
+        "aliases": [
+          "GPIO4"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "GPIO5"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "GPIO6"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "GPIO43"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "GPIO9"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "GPIO8"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "GPIO7"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX / CS",
+        "role": "uart",
+        "aliases": [
+          "GPIO44"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-nrf52840-sense",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "D0 / A0",
+        "role": "adc",
+        "aliases": [
+          "P0.02"
+        ]
+      },
+      {
+        "key": "pL:1",
+        "position": 2,
+        "label": "D1 / A1",
+        "role": "adc",
+        "aliases": [
+          "P0.03"
+        ]
+      },
+      {
+        "key": "pL:2",
+        "position": 3,
+        "label": "D2 / A2",
+        "role": "adc",
+        "aliases": [
+          "P0.28"
+        ]
+      },
+      {
+        "key": "pL:3",
+        "position": 4,
+        "label": "D3 / A3",
+        "role": "adc",
+        "aliases": [
+          "P0.29"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 5,
+        "label": "D4 / SDA",
+        "role": "i2c",
+        "aliases": [
+          "P0.04"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:5",
+        "position": 6,
+        "label": "D5 / SCL",
+        "role": "i2c",
+        "aliases": [
+          "P0.05"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:6",
+        "position": 7,
+        "label": "D6 / TX",
+        "role": "uart",
+        "aliases": [
+          "P1.11"
+        ],
+        "net": "UART"
+      },
+      {
+        "key": "pR:0",
+        "position": 14,
+        "label": "5V / VBUS",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 13,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:2",
+        "position": 12,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pR:3",
+        "position": 11,
+        "label": "D10 / MOSI",
+        "role": "spi",
+        "aliases": [
+          "P1.15"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "D9 / MISO",
+        "role": "spi",
+        "aliases": [
+          "P1.14"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:5",
+        "position": 9,
+        "label": "D8 / SCK",
+        "role": "spi",
+        "aliases": [
+          "P1.13"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:6",
+        "position": 8,
+        "label": "D7 / RX",
+        "role": "uart",
+        "aliases": [
+          "P1.12"
+        ],
+        "net": "UART"
+      }
+    ]
+  },
+  {
+    "id": "libre-computer-alta",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "GPIOAO_3",
+        "role": "i2c",
+        "aliases": [
+          "I2C_AO_M0_SDA",
+          "UART_AO_B_RX",
+          "I2C_AO_S0_SDA"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "GPIOAO_2",
+        "role": "i2c",
+        "aliases": [
+          "I2C_AO_M0_SCL",
+          "UART_AO_B_TX",
+          "I2C_AO_S0_SCL"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "GPIOAO_6",
+        "role": "gpio",
+        "aliases": [
+          "PWMAO_C"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "GPIOAO_7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "GPIOA_8",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "GPIOA_0",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "GPIOH_4",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_RTS",
+          "SPI_B_MOSI"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "GPIOH_5",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_CTS",
+          "SPI_B_MISO",
+          "PWM_F"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "GPIOH_7",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_TX",
+          "SPI_B_SCLK",
+          "I2C_EE_M1_SCL",
+          "PWM_B"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "GPIOX_17",
+        "role": "i2c",
+        "aliases": [
+          "I2C_EE_M2_SDA"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "GPIOA_1",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "GPIOA_2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "GPIOX_5",
+        "role": "gpio",
+        "aliases": [
+          "PWM_C"
+        ]
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "GPIOX_10",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_SS0",
+          "I2C_EE_M1_SDA"
+        ]
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "GPIOA_3",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "GPIOAO_8",
+        "role": "gpio",
+        "aliases": [
+          "UART_AO_B_TX"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "GPIOAO_9",
+        "role": "gpio",
+        "aliases": [
+          "UART_AO_B_RX"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "GPIOX_11",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_SCLK",
+          "I2C_EE_M1_SCL"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "GPIOA_4",
+        "role": "gpio",
+        "aliases": [
+          "PWM_D"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "GPIOA_5",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "GPIOA_6",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "GPIOH_6",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_RX",
+          "SPI_B_SS0",
+          "I2C_EE_M1_SDA"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "GPIOA_9",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "GPIOX_18",
+        "role": "i2c",
+        "aliases": [
+          "I2C_EE_M2_SCL"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "GPIOA_11",
+        "role": "gpio",
+        "aliases": [
+          "PWM_F"
+        ]
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "GPIOA_7",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "GPIOX_8",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_MOSI",
+          "PWM_C"
+        ]
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "GPIOX_9",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_MISO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "libre-computer-solitude",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "GPIOAO_3",
+        "role": "i2c",
+        "aliases": [
+          "I2C_AO_M0_SDA",
+          "UART_AO_B_RX",
+          "I2C_AO_S0_SDA"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "GPIOAO_2",
+        "role": "i2c",
+        "aliases": [
+          "I2C_AO_M0_SCL",
+          "UART_AO_B_TX",
+          "I2C_AO_S0_SCL"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "GPIOAO_6",
+        "role": "gpio",
+        "aliases": [
+          "PWMAO_C"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "GPIOAO_7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "GPIOA_8",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "GPIOA_0",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "GPIOH_4",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_RTS",
+          "SPI_B_MOSI"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "GPIOH_5",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_CTS",
+          "SPI_B_MISO",
+          "PWM_F"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "GPIOH_7",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_TX",
+          "SPI_B_SCLK",
+          "I2C_EE_M1_SCL",
+          "PWM_B"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "GPIOX_17",
+        "role": "i2c",
+        "aliases": [
+          "I2C_EE_M2_SDA"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "GPIOA_1",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "GPIOA_2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "GPIOX_5",
+        "role": "gpio",
+        "aliases": [
+          "PWM_C"
+        ]
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "GPIOX_10",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_SS0",
+          "I2C_EE_M1_SDA"
+        ]
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "GPIOA_3",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "GPIOAO_8",
+        "role": "gpio",
+        "aliases": [
+          "UART_AO_B_TX"
+        ]
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "GPIOAO_9",
+        "role": "gpio",
+        "aliases": [
+          "UART_AO_B_RX"
+        ]
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "GPIOX_11",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_SCLK",
+          "I2C_EE_M1_SCL"
+        ]
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "GPIOA_4",
+        "role": "gpio",
+        "aliases": [
+          "PWM_D"
+        ]
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "GPIOA_5",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "GPIOA_6",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "GPIOH_6",
+        "role": "spi",
+        "aliases": [
+          "UART_EE_C_RX",
+          "SPI_B_SS0",
+          "I2C_EE_M1_SDA"
+        ],
+        "net": "SPI"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "GPIOA_9",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "GPIOX_18",
+        "role": "i2c",
+        "aliases": [
+          "I2C_EE_M2_SCL"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "GPIOA_11",
+        "role": "gpio",
+        "aliases": [
+          "PWM_F"
+        ]
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "GPIOA_7",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "GPIOX_8",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_MOSI",
+          "PWM_C"
+        ]
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "GPIOX_9",
+        "role": "gpio",
+        "aliases": [
+          "SPI_A_MISO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "libre-computer-tritium-h5",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "PA12",
+        "role": "i2c",
+        "aliases": [
+          "TWI0_SDA"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "PA11",
+        "role": "i2c",
+        "aliases": [
+          "TWI0_SCK"
+        ],
+        "net": "I2C"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "PA2",
+        "role": "gpio",
+        "aliases": [
+          "UART2_RTS"
+        ]
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "PA1",
+        "role": "gpio",
+        "aliases": [
+          "UART2_RX"
+        ]
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "PA0",
+        "role": "gpio",
+        "aliases": [
+          "UART2_TX"
+        ]
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "PA3",
+        "role": "gpio",
+        "aliases": [
+          "UART2_CTS"
+        ]
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "PC0",
+        "role": "spi",
+        "aliases": [
+          "SPI0-MOSI",
+          "SPI0_MOSI"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "PC1",
+        "role": "spi",
+        "aliases": [
+          "SPI0-MISO",
+          "SPI0_MISO"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "PC2",
+        "role": "spi",
+        "aliases": [
+          "SPI0-CLK",
+          "SPI0_CLK"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "PA19",
+        "role": "gpio",
+        "aliases": [
+          "TWI1_SDA"
+        ]
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "PA20",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "PA21",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "PA6",
+        "role": "pwm",
+        "aliases": [
+          "PWM1"
+        ]
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "PG10",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "PA16",
+        "role": "uart",
+        "aliases": [
+          "UART3-CTS",
+          "SPI1_MISO",
+          "UART3_CTS"
+        ],
+        "net": "UART3"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "PG6",
+        "role": "uart",
+        "aliases": [
+          "AP-UART1-TX",
+          "UART1_TX"
+        ],
+        "net": "UART1"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "PG7",
+        "role": "uart",
+        "aliases": [
+          "AP-UART1-RX",
+          "UART1_RX"
+        ],
+        "net": "UART1"
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "PG11",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "PG9",
+        "role": "uart",
+        "aliases": [
+          "AP-UART1-CTS",
+          "UART1_CTS"
+        ],
+        "net": "UART1"
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "PG8",
+        "role": "uart",
+        "aliases": [
+          "AP-UART1-RTS",
+          "UART1_RTS"
+        ],
+        "net": "UART1"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "PA14",
+        "role": "uart",
+        "aliases": [
+          "UART3-RX",
+          "SPI1_CLK",
+          "UART3_RX"
+        ],
+        "net": "UART3"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "PC3",
+        "role": "spi",
+        "aliases": [
+          "SPI0-CS",
+          "SPI0_CS"
+        ],
+        "net": "SPI0"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "PA17",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "PA18",
+        "role": "gpio",
+        "aliases": [
+          "TWI1_SCK"
+        ]
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "PA13",
+        "role": "uart",
+        "aliases": [
+          "UART3-TX",
+          "SPI1_CS",
+          "UART3_TX"
+        ],
+        "net": "UART3"
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "PA15",
+        "role": "uart",
+        "aliases": [
+          "UART3-RTS",
+          "SPI1_MOSI",
+          "UART3_RTS"
+        ],
+        "net": "UART3"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "PG13",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "PG12",
+        "role": "gpio"
+      }
+    ]
+  },
+  {
+    "id": "orange-pi-zero-2w",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "I2C1_SDA",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "I2C1_SCL",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "PWM3",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "UART5_TX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "UART5_RX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "UART2_TX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "SPI1_MOSI",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "SPI1_MISO",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "SPI1_SCLK",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "I2C2_SDA",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "PI00",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "PI15",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "PI12",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "PI02",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "PI16",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "UART0_TX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "UART0_RX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "PI01",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "PWM4",
+        "role": "pwm"
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "PH04",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "UART2_RX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "SPI_CS0",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "SPI_CS1",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "I2C2_SCL",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "PWM1",
+        "role": "pwm"
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "PC12",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "PI04",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "PI03",
+        "role": "gpio"
+      }
+    ]
+  },
+  {
+    "id": "orange-pi-3b",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "I2C2_SDA",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "I2C2_SCL",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "PWM15",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "GPIO3_C6",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "GPIO4_A0",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "UART7_TX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "SPI3_TXD",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "SPI3_RXD",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "SPI3_CLK",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "I2C3_SDA",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "UART9_RX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "GPIO3_D4",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "GPIO3_D7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "GPIO3_D0",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "GPIO3_D3",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "UART2_TX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "UART2_RX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "GPIO3_C7",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "UART7_RX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "GPIO4_A1",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "UART9_TX",
+        "role": "uart",
+        "net": "UART"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "SPI3_CS1",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "GPIO3_D6",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "I2C3_SCL",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "PWM11",
+        "role": "pwm"
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "GPIO3_D5",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "GPIO3_D2",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "GPIO3_D1",
+        "role": "gpio"
+      }
+    ]
+  },
+  {
+    "id": "orange-pi-5-plus",
+    "pins": [
+      {
+        "key": "pL:0",
+        "position": 1,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:1",
+        "position": 3,
+        "label": "I2C2_SDA",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:2",
+        "position": 5,
+        "label": "I2C2_SCL",
+        "role": "i2c",
+        "net": "I2C"
+      },
+      {
+        "key": "pL:3",
+        "position": 7,
+        "label": "PWM14",
+        "role": "pwm"
+      },
+      {
+        "key": "pL:4",
+        "position": 9,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:5",
+        "position": 11,
+        "label": "GPIO1_A4",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:6",
+        "position": 13,
+        "label": "GPIO1_A7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:7",
+        "position": 15,
+        "label": "GPIO1_B0",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:8",
+        "position": 17,
+        "label": "3V3",
+        "role": "power",
+        "net": "3V3"
+      },
+      {
+        "key": "pL:9",
+        "position": 19,
+        "label": "SPI0_TXD",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:10",
+        "position": 21,
+        "label": "SPI0_RXD",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:11",
+        "position": 23,
+        "label": "SPI0_CLK",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pL:12",
+        "position": 25,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pL:13",
+        "position": 27,
+        "label": "GPIO1_B7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:14",
+        "position": 29,
+        "label": "GPIO1_D7",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:15",
+        "position": 31,
+        "label": "GPIO3_A0",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:16",
+        "position": 33,
+        "label": "GPIO3_C2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:17",
+        "position": 35,
+        "label": "GPIO3_A2",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:18",
+        "position": 37,
+        "label": "GPIO3_C1",
+        "role": "gpio"
+      },
+      {
+        "key": "pL:19",
+        "position": 39,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:0",
+        "position": 2,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:1",
+        "position": 4,
+        "label": "5V",
+        "role": "power",
+        "net": "5V"
+      },
+      {
+        "key": "pR:2",
+        "position": 6,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:3",
+        "position": 8,
+        "label": "GPIO1_A1",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:4",
+        "position": 10,
+        "label": "GPIO1_A0",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:5",
+        "position": 12,
+        "label": "GPIO3_A1",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:6",
+        "position": 14,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:7",
+        "position": 16,
+        "label": "GPIO3_B5",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:8",
+        "position": 18,
+        "label": "GPIO3_B6",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:9",
+        "position": 20,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:10",
+        "position": 22,
+        "label": "GPIO1_A2",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:11",
+        "position": 24,
+        "label": "SPI0_CS0",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:12",
+        "position": 26,
+        "label": "SPI0_CS1",
+        "role": "spi",
+        "net": "SPI"
+      },
+      {
+        "key": "pR:13",
+        "position": 28,
+        "label": "GPIO1_B6",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:14",
+        "position": 30,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:15",
+        "position": 32,
+        "label": "GPIO1_A3",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:16",
+        "position": 34,
+        "label": "GND",
+        "role": "ground",
+        "net": "GND"
+      },
+      {
+        "key": "pR:17",
+        "position": 36,
+        "label": "GPIO3_A5",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:18",
+        "position": 38,
+        "label": "GPIO3_A4",
+        "role": "gpio"
+      },
+      {
+        "key": "pR:19",
+        "position": 40,
+        "label": "GPIO3_A3",
+        "role": "gpio"
       }
     ]
   }

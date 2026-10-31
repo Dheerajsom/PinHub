@@ -4316,7 +4316,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "Functional grouping of the Teensy 4.1 signal pins per the PJRC pinout card; pins 0-23 share the Teensy 4.0 layout."
+        "text": "Physical order per the PJRC pinout card; pins 0-23 share the Teensy 4.0 layout."
       },
       {
         "severity": "info",
@@ -4349,12 +4349,11 @@ export const generatedBoards: Board[] = [
     ],
     "headers": [
       {
-        "id": "power",
-        "name": "Power",
-        "description": "Teensy 4.1 IO (grouped by function)",
+        "id": "main",
+        "name": "Teensy 4.1 breadboard pins",
         "layout": {
-          "rows": 4,
-          "columns": 1
+          "rows": 24,
+          "columns": 2
         },
         "pins": [
           {
@@ -4363,11 +4362,8 @@ export const generatedBoards: Board[] = [
               "row": 1,
               "column": 1
             },
-            "label": "VIN",
-            "category": "power",
-            "notes": [
-              "3.6-5.5 V input when USB is not used."
-            ]
+            "label": "GND",
+            "category": "ground"
           },
           {
             "physical": 2,
@@ -4375,10 +4371,12 @@ export const generatedBoards: Board[] = [
               "row": 2,
               "column": 1
             },
-            "label": "3V3",
-            "category": "power",
-            "notes": [
-              "Regulated 3.3 V output, 250 mA max."
+            "label": "0",
+            "category": "communication",
+            "functions": [
+              "RX1",
+              "CRX2",
+              "CS1"
             ]
           },
           {
@@ -4387,8 +4385,13 @@ export const generatedBoards: Board[] = [
               "row": 3,
               "column": 1
             },
-            "label": "GND",
-            "category": "ground"
+            "label": "1",
+            "category": "communication",
+            "functions": [
+              "TX1",
+              "CTX2",
+              "MISO1"
+            ]
           },
           {
             "physical": 4,
@@ -4396,52 +4399,49 @@ export const generatedBoards: Board[] = [
               "row": 4,
               "column": 1
             },
-            "label": "VBAT",
-            "category": "power",
-            "notes": [
-              "Coin-cell input for the onboard RTC."
-            ]
-          }
-        ]
-      },
-      {
-        "id": "serial-digital",
-        "name": "Serial / digital",
-        "layout": {
-          "rows": 16,
-          "columns": 1
-        },
-        "pins": [
-          {
-            "physical": 4,
-            "position": {
-              "row": 1,
-              "column": 1
-            },
-            "label": "0",
-            "category": "communication",
-            "functions": [
-              "RX1",
-              "CRX2"
-            ]
+            "label": "2",
+            "category": "gpio"
           },
           {
             "physical": 5,
             "position": {
-              "row": 2,
+              "row": 5,
               "column": 1
             },
-            "label": "1",
-            "category": "communication",
-            "functions": [
-              "TX1",
-              "CTX2"
-            ]
+            "label": "3",
+            "category": "gpio"
           },
           {
             "physical": 6,
             "position": {
-              "row": 3,
+              "row": 6,
+              "column": 1
+            },
+            "label": "4",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "5",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "6",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
               "column": 1
             },
             "label": "7",
@@ -4451,9 +4451,9 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 7,
+            "physical": 10,
             "position": {
-              "row": 4,
+              "row": 10,
               "column": 1
             },
             "label": "8",
@@ -4463,235 +4463,30 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 8,
-            "position": {
-              "row": 5,
-              "column": 1
-            },
-            "label": "15 / A1",
-            "category": "communication",
-            "functions": [
-              "RX3"
-            ]
-          },
-          {
-            "physical": 9,
-            "position": {
-              "row": 6,
-              "column": 1
-            },
-            "label": "14 / A0",
-            "category": "communication",
-            "functions": [
-              "TX3"
-            ]
-          },
-          {
-            "physical": 10,
-            "position": {
-              "row": 7,
-              "column": 1
-            },
-            "label": "16 / A2",
-            "category": "communication",
-            "functions": [
-              "RX4"
-            ]
-          },
-          {
             "physical": 11,
             "position": {
-              "row": 8,
+              "row": 11,
               "column": 1
             },
-            "label": "17 / A3",
-            "category": "communication",
-            "functions": [
-              "TX4"
-            ]
+            "label": "9",
+            "category": "gpio"
           },
           {
             "physical": 12,
             "position": {
-              "row": 9,
+              "row": 12,
               "column": 1
             },
-            "label": "21 / A7",
+            "label": "10",
             "category": "communication",
             "functions": [
-              "RX5"
+              "CS0"
             ]
           },
           {
             "physical": 13,
             "position": {
-              "row": 10,
-              "column": 1
-            },
-            "label": "20 / A6",
-            "category": "communication",
-            "functions": [
-              "TX5"
-            ]
-          },
-          {
-            "physical": 14,
-            "position": {
-              "row": 11,
-              "column": 1
-            },
-            "label": "25 / A11",
-            "category": "communication",
-            "functions": [
-              "RX6"
-            ]
-          },
-          {
-            "physical": 15,
-            "position": {
-              "row": 12,
-              "column": 1
-            },
-            "label": "24 / A10",
-            "category": "communication",
-            "functions": [
-              "TX6"
-            ]
-          },
-          {
-            "physical": 16,
-            "position": {
               "row": 13,
-              "column": 1
-            },
-            "label": "28",
-            "category": "communication",
-            "functions": [
-              "RX7"
-            ]
-          },
-          {
-            "physical": 17,
-            "position": {
-              "row": 14,
-              "column": 1
-            },
-            "label": "29",
-            "category": "communication",
-            "functions": [
-              "TX7"
-            ]
-          },
-          {
-            "physical": 18,
-            "position": {
-              "row": 15,
-              "column": 1
-            },
-            "label": "34",
-            "category": "communication",
-            "functions": [
-              "RX8"
-            ]
-          },
-          {
-            "physical": 19,
-            "position": {
-              "row": 16,
-              "column": 1
-            },
-            "label": "35",
-            "category": "communication",
-            "functions": [
-              "TX8"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "i2c-spi",
-        "name": "I2C / SPI",
-        "layout": {
-          "rows": 10,
-          "columns": 1
-        },
-        "pins": [
-          {
-            "physical": 20,
-            "position": {
-              "row": 1,
-              "column": 1
-            },
-            "label": "18 / A4",
-            "category": "communication",
-            "functions": [
-              "SDA0"
-            ]
-          },
-          {
-            "physical": 21,
-            "position": {
-              "row": 2,
-              "column": 1
-            },
-            "label": "19 / A5",
-            "category": "communication",
-            "functions": [
-              "SCL0"
-            ]
-          },
-          {
-            "physical": 22,
-            "position": {
-              "row": 3,
-              "column": 1
-            },
-            "label": "17 / A3",
-            "category": "communication",
-            "functions": [
-              "SDA1"
-            ]
-          },
-          {
-            "physical": 23,
-            "position": {
-              "row": 4,
-              "column": 1
-            },
-            "label": "16 / A2",
-            "category": "communication",
-            "functions": [
-              "SCL1"
-            ]
-          },
-          {
-            "physical": 24,
-            "position": {
-              "row": 5,
-              "column": 1
-            },
-            "label": "25 / A11",
-            "category": "communication",
-            "functions": [
-              "SDA2"
-            ]
-          },
-          {
-            "physical": 25,
-            "position": {
-              "row": 6,
-              "column": 1
-            },
-            "label": "24 / A10",
-            "category": "communication",
-            "functions": [
-              "SCL2"
-            ]
-          },
-          {
-            "physical": 26,
-            "position": {
-              "row": 7,
               "column": 1
             },
             "label": "11",
@@ -4701,9 +4496,9 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 27,
+            "physical": 14,
             "position": {
-              "row": 8,
+              "row": 14,
               "column": 1
             },
             "label": "12",
@@ -4713,10 +4508,278 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "24 / A10",
+            "category": "communication",
+            "functions": [
+              "TX6",
+              "SCL2"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "25 / A11",
+            "category": "communication",
+            "functions": [
+              "RX6",
+              "SDA2"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "26 / A12",
+            "category": "analog",
+            "functions": [
+              "MOSI1"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "27 / A13",
+            "category": "analog",
+            "functions": [
+              "SCK1"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "28",
+            "category": "communication",
+            "functions": [
+              "RX7"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 21,
+              "column": 1
+            },
+            "label": "29",
+            "category": "communication",
+            "functions": [
+              "TX7"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 22,
+              "column": 1
+            },
+            "label": "30",
+            "category": "gpio",
+            "functions": [
+              "CRX3"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 23,
+              "column": 1
+            },
+            "label": "31",
+            "category": "gpio",
+            "functions": [
+              "CTX3"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 24,
+              "column": 1
+            },
+            "label": "32",
+            "category": "gpio"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "3.6-5.5 V input when USB is not used."
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
             "physical": 28,
             "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "23 / A9",
+            "category": "analog",
+            "functions": [
+              "CRX1"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "22 / A8",
+            "category": "analog",
+            "functions": [
+              "CTX1"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "21 / A7",
+            "category": "communication",
+            "functions": [
+              "RX5"
+            ]
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "20 / A6",
+            "category": "communication",
+            "functions": [
+              "TX5"
+            ]
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "19 / A5",
+            "category": "communication",
+            "functions": [
+              "SCL0"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
               "row": 9,
-              "column": 1
+              "column": 2
+            },
+            "label": "18 / A4",
+            "category": "communication",
+            "functions": [
+              "SDA0"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "17 / A3",
+            "category": "communication",
+            "functions": [
+              "TX4",
+              "SDA1"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "16 / A2",
+            "category": "communication",
+            "functions": [
+              "RX4",
+              "SCL1"
+            ]
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "15 / A1",
+            "category": "communication",
+            "functions": [
+              "RX3"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "14 / A0",
+            "category": "communication",
+            "functions": [
+              "TX3"
+            ]
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 14,
+              "column": 2
             },
             "label": "13",
             "category": "communication",
@@ -4726,246 +4789,100 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 29,
-            "position": {
-              "row": 10,
-              "column": 1
-            },
-            "label": "10",
-            "category": "communication",
-            "functions": [
-              "CS0"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "analog-inputs",
-        "name": "Analog inputs",
-        "layout": {
-          "rows": 18,
-          "columns": 1
-        },
-        "pins": [
-          {
-            "physical": 30,
-            "position": {
-              "row": 1,
-              "column": 1
-            },
-            "label": "14 / A0",
-            "category": "analog"
-          },
-          {
-            "physical": 31,
-            "position": {
-              "row": 2,
-              "column": 1
-            },
-            "label": "15 / A1",
-            "category": "analog"
-          },
-          {
-            "physical": 32,
-            "position": {
-              "row": 3,
-              "column": 1
-            },
-            "label": "16 / A2",
-            "category": "analog"
-          },
-          {
-            "physical": 33,
-            "position": {
-              "row": 4,
-              "column": 1
-            },
-            "label": "17 / A3",
-            "category": "analog"
-          },
-          {
-            "physical": 34,
-            "position": {
-              "row": 5,
-              "column": 1
-            },
-            "label": "18 / A4",
-            "category": "analog"
-          },
-          {
-            "physical": 35,
-            "position": {
-              "row": 6,
-              "column": 1
-            },
-            "label": "19 / A5",
-            "category": "analog"
-          },
-          {
-            "physical": 36,
-            "position": {
-              "row": 7,
-              "column": 1
-            },
-            "label": "20 / A6",
-            "category": "analog"
-          },
-          {
-            "physical": 37,
-            "position": {
-              "row": 8,
-              "column": 1
-            },
-            "label": "21 / A7",
-            "category": "analog"
-          },
-          {
-            "physical": 38,
-            "position": {
-              "row": 9,
-              "column": 1
-            },
-            "label": "22 / A8",
-            "category": "analog"
-          },
-          {
             "physical": 39,
             "position": {
-              "row": 10,
-              "column": 1
+              "row": 15,
+              "column": 2
             },
-            "label": "23 / A9",
-            "category": "analog"
+            "label": "GND",
+            "category": "ground"
           },
           {
             "physical": 40,
             "position": {
-              "row": 11,
-              "column": 1
+              "row": 16,
+              "column": 2
             },
-            "label": "24 / A10",
+            "label": "41 / A17",
             "category": "analog"
           },
           {
             "physical": 41,
             "position": {
-              "row": 12,
-              "column": 1
-            },
-            "label": "25 / A11",
-            "category": "analog"
-          },
-          {
-            "physical": 42,
-            "position": {
-              "row": 13,
-              "column": 1
-            },
-            "label": "26 / A12",
-            "category": "analog"
-          },
-          {
-            "physical": 43,
-            "position": {
-              "row": 14,
-              "column": 1
-            },
-            "label": "27 / A13",
-            "category": "analog"
-          },
-          {
-            "physical": 44,
-            "position": {
-              "row": 15,
-              "column": 1
-            },
-            "label": "38 / A14",
-            "category": "analog"
-          },
-          {
-            "physical": 45,
-            "position": {
-              "row": 16,
-              "column": 1
-            },
-            "label": "39 / A15",
-            "category": "analog"
-          },
-          {
-            "physical": 46,
-            "position": {
               "row": 17,
-              "column": 1
+              "column": 2
             },
             "label": "40 / A16",
             "category": "analog"
           },
           {
-            "physical": 47,
+            "physical": 42,
             "position": {
               "row": 18,
-              "column": 1
+              "column": 2
             },
-            "label": "41 / A17",
+            "label": "39 / A15",
             "category": "analog"
-          }
-        ]
-      },
-      {
-        "id": "can",
-        "name": "CAN",
-        "layout": {
-          "rows": 4,
-          "columns": 1
-        },
-        "pins": [
+          },
+          {
+            "physical": 43,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "38 / A14",
+            "category": "analog"
+          },
+          {
+            "physical": 44,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "37",
+            "category": "gpio"
+          },
+          {
+            "physical": 45,
+            "position": {
+              "row": 21,
+              "column": 2
+            },
+            "label": "36",
+            "category": "gpio"
+          },
+          {
+            "physical": 46,
+            "position": {
+              "row": 22,
+              "column": 2
+            },
+            "label": "35",
+            "category": "communication",
+            "functions": [
+              "TX8"
+            ]
+          },
+          {
+            "physical": 47,
+            "position": {
+              "row": 23,
+              "column": 2
+            },
+            "label": "34",
+            "category": "communication",
+            "functions": [
+              "RX8"
+            ]
+          },
           {
             "physical": 48,
             "position": {
-              "row": 1,
-              "column": 1
+              "row": 24,
+              "column": 2
             },
-            "label": "23 / A9",
-            "category": "special",
-            "functions": [
-              "CRX1"
-            ]
-          },
-          {
-            "physical": 49,
-            "position": {
-              "row": 2,
-              "column": 1
-            },
-            "label": "22 / A8",
-            "category": "special",
-            "functions": [
-              "CTX1"
-            ]
-          },
-          {
-            "physical": 50,
-            "position": {
-              "row": 3,
-              "column": 1
-            },
-            "label": "0",
-            "category": "special",
-            "functions": [
-              "CRX2"
-            ]
-          },
-          {
-            "physical": 51,
-            "position": {
-              "row": 4,
-              "column": 1
-            },
-            "label": "1",
-            "category": "special",
-            "functions": [
-              "CTX2"
-            ]
+            "label": "33",
+            "category": "gpio"
           }
         ]
       }
@@ -18735,8 +18652,8 @@ export const generatedBoards: Board[] = [
             "label": "GPIOAO_5",
             "category": "communication",
             "functions": [
-              "I2C SDA AO",
-              "UART RX AO B"
+              "I2C_AO SDA",
+              "UART_AOB RX"
             ]
           },
           {
@@ -18748,8 +18665,8 @@ export const generatedBoards: Board[] = [
             "label": "GPIOAO_4",
             "category": "communication",
             "functions": [
-              "I2C SCL AO",
-              "UART TX AO B"
+              "I2C_AO SCL",
+              "UART_AOB TX"
             ]
           },
           {
@@ -19247,7 +19164,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP0",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "I2C0_SCL",
+              "UART1_TX"
+            ]
           },
           {
             "physical": 2,
@@ -19256,7 +19177,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP1",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "I2C0_SDA",
+              "UART1_RX"
+            ]
           },
           {
             "physical": 3,
@@ -19274,7 +19199,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP2",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "UART4_TX",
+              "PWM10"
+            ]
           },
           {
             "physical": 5,
@@ -19283,7 +19212,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP3",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "UART4_RX",
+              "PWM11"
+            ]
           },
           {
             "physical": 6,
@@ -19292,7 +19225,12 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP4",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "I2C1_SCL",
+              "UART3_TX",
+              "PWM5"
+            ]
           },
           {
             "physical": 7,
@@ -19301,7 +19239,12 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP5",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "I2C1_SDA",
+              "UART3_RX",
+              "PWM6"
+            ]
           },
           {
             "physical": 8,
@@ -19319,7 +19262,12 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP6",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "SPI2_SCK",
+              "I2C3_SDA",
+              "PWM9"
+            ]
           },
           {
             "physical": 10,
@@ -19328,7 +19276,12 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP7",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "SPI2_SDO",
+              "I2C3_SCL",
+              "PWM8"
+            ]
           },
           {
             "physical": 11,
@@ -19337,7 +19290,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP8",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "SPI2_SDI",
+              "PWM7"
+            ]
           },
           {
             "physical": 12,
@@ -19346,7 +19303,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP9",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "SPI2_CS_X",
+              "PWM4"
+            ]
           },
           {
             "physical": 13,
@@ -19382,7 +19343,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP12",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "UART0_TX",
+              "PWM4"
+            ]
           },
           {
             "physical": 17,
@@ -19391,7 +19356,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GP13",
-            "category": "gpio"
+            "category": "communication",
+            "functions": [
+              "UART0_RX",
+              "PWM5"
+            ]
           },
           {
             "physical": 18,
@@ -22029,15 +21998,15 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "ATSAMD51G19 at 120 MHz; pinout from the official Adafruit learn guide."
+        "text": "Pad order and nets come from Adafruit's ItsyBitsy M4 board file (JP2, JP4, JP1), with ports from the core variant and CircuitPython pins.c."
       },
       {
         "severity": "info",
-        "text": "GPIO is 3.3 V only; VHI is a level-shifted output that tracks VHI (VBAT or USB 5 V)."
+        "text": "GPIO is 3.3 V only. D5 is an output-only pin level-shifted up to VHI."
       },
       {
         "severity": "info",
-        "text": "A0 doubles as DAC0; A1 doubles as DAC1."
+        "text": "A0 is also DAC0 and A1 is also DAC1."
       },
       {
         "severity": "info",
@@ -22058,7 +22027,7 @@ export const generatedBoards: Board[] = [
         "name": "Bottom edge",
         "description": "ItsyBitsy M4 Express castellated edges",
         "layout": {
-          "rows": 13,
+          "rows": 14,
           "columns": 1
         },
         "pins": [
@@ -22086,8 +22055,8 @@ export const generatedBoards: Board[] = [
               "row": 3,
               "column": 1
             },
-            "label": "3V3",
-            "category": "power"
+            "label": "AREF",
+            "category": "special"
           },
           {
             "physical": 4,
@@ -22098,7 +22067,7 @@ export const generatedBoards: Board[] = [
             "label": "VHI",
             "category": "power",
             "notes": [
-              "Level-shifted 5 V output (tracks VBAT/USB)."
+              "The higher of BAT and USB; unregulated."
             ]
           },
           {
@@ -22107,9 +22076,10 @@ export const generatedBoards: Board[] = [
               "row": 5,
               "column": 1
             },
-            "label": "A0 / D14",
+            "label": "A0",
             "category": "analog",
             "functions": [
+              "D14",
               "DAC0",
               "PA02"
             ]
@@ -22120,9 +22090,10 @@ export const generatedBoards: Board[] = [
               "row": 6,
               "column": 1
             },
-            "label": "A1 / D15",
+            "label": "A1",
             "category": "analog",
             "functions": [
+              "D15",
               "DAC1",
               "PA05"
             ]
@@ -22133,9 +22104,10 @@ export const generatedBoards: Board[] = [
               "row": 7,
               "column": 1
             },
-            "label": "A2 / D16",
+            "label": "A2",
             "category": "analog",
             "functions": [
+              "D16",
               "PB08"
             ]
           },
@@ -22145,9 +22117,10 @@ export const generatedBoards: Board[] = [
               "row": 8,
               "column": 1
             },
-            "label": "A3 / D17",
+            "label": "A3",
             "category": "analog",
             "functions": [
+              "D17",
               "PB09"
             ]
           },
@@ -22157,10 +22130,11 @@ export const generatedBoards: Board[] = [
               "row": 9,
               "column": 1
             },
-            "label": "D24",
-            "category": "gpio",
+            "label": "A4",
+            "category": "analog",
             "functions": [
-              "PA17"
+              "D18",
+              "PA04"
             ]
           },
           {
@@ -22169,10 +22143,11 @@ export const generatedBoards: Board[] = [
               "row": 10,
               "column": 1
             },
-            "label": "D25",
-            "category": "gpio",
+            "label": "A5",
+            "category": "analog",
             "functions": [
-              "PA16"
+              "D19",
+              "PA06"
             ]
           },
           {
@@ -22184,7 +22159,7 @@ export const generatedBoards: Board[] = [
             "label": "SCK",
             "category": "communication",
             "functions": [
-              "PA13"
+              "PA01"
             ]
           },
           {
@@ -22196,7 +22171,7 @@ export const generatedBoards: Board[] = [
             "label": "MO / MOSI",
             "category": "communication",
             "functions": [
-              "PA12"
+              "PA00"
             ]
           },
           {
@@ -22208,7 +22183,19 @@ export const generatedBoards: Board[] = [
             "label": "MI / MISO",
             "category": "communication",
             "functions": [
-              "PA14"
+              "PB23"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "PA07"
             ]
           }
         ]
@@ -22222,7 +22209,7 @@ export const generatedBoards: Board[] = [
         },
         "pins": [
           {
-            "physical": 14,
+            "physical": 15,
             "position": {
               "row": 1,
               "column": 1
@@ -22230,23 +22217,20 @@ export const generatedBoards: Board[] = [
             "label": "BAT",
             "category": "power",
             "notes": [
-              "Battery voltage input."
-            ]
-          },
-          {
-            "physical": 15,
-            "position": {
-              "row": 2,
-              "column": 1
-            },
-            "label": "EN",
-            "category": "reserved",
-            "notes": [
-              "3.3 V regulator enable (active HIGH)."
+              "Battery input, 3.5 to 6 V."
             ]
           },
           {
             "physical": 16,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 17,
             "position": {
               "row": 3,
               "column": 1
@@ -22258,19 +22242,19 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 17,
+            "physical": 18,
             "position": {
               "row": 4,
               "column": 1
             },
-            "label": "D13",
+            "label": "D13 / LED",
             "category": "gpio",
             "functions": [
-              "PA11"
+              "PA22"
             ]
           },
           {
-            "physical": 18,
+            "physical": 19,
             "position": {
               "row": 5,
               "column": 1
@@ -22278,11 +22262,11 @@ export const generatedBoards: Board[] = [
             "label": "D12",
             "category": "gpio",
             "functions": [
-              "PA10"
+              "PA23"
             ]
           },
           {
-            "physical": 19,
+            "physical": 20,
             "position": {
               "row": 6,
               "column": 1
@@ -22290,11 +22274,11 @@ export const generatedBoards: Board[] = [
             "label": "D11",
             "category": "gpio",
             "functions": [
-              "PA16"
+              "PA21"
             ]
           },
           {
-            "physical": 20,
+            "physical": 21,
             "position": {
               "row": 7,
               "column": 1
@@ -22302,11 +22286,11 @@ export const generatedBoards: Board[] = [
             "label": "D10",
             "category": "gpio",
             "functions": [
-              "PA18"
+              "PA20"
             ]
           },
           {
-            "physical": 21,
+            "physical": 22,
             "position": {
               "row": 8,
               "column": 1
@@ -22318,7 +22302,7 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 22,
+            "physical": 23,
             "position": {
               "row": 9,
               "column": 1
@@ -22326,11 +22310,11 @@ export const generatedBoards: Board[] = [
             "label": "D7",
             "category": "gpio",
             "functions": [
-              "PA20"
+              "PA18"
             ]
           },
           {
-            "physical": 23,
+            "physical": 24,
             "position": {
               "row": 10,
               "column": 1
@@ -22345,51 +22329,51 @@ export const generatedBoards: Board[] = [
             ]
           },
           {
-            "physical": 24,
+            "physical": 25,
             "position": {
               "row": 11,
               "column": 1
             },
-            "label": "SCL / D3",
+            "label": "SCL",
             "category": "communication",
             "functions": [
-              "PA22"
-            ]
-          },
-          {
-            "physical": 25,
-            "position": {
-              "row": 12,
-              "column": 1
-            },
-            "label": "SDA / D2",
-            "category": "communication",
-            "functions": [
-              "PA23"
+              "PA13"
             ]
           },
           {
             "physical": 26,
             "position": {
-              "row": 13,
+              "row": 12,
               "column": 1
             },
-            "label": "RX / D0",
+            "label": "SDA",
             "category": "communication",
             "functions": [
-              "PA09"
+              "PA12"
             ]
           },
           {
             "physical": 27,
             "position": {
-              "row": 14,
+              "row": 13,
               "column": 1
             },
             "label": "TX / D1",
             "category": "communication",
             "functions": [
-              "PA08"
+              "PA17"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "RX / D0",
+            "category": "communication",
+            "functions": [
+              "PA16"
             ]
           }
         ]
@@ -22398,45 +22382,63 @@ export const generatedBoards: Board[] = [
         "id": "short-edge",
         "name": "Short edge",
         "layout": {
-          "rows": 4,
+          "rows": 5,
           "columns": 1
         },
         "pins": [
           {
-            "physical": 28,
+            "physical": 29,
             "position": {
               "row": 1,
               "column": 1
             },
-            "label": "E / EN",
-            "category": "reserved"
-          },
-          {
-            "physical": 29,
-            "position": {
-              "row": 2,
-              "column": 1
-            },
-            "label": "D2",
-            "category": "gpio"
+            "label": "EN",
+            "category": "reserved",
+            "notes": [
+              "3.3 V regulator enable, on battery only."
+            ]
           },
           {
             "physical": 30,
             "position": {
-              "row": 3,
+              "row": 2,
               "column": 1
             },
-            "label": "D3",
-            "category": "gpio"
+            "label": "SWDIO",
+            "category": "communication"
           },
           {
             "physical": 31,
             "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "SWCLK",
+            "category": "communication"
+          },
+          {
+            "physical": 32,
+            "position": {
               "row": 4,
               "column": 1
             },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "PB22"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
             "label": "D4",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "PA14"
+            ]
           }
         ]
       }
@@ -30188,8 +30190,8 @@ export const generatedBoards: Board[] = [
               "row": 11,
               "column": 1
             },
-            "label": "D10 / SS",
-            "category": "communication",
+            "label": "D10",
+            "category": "gpio",
             "functions": [
               "PA18"
             ]
@@ -30200,11 +30202,10 @@ export const generatedBoards: Board[] = [
               "row": 12,
               "column": 1
             },
-            "label": "D11 / COPI",
-            "category": "communication",
+            "label": "D11",
+            "category": "gpio",
             "functions": [
-              "PA16",
-              "MOSI"
+              "PA16"
             ]
           },
           {
@@ -30213,11 +30214,10 @@ export const generatedBoards: Board[] = [
               "row": 13,
               "column": 1
             },
-            "label": "D12 / CIPO",
-            "category": "communication",
+            "label": "D12",
+            "category": "gpio",
             "functions": [
-              "PA19",
-              "MISO"
+              "PA19"
             ]
           },
           {
@@ -30226,8 +30226,8 @@ export const generatedBoards: Board[] = [
               "row": 14,
               "column": 1
             },
-            "label": "D13 / SCK / LED",
-            "category": "communication",
+            "label": "D13 / LED",
+            "category": "gpio",
             "functions": [
               "PA17"
             ]
@@ -34246,13 +34246,13 @@ export const generatedBoards: Board[] = [
               "row": 16,
               "column": 1
             },
-            "label": "D13",
-            "category": "gpio",
+            "label": "DB",
+            "category": "communication",
             "functions": [
-              "GPIO13"
+              "Debug TX"
             ],
             "notes": [
-              "onboard LED"
+              "Hardware UART debug output."
             ]
           },
           {
@@ -34772,7 +34772,11 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "SPI is on the ICSP 2×3 header and shared with D11/D12/D13 pads."
+        "text": "SPI is only on the ICSP 2×3 header (PA12-PA14); D11, D12, and D13 are separate pins."
+      },
+      {
+        "severity": "info",
+        "text": "SDA and SCL are their own pads (PB02, PB03), not A4 and A5."
       },
       {
         "severity": "info",
@@ -34902,8 +34906,8 @@ export const generatedBoards: Board[] = [
               "row": 12,
               "column": 1
             },
-            "label": "D11 / MOSI",
-            "category": "communication"
+            "label": "D11",
+            "category": "gpio"
           },
           {
             "physical": 13,
@@ -34911,8 +34915,8 @@ export const generatedBoards: Board[] = [
               "row": 13,
               "column": 1
             },
-            "label": "D12 / MISO",
-            "category": "communication"
+            "label": "D12",
+            "category": "gpio"
           },
           {
             "physical": 14,
@@ -34920,8 +34924,8 @@ export const generatedBoards: Board[] = [
               "row": 14,
               "column": 1
             },
-            "label": "D13 / SCK / LED",
-            "category": "communication"
+            "label": "D13 / LED",
+            "category": "gpio"
           }
         ]
       },
@@ -34929,7 +34933,7 @@ export const generatedBoards: Board[] = [
         "id": "analog-a0-a5-aref",
         "name": "Analog (A0–A5 + AREF)",
         "layout": {
-          "rows": 7,
+          "rows": 9,
           "columns": 1
         },
         "pins": [
@@ -34981,8 +34985,8 @@ export const generatedBoards: Board[] = [
               "row": 5,
               "column": 1
             },
-            "label": "A4 / SDA",
-            "category": "communication"
+            "label": "A4",
+            "category": "analog"
           },
           {
             "physical": 20,
@@ -34990,8 +34994,8 @@ export const generatedBoards: Board[] = [
               "row": 6,
               "column": 1
             },
-            "label": "A5 / SCL",
-            "category": "communication"
+            "label": "A5",
+            "category": "analog"
           },
           {
             "physical": 21,
@@ -35003,6 +35007,30 @@ export const generatedBoards: Board[] = [
             "category": "analog",
             "notes": [
               "Analog reference; leave unconnected or tie to 3.3 V."
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "PB02"
+            ]
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "PB03"
             ]
           }
         ]
@@ -37728,7 +37756,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D10",
-            "category": "communication"
+            "category": "gpio"
           },
           {
             "physical": 12,
@@ -37737,7 +37765,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D11",
-            "category": "communication"
+            "category": "gpio"
           },
           {
             "physical": 13,
@@ -37746,7 +37774,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D12",
-            "category": "communication"
+            "category": "gpio"
           },
           {
             "physical": 14,
@@ -37755,7 +37783,7 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "D13",
-            "category": "communication"
+            "category": "gpio"
           }
         ]
       },
@@ -39572,7 +39600,7 @@ export const generatedBoards: Board[] = [
             },
             "label": "19 / A5",
             "category": "communication",
-            "notes": [
+            "functions": [
               "SCL0"
             ]
           },
@@ -39584,7 +39612,7 @@ export const generatedBoards: Board[] = [
             },
             "label": "18 / A4",
             "category": "communication",
-            "notes": [
+            "functions": [
               "SDA0"
             ]
           },
@@ -60668,7 +60696,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PC1",
-            "category": "gpio",
+            "category": "communication",
+            "functions": [
+              "I2C3_SDA"
+            ],
             "notes": [
               "ADC-capable."
             ]
@@ -60680,7 +60711,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PC0",
-            "category": "gpio",
+            "category": "communication",
+            "functions": [
+              "I2C3_SCL"
+            ],
             "notes": [
               "ADC-capable."
             ]
@@ -72965,6 +72999,14982 @@ export const generatedBoards: Board[] = [
             "functions": [
               "PCM DOUT"
             ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f411re",
+    "name": "STM32 Nucleo-F411RE",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "STM32 Nucleo-64 with Arduino-compatible and ST Morpho headers.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-F411RE product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-f411re.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_F411RE.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F4xx/F411R%28C-E%29T/variant_NUCLEO_F411RE.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_f411re arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_f411re/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f072rb",
+    "name": "STM32 Nucleo-F072RB",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "USB-capable entry Nucleo-64.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-F072RB product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-f072rb.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_F072RB.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F0xx/F072R8T_F072RB%28H-I-T%29/variant_NUCLEO_F072RB.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_f072rb arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_f072rb/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f091rc",
+    "name": "STM32 Nucleo-F091RC",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Cortex-M0 with eight USARTs.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-F091RC product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-f091rc.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_F091RC.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F0xx/F091RBT_F091RC%28H-T-Y%29/variant_NUCLEO_F091RC.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_f091rc arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_f091rc/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f303re",
+    "name": "STM32 Nucleo-F303RE",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Mixed-signal Nucleo-64 with fast ADCs and op-amps.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "Zephyr v4.2.0 maps D11 to D13 to PB15, PB14, and PB13. stm32duino 3.0.0 and Mbed OS use PA7, PA6, and PA5, which PinHub follows; check SB bridges on your board."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-F303RE product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-f303re.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_F303RE.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F3xx/F303R%28D-E%29T/variant_NUCLEO_F303RE.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_f303re arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_f303re/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f334r8",
+    "name": "STM32 Nucleo-F334R8",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Power-conversion Nucleo-64 with a high-resolution timer.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-F334R8 product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-f334r8.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_F334R8.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F3xx/F303R%286-8%29T_F334R%286-8%29T/variant_NUCLEO_F334R8.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_f334r8 arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_f334r8/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g431rb",
+    "name": "STM32 Nucleo-G431RB",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Motor-control and digital-power Nucleo-64.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 is PC5 and D1 is PC4 on this board."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-G431RB product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-g431rb.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_G431RB.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32G4xx/G431R%286-8%29%28I-T%29_G431RB%28I-T%29x%28Z%29_G441RB%28I-T%29/variant_NUCLEO_G431RB.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_g431rb arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_g431rb/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g474re",
+    "name": "STM32 Nucleo-G474RE",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "High-end G4 Nucleo-64 with a high-resolution timer.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 is PC5 and D1 is PC4 on this board."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-G474RE product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-g474re.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_G474RE.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32G4xx/G473R%28B-C%29T_G473RETx%28Z%29_G474R%28B-C-E%29T_G483RET_G484RET/variant_NUCLEO_G474RE.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_g474re arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_g474re/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g0b1re",
+    "name": "STM32 Nucleo-G0B1RE",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "G0 Nucleo-64 with FDCAN and USB.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 is PC5 and D1 is PC4 on this board."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-G0B1RE product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-g0b1re.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_G0B1RE.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32G0xx/G0B1R%28B-C-E%29T_G0C1R%28C-E%29T/variant_NUCLEO_G0B1RE.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_g0b1re arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_g0b1re/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-c031c6",
+    "name": "STM32 Nucleo-C031C6",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Entry-level C0 Nucleo-64.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 is PB7 and D1 is PB6 on this board."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-C031C6 product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-c031c6.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_C031C6.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32C0xx/C031C%284-6%29%28T-U%29/variant_NUCLEO_C031C6.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_c031c6 arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_c031c6/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l053r8",
+    "name": "STM32 Nucleo-L053R8",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Ultra-low-power Nucleo-64.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-L053R8 product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-l053r8.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_L053R8.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32L0xx/L052R%286-8%29T_L053R%286-8%29T_L063R8T/variant_NUCLEO_L053R8.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_l053r8 arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_l053r8/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l073rz",
+    "name": "STM32 Nucleo-L073RZ",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Ultra-low-power Nucleo-64 with 192 KB flash.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-L073RZ product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-l073rz.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_L073RZ.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32L0xx/L072R%28B-Z%29T_L073R%28B-Z%29T_L083R%28B-Z%29T/variant_NUCLEO_L073RZ.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_l073rz arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_l073rz/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l152re",
+    "name": "STM32 Nucleo-L152RE",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Ultra-low-power Cortex-M3 Nucleo-64.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are PA3 and PA2, the ST-LINK virtual COM port pins; solder bridges decide whether they reach the header."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-L152RE product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-l152re.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_L152RE.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32L1xx/L151RET_L152RET_L162RET/variant_NUCLEO_L152RE.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_l152re arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_l152re/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-h503rb",
+    "name": "STM32 Nucleo-H503RB",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Entry H5 Nucleo-64.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges, alternate functions, and board configuration."
+      },
+      {
+        "severity": "warning",
+        "text": "PinHub maps the Arduino headers only; the ST Morpho headers are not mapped."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 is PB15 and D1 is PB14 on this board."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, E5V, VIN, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino-compatible CN5/CN6/CN8/CN9 headers documented in ST UM1724."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by Nucleo-64 board; use the board manual/schematic for ST Morpho CN7/CN10 assignments."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-H503RB product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-h503rb.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_H503RB.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32H5xx/H503RBT/variant_NUCLEO_H503RB.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Zephyr v4.2.0 nucleo_h503rb arduino_r3_connector.dtsi",
+        "url": "https://github.com/zephyrproject-rtos/zephyr/blob/v4.2.0/boards/st/nucleo_h503rb/arduino_r3_connector.dtsi",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "cn5-cn9-digital",
+        "name": "CN5/CN9 digital",
+        "description": "STM32 Nucleo-64 Arduino Uno R3 headers",
+        "layout": {
+          "rows": 18,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ],
+            "notes": [
+              "Shares USART2 with the ST-LINK virtual COM port; check the manual solder bridges before wiring a shield UART"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "communication",
+            "functions": [
+              "SPI CS"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "communication",
+            "functions": [
+              "SPI MOSI"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "communication",
+            "functions": [
+              "SPI MISO"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SPI SCK"
+            ],
+            "notes": [
+              "Also drives user LED LD2, so the LED flickers with SPI clock traffic"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "D14 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "D15 / SCL",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "cn6-cn8-power-and-analog",
+        "name": "CN6/CN8 power and analog",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 18,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "IOREF",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-l432kc",
+    "name": "STM32 Nucleo-L432KC",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Breadboard-friendly Nucleo-32 with an ST-LINK debugger and Arduino Nano pinout.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges and alternate functions."
+      },
+      {
+        "severity": "warning",
+        "text": "D7 and D8 reach PC14 and PC15 only when SB6 and SB8 are closed; they are open by default."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by board. Some pads are joined or opened by solder bridges; check the board manual."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-L432KC product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-l432kc.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_L432KC.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32L4xx/L432K%28B-C%29U_L442KCU/variant_NUCLEO_L432KC.cpp",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "STM32 Nucleo-32 Arduino Nano headers (CN3, CN4)",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "NRST",
+            "category": "reserved"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "gpio"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SCK"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "AREF",
+            "category": "special"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "A5",
+            "category": "analog"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "A6",
+            "category": "analog"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "A7",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "NRST",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "VIN",
+            "category": "power"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-g431kb",
+    "name": "STM32 Nucleo-G431KB",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Breadboard-friendly Nucleo-32 with an ST-LINK debugger and Arduino Nano pinout.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges and alternate functions."
+      },
+      {
+        "severity": "warning",
+        "text": "D5 and D4 are PA15 and PB7; solder bridges also tie them to A5 and A4. Check SB2 and SB3."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by board. Some pads are joined or opened by solder bridges; check the board manual."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-G431KB product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-g431kb.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_G431KB.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32G4xx/G431K%286-8-B%29%28T-U%29_G441KB%28T-U%29/variant_NUCLEO_G431KB.cpp",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "STM32 Nucleo-32 Arduino Nano headers (CN3, CN4)",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "NRST",
+            "category": "reserved"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "gpio"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SCK"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "AREF",
+            "category": "special"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "A5",
+            "category": "analog"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "A6",
+            "category": "analog"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "A7",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "NRST",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "VIN",
+            "category": "power"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stm32-nucleo-f303k8",
+    "name": "STM32 Nucleo-F303K8",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [],
+    "description": "Breadboard-friendly Nucleo-32 with an ST-LINK debugger and Arduino Nano pinout.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pin functions depend on solder bridges and alternate functions."
+      },
+      {
+        "severity": "warning",
+        "text": "D7 and D8 are PF0 and PF1, and A7 is the ST-LINK TX pin."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers."
+      },
+      {
+        "severity": "info",
+        "text": "MCU pin names vary by board. Some pads are joined or opened by solder bridges; check the board manual."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO logic is 3.3 V unless the specific board documentation says otherwise."
+      }
+    ],
+    "sources": [
+      {
+        "title": "NUCLEO-F303K8 product page",
+        "url": "https://www.st.com/en/evaluation-tools/nucleo-f303k8.html",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "stm32duino 3.0.0 variant_NUCLEO_F303K8.cpp: the pin behind each header position",
+        "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F3xx/F303K%286-8%29T_F334K%284-6-8%29T/variant_NUCLEO_F303K8.cpp",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "STM32 Nucleo-32 Arduino Nano headers (CN3, CN4)",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "communication",
+            "functions": [
+              "TX"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "communication",
+            "functions": [
+              "RX"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "NRST",
+            "category": "reserved"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D10",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D11",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "D12",
+            "category": "gpio"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D13",
+            "category": "communication",
+            "functions": [
+              "SCK"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "AREF",
+            "category": "special"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "A4",
+            "category": "analog"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "A5",
+            "category": "analog"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "A6",
+            "category": "analog"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "A7",
+            "category": "analog"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "NRST",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "VIN",
+            "category": "power"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raspberry-pi-3-model-b",
+    "name": "Raspberry Pi 3 Model B",
+    "manufacturer": "Raspberry Pi",
+    "aliases": [],
+    "description": "The 2016 Pi 3, still common in existing projects, with Wi-Fi, Bluetooth, and the 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V and not 5 V tolerant."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO0 and GPIO1 are reserved for HAT ID EEPROM use."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V / 2.5 A micro-USB or GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Physical pins 1 and 17 are 3.3 V; pins 2 and 4 are 5 V."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO0 and GPIO1 on pins 27 and 28 are reserved for HAT ID EEPROM use on most setups."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO pins are 3.3 V logic and are not 5 V tolerant."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Raspberry Pi GPIO documentation",
+        "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
+        "official": true,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "J8 40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "communication",
+            "functions": [
+              "SDA1"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "communication",
+            "functions": [
+              "SCL1"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "gpio",
+            "functions": [
+              "GPCLK0"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO17",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO27",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO22",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "functions": [
+              "SPI0 MOSI"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "communication",
+            "functions": [
+              "SPI0 MISO"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO11",
+            "category": "communication",
+            "functions": [
+              "SPI0 SCLK"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "reserved",
+            "functions": [
+              "ID_SD"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "gpio",
+            "functions": [
+              "PWM1"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO19",
+            "category": "special",
+            "functions": [
+              "PCM FS"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO26",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO14",
+            "category": "communication",
+            "functions": [
+              "TXD0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIO15",
+            "category": "communication",
+            "functions": [
+              "RXD0"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIO18",
+            "category": "gpio",
+            "functions": [
+              "PWM0"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO23",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO24",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO25",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIO8",
+            "category": "communication",
+            "functions": [
+              "SPI0 CE0"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO7",
+            "category": "communication",
+            "functions": [
+              "SPI0 CE1"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIO1",
+            "category": "reserved",
+            "functions": [
+              "ID_SC"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO12",
+            "category": "gpio",
+            "functions": [
+              "PWM0"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO16",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO20",
+            "category": "special",
+            "functions": [
+              "PCM DIN"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO21",
+            "category": "special",
+            "functions": [
+              "PCM DOUT"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raspberry-pi-1-model-a-plus",
+    "name": "Raspberry Pi 1 Model A+",
+    "manufacturer": "Raspberry Pi",
+    "aliases": [],
+    "description": "The small, low-power 2014 Pi with the 40-pin header and no Ethernet.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V and not 5 V tolerant."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO0 and GPIO1 are reserved for HAT ID EEPROM use."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V micro-USB or GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Physical pins 1 and 17 are 3.3 V; pins 2 and 4 are 5 V."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO0 and GPIO1 on pins 27 and 28 are reserved for HAT ID EEPROM use on most setups."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO pins are 3.3 V logic and are not 5 V tolerant."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Raspberry Pi GPIO documentation",
+        "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
+        "official": true,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "J8 40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIO2",
+            "category": "communication",
+            "functions": [
+              "SDA1"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIO3",
+            "category": "communication",
+            "functions": [
+              "SCL1"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIO4",
+            "category": "gpio",
+            "functions": [
+              "GPCLK0"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO17",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO27",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO22",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIO10",
+            "category": "communication",
+            "functions": [
+              "SPI0 MOSI"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIO9",
+            "category": "communication",
+            "functions": [
+              "SPI0 MISO"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIO11",
+            "category": "communication",
+            "functions": [
+              "SPI0 SCLK"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO0",
+            "category": "reserved",
+            "functions": [
+              "ID_SD"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO5",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO6",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO13",
+            "category": "gpio",
+            "functions": [
+              "PWM1"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO19",
+            "category": "special",
+            "functions": [
+              "PCM FS"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO26",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO14",
+            "category": "communication",
+            "functions": [
+              "TXD0"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIO15",
+            "category": "communication",
+            "functions": [
+              "RXD0"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIO18",
+            "category": "gpio",
+            "functions": [
+              "PWM0"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO23",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO24",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO25",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIO8",
+            "category": "communication",
+            "functions": [
+              "SPI0 CE0"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO7",
+            "category": "communication",
+            "functions": [
+              "SPI0 CE1"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIO1",
+            "category": "reserved",
+            "functions": [
+              "ID_SC"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO12",
+            "category": "gpio",
+            "functions": [
+              "PWM0"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO16",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO20",
+            "category": "special",
+            "functions": [
+              "PCM DIN"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO21",
+            "category": "special",
+            "functions": [
+              "PCM DOUT"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-rp2350",
+    "name": "Adafruit Feather RP2350",
+    "manufacturer": "Adafruit",
+    "aliases": [],
+    "description": "Adafruit's RP2350 Feather with battery charging, an HSTX port, and STEMMA QT.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "warning",
+        "text": "D12 is GPIO4 and D13 is GPIO7 on this board, not GPIO12 and GPIO13."
+      },
+      {
+        "severity": "warning",
+        "text": "RP2350 A2 stepping has a GPIO input erratum (E9); check Raspberry Pi's datasheet before relying on internal pull-downs."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, LiPo connector, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Pad order and nets come from Adafruit's Feather RP2350 board file (JP1, JP3), with GPIO numbers from CircuitPython pins.c."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Left header positions 1-16, right header positions 17-28."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Adafruit Feather RP2350 pinouts",
+        "url": "https://learn.adafruit.com/adafruit-feather-rp2350/pinouts",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "CircuitPython board page",
+        "url": "https://circuitpython.org/board/adafruit_feather_rp2350/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "Adafruit Feather RP2350 PCB files",
+        "url": "https://github.com/adafruit/Adafruit-Feather-RP2350-PCB",
+        "official": true,
+        "type": "Schematic"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Feather 16+12 headers",
+        "layout": {
+          "rows": 16,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "GPIO26"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "GPIO27"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "GPIO28"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "GPIO29"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D24",
+            "category": "gpio",
+            "functions": [
+              "GPIO24"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D25",
+            "category": "gpio",
+            "functions": [
+              "GPIO25"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO22"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "MO / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO23"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "MI / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO20"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "RX / D0",
+            "category": "communication",
+            "functions": [
+              "GPIO1"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "TX / D1",
+            "category": "communication",
+            "functions": [
+              "GPIO0"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "PSRAM CS",
+            "category": "reserved",
+            "functions": [
+              "GPIO8"
+            ],
+            "notes": [
+              "Chip select for the optional PSRAM footprint."
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "BAT",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "EN",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "USB",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D13",
+            "category": "gpio",
+            "functions": [
+              "GPIO7",
+              "LED"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D12",
+            "category": "gpio",
+            "functions": [
+              "GPIO4"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D11",
+            "category": "gpio",
+            "functions": [
+              "GPIO11"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D10",
+            "category": "gpio",
+            "functions": [
+              "GPIO10"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "GPIO9"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "GPIO6"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "GPIO5"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "GPIO3"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "GPIO2"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adafruit-kb2040",
+    "name": "Adafruit KB2040",
+    "manufacturer": "Adafruit",
+    "aliases": [],
+    "description": "A Pro Micro-shaped RP2040 board for keyboards, with STEMMA QT and a NeoPixel.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V, unlike a 5 V Pro Micro. Check the keyboard design before swapping boards."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, RAW pin."
+      },
+      {
+        "severity": "info",
+        "text": "Pad order and nets come from Adafruit's KB2040 board file, with GPIO numbers from CircuitPython pins.c."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant, unlike a 5 V Pro Micro."
+      },
+      {
+        "severity": "info",
+        "text": "D+ and D- are the USB data lines, for keyboards that bring USB out to a separate connector."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Adafruit KB2040 pinouts",
+        "url": "https://learn.adafruit.com/adafruit-kb2040/pinouts",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Adafruit KB2040 PCB files",
+        "url": "https://github.com/adafruit/Adafruit-KB2040-PCB",
+        "official": true,
+        "type": "Schematic"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Pro Micro-shape castellated edges (JP2, JP1)",
+        "layout": {
+          "rows": 13,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D+",
+            "category": "special",
+            "functions": [
+              "USB D+"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "TX / D0",
+            "category": "communication",
+            "functions": [
+              "GPIO0"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "RX / D1",
+            "category": "communication",
+            "functions": [
+              "GPIO1"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "GPIO2"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "GPIO3"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio",
+            "functions": [
+              "GPIO4"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "GPIO5"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "GPIO6"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "GPIO7"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio",
+            "functions": [
+              "GPIO8"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "GPIO9"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D-",
+            "category": "special",
+            "functions": [
+              "USB D-"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "RAW",
+            "category": "power"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "GPIO29"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "GPIO28"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "GPIO27"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "GPIO26"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO18"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "MI / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO20"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "MO / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO19"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "D10",
+            "category": "gpio",
+            "functions": [
+              "GPIO10"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "waveshare-rp2350-plus",
+    "name": "Waveshare RP2350-Plus",
+    "manufacturer": "Waveshare",
+    "aliases": [],
+    "description": "A Pico-footprint RP2350 board with USB-C and a battery connector.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, VSYS, LiPo connector."
+      },
+      {
+        "severity": "info",
+        "text": "Pico exposes RP2040 GPIO0 through GPIO28, with GPIO23 through GPIO25 used internally."
+      },
+      {
+        "severity": "info",
+        "text": "ADC pins are GP26, GP27, and GP28; ADC_VREF is available on physical pin 35."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V logic and is not 5 V tolerant."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Waveshare RP2350-Plus wiki",
+        "url": "https://www.waveshare.com/wiki/RP2350-Plus",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "CircuitPython waveshare_rp2350_plus/pins.c",
+        "url": "https://github.com/adafruit/circuitpython/blob/10.3.1/ports/raspberrypi/boards/waveshare_rp2350_plus/pins.c",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "40-pin castellated DIP edge",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GP0",
+            "category": "communication",
+            "functions": [
+              "UART0 TX"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GP1",
+            "category": "communication",
+            "functions": [
+              "UART0 RX"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GP2",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GP3",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GP4",
+            "category": "communication",
+            "functions": [
+              "I2C0 SDA"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GP5",
+            "category": "communication",
+            "functions": [
+              "I2C0 SCL"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GP6",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GP7",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GP8",
+            "category": "communication",
+            "functions": [
+              "SPI1 RX"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GP9",
+            "category": "communication",
+            "functions": [
+              "SPI1 CS"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GP10",
+            "category": "communication",
+            "functions": [
+              "SPI1 SCK"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GP11",
+            "category": "communication",
+            "functions": [
+              "SPI1 TX"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GP12",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GP13",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GP14",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GP15",
+            "category": "gpio"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "VSYS",
+            "category": "power"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "3V3_EN",
+            "category": "reserved"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "ADC_VREF",
+            "category": "analog"
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GP28",
+            "category": "analog",
+            "functions": [
+              "ADC2"
+            ]
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "AGND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GP27",
+            "category": "analog",
+            "functions": [
+              "ADC1"
+            ]
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GP26",
+            "category": "analog",
+            "functions": [
+              "ADC0"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "RUN",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GP22",
+            "category": "gpio"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GP21",
+            "category": "communication",
+            "functions": [
+              "I2C0 SCL"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GP20",
+            "category": "communication",
+            "functions": [
+              "I2C0 SDA"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GP19",
+            "category": "communication",
+            "functions": [
+              "SPI0 TX"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GP18",
+            "category": "communication",
+            "functions": [
+              "SPI0 SCK"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GP17",
+            "category": "communication",
+            "functions": [
+              "SPI0 CS"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GP16",
+            "category": "communication",
+            "functions": [
+              "SPI0 RX"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "waveshare-rp2350-zero",
+    "name": "Waveshare RP2350-Zero",
+    "manufacturer": "Waveshare",
+    "aliases": [],
+    "description": "A thumbnail-sized RP2350 module in the RP2040-Zero footprint.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "warning",
+        "text": "GP16 drives the onboard RGB LED; it is not on the mapped edges."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, 5 V pad."
+      },
+      {
+        "severity": "info",
+        "text": "RP2040 at 133 MHz; pin data from the Waveshare RP2040-Zero wiki."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Onboard WS2812 RGB LED is on GP16 (not exposed as a pad)."
+      },
+      {
+        "severity": "info",
+        "text": "GP23, GP24, GP25 are used internally and are only accessible via test points."
+      },
+      {
+        "severity": "info",
+        "text": "ADC_VREF is tied to 3.3 V and is not exposed as a separate pad."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Waveshare RP2350-Zero wiki",
+        "url": "https://www.waveshare.com/wiki/RP2350-Zero",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "CircuitPython waveshare_rp2350_zero/pins.c",
+        "url": "https://github.com/adafruit/circuitpython/blob/10.3.1/ports/raspberrypi/boards/waveshare_rp2350_zero/pins.c",
+        "official": false,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "left-bottom-edge-gp0-gp15",
+        "name": "Left/bottom edge (GP0–GP15)",
+        "description": "Castellated pads on three edges",
+        "layout": {
+          "rows": 16,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GP0",
+            "category": "communication",
+            "functions": [
+              "UART0 TX"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GP1",
+            "category": "communication",
+            "functions": [
+              "UART0 RX"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GP2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GP3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GP4",
+            "category": "communication",
+            "functions": [
+              "I2C0 SDA"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GP5",
+            "category": "communication",
+            "functions": [
+              "I2C0 SCL"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GP6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GP7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GP8",
+            "category": "communication",
+            "functions": [
+              "SPI1 RX"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GP9",
+            "category": "communication",
+            "functions": [
+              "SPI1 CS"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GP10",
+            "category": "communication",
+            "functions": [
+              "SPI1 SCK"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GP11",
+            "category": "communication",
+            "functions": [
+              "SPI1 TX"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GP12",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GP13",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GP14",
+            "category": "gpio"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GP15",
+            "category": "gpio"
+          }
+        ]
+      },
+      {
+        "id": "bottom-right-edge-gp26-gp29",
+        "name": "Bottom-right edge (GP26–GP29)",
+        "layout": {
+          "rows": 4,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 17,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "GP26",
+            "category": "analog",
+            "functions": [
+              "ADC0"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GP27",
+            "category": "analog",
+            "functions": [
+              "ADC1"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GP28",
+            "category": "analog",
+            "functions": [
+              "ADC2"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GP29",
+            "category": "analog",
+            "functions": [
+              "ADC3"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "top-edge",
+        "name": "Top edge",
+        "layout": {
+          "rows": 3,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 21,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-esp32-v2",
+    "name": "Adafruit ESP32 Feather V2",
+    "manufacturer": "Adafruit",
+    "aliases": [],
+    "description": "ESP32 Feather with 8 MB flash, 2 MB PSRAM, USB-C, and STEMMA QT.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "warning",
+        "text": "A2, A3, A4, and I37 are input-only GPIO."
+      },
+      {
+        "severity": "warning",
+        "text": "ADC2 pins cannot be used while Wi-Fi is on."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, LiPo connector, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Pad order and nets come from Adafruit's ESP32 Feather V2 board file (JP1, JP3), with GPIO numbers from CircuitPython pins.c."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Left header positions 1-16, right header positions 17-28."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO7 and GPIO8 are free on this PICO-V3-02 module, unlike most ESP32 boards."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Adafruit ESP32 Feather V2 pinouts",
+        "url": "https://learn.adafruit.com/adafruit-esp32-feather-v2/pinouts",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Adafruit ESP32 Feather V2 PCB files",
+        "url": "https://github.com/adafruit/Adafruit-ESP32-Feather-V2-PCB",
+        "official": true,
+        "type": "Schematic"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Feather 16+12 headers",
+        "layout": {
+          "rows": 16,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "NC",
+            "category": "reserved"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A0 / DAC2",
+            "category": "analog",
+            "functions": [
+              "GPIO26"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A1 / DAC1",
+            "category": "analog",
+            "functions": [
+              "GPIO25"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "GPIO34"
+            ],
+            "notes": [
+              "Input only."
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "GPIO39"
+            ],
+            "notes": [
+              "Input only."
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog",
+            "functions": [
+              "GPIO36"
+            ],
+            "notes": [
+              "Input only."
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog",
+            "functions": [
+              "GPIO4"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO5"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "MO / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO19"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "MI / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO21"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "RX",
+            "category": "communication",
+            "functions": [
+              "GPIO7"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "TX",
+            "category": "communication",
+            "functions": [
+              "GPIO8"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "I37",
+            "category": "gpio",
+            "functions": [
+              "GPIO37"
+            ],
+            "notes": [
+              "Input only."
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "BAT",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "EN",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "USB",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D13",
+            "category": "gpio",
+            "functions": [
+              "GPIO13",
+              "LED"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D12",
+            "category": "gpio",
+            "functions": [
+              "GPIO12"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D27",
+            "category": "gpio",
+            "functions": [
+              "GPIO27"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D33",
+            "category": "gpio",
+            "functions": [
+              "GPIO33"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D15",
+            "category": "gpio",
+            "functions": [
+              "GPIO15"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D32",
+            "category": "gpio",
+            "functions": [
+              "GPIO32"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D14",
+            "category": "gpio",
+            "functions": [
+              "GPIO14"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "GPIO20"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "GPIO22"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-esp32-s2",
+    "name": "Adafruit ESP32-S2 Feather",
+    "manufacturer": "Adafruit",
+    "aliases": [],
+    "description": "ESP32-S2 Feather with native USB, 2 MB PSRAM, and STEMMA QT.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO7 gates power to the STEMMA QT port."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, LiPo connector, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Pad order and nets come from Adafruit's Feather ESP32-S2 board file (JP1, JP3), with GPIO numbers from CircuitPython pins.c."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Left header positions 1-16, right header positions 17-28."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Adafruit ESP32-S2 Feather pinouts",
+        "url": "https://learn.adafruit.com/adafruit-esp32-s2-feather/pinouts",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Adafruit ESP32-S2 Feather PCB files",
+        "url": "https://github.com/adafruit/Adafruit-Feather-ESP32-S2-PCB",
+        "official": true,
+        "type": "Schematic"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Feather 16+12 headers",
+        "layout": {
+          "rows": 16,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "GPIO18"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "GPIO17"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "GPIO16"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "GPIO15"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog",
+            "functions": [
+              "GPIO14"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog",
+            "functions": [
+              "GPIO8"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO36"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "MO / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO35"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "MI / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO37"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "RX",
+            "category": "communication",
+            "functions": [
+              "GPIO38"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "TX",
+            "category": "communication",
+            "functions": [
+              "GPIO39"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "DB",
+            "category": "communication",
+            "functions": [
+              "Debug TX",
+              "TXD0"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "BAT",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "EN",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "USB",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D13",
+            "category": "gpio",
+            "functions": [
+              "GPIO13",
+              "LED"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D12",
+            "category": "gpio",
+            "functions": [
+              "GPIO12"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D11",
+            "category": "gpio",
+            "functions": [
+              "GPIO11"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D10",
+            "category": "gpio",
+            "functions": [
+              "GPIO10"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "GPIO9"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "GPIO6"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "GPIO5"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "GPIO4"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "GPIO3"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adafruit-qt-py-esp32-s2",
+    "name": "Adafruit QT Py ESP32-S2",
+    "manufacturer": "Adafruit",
+    "aliases": [],
+    "description": "Thumbnail ESP32-S2 board with native USB and STEMMA QT.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, 5 V pad."
+      },
+      {
+        "severity": "info",
+        "text": "Pad order and nets come from Adafruit's QT Py ESP32-S2 board file, with GPIO numbers from CircuitPython pins.c."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "The second I2C port (SDA1 GPIO41, SCL1 GPIO40) is on the STEMMA QT connector."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Adafruit QT Py ESP32-S2 pinouts",
+        "url": "https://learn.adafruit.com/adafruit-qt-py-esp32-s2/pinouts",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Adafruit QT Py ESP32-S2 PCB files",
+        "url": "https://github.com/adafruit/Adafruit-QT-Py-ESP32-S2-PCB",
+        "official": true,
+        "type": "Schematic"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "QT Py 7+7 castellated edges (JP1, JP3)",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "GPIO18"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "GPIO17"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "GPIO9"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "GPIO8"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "GPIO7"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "GPIO6"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "TX",
+            "category": "communication",
+            "functions": [
+              "GPIO5"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "MO / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO35"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "MI / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO37"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO36"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "RX",
+            "category": "communication",
+            "functions": [
+              "GPIO16"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adafruit-feather-m0-express",
+    "name": "Adafruit Feather M0 Express",
+    "manufacturer": "Adafruit",
+    "aliases": [],
+    "description": "The classic Feather M0 with 2 MB SPI flash for CircuitPython.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "warning",
+        "text": "D9 reads the battery voltage through a divider."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, LiPo connector, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Pad order and nets come from Adafruit's Feather M0 Express board file (JP1, JP3), with GPIO numbers from CircuitPython pins.c."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Left header positions 1-16, right header positions 17-28. A0 doubles as the DAC output."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Adafruit Feather M0 Express pinouts",
+        "url": "https://learn.adafruit.com/adafruit-feather-m0-express-designed-for-circuit-python-circuitpython",
+        "official": true,
+        "type": "Pinout"
+      },
+      {
+        "title": "Adafruit Feather M0 Express PCB files",
+        "url": "https://github.com/adafruit/Adafruit-Feather-M0-Express-PCB",
+        "official": true,
+        "type": "Schematic"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Feather 16+12 headers",
+        "layout": {
+          "rows": 16,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "special"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "PA02"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "PB08"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "PB09"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "PA04"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog",
+            "functions": [
+              "PA05"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog",
+            "functions": [
+              "PB02"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SCK",
+            "category": "communication",
+            "functions": [
+              "PB11"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "MO / MOSI",
+            "category": "communication",
+            "functions": [
+              "PB10"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "MI / MISO",
+            "category": "communication",
+            "functions": [
+              "PA12"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "RX / D0",
+            "category": "communication",
+            "functions": [
+              "PA11"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "TX / D1",
+            "category": "communication",
+            "functions": [
+              "PA10"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "BAT",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "EN",
+            "category": "reserved"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "USB",
+            "category": "power"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D13",
+            "category": "gpio",
+            "functions": [
+              "PA17",
+              "LED"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D12",
+            "category": "gpio",
+            "functions": [
+              "PA19"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D11",
+            "category": "gpio",
+            "functions": [
+              "PA16"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D10",
+            "category": "gpio",
+            "functions": [
+              "PA18"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "PA07"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "PA20"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "PA15"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "SCL",
+            "category": "communication",
+            "functions": [
+              "PA23"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SDA",
+            "category": "communication",
+            "functions": [
+              "PA22"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-33-ble",
+    "name": "Arduino Nano 33 BLE",
+    "manufacturer": "Arduino",
+    "aliases": [],
+    "description": "The Nano-sized nRF52840 with Bluetooth LE and an IMU.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V and not 5 V tolerant, unlike a classic Nano."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, VIN."
+      },
+      {
+        "severity": "info",
+        "text": "Standard Arduino Nano form factor; nRF52840 ports from the official Arduino pinout PDF."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant; max 15 mA output / 5 mA input per pin."
+      },
+      {
+        "severity": "info",
+        "text": "No true DAC. SDA=A4 (P0.31), SCL=A5 (P0.02). Onboard sensors share the internal I2C bus."
+      },
+      {
+        "severity": "info",
+        "text": "Left header positions 1-15, right header positions 16-30."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Arduino Nano 33 BLE documentation",
+        "url": "https://docs.arduino.cc/hardware/nano-33-ble/",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Arduino Nano dual 15-pin headers",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D13 / SCK",
+            "category": "communication",
+            "functions": [
+              "P0.13"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "special",
+            "notes": [
+              "analog reference"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "P0.04"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "P0.05"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "P0.30"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "P0.29"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A4 / SDA",
+            "category": "communication",
+            "functions": [
+              "P0.31"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A5 / SCL",
+            "category": "communication",
+            "functions": [
+              "P0.02"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A6",
+            "category": "analog",
+            "functions": [
+              "P0.28"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A7",
+            "category": "analog",
+            "functions": [
+              "P0.03"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power",
+            "notes": [
+              "off unless VBUS solder jumper bridged"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "5-21 V input"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D12 / CIPO",
+            "category": "communication",
+            "functions": [
+              "P1.08"
+            ],
+            "notes": [
+              "MISO"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "D11 / COPI",
+            "category": "communication",
+            "functions": [
+              "P1.01"
+            ],
+            "notes": [
+              "MOSI"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "D10",
+            "category": "gpio",
+            "functions": [
+              "P1.02"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "P0.27"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D8",
+            "category": "gpio",
+            "functions": [
+              "P0.21"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "P0.23"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "P1.14"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "P1.13"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D4",
+            "category": "gpio",
+            "functions": [
+              "P1.15"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "P1.12"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "P1.11"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "D0 / RX",
+            "category": "communication",
+            "functions": [
+              "P1.03"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "D1 / TX",
+            "category": "communication",
+            "functions": [
+              "P1.10"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arduino-nano-33-ble-sense-rev2",
+    "name": "Arduino Nano 33 BLE Sense Rev2",
+    "manufacturer": "Arduino",
+    "aliases": [],
+    "description": "The sensor-packed Nano 33 refresh, popular for TinyML projects.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V and not 5 V tolerant, unlike a classic Nano."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, VIN."
+      },
+      {
+        "severity": "info",
+        "text": "Standard Arduino Nano form factor; nRF52840 ports from the official Arduino pinout PDF."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant; max 15 mA output / 5 mA input per pin."
+      },
+      {
+        "severity": "info",
+        "text": "No true DAC. SDA=A4 (P0.31), SCL=A5 (P0.02). Onboard sensors share the internal I2C bus."
+      },
+      {
+        "severity": "info",
+        "text": "Left header positions 1-15, right header positions 16-30."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Arduino Nano 33 BLE Sense Rev2 documentation",
+        "url": "https://docs.arduino.cc/hardware/nano-33-ble-sense-rev2/",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Arduino Nano dual 15-pin headers",
+        "layout": {
+          "rows": 15,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D13 / SCK",
+            "category": "communication",
+            "functions": [
+              "P0.13"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "special",
+            "notes": [
+              "analog reference"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog",
+            "functions": [
+              "P0.04"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "P0.05"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "P0.30"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "P0.29"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A4 / SDA",
+            "category": "communication",
+            "functions": [
+              "P0.31"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "A5 / SCL",
+            "category": "communication",
+            "functions": [
+              "P0.02"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "A6",
+            "category": "analog",
+            "functions": [
+              "P0.28"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "A7",
+            "category": "analog",
+            "functions": [
+              "P0.03"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power",
+            "notes": [
+              "off unless VBUS solder jumper bridged"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "5-21 V input"
+            ]
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "D12 / CIPO",
+            "category": "communication",
+            "functions": [
+              "P1.08"
+            ],
+            "notes": [
+              "MISO"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "D11 / COPI",
+            "category": "communication",
+            "functions": [
+              "P1.01"
+            ],
+            "notes": [
+              "MOSI"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "D10",
+            "category": "gpio",
+            "functions": [
+              "P1.02"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D9",
+            "category": "gpio",
+            "functions": [
+              "P0.27"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D8",
+            "category": "gpio",
+            "functions": [
+              "P0.21"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "P0.23"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "P1.14"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "P1.13"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D4",
+            "category": "gpio",
+            "functions": [
+              "P1.15"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "P1.12"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "P1.11"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "D0 / RX",
+            "category": "communication",
+            "functions": [
+              "P1.03"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "D1 / TX",
+            "category": "communication",
+            "functions": [
+              "P1.10"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arduino-mkr-1000-wifi",
+    "name": "Arduino MKR 1000 WiFi",
+    "manufacturer": "Arduino",
+    "aliases": [],
+    "description": "The first MKR board, pairing a SAMD21 with Wi-Fi and a LiPo charger.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V and not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: Micro-USB, VIN, LiPo connector."
+      },
+      {
+        "severity": "info",
+        "text": "Standard Arduino MKR form factor; SAMD21G18 ports from the official Arduino pinout PDF."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant; max 7 mA per pin."
+      },
+      {
+        "severity": "info",
+        "text": "A0 (PA02) is a true DAC output. NINA-W102 Wi-Fi/BLE module is internal (not on headers)."
+      },
+      {
+        "severity": "info",
+        "text": "Left header positions 1-14, right header positions 15-28."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Arduino MKR 1000 WiFi documentation",
+        "url": "https://docs.arduino.cc/hardware/mkr-1000-wifi/",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Arduino MKR dual 14-pin headers",
+        "layout": {
+          "rows": 14,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "AREF",
+            "category": "special",
+            "functions": [
+              "PA03"
+            ],
+            "notes": [
+              "analog reference"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "A0 / DAC0",
+            "category": "analog",
+            "functions": [
+              "PA02"
+            ],
+            "notes": [
+              "true DAC output"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog",
+            "functions": [
+              "PB02"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog",
+            "functions": [
+              "PB03"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog",
+            "functions": [
+              "PA04"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A4",
+            "category": "analog",
+            "functions": [
+              "PA05"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "A5",
+            "category": "analog",
+            "functions": [
+              "PA06"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "A6",
+            "category": "analog",
+            "functions": [
+              "PA07"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D0",
+            "category": "gpio",
+            "functions": [
+              "PA22"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D1",
+            "category": "gpio",
+            "functions": [
+              "PA23"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio",
+            "functions": [
+              "PA10"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio",
+            "functions": [
+              "PA11"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio",
+            "functions": [
+              "PB10"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "PB11"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "VIN",
+            "category": "power",
+            "notes": [
+              "input voltage to the board"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "RESET",
+            "category": "reserved"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D14 / TX",
+            "category": "communication",
+            "functions": [
+              "PB22"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D13 / RX",
+            "category": "communication",
+            "functions": [
+              "PB23"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "D12 / SCL",
+            "category": "communication",
+            "functions": [
+              "PA09"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D11 / SDA",
+            "category": "communication",
+            "functions": [
+              "PA08"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D10 / CIPO",
+            "category": "communication",
+            "functions": [
+              "PA19"
+            ],
+            "notes": [
+              "MISO"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "D9 / SCK",
+            "category": "communication",
+            "functions": [
+              "PA17"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "D8 / COPI",
+            "category": "communication",
+            "functions": [
+              "PA16"
+            ],
+            "notes": [
+              "MOSI"
+            ]
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "PA21"
+            ]
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "D6",
+            "category": "gpio",
+            "functions": [
+              "PA20"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sparkfun-redboard-qwiic",
+    "name": "SparkFun RedBoard Qwiic",
+    "manufacturer": "SparkFun",
+    "aliases": [],
+    "description": "An UNO-compatible ATmega328P board with a Qwiic I2C connector.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 5 V and Qwiic parts are 3.3 V; check SparkFun's hookup guide before mixing them with header signals."
+      },
+      {
+        "severity": "warning",
+        "text": "D0 and D1 are shared with the USB serial bridge."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 5 V GPIO. Power: USB, barrel jack."
+      },
+      {
+        "severity": "info",
+        "text": "UNO Rev3 and UNO R4 share the classic shield header footprint and 5 V operating voltage, but MCU-specific alternate functions differ."
+      },
+      {
+        "severity": "info",
+        "text": "SPI is exposed on the ICSP header; D10 through D13 are commonly used with SPI shields."
+      },
+      {
+        "severity": "info",
+        "text": "A4 and A5 are the default I2C SDA/SCL pins on the UNO-style header."
+      }
+    ],
+    "sources": [
+      {
+        "title": "SparkFun RedBoard Qwiic product page",
+        "url": "https://www.sparkfun.com/products/15123",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "RedBoard Qwiic hookup guide",
+        "url": "https://learn.sparkfun.com/tutorials/redboard-qwiic-hookup-guide",
+        "official": true,
+        "type": "Manual"
+      }
+    ],
+    "headers": [
+      {
+        "id": "digital",
+        "name": "Digital",
+        "description": "Arduino UNO R3/R4 shield headers",
+        "layout": {
+          "rows": 14,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / RX",
+            "category": "communication"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / TX",
+            "category": "communication"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D8",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D9",
+            "category": "gpio"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D10 / CS",
+            "category": "communication"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D11 / COPI",
+            "category": "communication"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "D12 / CIPO",
+            "category": "communication"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "D13 / SCK",
+            "category": "communication"
+          }
+        ]
+      },
+      {
+        "id": "analog-power",
+        "name": "Analog / Power",
+        "layout": {
+          "rows": 11,
+          "columns": 1
+        },
+        "pins": [
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "A0",
+            "category": "analog"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "A1",
+            "category": "analog"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "A2",
+            "category": "analog"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "A3",
+            "category": "analog"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "A4 / SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "A5 / SCL",
+            "category": "communication"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "VIN",
+            "category": "power"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "RESET",
+            "category": "reserved"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sparkfun-pro-micro",
+    "name": "SparkFun Pro Micro",
+    "manufacturer": "SparkFun",
+    "aliases": [],
+    "description": "The ATmega32U4 board behind countless macro pads and keyboards.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Two voltage versions exist; check yours before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "SPI has no hardware CS on the header: pick any free pin."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 5 V at 16 MHz, or 3.3 V at 8 MHz. Power: Micro-USB or USB-C, RAW pin."
+      },
+      {
+        "severity": "info",
+        "text": "Arduino pin numbers follow SparkFun's promicro core variant; the layout matches the ATmega32U4 Pro Micro footprint."
+      },
+      {
+        "severity": "info",
+        "text": "D15 (SCK), D14 (MISO), and D16 (MOSI) are the SPI pins; RX and TX LEDs use pins that are not broken out."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level follows the board: 5 V at 16 MHz, or 3.3 V at 8 MHz. Check which one you own."
+      }
+    ],
+    "sources": [
+      {
+        "title": "SparkFun Pro Micro product page",
+        "url": "https://www.sparkfun.com/products/12640",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "SparkFun promicro pins_arduino.h",
+        "url": "https://github.com/sparkfun/Arduino_Boards/blob/b2ccf64208ea/sparkfun/avr/variants/promicro/pins_arduino.h",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "Pro Micro 12+12 headers",
+        "layout": {
+          "rows": 12,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D1 / TX",
+            "category": "communication",
+            "functions": [
+              "PD3",
+              "TXD1"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D0 / RX",
+            "category": "communication",
+            "functions": [
+              "PD2",
+              "RXD1"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D2 / SDA",
+            "category": "communication",
+            "functions": [
+              "PD1"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D3 / SCL",
+            "category": "communication",
+            "functions": [
+              "PD0"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D4 / A6",
+            "category": "analog",
+            "functions": [
+              "PD4"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "D5",
+            "category": "gpio",
+            "functions": [
+              "PC6"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "D6 / A7",
+            "category": "analog",
+            "functions": [
+              "PD7"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "D7",
+            "category": "gpio",
+            "functions": [
+              "PE6"
+            ]
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "D8 / A8",
+            "category": "analog",
+            "functions": [
+              "PB4"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "D9 / A9",
+            "category": "analog",
+            "functions": [
+              "PB5"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "RAW",
+            "category": "power"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "RST",
+            "category": "reserved"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "VCC",
+            "category": "power"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "A3 / D21",
+            "category": "analog",
+            "functions": [
+              "PF4"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "A2 / D20",
+            "category": "analog",
+            "functions": [
+              "PF5"
+            ]
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "A1 / D19",
+            "category": "analog",
+            "functions": [
+              "PF6"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "A0 / D18",
+            "category": "analog",
+            "functions": [
+              "PF7"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "D15 / SCK",
+            "category": "communication",
+            "functions": [
+              "PB1"
+            ]
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "D14 / MISO",
+            "category": "communication",
+            "functions": [
+              "PB3"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "D16 / MOSI",
+            "category": "communication",
+            "functions": [
+              "PB2"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "D10 / A10",
+            "category": "analog",
+            "functions": [
+              "PB6"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-esp32s3-sense",
+    "name": "Seeed XIAO ESP32S3 Sense",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "XIAO ESP32S3 with a plug-in camera, microphone, and microSD board.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "warning",
+        "text": "The Sense board uses GPIO7 to GPIO9 for microSD when it is enabled."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, BAT pads."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; labels follow Seeed's XIAO ESP32S3 pin multiplexing table."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "Sense-board B2B-only pins are not shown on this base 14-pad map."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Seeed XIAO ESP32S3 getting started",
+        "url": "https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "GPIO1"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / A1",
+            "category": "analog",
+            "functions": [
+              "GPIO2"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2 / A2",
+            "category": "analog",
+            "functions": [
+              "GPIO3"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3 / A3",
+            "category": "analog",
+            "functions": [
+              "GPIO4"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA",
+            "category": "communication",
+            "functions": [
+              "GPIO5"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL",
+            "category": "communication",
+            "functions": [
+              "GPIO6"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "GPIO43"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "GPIO9"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "GPIO8"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "GPIO7"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX / CS",
+            "category": "communication",
+            "functions": [
+              "GPIO44"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seeed-xiao-nrf52840-sense",
+    "name": "Seeed XIAO nRF52840 Sense",
+    "manufacturer": "Seeed Studio",
+    "aliases": [],
+    "description": "XIAO nRF52840 with an IMU and PDM microphone for TinyML.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "GPIO is 3.3 V only."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: USB-C, BAT pads."
+      },
+      {
+        "severity": "info",
+        "text": "USB-C at top, component side up; labels follow Seeed's XIAO nRF52840 (XIAO BLE) pin table."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO is 3.3 V only and is not 5 V tolerant."
+      },
+      {
+        "severity": "info",
+        "text": "D0-D5 are ADC-capable analog inputs; D labels are board labels, not raw nRF52840 ports."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Seeed XIAO nRF52840 wiki",
+        "url": "https://wiki.seeedstudio.com/XIAO_BLE/",
+        "official": true,
+        "type": "Docs"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "XIAO 14 castellated pads",
+        "layout": {
+          "rows": 7,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "D0 / A0",
+            "category": "analog",
+            "functions": [
+              "P0.02"
+            ]
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "D1 / A1",
+            "category": "analog",
+            "functions": [
+              "P0.03"
+            ]
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "D2 / A2",
+            "category": "analog",
+            "functions": [
+              "P0.28"
+            ]
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "D3 / A3",
+            "category": "analog",
+            "functions": [
+              "P0.29"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "D4 / SDA",
+            "category": "communication",
+            "functions": [
+              "P0.04"
+            ]
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "D5 / SCL",
+            "category": "communication",
+            "functions": [
+              "P0.05"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "D6 / TX",
+            "category": "communication",
+            "functions": [
+              "P1.11"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V / VBUS",
+            "category": "power"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "D10 / MOSI",
+            "category": "communication",
+            "functions": [
+              "P1.15"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "D9 / MISO",
+            "category": "communication",
+            "functions": [
+              "P1.14"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "D8 / SCK",
+            "category": "communication",
+            "functions": [
+              "P1.13"
+            ]
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "D7 / RX",
+            "category": "communication",
+            "functions": [
+              "P1.12"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "libre-computer-alta",
+    "name": "Libre Computer Alta",
+    "manufacturer": "Libre Computer",
+    "aliases": [],
+    "description": "Amlogic A311D board in the Raspberry Pi form factor with a 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is not stated as 5 V tolerant; keep it at 3.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "Alternate functions need the matching device-tree overlay."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V micro-USB or USB-C, GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO on this header is 3.3 V; SARADC inputs are 1.8 V."
+      },
+      {
+        "severity": "info",
+        "text": "Alternate functions need the matching device-tree overlay."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Libre Computer AML-A311D-CC documentation",
+        "url": "https://libre.computer/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "libretech-wiring-tool aml-a311d-cc/gpio.map",
+        "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-a311d-cc/gpio.map",
+        "official": false,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "7J1 40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIOAO_3",
+            "category": "communication",
+            "functions": [
+              "I2C_AO_M0_SDA",
+              "UART_AO_B_RX",
+              "I2C_AO_S0_SDA"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIOAO_2",
+            "category": "communication",
+            "functions": [
+              "I2C_AO_M0_SCL",
+              "UART_AO_B_TX",
+              "I2C_AO_S0_SCL"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIOAO_6",
+            "category": "gpio",
+            "functions": [
+              "PWMAO_C"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIOAO_7",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIOA_8",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIOA_0",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIOH_4",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_RTS",
+              "SPI_B_MOSI"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIOH_5",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_CTS",
+              "SPI_B_MISO",
+              "PWM_F"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIOH_7",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_TX",
+              "SPI_B_SCLK",
+              "I2C_EE_M1_SCL",
+              "PWM_B"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIOX_17",
+            "category": "communication",
+            "functions": [
+              "I2C_EE_M2_SDA"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIOA_1",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIOA_2",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIOX_5",
+            "category": "gpio",
+            "functions": [
+              "PWM_C"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIOX_10",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_SS0",
+              "I2C_EE_M1_SDA"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIOA_3",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIOAO_8",
+            "category": "gpio",
+            "functions": [
+              "UART_AO_B_TX"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIOAO_9",
+            "category": "gpio",
+            "functions": [
+              "UART_AO_B_RX"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIOX_11",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_SCLK",
+              "I2C_EE_M1_SCL"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIOA_4",
+            "category": "gpio",
+            "functions": [
+              "PWM_D"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIOA_5",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIOA_6",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIOH_6",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_RX",
+              "SPI_B_SS0",
+              "I2C_EE_M1_SDA"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIOA_9",
+            "category": "gpio"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIOX_18",
+            "category": "communication",
+            "functions": [
+              "I2C_EE_M2_SCL"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIOA_11",
+            "category": "gpio",
+            "functions": [
+              "PWM_F"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIOA_7",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIOX_8",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_MOSI",
+              "PWM_C"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIOX_9",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_MISO"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "libre-computer-solitude",
+    "name": "Libre Computer Solitude",
+    "manufacturer": "Libre Computer",
+    "aliases": [],
+    "description": "Amlogic S905D3 board in the Raspberry Pi form factor with a 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is not stated as 5 V tolerant; keep it at 3.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "Alternate functions need the matching device-tree overlay."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V micro-USB or USB-C, GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO on this header is 3.3 V; SARADC inputs are 1.8 V."
+      },
+      {
+        "severity": "info",
+        "text": "Alternate functions need the matching device-tree overlay."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Libre Computer AML-S905D3-CC documentation",
+        "url": "https://libre.computer/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "libretech-wiring-tool aml-s905d3-cc/gpio.map",
+        "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-s905d3-cc/gpio.map",
+        "official": false,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "7J1 40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "GPIOAO_3",
+            "category": "communication",
+            "functions": [
+              "I2C_AO_M0_SDA",
+              "UART_AO_B_RX",
+              "I2C_AO_S0_SDA"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "GPIOAO_2",
+            "category": "communication",
+            "functions": [
+              "I2C_AO_M0_SCL",
+              "UART_AO_B_TX",
+              "I2C_AO_S0_SCL"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "GPIOAO_6",
+            "category": "gpio",
+            "functions": [
+              "PWMAO_C"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIOAO_7",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIOA_8",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIOA_0",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "GPIOH_4",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_RTS",
+              "SPI_B_MOSI"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "GPIOH_5",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_CTS",
+              "SPI_B_MISO",
+              "PWM_F"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "GPIOH_7",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_TX",
+              "SPI_B_SCLK",
+              "I2C_EE_M1_SCL",
+              "PWM_B"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIOX_17",
+            "category": "communication",
+            "functions": [
+              "I2C_EE_M2_SDA"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIOA_1",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIOA_2",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIOX_5",
+            "category": "gpio",
+            "functions": [
+              "PWM_C"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIOX_10",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_SS0",
+              "I2C_EE_M1_SDA"
+            ]
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIOA_3",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIOAO_8",
+            "category": "gpio",
+            "functions": [
+              "UART_AO_B_TX"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIOAO_9",
+            "category": "gpio",
+            "functions": [
+              "UART_AO_B_RX"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIOX_11",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_SCLK",
+              "I2C_EE_M1_SCL"
+            ]
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIOA_4",
+            "category": "gpio",
+            "functions": [
+              "PWM_D"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIOA_5",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIOA_6",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "GPIOH_6",
+            "category": "communication",
+            "functions": [
+              "UART_EE_C_RX",
+              "SPI_B_SS0",
+              "I2C_EE_M1_SDA"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIOA_9",
+            "category": "gpio"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIOX_18",
+            "category": "communication",
+            "functions": [
+              "I2C_EE_M2_SCL"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIOA_11",
+            "category": "gpio",
+            "functions": [
+              "PWM_F"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIOA_7",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIOX_8",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_MOSI",
+              "PWM_C"
+            ]
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIOX_9",
+            "category": "gpio",
+            "functions": [
+              "SPI_A_MISO"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "libre-computer-tritium-h5",
+    "name": "Libre Computer Tritium H5",
+    "manufacturer": "Libre Computer",
+    "aliases": [],
+    "description": "Allwinner H5 board in the Raspberry Pi form factor with a 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is not stated as 5 V tolerant; keep it at 3.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "Alternate functions need the matching device-tree overlay."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V micro-USB or USB-C, GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO on this header is 3.3 V."
+      },
+      {
+        "severity": "info",
+        "text": "Alternate functions need the matching device-tree overlay."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Libre Computer ALL-H5-CC documentation",
+        "url": "https://libre.computer/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "libretech-wiring-tool all-h3-cc-h5/gpio.map",
+        "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/all-h3-cc-h5/gpio.map",
+        "official": false,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "7J1 40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "PA12",
+            "category": "communication",
+            "functions": [
+              "TWI0_SDA"
+            ]
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "PA11",
+            "category": "communication",
+            "functions": [
+              "TWI0_SCK"
+            ]
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PA2",
+            "category": "gpio",
+            "functions": [
+              "UART2_RTS"
+            ]
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "PA1",
+            "category": "gpio",
+            "functions": [
+              "UART2_RX"
+            ]
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "PA0",
+            "category": "gpio",
+            "functions": [
+              "UART2_TX"
+            ]
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "PA3",
+            "category": "gpio",
+            "functions": [
+              "UART2_CTS"
+            ]
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "PC0",
+            "category": "communication",
+            "functions": [
+              "SPI0-MOSI",
+              "SPI0_MOSI"
+            ]
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "PC1",
+            "category": "communication",
+            "functions": [
+              "SPI0-MISO",
+              "SPI0_MISO"
+            ]
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "PC2",
+            "category": "communication",
+            "functions": [
+              "SPI0-CLK",
+              "SPI0_CLK"
+            ]
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "PA19",
+            "category": "gpio",
+            "functions": [
+              "TWI1_SDA"
+            ]
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "PA20",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "PA21",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "PA6",
+            "category": "gpio",
+            "functions": [
+              "PWM1"
+            ]
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "PG10",
+            "category": "gpio"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "PA16",
+            "category": "communication",
+            "functions": [
+              "UART3-CTS",
+              "SPI1_MISO",
+              "UART3_CTS"
+            ]
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "PG6",
+            "category": "communication",
+            "functions": [
+              "AP-UART1-TX",
+              "UART1_TX"
+            ]
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "PG7",
+            "category": "communication",
+            "functions": [
+              "AP-UART1-RX",
+              "UART1_RX"
+            ]
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "PG11",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "PG9",
+            "category": "communication",
+            "functions": [
+              "AP-UART1-CTS",
+              "UART1_CTS"
+            ]
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "PG8",
+            "category": "communication",
+            "functions": [
+              "AP-UART1-RTS",
+              "UART1_RTS"
+            ]
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "PA14",
+            "category": "communication",
+            "functions": [
+              "UART3-RX",
+              "SPI1_CLK",
+              "UART3_RX"
+            ]
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "PC3",
+            "category": "communication",
+            "functions": [
+              "SPI0-CS",
+              "SPI0_CS"
+            ]
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "PA17",
+            "category": "gpio"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "PA18",
+            "category": "gpio",
+            "functions": [
+              "TWI1_SCK"
+            ]
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "PA13",
+            "category": "communication",
+            "functions": [
+              "UART3-TX",
+              "SPI1_CS",
+              "UART3_TX"
+            ]
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "PA15",
+            "category": "communication",
+            "functions": [
+              "UART3-RTS",
+              "SPI1_MOSI",
+              "UART3_RTS"
+            ]
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "PG13",
+            "category": "gpio"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "PG12",
+            "category": "gpio"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "orange-pi-zero-2w",
+    "name": "Orange Pi Zero 2W",
+    "manufacturer": "Orange Pi",
+    "aliases": [],
+    "description": "Allwinner H618 board with a 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is not stated as 5 V tolerant; keep it at 3.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "Bus numbers depend on the device-tree overlay you enable."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V USB-C."
+      },
+      {
+        "severity": "info",
+        "text": "Names and order follow Orange Pi's wiringOP gpio readall table for this board."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO on this header is 3.3 V."
+      },
+      {
+        "severity": "info",
+        "text": "Alternate functions need the matching device-tree overlay."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Orange Pi product documentation",
+        "url": "https://www.orangepi.org/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "wiringOP gpio readall table (readall.c)",
+        "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c",
+        "official": false,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "I2C1_SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "I2C1_SCL",
+            "category": "communication"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PWM3",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "UART5_TX",
+            "category": "communication"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "UART5_RX",
+            "category": "communication"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "UART2_TX",
+            "category": "communication"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "SPI1_MOSI",
+            "category": "communication"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SPI1_MISO",
+            "category": "communication"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "SPI1_SCLK",
+            "category": "communication"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "I2C2_SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "PI00",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "PI15",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "PI12",
+            "category": "gpio"
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "PI02",
+            "category": "gpio"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "PI16",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "UART0_TX",
+            "category": "communication"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "UART0_RX",
+            "category": "communication"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "PI01",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "PWM4",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "PH04",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "UART2_RX",
+            "category": "communication"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SPI_CS0",
+            "category": "communication"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "SPI_CS1",
+            "category": "communication"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "I2C2_SCL",
+            "category": "communication"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "PWM1",
+            "category": "gpio"
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "PC12",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "PI04",
+            "category": "gpio"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "PI03",
+            "category": "gpio"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "orange-pi-3b",
+    "name": "Orange Pi 3B",
+    "manufacturer": "Orange Pi",
+    "aliases": [],
+    "description": "Rockchip RK3566 board with a 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is not stated as 5 V tolerant; keep it at 3.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "Bus numbers depend on the device-tree overlay you enable."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V USB-C."
+      },
+      {
+        "severity": "info",
+        "text": "Names and order follow Orange Pi's wiringOP gpio readall table for this board."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO on this header is 3.3 V."
+      },
+      {
+        "severity": "info",
+        "text": "Alternate functions need the matching device-tree overlay."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Orange Pi product documentation",
+        "url": "https://www.orangepi.org/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "wiringOP gpio readall table (readall.c)",
+        "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c",
+        "official": false,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "I2C2_SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "I2C2_SCL",
+            "category": "communication"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PWM15",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO3_C6",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO4_A0",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "UART7_TX",
+            "category": "communication"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "SPI3_TXD",
+            "category": "communication"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SPI3_RXD",
+            "category": "communication"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "SPI3_CLK",
+            "category": "communication"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "I2C3_SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "UART9_RX",
+            "category": "communication"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO3_D4",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO3_D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO3_D0",
+            "category": "gpio"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO3_D3",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "UART2_TX",
+            "category": "communication"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "UART2_RX",
+            "category": "communication"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIO3_C7",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "UART7_RX",
+            "category": "communication"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO4_A1",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "UART9_TX",
+            "category": "communication"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SPI3_CS1",
+            "category": "communication"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "GPIO3_D6",
+            "category": "gpio"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "I2C3_SCL",
+            "category": "communication"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "PWM11",
+            "category": "gpio"
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO3_D5",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO3_D2",
+            "category": "gpio"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO3_D1",
+            "category": "gpio"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "orange-pi-5-plus",
+    "name": "Orange Pi 5 Plus",
+    "manufacturer": "Orange Pi",
+    "aliases": [],
+    "description": "Rockchip RK3588 board with a 40-pin header.",
+    "warnings": [
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+      },
+      {
+        "severity": "warning",
+        "text": "GPIO is not stated as 5 V tolerant; keep it at 3.3 V."
+      },
+      {
+        "severity": "warning",
+        "text": "Bus numbers depend on the device-tree overlay you enable."
+      },
+      {
+        "severity": "info",
+        "text": "Logic level: 3.3 V GPIO. Power: 5 V USB-C."
+      },
+      {
+        "severity": "info",
+        "text": "Names and order follow Orange Pi's wiringOP gpio readall table for this board."
+      },
+      {
+        "severity": "info",
+        "text": "GPIO on this header is 3.3 V."
+      },
+      {
+        "severity": "info",
+        "text": "Alternate functions need the matching device-tree overlay."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Orange Pi product documentation",
+        "url": "https://www.orangepi.org/",
+        "official": true,
+        "type": "Docs"
+      },
+      {
+        "title": "wiringOP gpio readall table (readall.c)",
+        "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c",
+        "official": false,
+        "type": "Pinout"
+      }
+    ],
+    "headers": [
+      {
+        "id": "main",
+        "name": "40-pin GPIO header",
+        "layout": {
+          "rows": 20,
+          "columns": 2
+        },
+        "pins": [
+          {
+            "physical": 1,
+            "position": {
+              "row": 1,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 3,
+            "position": {
+              "row": 2,
+              "column": 1
+            },
+            "label": "I2C2_SDA",
+            "category": "communication"
+          },
+          {
+            "physical": 5,
+            "position": {
+              "row": 3,
+              "column": 1
+            },
+            "label": "I2C2_SCL",
+            "category": "communication"
+          },
+          {
+            "physical": 7,
+            "position": {
+              "row": 4,
+              "column": 1
+            },
+            "label": "PWM14",
+            "category": "gpio"
+          },
+          {
+            "physical": 9,
+            "position": {
+              "row": 5,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 11,
+            "position": {
+              "row": 6,
+              "column": 1
+            },
+            "label": "GPIO1_A4",
+            "category": "gpio"
+          },
+          {
+            "physical": 13,
+            "position": {
+              "row": 7,
+              "column": 1
+            },
+            "label": "GPIO1_A7",
+            "category": "gpio"
+          },
+          {
+            "physical": 15,
+            "position": {
+              "row": 8,
+              "column": 1
+            },
+            "label": "GPIO1_B0",
+            "category": "gpio"
+          },
+          {
+            "physical": 17,
+            "position": {
+              "row": 9,
+              "column": 1
+            },
+            "label": "3V3",
+            "category": "power"
+          },
+          {
+            "physical": 19,
+            "position": {
+              "row": 10,
+              "column": 1
+            },
+            "label": "SPI0_TXD",
+            "category": "communication"
+          },
+          {
+            "physical": 21,
+            "position": {
+              "row": 11,
+              "column": 1
+            },
+            "label": "SPI0_RXD",
+            "category": "communication"
+          },
+          {
+            "physical": 23,
+            "position": {
+              "row": 12,
+              "column": 1
+            },
+            "label": "SPI0_CLK",
+            "category": "communication"
+          },
+          {
+            "physical": 25,
+            "position": {
+              "row": 13,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 27,
+            "position": {
+              "row": 14,
+              "column": 1
+            },
+            "label": "GPIO1_B7",
+            "category": "gpio"
+          },
+          {
+            "physical": 29,
+            "position": {
+              "row": 15,
+              "column": 1
+            },
+            "label": "GPIO1_D7",
+            "category": "gpio"
+          },
+          {
+            "physical": 31,
+            "position": {
+              "row": 16,
+              "column": 1
+            },
+            "label": "GPIO3_A0",
+            "category": "gpio"
+          },
+          {
+            "physical": 33,
+            "position": {
+              "row": 17,
+              "column": 1
+            },
+            "label": "GPIO3_C2",
+            "category": "gpio"
+          },
+          {
+            "physical": 35,
+            "position": {
+              "row": 18,
+              "column": 1
+            },
+            "label": "GPIO3_A2",
+            "category": "gpio"
+          },
+          {
+            "physical": 37,
+            "position": {
+              "row": 19,
+              "column": 1
+            },
+            "label": "GPIO3_C1",
+            "category": "gpio"
+          },
+          {
+            "physical": 39,
+            "position": {
+              "row": 20,
+              "column": 1
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 2,
+            "position": {
+              "row": 1,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 4,
+            "position": {
+              "row": 2,
+              "column": 2
+            },
+            "label": "5V",
+            "category": "power"
+          },
+          {
+            "physical": 6,
+            "position": {
+              "row": 3,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 8,
+            "position": {
+              "row": 4,
+              "column": 2
+            },
+            "label": "GPIO1_A1",
+            "category": "gpio"
+          },
+          {
+            "physical": 10,
+            "position": {
+              "row": 5,
+              "column": 2
+            },
+            "label": "GPIO1_A0",
+            "category": "gpio"
+          },
+          {
+            "physical": 12,
+            "position": {
+              "row": 6,
+              "column": 2
+            },
+            "label": "GPIO3_A1",
+            "category": "gpio"
+          },
+          {
+            "physical": 14,
+            "position": {
+              "row": 7,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 16,
+            "position": {
+              "row": 8,
+              "column": 2
+            },
+            "label": "GPIO3_B5",
+            "category": "gpio"
+          },
+          {
+            "physical": 18,
+            "position": {
+              "row": 9,
+              "column": 2
+            },
+            "label": "GPIO3_B6",
+            "category": "gpio"
+          },
+          {
+            "physical": 20,
+            "position": {
+              "row": 10,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 22,
+            "position": {
+              "row": 11,
+              "column": 2
+            },
+            "label": "GPIO1_A2",
+            "category": "gpio"
+          },
+          {
+            "physical": 24,
+            "position": {
+              "row": 12,
+              "column": 2
+            },
+            "label": "SPI0_CS0",
+            "category": "communication"
+          },
+          {
+            "physical": 26,
+            "position": {
+              "row": 13,
+              "column": 2
+            },
+            "label": "SPI0_CS1",
+            "category": "communication"
+          },
+          {
+            "physical": 28,
+            "position": {
+              "row": 14,
+              "column": 2
+            },
+            "label": "GPIO1_B6",
+            "category": "gpio"
+          },
+          {
+            "physical": 30,
+            "position": {
+              "row": 15,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 32,
+            "position": {
+              "row": 16,
+              "column": 2
+            },
+            "label": "GPIO1_A3",
+            "category": "gpio"
+          },
+          {
+            "physical": 34,
+            "position": {
+              "row": 17,
+              "column": 2
+            },
+            "label": "GND",
+            "category": "ground"
+          },
+          {
+            "physical": 36,
+            "position": {
+              "row": 18,
+              "column": 2
+            },
+            "label": "GPIO3_A5",
+            "category": "gpio"
+          },
+          {
+            "physical": 38,
+            "position": {
+              "row": 19,
+              "column": 2
+            },
+            "label": "GPIO3_A4",
+            "category": "gpio"
+          },
+          {
+            "physical": 40,
+            "position": {
+              "row": 20,
+              "column": 2
+            },
+            "label": "GPIO3_A3",
+            "category": "gpio"
           }
         ]
       }
