@@ -222,7 +222,6 @@ describe("board catalog integrity", () => {
   it("retains reference identity for intentionally shared connector maps", () => {
     const byId = (id: string) => boards.find((board) => board.id === id)?.pinout;
     expect(byId("raspberry-pi-zero-2-w")).toBe(byId("raspberry-pi-4-model-b"));
-    expect(byId("raspberry-pi-pico-2")).toBe(byId("raspberry-pi-pico-w"));
     expect(byId("arduino-uno-r4-minima")).toBe(byId("arduino-uno-r4-wifi"));
     expect(byId("stm32-nucleo-f103rb")).toBe(byId("stm32-nucleo-f401re"));
   });
@@ -241,6 +240,8 @@ describe("board catalog integrity", () => {
     for (const [pilot, sharer] of [
       ["raspberry-pi-5", "raspberry-pi-4-model-b"],
       ["raspberry-pi-pico", "raspberry-pi-pico-w"],
+      ["raspberry-pi-pico", "raspberry-pi-pico-2"],
+      ["raspberry-pi-pico", "raspberry-pi-pico-2-w"],
       ["arduino-uno-rev3", "arduino-uno-r4-minima"],
     ]) {
       expect(byId(pilot), pilot).not.toBe(byId(sharer));

@@ -37299,7 +37299,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "GP17 is also the CS for the onboard SPI flash; reassign carefully."
+        "text": "SPI edge pins follow SparkFun's board design: SCK GP22, CIPO GP20, COPI GP23, CS GP21. The Qwiic connector carries I2C on GP16 (SDA) and GP17 (SCL)."
       }
     ],
     "sources": [
@@ -37523,7 +37523,7 @@ export const generatedBoards: Board[] = [
               "row": 9,
               "column": 2
             },
-            "label": "SCK / GP18",
+            "label": "SCK / GP22",
             "category": "communication",
             "functions": [
               "SPI0 SCK"
@@ -37535,10 +37535,11 @@ export const generatedBoards: Board[] = [
               "row": 10,
               "column": 2
             },
-            "label": "MOSI / GP19",
+            "label": "MISO / GP20",
             "category": "communication",
             "functions": [
-              "SPI0 TX"
+              "SPI0 RX",
+              "CIPO"
             ]
           },
           {
@@ -37547,10 +37548,11 @@ export const generatedBoards: Board[] = [
               "row": 11,
               "column": 2
             },
-            "label": "MISO / GP20",
+            "label": "MOSI / GP23",
             "category": "communication",
             "functions": [
-              "SPI0 RX"
+              "SPI0 TX",
+              "COPI"
             ]
           },
           {
@@ -37559,13 +37561,10 @@ export const generatedBoards: Board[] = [
               "row": 12,
               "column": 2
             },
-            "label": "CS / GP17",
+            "label": "CS / GP21",
             "category": "communication",
             "functions": [
               "SPI0 CS"
-            ],
-            "notes": [
-              "Also CS for onboard flash; reassign carefully."
             ]
           }
         ]
@@ -50453,8 +50452,8 @@ export const generatedBoards: Board[] = [
             "label": "A0 / D0",
             "category": "analog",
             "functions": [
-              "GPIO26",
-              "ADC0"
+              "GPIO29",
+              "ADC3"
             ]
           },
           {
@@ -50466,8 +50465,8 @@ export const generatedBoards: Board[] = [
             "label": "A1 / D1",
             "category": "analog",
             "functions": [
-              "GPIO27",
-              "ADC1"
+              "GPIO28",
+              "ADC2"
             ]
           },
           {
@@ -50479,8 +50478,8 @@ export const generatedBoards: Board[] = [
             "label": "A2 / D2",
             "category": "analog",
             "functions": [
-              "GPIO28",
-              "ADC2"
+              "GPIO27",
+              "ADC1"
             ]
           },
           {
@@ -50492,8 +50491,8 @@ export const generatedBoards: Board[] = [
             "label": "A3 / D3",
             "category": "analog",
             "functions": [
-              "GPIO29",
-              "ADC3"
+              "GPIO26",
+              "ADC0"
             ]
           },
           {

@@ -105,7 +105,8 @@ describe("linkPorts", () => {
 
   it("lists one port, not two, when a board names a bus both ways", () => {
     expect(linkPorts(board("esp32-s3-devkitm-1"), "uart").map((port) => port.id)).toEqual(["UART0"]);
-    expect(linkPorts(board("sparkfun-pro-micro-rp2040"), "i2c").map((port) => port.id)).toEqual(["I2C1"]);
+    // The edge's SDA/SCL aliases name I2C1, which its planner data also lists.
+    expect(linkPorts(board("sparkfun-pro-micro-rp2040"), "i2c").map((port) => port.id)).toEqual(["I2C0", "I2C1"]);
   });
 
   it("splits I2C controllers that differ only by power domain", () => {

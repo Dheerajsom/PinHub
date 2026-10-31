@@ -241,6 +241,24 @@ body {
     background-color: var(--well);
     border: 1px solid var(--panel-border);
   }
+
+  /* Stand-in vendor mark: a recessed tile with the vendor's initial. */
+  .ph-vendor-monogram {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: 0.2rem;
+    background-color: var(--well);
+    border: 1px solid var(--panel-border);
+    color: #9aa4b2;
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-weight: 600;
+    line-height: 1;
+  }
+}
+
+:root[data-theme="light"] .ph-vendor-monogram {
+  color: #44545d;
 }
 
 /* Bright-bench theme: the same marks and probe on drafting paper. */
@@ -431,8 +449,8 @@ button {
    pinout actions remain comfortable on touch-first devices. */
 @media (pointer: coarse) {
   .touch-target {
-    min-width: 2.5rem;
-    min-height: 2.5rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
     padding-inline: 0.625rem;
   }
 }

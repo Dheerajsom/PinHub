@@ -70,7 +70,7 @@ export function PinoutFullView({ board }: { board: Board }) {
           <div className="min-w-0">
             <Link
               href={`/boards/${board.id}`}
-              className="inline-flex min-h-10 items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-zinc-500 transition hover:text-cyan-200"
+              className="inline-flex min-h-11 items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-zinc-500 transition hover:text-cyan-200"
             >
               <ArrowLeft className="size-3" aria-hidden="true" />
               Board overview

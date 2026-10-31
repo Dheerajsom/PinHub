@@ -280,7 +280,7 @@ describe("determinism, bounds, and support", () => {
   it("reports an empty request and unsupported boards without guessing", () => {
     expect(planPins(board("raspberry-pi-pico"), {})).toEqual({ status: "empty" });
     expect(planPins(board("raspberry-pi-4-model-b"), { I2C: 1 })).toEqual({ status: "unsupported" });
-    expect(planPins(board("raspberry-pi-pico-w"), { I2C: 1 })).toEqual({ status: "unsupported" });
+    expect(planPins(board("stm32-nucleo-f401re"), { I2C: 1 })).toEqual({ status: "unsupported" });
     expect(planCapabilities(board("raspberry-pi-4-model-b"))).toEqual([]);
   });
 

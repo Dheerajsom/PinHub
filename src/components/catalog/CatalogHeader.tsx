@@ -41,7 +41,7 @@ export function CatalogHeader({
         <div className="flex shrink-0 items-center gap-2.5">
           {/* One recessed readout, read like the spec table's ruled rows:
               mono figures an engineer might quote, mono labels beside them. */}
-          <dl className="surface-well hidden h-10 items-stretch rounded-xl md:flex">
+          <dl className="surface-well hidden h-11 items-stretch rounded-xl md:flex lg:h-10">
             <Readout label="Boards" value={boardCount} />
             <Readout label="Interfaces" value={interfaceCount} />
             <Readout label="Sources" value={sourceCount} />
@@ -62,7 +62,7 @@ function GitHubButton() {
       rel="noopener noreferrer"
       aria-label="View PinHub source on GitHub (opens in a new tab)"
       title="View source on GitHub"
-      className="ph-chrome-button group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-xl px-2.5 text-sm font-medium text-zinc-200 transition hover:text-white active:scale-[0.97] sm:px-3"
+      className="ph-chrome-button group relative inline-flex h-11 items-center lg:h-10 gap-2 overflow-hidden rounded-xl px-2.5 text-sm font-medium text-zinc-200 transition hover:text-white active:scale-[0.97] sm:px-3"
     >
       <svg
         viewBox="0 0 24 24"

@@ -20,7 +20,7 @@ export function ActiveFilterChip({ label, onClear }: ActiveFilterChipProps) {
       type="button"
       onClick={onClear}
       aria-label={`Remove ${label} filter`}
-      className="group flex shrink-0 items-center gap-1.5 rounded-full border border-cyan-300/50 bg-cyan-300/10 py-1 pl-2.5 pr-2 text-xs font-medium text-cyan-50 transition hover:border-cyan-300/80 hover:bg-cyan-300/15"
+      className="group flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-cyan-300/50 bg-cyan-300/10 py-1 pl-2.5 pr-2 text-xs font-medium text-cyan-50 transition hover:border-cyan-300/80 hover:bg-cyan-300/15 lg:min-h-8"
     >
       {label}
       <X

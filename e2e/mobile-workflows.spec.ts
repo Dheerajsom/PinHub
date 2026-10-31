@@ -19,6 +19,23 @@ for (const viewport of viewports) {
   test.describe(`touch workflows at ${viewport.width}x${viewport.height}`, () => {
     test.use({ viewport, isMobile: true, hasTouch: true, userAgent: devices["Pixel 5"].userAgent });
 
+    // RP2040-Zero's connector group names are long enough to push the Label
+    // column out of the table's scroll area.
+    test("planner pins table shows every column for long connector groups", async ({ page }) => {
+      await page.goto(
+        "/planner?board=waveshare-rp2040-zero&plan=i2c1.spi1&use=g0:1~Sensor%20A,g1:1~Sensor%20A",
+      );
+      const table = page.getByRole("table", { name: "Your pins" });
+      await expect(table).toBeVisible();
+      await expect(table.getByText("Sensor A").first()).toBeVisible();
+      const clipped = await table.evaluate((element) => {
+        const wrapper = element.parentElement!;
+        return wrapper.scrollWidth - wrapper.clientWidth;
+      });
+      expect(clipped).toBeLessThanOrEqual(0);
+      await expectPageFits(page);
+    });
+
     test("catalog search, filters, favorites, and inline details", async ({ page }, testInfo) => {
       const errors: string[] = [];
       page.on("pageerror", (error) => errors.push(error.message));

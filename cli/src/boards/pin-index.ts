@@ -5273,7 +5273,10 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO13"
         ],
-        "note": "onboard LED"
+        "note": "onboard LED",
+        "flags": [
+          "onboard-led"
+        ]
       },
       {
         "key": "pR:4",
@@ -23339,6 +23342,9 @@ export const pinIndex: PinIndexBoard[] = [
         "aliases": [
           "GPIO6"
         ],
+        "flags": [
+          "onboard-led"
+        ],
         "net": "SPI"
       },
       {
@@ -24978,6 +24984,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 14,
         "label": "D13 / GP11",
         "role": "gpio",
+        "flags": [
+          "onboard-led"
+        ],
         "group": "Top edge"
       },
       {
@@ -26917,7 +26926,7 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "pR:8",
         "position": 18,
-        "label": "SCK / GP18",
+        "label": "SCK / GP22",
         "role": "spi",
         "aliases": [
           "SPI0 SCK"
@@ -26927,32 +26936,33 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "pR:9",
         "position": 20,
-        "label": "MOSI / GP19",
+        "label": "MISO / GP20",
         "role": "spi",
         "aliases": [
-          "SPI0 TX"
+          "SPI0 RX",
+          "CIPO"
         ],
         "net": "SPI0"
       },
       {
         "key": "pR:10",
         "position": 22,
-        "label": "MISO / GP20",
+        "label": "MOSI / GP23",
         "role": "spi",
         "aliases": [
-          "SPI0 RX"
+          "SPI0 TX",
+          "COPI"
         ],
         "net": "SPI0"
       },
       {
         "key": "pR:11",
         "position": 24,
-        "label": "CS / GP17",
+        "label": "CS / GP21",
         "role": "spi",
         "aliases": [
           "SPI0 CS"
         ],
-        "note": "Also CS for onboard flash; reassign carefully.",
         "net": "SPI0"
       }
     ]
@@ -35776,8 +35786,8 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "A0 / D0",
         "role": "adc",
         "aliases": [
-          "GPIO26",
-          "ADC0"
+          "GPIO29",
+          "ADC3"
         ]
       },
       {
@@ -35786,8 +35796,8 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "A1 / D1",
         "role": "adc",
         "aliases": [
-          "GPIO27",
-          "ADC1"
+          "GPIO28",
+          "ADC2"
         ]
       },
       {
@@ -35796,8 +35806,8 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "A2 / D2",
         "role": "adc",
         "aliases": [
-          "GPIO28",
-          "ADC2"
+          "GPIO27",
+          "ADC1"
         ]
       },
       {
@@ -35806,8 +35816,8 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "A3 / D3",
         "role": "adc",
         "aliases": [
-          "GPIO29",
-          "ADC3"
+          "GPIO26",
+          "ADC0"
         ]
       },
       {
