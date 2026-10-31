@@ -3,6 +3,7 @@ import { boards, type Board, type Pin } from "@/lib/boards";
 import { boardVisuals } from "@/lib/board-visuals";
 import { buildBoardLink, busSignalsForPin, linkPorts } from "@/lib/board-link";
 import { planCapabilities, planPins } from "@/lib/pin-planner";
+import { planExports } from "@/lib/pin-plan-export";
 import { isPinFunctionData } from "@/lib/pin-function-schema";
 
 // Pins the October 2026 planner and board link expansion to its sources. The
@@ -51,6 +52,25 @@ const newIds = [
 ];
 
 describe("boards added in the expansion", () => {
+  it.each([
+    "stm32-nucleo-l432kc", "stm32-nucleo-g431kb", "stm32-nucleo-f303k8",
+    "libre-computer-alta", "libre-computer-solitude", "libre-computer-tritium-h5",
+    "orange-pi-zero-2w", "orange-pi-3b", "orange-pi-5-plus",
+  ])("discloses the single-source pinout before wiring %s", (id) => {
+    const item = board(id);
+    // First caution remains visible even when a catalog panel folds its list.
+    expect(item.warnings[0]).toMatch(/^Unverified pinout:.*one checked vendor source/);
+    expect(item.warnings[0]).toMatch(/exact board revision before wiring/);
+    expect(item.pinout?.notes).toContain(item.warnings[0]);
+    const link = buildBoardLink(item, board("raspberry-pi-pico"), "uart");
+    expect(link.notes).toContain(`${item.name}: ${item.warnings[0]}`);
+    const [claimed] = pins(item).filter((pin) => pin.role === "gpio");
+    const exports = planExports(item, [], "2026-10-31", [{ name: "LED", pin: claimed, cautions: [] }]);
+    expect(exports.map((file) => file.format)).toContain("csv");
+    expect(exports.map((file) => file.format)).toContain("json");
+    for (const file of exports) expect(file.text, file.format).toContain(item.warnings[0]);
+  });
+
   it("are all in the catalog with a pin map and a diagram", () => {
     for (const id of newIds) {
       expect(board(id).pinout, id).toBeDefined();

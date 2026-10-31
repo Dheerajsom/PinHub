@@ -89,9 +89,9 @@ for (const viewport of viewports) {
         await expect(interactive.getByRole("button", { name: /^Pin 1,/ })).toHaveAttribute("aria-pressed", "true");
         await expect(picker).not.toHaveValue("");
         await interactive.getByRole("button", { name: "Zoom board", exact: true }).tap();
-        await expect(interactive.getByRole("button", { name: "Fit board", exact: true })).toBeVisible();
+        await expect(interactive.getByRole("button", { name: "Working size", exact: true })).toBeVisible();
         await fitsViewport(page);
-        await interactive.getByRole("button", { name: "Fit board", exact: true }).tap();
+        await interactive.getByRole("button", { name: "Working size", exact: true }).tap();
         await interactive.getByRole("button", { name: /^Power —/ }).tap();
         await expect(interactive.getByRole("button", { name: "Show all roles", exact: true })).toBeVisible();
         await interactive.getByRole("button", { name: "Show all roles", exact: true }).tap();

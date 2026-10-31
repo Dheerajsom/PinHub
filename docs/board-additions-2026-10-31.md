@@ -1,5 +1,9 @@
 # Planner and board link expansion — 2026-10-31
 
+This is the original implementation record. The follow-up review, provenance
+disclosures, UI fixes, and fresh verification are recorded in
+[`code-audit-2026-10-31.md`](code-audit-2026-10-31.md).
+
 Branch `feature/planner-link-more-boards`, from `main` at `4c631c3`.
 
 | | Before | After |
@@ -133,6 +137,10 @@ aliases.
 
 ## Mobile gate
 
+The original check below did **not** complete the required gate because the
+skill was not loaded. It is superseded by the skill-loaded mobile review in
+[`code-audit-2026-10-31.md`](code-audit-2026-10-31.md).
+
 The mobile-mojo agent tested the production build with Playwright (Chrome,
 touch, `isMobile`, DPR 2, `window.innerWidth` asserted) at 360 × 800, 390 × 844,
 412 × 915, and 844 × 390, in both themes. The `mobile-mojo` skill was not
@@ -175,7 +183,9 @@ popover. Not covered: physical phones and iOS Safari.
 - Nucleo-32 maps, Libre Computer maps, and Orange Pi maps rest on one vendor
   source each. `st.com`, `raspberrypi.com`, and `orangepi.org` could not be
   fetched from this environment, so those links were not checked; every other
-  new source URL returned 200.
+  new source URL returned 200 in the original run. All nine single-source maps
+  now begin with an explicit **Unverified pinout** caution in the catalog and
+  pinout notes. The disclosure is retained in the planner, links, and exports.
 - No price listings were added for the new boards.
 - The new boards' descriptions and specs that do not come from the files above
   were written from general knowledge of each board and were not checked

@@ -62,7 +62,7 @@ function GitHubButton() {
       rel="noopener noreferrer"
       aria-label="View PinHub source on GitHub (opens in a new tab)"
       title="View source on GitHub"
-      className="ph-chrome-button group relative inline-flex h-11 items-center lg:h-10 gap-2 overflow-hidden rounded-xl px-2.5 text-sm font-medium text-zinc-200 transition hover:text-white active:scale-[0.97] sm:px-3"
+      className="ph-chrome-button group relative inline-flex min-h-11 min-w-11 items-center gap-2 overflow-hidden rounded-xl px-2.5 text-sm font-medium text-zinc-200 transition hover:text-white active:scale-[0.97] sm:px-3"
     >
       <svg
         viewBox="0 0 24 24"

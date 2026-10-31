@@ -11,6 +11,7 @@ import {
   type PinAnchor,
 } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
@@ -143,7 +144,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       <div
         className={clsx(
           "bv-stage-wrap mt-3 w-full rounded-md",
-          tall ? "overflow-y-auto overflow-x-hidden" : "overflow-hidden",
+          "overflow-auto",
         )}
         style={tall ? { maxHeight: 460 } : undefined}
       >
@@ -151,7 +152,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           className="w-full"
           style={{
             aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-            maxHeight: tall ? undefined : 460,
+            minWidth: touchDrawingWidth(geometry),
           }}
         >
           <BoardStage
@@ -173,14 +174,14 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </div>
 
       {isComplex ? (
-        <p className="mt-2 flex items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
+        <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
           <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
           Dense header — open{" "}
           <a
             href={fullViewHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium underline underline-offset-2 hover:text-cyan-100"
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center font-medium underline underline-offset-2 hover:text-cyan-100"
           >
             Full view
           </a>{" "}
@@ -222,7 +223,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </ul>
 
       <details className="mt-3 border-t border-white/10 pt-3">
-        <summary className="cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
+        <summary className="min-h-11 cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
           All {geometry.anchors.length} pins (table)
         </summary>
         <div className="mt-2 max-h-80 overflow-y-auto pr-1">

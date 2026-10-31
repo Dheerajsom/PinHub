@@ -467,6 +467,13 @@ embedding it.
   labels out to either side, and no illustrated components, copper, or
   Raspberry Pi artwork. It claims nothing about the board around the pins.
   Other layouts use their usual pad positions on a flat outline.
+- **Touch scale before fit.** Interactive pads have at least a 44 × 44 CSS px
+  hit region. Hit regions stay within the connector pitch; diagrams grow and
+  scroll within their panel instead of overlapping neighboring pins. This
+  applies to planner/link sheets, full inspectors, and compact artwork.
+  The inspector offers **Zoom labels** and **Working size** rather than a
+  fit-to-width action that would shrink labels and controls below usable size.
+  Scroll instructions and keyboard access accompany the drawing.
 - **Three marks, never alike.** Solid neutral ring = claimed by hand. Dashed
   ring in the role's `ink` = auto-assigned. Solid cyan = the probe, and
   nothing else. Free pads recede to half strength once a plan exists; they
@@ -481,7 +488,8 @@ embedding it.
   touch-down and touch-up.
 - **Cautions** for a claimed pin come only from the record (the pin's flags
   with the board's notes, and the reserved role), in the same orange rows as
-  auto-assigned pins.
+  auto-assigned pins. Board-level cautions appear before the planner drawing;
+  a single-source map's unverified disclosure stays first in a folded list.
 - **Section nav** holds four links on one row down to 360 px: below 400 px
   the icons give way to the labels. Links are 44 px tall at every width.
 

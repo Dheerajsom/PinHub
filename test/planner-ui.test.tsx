@@ -91,6 +91,23 @@ describe("PlannerBoardPicker", () => {
 });
 
 describe("PlannerWorkspace", () => {
+  it("shows unverified board warnings on a direct planner visit", async () => {
+    render(<PlannerWorkspace board={board("stm32-nucleo-l432kc")} onChangeBoard={() => {}} />);
+    await settle();
+    expect(screen.getByText(/^Unverified pinout:/)).toBeTruthy();
+  });
+
+  it("Escape closes the pin editor and restores focus to its pad", async () => {
+    render(<PlannerWorkspace board={board("raspberry-pi-pico")} onChangeBoard={() => {}} />);
+    await settle();
+    const pad = screen.getByRole("button", { name: /^Pin 6, GP4/ });
+    fireEvent.click(pad);
+    screen.getByLabelText("Used for").focus();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("region", { name: "Pin editor" })).toBeNull();
+    expect(document.activeElement).toBe(pad);
+  });
+
   it("claims a pin by hand, keeps it in the URL, and plans around it", async () => {
     window.history.replaceState(null, "", "/planner?board=raspberry-pi-pico");
     render(<PlannerWorkspace board={board("raspberry-pi-pico")} onChangeBoard={() => {}} />);

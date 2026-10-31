@@ -71,7 +71,7 @@ export function BoardDetailPanel({
           <button
             type="button"
             onClick={onBackToResults}
-            className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white xl:hidden"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white xl:hidden"
           >
             <ArrowUp className="size-4" aria-hidden="true" />
             Back to results
@@ -127,7 +127,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
       <button
         type="button"
         onClick={onBackToResults}
-        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] xl:hidden"
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] xl:hidden"
       >
         <ArrowUp className="size-4" aria-hidden="true" />
         Back to results

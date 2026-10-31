@@ -6,6 +6,7 @@ import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinDetails } from "@/components/board-visual/PinDetails";
@@ -63,15 +64,15 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
 
       <div className="pi-component-layout">
         <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
-          <div className="pi-canvas-scroll" tabIndex={zoomed ? 0 : undefined} aria-label={zoomed ? "Scrollable board detail" : undefined}>
-            <div className={zoomed ? "pi-board-frame is-zoomed" : "pi-board-frame"} style={{ aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}` }}>
+          <div className="pi-canvas-scroll" tabIndex={0} role="group" aria-label="Scrollable board detail">
+            <div className={zoomed ? "pi-board-frame is-zoomed" : "pi-board-frame"} style={{ boxSizing: "content-box", aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}`, minWidth: touchDrawingWidth(geometry, true) * (zoomed ? 1.5 : 1) }}>
               <BoardStage geometry={geometry} title={`${board.name} — ${board.pinout.connector}`} sheetLabel={board.name}
                 compact selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={false} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
             </div>
           </div>
           <div className="pi-canvas-footer">
-            <span>{model.family === "keyboard" ? "Connector schematic" : "Component side"}</span>
-            <button type="button" onClick={() => setZoomed(!zoomed)}>{zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Fit board" : "Zoom board"}</button>
+            <span>{model.family === "keyboard" ? "Connector schematic" : "Component side"} · swipe to view</span>
+            <button type="button" onClick={() => setZoomed(!zoomed)}>{zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Working size" : "Zoom board"}</button>
           </div>
         </div>
 

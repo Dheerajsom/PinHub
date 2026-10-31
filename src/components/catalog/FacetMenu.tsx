@@ -282,7 +282,7 @@ export function FacetMenu({
             maxLength={40}
             autoComplete="off"
             spellCheck={false}
-            className="ph-facet-input h-10 min-w-0 flex-1 bg-transparent text-zinc-200 outline-none placeholder:text-zinc-500"
+            className="ph-facet-input min-h-11 min-w-0 flex-1 bg-transparent text-zinc-200 outline-none placeholder:text-zinc-500"
           />
         </div>
         <div
@@ -304,7 +304,7 @@ export function FacetMenu({
                 onPointerMove={() => setActiveIndex(index)}
                 onPointerDown={(event) => event.preventDefault()}
                 onClick={() => choose(item)}
-                className="ph-menu-option flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-2 text-[13px] lg:min-h-9"
+                className="ph-menu-option flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-2 text-[13px]"
               >
                 {renderMark && index > 0 ? (
                   <span className="grid size-4 shrink-0 place-items-center">

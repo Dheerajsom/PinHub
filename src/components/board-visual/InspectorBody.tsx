@@ -6,6 +6,7 @@ import { Search, Scan, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import {
   PinDetails,
   type PinoutSource,
@@ -109,7 +110,7 @@ export function InspectorBody({
   );
   const hintId = `${useId()}-sheet-hint`;
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [fitToWidth, setFitToWidth] = useState(false);
+  const [zoomLabels, setZoomLabels] = useState(false);
   const [scroll, setScroll] = useState({
     scrollable: false,
     atStart: true,
@@ -159,7 +160,7 @@ export function InspectorBody({
     const observer = new ResizeObserver(updateScrollState);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [fitToWidth, geometry, updateScrollState]);
+  }, [zoomLabels, geometry, updateScrollState]);
 
   return (
     <div className="@container grid min-h-0 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
@@ -182,7 +183,7 @@ export function InspectorBody({
                 type="button"
                 onClick={() => setExplorerQuery("")}
                 aria-label="Clear pin search"
-                className="absolute right-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-zinc-500 transition hover:text-white"
+                className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center text-zinc-500 transition hover:text-white"
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
@@ -199,7 +200,7 @@ export function InspectorBody({
               <button
                 type="button"
                 onClick={clearExplorerFilters}
-                className="text-[11px] text-cyan-200 underline-offset-4 transition hover:text-white hover:underline"
+                className="min-h-11 min-w-11 text-[11px] text-cyan-200 underline-offset-4 transition hover:text-white hover:underline"
               >
                 Clear filters
               </button>
@@ -219,7 +220,7 @@ export function InspectorBody({
                   onClick={() => toggleCategory(option.id)}
                   aria-pressed={active}
                   className={clsx(
-                    "min-h-11 shrink-0 rounded-md border px-2.5 text-[11px] font-medium transition lg:min-h-9",
+                    "min-h-11 shrink-0 rounded-md border px-2.5 text-[11px] font-medium transition",
                     active
                       ? "border-cyan-300/65 bg-cyan-300/12 text-cyan-50"
                       : "border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/25 hover:text-white",
@@ -243,34 +244,31 @@ export function InspectorBody({
         />
 
         <div className="mt-3">
-          {/* On a phone the sheet is wider than the screen. Scrolling it at
-              working size keeps the signal names legible, so that stays the
-              default and the scroll is announced and shown rather than left to
-              be discovered; fit-to-width is one tap away when the question is
-              "which end is pin 1" rather than "what is pin 12". */}
-          {scrollable || fitToWidth ? (
+          {/* Keep every pin tappable at working size; zoom can enlarge labels
+              without shrinking controls below their minimum touch size. */}
+          {scrollable || zoomLabels ? (
             <div className="mb-2 flex items-center justify-between gap-2">
               <p
                 id={hintId}
                 className="min-w-0 text-[11px] leading-4 text-zinc-500"
               >
-                {fitToWidth
-                  ? "Whole board shown — labels are reduced"
+                {zoomLabels
+                  ? "Labels enlarged — swipe to view the full connector"
                   : "Swipe horizontally to view the full connector"}
               </p>
               <button
                 type="button"
-                onClick={() => setFitToWidth((value) => !value)}
-                aria-pressed={fitToWidth}
+                onClick={() => setZoomLabels((value) => !value)}
+                aria-pressed={zoomLabels}
                 className={clsx(
                   "touch-target inline-flex shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition",
-                  fitToWidth
+                  zoomLabels
                     ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50"
                     : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
                 )}
               >
                 <Scan className="size-3.5" aria-hidden="true" />
-                Fit width
+                {zoomLabels ? "Working size" : "Zoom labels"}
               </button>
             </div>
           ) : null}
@@ -284,17 +282,15 @@ export function InspectorBody({
               tabIndex={0}
               role="group"
               aria-label={`${board.name} connector diagram`}
-              aria-describedby={scrollable || fitToWidth ? hintId : undefined}
+              aria-describedby={scrollable || zoomLabels ? hintId : undefined}
               className="bv-stage-wrap w-full overflow-auto rounded-md p-2"
             >
               <div
                 className="mx-auto"
                 style={{
                   aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-                  minWidth: fitToWidth
-                    ? undefined
-                    : Math.min(geometry.vbw, 720),
-                  maxWidth: geometry.vbw,
+                  minWidth: touchDrawingWidth(geometry) * (zoomLabels ? 1.5 : 1),
+                  maxWidth: Math.max(geometry.vbw, touchDrawingWidth(geometry)) * (zoomLabels ? 1.5 : 1),
                 }}
               >
                 <BoardStage
@@ -392,7 +388,7 @@ export function InspectorBody({
             <button
               type="button"
               onClick={clearExplorerFilters}
-              className="mt-3 min-h-10 rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 text-xs font-medium text-cyan-50 transition hover:bg-cyan-300/20"
+              className="mt-3 min-h-11 rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 text-xs font-medium text-cyan-50 transition hover:bg-cyan-300/20"
             >
               Clear pin filters
             </button>

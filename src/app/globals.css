@@ -52,14 +52,12 @@
 .pi-workbench button, .pi-workbench a { cursor: pointer; }
 .pi-workbench :is(button, a, select, input, summary, [tabindex]):focus-visible { outline: 2px solid var(--pi-accent); outline-offset: 3px; }
 .pi-role-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--pi-rule); }
-.pi-role-bar button { min-height: 36px; }
+.pi-role-bar button { min-height: 44px; }
 .pi-component-layout { display: grid; grid-template-columns: minmax(0, 1fr); }
 .pi-canvas { min-width: 0; background: radial-gradient(ellipse at 45% 35%, #1d2927, #0c1316 78%); color: #aebfbc; }
 .pi-canvas-scroll { overflow: auto; overscroll-behavior: contain; scrollbar-color: #4d6457 #101b16; }
 .pi-board-frame { width: 100%; padding: 15px; }
-.pi-board-frame.is-zoomed { min-width: 1050px; }
 .pi-canvas-pico .pi-board-frame { max-width: 265px; margin: auto; }
-.pi-canvas-pico .pi-board-frame.is-zoomed { min-width: 520px; }
 .pi-canvas-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 0 16px; min-height: 45px; border-top: 1px solid #26352e; font-size: 11px; }
 .pi-canvas-footer button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #bce9e3; }
 .pi-readout { display: grid; align-content: start; gap: 16px; min-width: 0; padding: 20px; background: var(--pi-well); border-top: 1px solid var(--pi-rule); }
@@ -96,7 +94,7 @@
 .pi-schedule td strong { display: block; font-family: var(--font-mono), monospace; font-size: 12px; font-weight: 500; }
 .pi-schedule td small, .pi-muted { color: var(--pi-muted); font-size: 10px; }
 .pi-schedule td p { margin-top: 5px; font-size: 11px; line-height: 1.55; color: var(--pi-muted); }
-.pi-row-select { min-height: 44px; font-size: 11px; color: var(--pi-accent); }
+.pi-row-select { min-height: 44px; min-width: 44px; font-size: 11px; color: var(--pi-accent); }
 .pi-empty { padding: 16px; font-size: 13px; }
 .pi-empty button { min-height: 44px; color: var(--pi-accent); text-decoration: underline; }
 .pi-wiring-notes { margin: 0; padding: 14px 18px 14px 32px; border-top: 1px solid var(--pi-rule); list-style: disc; color: var(--pi-muted); font-size: 12px; line-height: 1.75; }
@@ -445,14 +443,13 @@ button {
   cursor: pointer;
 }
 
-/* Preserve the catalog's dense desktop controls while ensuring compact
-   pinout actions remain comfortable on touch-first devices. */
+/* Keep compact actions equally reachable with touch, keyboard, or mouse. */
+.touch-target {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
 @media (pointer: coarse) {
-  .touch-target {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-    padding-inline: 0.625rem;
-  }
+  .touch-target { padding-inline: 0.625rem; }
 }
 
 .touch-target.pin-role-control {

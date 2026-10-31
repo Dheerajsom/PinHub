@@ -5,6 +5,7 @@ import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry, type BoardGeometry } from "@/lib/board-visual-geometry";
 import type { BoardLink, WireEnd } from "@/lib/board-link";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 
 const noNet = new Set<string>();
 
@@ -174,6 +175,7 @@ function SheetStage({
         style={{
           aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
           width: `max(min(100%, calc(max(320px, 70dvh) * ${(geometry.vbw / geometry.vbh).toFixed(4)})), ${Math.round(geometry.vbw * minScale)}px)`,
+          minWidth: touchDrawingWidth(geometry),
         }}
       >
           <BoardStage

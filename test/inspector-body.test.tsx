@@ -84,17 +84,17 @@ describe("InspectorBody sheet", () => {
     expect(drawing.getAttribute("aria-describedby")).toBe(hint.id);
   });
 
-  it("offers a fit-to-width mode and says what it costs", () => {
+  it("enlarges labels without shrinking touch controls", () => {
     renderSheet();
 
-    const fit = screen.getByRole("button", { name: "Fit width" });
+    const fit = screen.getByRole("button", { name: "Zoom labels" });
     expect(fit.getAttribute("aria-pressed")).toBe("false");
 
     fireEvent.click(fit);
 
     expect(fit.getAttribute("aria-pressed")).toBe("true");
     expect(
-      screen.getByText("Whole board shown — labels are reduced"),
+      screen.getByText("Labels enlarged — swipe to view the full connector"),
     ).toBeTruthy();
     expect(
       screen.queryByText("Swipe horizontally to view the full connector"),
@@ -105,7 +105,7 @@ describe("InspectorBody sheet", () => {
     renderSheet();
 
     expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Fit width" }));
+    fireEvent.click(screen.getByRole("button", { name: "Zoom labels" }));
     expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
   });
 

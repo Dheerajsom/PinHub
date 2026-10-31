@@ -432,7 +432,10 @@ export function buildBoardLink(
     }
   }
 
-  const notes = [powerNote, ...busNotes[bus]];
+  const boardCautions = [a, b]
+    .filter((board, index, list) => list.findIndex((item) => item.id === board.id) === index)
+    .flatMap((board) => board.warnings.map((warning) => `${board.name}: ${warning}`));
+  const notes = [...boardCautions, powerNote, ...busNotes[bus]];
   if (blockers.length || !port.a || !port.b || !ground.a || !ground.b) {
     return { bus, ports, port, wires: [], level, status: "blocked", blockers, notes };
   }

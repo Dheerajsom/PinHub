@@ -5,6 +5,7 @@ import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
 import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
+import { padHitRadius } from "@/components/board-visual/touch-sizing";
 import {
   PROBE_COLOR,
   pinAccessibleLabel,
@@ -89,9 +90,7 @@ export function BoardStage({
   // A 40-pin header shown at phone width leaves each pad about 16 physical
   // pixels across, so the invisible hit area is grown to tile the row: as much
   // of the gap as can be claimed without a tap landing on two pins at once.
-  const hitR = geometry.artworkId
-    ? geometry.pitch * 0.48
-    : Math.max(padR + 9, geometry.pitch * 0.48);
+  const hitR = padHitRadius(geometry);
 
   function focusPad(index: number) {
     const next = (index + anchors.length) % anchors.length;

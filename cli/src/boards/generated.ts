@@ -78152,6 +78152,10 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
         "text": "Pin functions depend on solder bridges and alternate functions."
       },
       {
@@ -78161,6 +78165,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -78490,6 +78498,10 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
         "text": "Pin functions depend on solder bridges and alternate functions."
       },
       {
@@ -78499,6 +78511,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -78828,6 +78844,10 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
         "text": "Pin functions depend on solder bridges and alternate functions."
       },
       {
@@ -78837,6 +78857,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -85234,7 +85258,11 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
         "severity": "warning",
@@ -85247,6 +85275,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V GPIO. Power: 5 V micro-USB or USB-C, GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -85726,7 +85758,11 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
         "severity": "warning",
@@ -85739,6 +85775,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V GPIO. Power: 5 V micro-USB or USB-C, GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -86218,7 +86258,11 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
         "severity": "warning",
@@ -86231,6 +86275,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V GPIO. Power: 5 V micro-USB or USB-C, GPIO header."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -86720,7 +86768,11 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
         "severity": "warning",
@@ -86733,6 +86785,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V GPIO. Power: 5 V USB-C."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -87143,7 +87199,11 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
         "severity": "warning",
@@ -87156,6 +87216,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V GPIO. Power: 5 V USB-C."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",
@@ -87566,7 +87630,11 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Pins do not match a Raspberry Pi function for function; use this map, not a Pi HAT pinout."
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "warning",
+        "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
         "severity": "warning",
@@ -87579,6 +87647,10 @@ export const generatedBoards: Board[] = [
       {
         "severity": "info",
         "text": "Logic level: 3.3 V GPIO. Power: 5 V USB-C."
+      },
+      {
+        "severity": "info",
+        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "info",

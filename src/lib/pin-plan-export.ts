@@ -384,6 +384,9 @@ function csv(
       item.cautions.map((caution) => `${caution.flag}: ${oneLine(caution.note)}`).join(" | "),
     ]);
   }
+  for (const warning of board.warnings) {
+    rows.push(["Caution", board.name, "", "", "", "", "", oneLine(warning)]);
+  }
   rows.push([
     "Note",
     `${board.name} (${board.id})`,
