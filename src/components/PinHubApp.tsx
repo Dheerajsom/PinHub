@@ -933,7 +933,7 @@ export function PinHubApp({
                       key={suggestion}
                       type="button"
                       onClick={() => changeQuery(suggestion)}
-                      className="ph-quick-chip min-h-9 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
+                      className="ph-quick-chip min-h-11 rounded-full lg:min-h-9 border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
                     >
                       {suggestion}
                     </button>
@@ -1034,7 +1034,7 @@ function CommonBoards({
             key={suggestion}
             type="button"
             onClick={() => onQuery(suggestion)}
-            className="ph-quick-chip min-h-9 shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
+            className="ph-quick-chip min-h-11 shrink-0 rounded-full lg:min-h-9 border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
           >
             {suggestion}
           </button>

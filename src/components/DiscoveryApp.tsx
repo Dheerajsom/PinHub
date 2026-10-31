@@ -348,7 +348,7 @@ export function DiscoveryApp({
               <div className="flex flex-wrap gap-1.5">
                 {compareIds.map((id) => {
                   const board = catalog.find((item) => item.id === id);
-                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} aria-label={`Remove ${board.name} from comparison`} className="inline-flex min-h-9 max-w-full items-center gap-1 rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200 transition hover:border-white/25 hover:text-white"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" aria-hidden="true" /></button> : null;
+                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} aria-label={`Remove ${board.name} from comparison`} className="inline-flex min-h-11 max-w-full items-center gap-1 rounded-md lg:min-h-9 border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200 transition hover:border-white/25 hover:text-white"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" aria-hidden="true" /></button> : null;
                 })}
               </div>
               <p className="mt-1 text-[11px] text-zinc-500">{compareIds.length < 2 ? "Choose one more board." : compareIds.length === maxComparedBoards ? "Comparison set is full." : "Ready to compare."}</p>
@@ -380,7 +380,7 @@ function Facet({
 }) {
   const content = <div className="mt-2 grid gap-1">{values.map((value) => {
     const active = selected.includes(value);
-    return <button key={value} type="button" onClick={() => onToggle(filterKey, value)} aria-pressed={active} className={clsx("flex min-h-9 items-center gap-2 rounded-md border px-2.5 text-left text-sm transition", active ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50" : "border-transparent text-zinc-400 hover:bg-white/[0.05] hover:text-white")}>{active ? <Check className="size-3.5 text-cyan-200" /> : <span className="size-3.5 rounded border border-white/15" />}{value}</button>;
+    return <button key={value} type="button" onClick={() => onToggle(filterKey, value)} aria-pressed={active} className={clsx("flex min-h-11 items-center gap-2 rounded-md border px-2.5 text-left text-sm transition lg:min-h-9", active ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50" : "border-transparent text-zinc-400 hover:bg-white/[0.05] hover:text-white")}>{active ? <Check className="size-3.5 text-cyan-200" /> : <span className="size-3.5 rounded border border-white/15" />}{value}</button>;
   })}</div>;
   return <section className="surface-panel rounded-lg p-3">{collapsed ? <details><summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold text-white">{icon}{title}<span className="ml-auto text-xs text-zinc-500">{selected.length || values.length}</span></summary>{content}</details> : <><div className="flex items-center gap-2 text-sm font-semibold text-white">{icon}{title}</div>{content}</>}</section>;
 }

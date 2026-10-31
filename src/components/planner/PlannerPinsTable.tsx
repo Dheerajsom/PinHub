@@ -39,10 +39,10 @@ export function PlannerPinsTable({
         <caption className="sr-only">Your pins</caption>
         <thead>
           <tr className="text-[10px] uppercase tracking-[0.12em] text-zinc-500">
-            <th scope="col" className="px-2 pb-2 font-medium">Use</th>
-            <th scope="col" className="px-2 pb-2 font-medium">Signal</th>
-            <th scope="col" className="px-2 pb-2 font-medium">Pin</th>
-            <th scope="col" className="px-2 pb-2 font-medium">Label</th>
+            <th scope="col" className="px-1.5 pb-2 font-medium">Use</th>
+            <th scope="col" className="px-1.5 pb-2 font-medium">Signal</th>
+            <th scope="col" className="px-1.5 pb-2 font-medium">Pin</th>
+            <th scope="col" className="px-1.5 pb-2 font-medium">Label</th>
           </tr>
         </thead>
         <tbody>
@@ -63,7 +63,7 @@ export function PlannerPinsTable({
                   selected ? "bg-white/[0.06]" : "",
                 )}
               >
-                <td className="px-2 py-1 text-zinc-200">
+                <td className="px-1.5 py-1 text-zinc-200">
                   <span className="flex items-center gap-1.5">
                     {item ? (
                       <span
@@ -83,15 +83,15 @@ export function PlannerPinsTable({
                     </span>
                   </span>
                 </td>
-                <td className="whitespace-nowrap px-2 py-1 text-zinc-400">
+                <td className="px-1.5 py-1 text-zinc-400">
                   {item
                     ? [item.instance, item.signal !== "IO" ? item.signal : null]
                         .filter(Boolean)
                         .join(" ") || "I/O"
                     : "claimed"}
                 </td>
-                <td className="whitespace-nowrap px-2 py-1 text-zinc-400">{place}</td>
-                <td className="px-2 py-1">
+                <td className="px-1.5 py-1 text-zinc-400">{place}</td>
+                <td className="px-1.5 py-1">
                   <span className="flex flex-wrap items-center gap-1.5">
                     <button
                       type="button"

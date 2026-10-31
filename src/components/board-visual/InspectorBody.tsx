@@ -219,7 +219,7 @@ export function InspectorBody({
                   onClick={() => toggleCategory(option.id)}
                   aria-pressed={active}
                   className={clsx(
-                    "min-h-9 shrink-0 rounded-md border px-2.5 text-[11px] font-medium transition",
+                    "min-h-11 shrink-0 rounded-md border px-2.5 text-[11px] font-medium transition lg:min-h-9",
                     active
                       ? "border-cyan-300/65 bg-cyan-300/12 text-cyan-50"
                       : "border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/25 hover:text-white",

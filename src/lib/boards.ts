@@ -5,6 +5,7 @@ import {
   picoFunctionTable,
   raspberryPi5FunctionData,
   raspberryPi5FunctionTable,
+  rp2PinFunctions,
   unoRev3FunctionData,
   unoRev3FunctionTable,
   withPinFunctions,
@@ -4555,7 +4556,7 @@ const sparkfunProMicroRp2040Pinout: Pinout = {
     "RP2040 at 133 MHz; pin labels from the SparkFun Pro Micro RP2040 hookup guide (DEV-18288).",
     "GPIO is 3.3 V only and not 5 V tolerant.",
     "RAW accepts unregulated 5 V via an onboard regulator.",
-    "GP17 is also the CS for the onboard SPI flash; reassign carefully.",
+    "SPI edge pins follow SparkFun's board design: SCK GP22, CIPO GP20, COPI GP23, CS GP21. The Qwiic connector carries I2C on GP16 (SDA) and GP17 (SCL).",
   ],
   pins: {
     left: [
@@ -4581,10 +4582,10 @@ const sparkfunProMicroRp2040Pinout: Pinout = {
       { position: 12, label: "A2 / GP28", role: "adc" },
       { position: 14, label: "A1 / GP27", role: "adc" },
       { position: 16, label: "A0 / GP26", role: "adc" },
-      { position: 18, label: "SCK / GP18", role: "spi", aliases: ["SPI0 SCK"] },
-      { position: 20, label: "MOSI / GP19", role: "spi", aliases: ["SPI0 TX"] },
-      { position: 22, label: "MISO / GP20", role: "spi", aliases: ["SPI0 RX"] },
-      { position: 24, label: "CS / GP17", role: "spi", aliases: ["SPI0 CS"], note: "Also CS for onboard flash; reassign carefully." },
+      { position: 18, label: "SCK / GP22", role: "spi", aliases: ["SPI0 SCK"] },
+      { position: 20, label: "MISO / GP20", role: "spi", aliases: ["SPI0 RX", "CIPO"] },
+      { position: 22, label: "MOSI / GP23", role: "spi", aliases: ["SPI0 TX", "COPI"] },
+      { position: 24, label: "CS / GP21", role: "spi", aliases: ["SPI0 CS"] },
     ],
   },
 };
@@ -4701,10 +4702,10 @@ const adafruitQtPyRp2040Pinout: Pinout = {
   ],
   pins: {
     left: [
-      { position: 1, label: "A0 / D0", role: "adc", aliases: ["GPIO26", "ADC0"] },
-      { position: 2, label: "A1 / D1", role: "adc", aliases: ["GPIO27", "ADC1"] },
-      { position: 3, label: "A2 / D2", role: "adc", aliases: ["GPIO28", "ADC2"] },
-      { position: 4, label: "A3 / D3", role: "adc", aliases: ["GPIO29", "ADC3"] },
+      { position: 1, label: "A0 / D0", role: "adc", aliases: ["GPIO29", "ADC3"] },
+      { position: 2, label: "A1 / D1", role: "adc", aliases: ["GPIO28", "ADC2"] },
+      { position: 3, label: "A2 / D2", role: "adc", aliases: ["GPIO27", "ADC1"] },
+      { position: 4, label: "A3 / D3", role: "adc", aliases: ["GPIO26", "ADC0"] },
       { position: 5, label: "SDA / D4", role: "i2c", aliases: ["GPIO24"] },
       { position: 6, label: "SCL / D5", role: "i2c", aliases: ["GPIO25"] },
       { position: 7, label: "TX / D6", role: "uart", aliases: ["GPIO20", "UART1 TX"] },
@@ -6017,7 +6018,7 @@ const baseBoards: Board[] = [
         type: "Docs",
       },
     ],
-    pinout: adafruitFeatherRp2040Pinout,
+    ...rp2PinFunctions("adafruit-feather-rp2040", adafruitFeatherRp2040Pinout),
   },
 ];
 
@@ -6057,7 +6058,7 @@ const additionalBoards: Board[] = [
         type: "Docs",
       },
     ],
-    pinout: picoPinout,
+    ...rp2PinFunctions("raspberry-pi-pico-w", picoPinout),
   },
   {
     id: "raspberry-pi-pico-2",
@@ -6099,7 +6100,7 @@ const additionalBoards: Board[] = [
         type: "Pinout",
       },
     ],
-    pinout: picoPinout,
+    ...rp2PinFunctions("raspberry-pi-pico-2", picoPinout),
   },
   {
     id: "arduino-mega-2560-rev3",
@@ -6555,7 +6556,7 @@ const additionalBoards: Board[] = [
         type: "Docs",
       },
     ],
-    pinout: xiaoRp2040Pinout,
+    ...rp2PinFunctions("seeed-xiao-rp2040", xiaoRp2040Pinout),
   },
   {
     id: "seeed-xiao-esp32s3",
@@ -6731,7 +6732,7 @@ const additionalBoards: Board[] = [
         type: "Pinout",
       },
     ],
-    pinout: sparkfunThingPlusRp2040Pinout,
+    ...rp2PinFunctions("sparkfun-thing-plus-rp2040", sparkfunThingPlusRp2040Pinout),
   },
   {
     id: "sparkfun-thing-plus-esp32-wroom-usbc",
@@ -8224,7 +8225,7 @@ const expansionBoards: Board[] = [
         type: "Docs",
       },
     ],
-    pinout: arduinoNanoRp2040ConnectPinout,
+    ...rp2PinFunctions("arduino-nano-rp2040-connect", arduinoNanoRp2040ConnectPinout),
   },
   {
     id: "arduino-mkr-zero",
@@ -8422,7 +8423,7 @@ const expansionBoards: Board[] = [
         type: "Pinout",
       },
     ],
-    pinout: adafruitItsyBitsyRp2040Pinout,
+    ...rp2PinFunctions("adafruit-itsybitsy-rp2040", adafruitItsyBitsyRp2040Pinout),
   },
   {
     id: "adafruit-metro-m4-express",
@@ -8686,7 +8687,7 @@ const expansionBoards: Board[] = [
         type: "Docs",
       },
     ],
-    pinout: sparkfunProMicroRp2040Pinout,
+    ...rp2PinFunctions("sparkfun-pro-micro-rp2040", sparkfunProMicroRp2040Pinout),
   },
   {
     id: "sparkfun-redboard-turbo",
@@ -9679,7 +9680,7 @@ const expansionBoards: Board[] = [
         type: "Pinout",
       },
     ],
-    pinout: picoPinout,
+    ...rp2PinFunctions("raspberry-pi-pico-2-w", picoPinout),
   },
   {
     id: "adafruit-qt-py-rp2040",
@@ -9717,7 +9718,7 @@ const expansionBoards: Board[] = [
         type: "Pinout",
       },
     ],
-    pinout: adafruitQtPyRp2040Pinout,
+    ...rp2PinFunctions("adafruit-qt-py-rp2040", adafruitQtPyRp2040Pinout),
   },
   {
     id: "waveshare-rp2040-zero",
@@ -9755,7 +9756,7 @@ const expansionBoards: Board[] = [
         type: "Schematic",
       },
     ],
-    pinout: waveshareRp2040ZeroPinout,
+    ...rp2PinFunctions("waveshare-rp2040-zero", waveshareRp2040ZeroPinout),
   },
 ];
 
@@ -13893,7 +13894,7 @@ const october2026Boards: Board[] = [
         type: "Docs",
       },
     ],
-    pinout: seeedXiaoRp2350Pinout,
+    ...rp2PinFunctions("seeed-xiao-rp2350", seeedXiaoRp2350Pinout),
   },
   {
     id: "seeed-xiao-nrf54l15",

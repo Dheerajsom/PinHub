@@ -13,10 +13,22 @@ import { isSafeExternalUrl } from "@/lib/source-trust";
 // pin, a flag without its quoted reason) must fail the build, not a user.
 
 const pilotIds = [
+  "adafruit-feather-rp2040",
+  "adafruit-itsybitsy-rp2040",
+  "adafruit-qt-py-rp2040",
+  "arduino-nano-rp2040-connect",
   "arduino-uno-rev3",
   "esp32-devkitc",
   "raspberry-pi-5",
   "raspberry-pi-pico",
+  "raspberry-pi-pico-2",
+  "raspberry-pi-pico-2-w",
+  "raspberry-pi-pico-w",
+  "seeed-xiao-rp2040",
+  "seeed-xiao-rp2350",
+  "sparkfun-pro-micro-rp2040",
+  "sparkfun-thing-plus-rp2040",
+  "waveshare-rp2040-zero",
 ];
 
 const busSignals: Partial<Record<PinPeripheral, string[]>> = {
@@ -39,7 +51,7 @@ function pinsOf(board: Board): Pin[] {
 const withData = boards.filter((board) => board.pinFunctions);
 
 describe("pin function data", () => {
-  it("covers exactly the pilot boards", () => {
+  it("covers exactly the boards with sourced pin functions", () => {
     expect(withData.map((board) => board.id).sort()).toEqual(pilotIds);
   });
 

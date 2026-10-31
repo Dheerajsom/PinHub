@@ -87,8 +87,25 @@ describe("board payload validation with pin planner fields", () => {
     });
   }
 
-  it("keeps planner data on the four pilot boards only", () => {
+  it("keeps planner data on the boards whose sources back it", () => {
     const pilots = boards.filter((board: Board) => board.pinFunctions).map((board) => board.id);
-    expect(pilots.sort()).toEqual(["arduino-uno-rev3", "esp32-devkitc", "raspberry-pi-5", "raspberry-pi-pico"]);
+    expect(pilots.sort()).toEqual([
+      "adafruit-feather-rp2040",
+      "adafruit-itsybitsy-rp2040",
+      "adafruit-qt-py-rp2040",
+      "arduino-nano-rp2040-connect",
+      "arduino-uno-rev3",
+      "esp32-devkitc",
+      "raspberry-pi-5",
+      "raspberry-pi-pico",
+      "raspberry-pi-pico-2",
+      "raspberry-pi-pico-2-w",
+      "raspberry-pi-pico-w",
+      "seeed-xiao-rp2040",
+      "seeed-xiao-rp2350",
+      "sparkfun-pro-micro-rp2040",
+      "sparkfun-thing-plus-rp2040",
+      "waveshare-rp2040-zero",
+    ]);
   });
 });

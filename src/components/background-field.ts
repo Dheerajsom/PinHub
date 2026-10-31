@@ -42,18 +42,11 @@ export const LOGO_COLUMNS = [790, 925, 1060, 1195];
 export const LOGO_ROWS = Array.from({ length: 9 }, (_, i) => 70 + i * 165);
 
 /**
- * Vendors left out of the background: Google's favicon service has no mark
- * for the first four sites (it answers 404, which would leave a broken
- * image), and the catalog has no M5Stack board, so showing its mark would
- * claim a vendor the catalog does not carry.
+ * Vendors left out of the background: the catalog has no M5Stack board, so
+ * showing its mark would claim a vendor the catalog does not carry, and
+ * "BeagleBoard.org" shares BeagleBoard's mark.
  */
-export const LOGO_EXCLUDED_VENDORS = new Set([
-  "WeAct Studio",
-  "Micro:bit Educational Foundation",
-  "LOLIN",
-  "NodeMCU",
-  "M5Stack",
-]);
+export const LOGO_EXCLUDED_VENDORS = new Set(["M5Stack", "BeagleBoard.org"]);
 
 export function buildLogoPlacements(seed = 7): LogoPlacement[] {
   const random = seededRandom(seed);

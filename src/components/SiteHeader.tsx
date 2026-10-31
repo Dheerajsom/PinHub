@@ -39,7 +39,7 @@ export function SiteHeader({ current = "", width = "default", actions }: SiteHea
         <Link
           href="/"
           aria-label="PinHub catalog home"
-          className="group flex min-h-10 shrink-0 items-center gap-2 rounded-lg"
+          className="group flex min-h-11 shrink-0 items-center gap-2 rounded-lg"
         >
           <Image
             src="/pinhub-logo.png"
