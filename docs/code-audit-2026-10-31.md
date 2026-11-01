@@ -106,9 +106,13 @@ Local evidence and the reproduction script are under
 
 ## Repository state
 
-The existing expansion commit was fast-forwarded onto local `main`, following
-the repository's main-branch rule. The Next.js-generated AGENTS heading change
-is retained with this work; the generator recreates it during development.
+The initial follow-up was committed on local `main` under the former branch
+rule. At the user's request, the expansion and follow-up commits now live on
+`feature/planner-link-more-boards`; local `main` was restored to `origin/main`.
+The unconditional main-branch rule was removed from AGENTS.md, and CLAUDE.md
+now says to preserve the current branch unless the user requests another.
+The Next.js-generated AGENTS heading change is retained with this work; the
+generator recreates it during development.
 
 ## Verification
 

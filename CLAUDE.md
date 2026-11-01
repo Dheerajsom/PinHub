@@ -21,9 +21,10 @@ needs no design pass; a docs-only change needs only a check that its claims
 match the code). When a change adds, removes, or renames a route or
 user-facing feature, update the route table in `README.md` in the same commit.
 
-1. **Branch.** Work on `main` unless the user names a branch. When they do,
-   create it from an up-to-date `main` (`git fetch` first) and push only there.
-   Always a branch in this checkout, never a worktree (see above).
+1. **Branch.** Keep working on the existing branch unless the user requests
+   another. Create new branches from an up-to-date `main` (`git fetch` first),
+   and commit and push only to the intended branch. Always use this checkout,
+   never a worktree (see above).
 2. **Baseline.** Before editing, run `npm run lint`, `npm run typecheck`, and
    `npm test` so any failure you see later is known to be yours.
 3. **Review before changing.** Read the affected routes, components, and
