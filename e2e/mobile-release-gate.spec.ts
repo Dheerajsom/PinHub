@@ -57,8 +57,8 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         for (const source of await workspace.locator("details a").all()) await touchSize(source);
         await noOverflow(page);
         await page.screenshot({ path: testInfo.outputPath("planner.png"), fullPage: true });
-        await page.goto("/planner?board=stm32-nucleo-l432kc");
-        await expect(page.getByText(/^Unverified pinout:/)).toBeVisible();
+        await page.goto("/planner?board=stm32-nucleo-f303re");
+        await expect(page.getByText(/Zephyr v4.2.0/)).toBeVisible();
         await page.getByRole("button", { name: "Add one I2C", exact: true }).tap();
         await page.getByText(/Pin function sources/).tap();
         for (const source of await page.locator("details a").all()) await touchSize(source);

@@ -38,7 +38,7 @@ export const pinPlanExportFormats: readonly PinPlanExportFormat[] = [
   "json",
 ];
 
-const maxFunctionsPerPin = 24;
+const maxFunctionsPerPin = 16;
 const maxSources = 16;
 const maxRoutable = 8;
 const maxRoutableEntries = 16;

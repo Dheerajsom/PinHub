@@ -27,7 +27,7 @@ import {
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { WiringCautions } from "@/components/WiringCautions";
-import { classifySource, verificationSourceFor } from "@/lib/source-trust";
+import { isOfficialVerificationSource, verificationSourceFor } from "@/lib/source-trust";
 import { VendorLogo } from "@/components/VendorLogo";
 import { PlannerAutoAssign } from "@/components/planner/PlannerAutoAssign";
 import { PlannerExports } from "@/components/planner/PlannerExports";
@@ -341,7 +341,7 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
       </header>
 
       <div className="mt-4">
-        <WiringCautions warnings={board.warnings} verifySource={verifySource} verifySourceOfficial={Boolean(verifySource && classifySource(board.vendor, verifySource.url) === "official")} collapseAfter={3} />
+        <WiringCautions warnings={board.warnings} verifySource={verifySource} verifySourceOfficial={isOfficialVerificationSource(board, verifySource)} collapseAfter={3} />
       </div>
 
       <div className="mt-4 grid gap-4 @3xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] @3xl:items-start">

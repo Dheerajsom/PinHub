@@ -3385,8 +3385,8 @@ const arduinoNano33BleSensePinout: Pinout = {
       { position: 26, label: "D2", role: "gpio", aliases: ["P1.11"] },
       { position: 27, label: "GND", role: "ground" },
       { position: 28, label: "RESET", role: "system" },
-      { position: 29, label: "D0 / RX", role: "uart", aliases: ["P1.03"] },
-      { position: 30, label: "D1 / TX", role: "uart", aliases: ["P1.10"] },
+      { position: 29, label: "D0 / RX", role: "uart", aliases: ["P1.10"] },
+      { position: 30, label: "D1 / TX", role: "uart", aliases: ["P1.03"], note: "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX." },
     ],
   },
 };
@@ -14113,12 +14113,30 @@ const october2026Boards: Board[] = [
   },
 ];
 
+const arduinoMkr1000Pinout: Pinout = {
+  ...arduinoMkrWifi1010Pinout,
+  notes: [
+    "Standard Arduino MKR form factor; SAMD21G18 ports from ArduinoCore-samd's mkr1000 variant.",
+    "GPIO is 3.3 V only and is not 5 V tolerant; max 7 mA per pin.",
+    "A0 (PA02) is a true DAC output. The ATSAMW25 Wi-Fi module is internal (not on headers).",
+    "Left header positions 1-14, right header positions 15-28.",
+  ],
+};
+
+const sparkfunRedboardQwiicPinout: Pinout = {
+  ...arduinoUnoHeaders,
+  notes: [
+    "Pin numbers and ports follow the Arduino standard core variant used for the ATmega328P.",
+    "SPI is also on the ICSP header; D10 through D13 are commonly used with SPI shields.",
+    "A4 and A5 are the default I2C SDA/SCL pins on the UNO-style header.",
+  ],
+};
+
 const nucleo32Headers: Pinout = {
   connector: "STM32 Nucleo-32 Arduino Nano headers (CN3, CN4)",
   layout: "dual-row",
   notes: [
-    "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.",
-    "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers.",
+    "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers. Each map was matched row by row against stm32duino and Mbed OS.",
     "MCU pin names vary by board. Some pads are joined or opened by solder bridges; check the board manual.",
     "GPIO logic is 3.3 V unless the specific board documentation says otherwise.",
   ],
@@ -14157,6 +14175,17 @@ const nucleo32Headers: Pinout = {
       { position: 29, label: "GND", role: "ground" },
       { position: 30, label: "VIN", role: "power" },
     ],
+  },
+};
+
+// D13 is the LED pin PB8 on this board, with no SPI function behind it.
+const nucleoG431kbHeaders: Pinout = {
+  ...nucleo32Headers,
+  pins: {
+    left: nucleo32Headers.pins!.left,
+    right: nucleo32Headers.pins!.right.map((pin) =>
+      pin.label === "D13" ? { position: pin.position, label: pin.label, role: "gpio" as const } : pin,
+    ),
   },
 };
 
@@ -14453,8 +14482,7 @@ const libreAltaHeader: Pinout = {
   connector: "7J1 40-pin GPIO header",
   layout: "dual-row",
   notes: [
-    "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.",
-    "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board.",
+    "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board, and matched on all 40 pins against Libre Computer's schematic-derived GPIO sheet.",
     "GPIO on this header is 3.3 V; SARADC inputs are 1.8 V.",
     "Alternate functions need the matching device-tree overlay.",
   ],
@@ -14510,8 +14538,7 @@ const libreSolitudeHeader: Pinout = {
   connector: "7J1 40-pin GPIO header",
   layout: "dual-row",
   notes: [
-    "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.",
-    "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board.",
+    "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board, and matched on all 40 pins against Libre Computer's schematic-derived GPIO sheet.",
     "GPIO on this header is 3.3 V; SARADC inputs are 1.8 V.",
     "Alternate functions need the matching device-tree overlay.",
   ],
@@ -14567,8 +14594,7 @@ const libreTritiumHeader: Pinout = {
   connector: "7J1 40-pin GPIO header",
   layout: "dual-row",
   notes: [
-    "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.",
-    "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board.",
+    "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board, and matched on all 40 pins against Libre Computer's schematic-derived GPIO sheet.",
     "GPIO on this header is 3.3 V.",
     "Alternate functions need the matching device-tree overlay.",
   ],
@@ -14681,7 +14707,8 @@ const orangePi3BHeader: Pinout = {
   connector: "40-pin GPIO header",
   layout: "dual-row",
   notes: [
-    "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.",
+    "Unverified pin 26: Orange Pi's wiringOP tables give GPIO3_D6, and Adafruit Blinka gives GPIO4_A7. The other 39 pins agree. Confirm pin 26 against the schematic or manual for your exact board revision before wiring.",
+    "Pin 24 is SPI3_CS1 in wiringOP's name table, but the GPIO number wiringOP gives it (134, GPIO4_A6) is SPI3_CS0 in Adafruit Blinka, so it is labelled SPI3_CS0 here.",
     "Names and order follow Orange Pi's wiringOP gpio readall table for this board.",
     "GPIO on this header is 3.3 V.",
     "Alternate functions need the matching device-tree overlay.",
@@ -14721,7 +14748,7 @@ const orangePi3BHeader: Pinout = {
       { position: 18, label: "GPIO4_A1", role: "gpio" },
       { position: 20, label: "GND", role: "ground" },
       { position: 22, label: "UART9_TX", role: "uart" },
-      { position: 24, label: "SPI3_CS1", role: "spi" },
+      { position: 24, label: "SPI3_CS0", role: "spi", aliases: ["GPIO4_A6"] },
       { position: 26, label: "GPIO3_D6", role: "gpio" },
       { position: 28, label: "I2C3_SCL", role: "i2c" },
       { position: 30, label: "GND", role: "ground" },
@@ -14738,8 +14765,8 @@ const orangePi5PlusHeader: Pinout = {
   connector: "40-pin GPIO header",
   layout: "dual-row",
   notes: [
-    "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.",
-    "Names and order follow Orange Pi's wiringOP gpio readall table for this board.",
+    "Names and order follow Orange Pi's wiringOP gpio readall table for this board. All 28 GPIO positions match Adafruit Blinka's board file.",
+    "UART and I2C aliases come from Adafruit Blinka (third party). Each bus works only with its overlay enabled.",
     "GPIO on this header is 3.3 V.",
     "Alternate functions need the matching device-tree overlay.",
   ],
@@ -14748,21 +14775,21 @@ const orangePi5PlusHeader: Pinout = {
       { position: 1, label: "3V3", role: "power" },
       { position: 3, label: "I2C2_SDA", role: "i2c" },
       { position: 5, label: "I2C2_SCL", role: "i2c" },
-      { position: 7, label: "PWM14", role: "pwm" },
+      { position: 7, label: "PWM14", role: "pwm", aliases: ["GPIO1_D6", "I2C8_SCL"] },
       { position: 9, label: "GND", role: "ground" },
       { position: 11, label: "GPIO1_A4", role: "gpio" },
       { position: 13, label: "GPIO1_A7", role: "gpio" },
       { position: 15, label: "GPIO1_B0", role: "gpio" },
       { position: 17, label: "3V3", role: "power" },
-      { position: 19, label: "SPI0_TXD", role: "spi" },
-      { position: 21, label: "SPI0_RXD", role: "spi" },
-      { position: 23, label: "SPI0_CLK", role: "spi" },
+      { position: 19, label: "SPI0_TXD", role: "spi", aliases: ["GPIO1_B2", "UART4_RX"] },
+      { position: 21, label: "SPI0_RXD", role: "spi", aliases: ["GPIO1_B1"] },
+      { position: 23, label: "SPI0_CLK", role: "spi", aliases: ["GPIO1_B3", "UART4_TX"] },
       { position: 25, label: "GND", role: "ground" },
-      { position: 27, label: "GPIO1_B7", role: "gpio" },
-      { position: 29, label: "GPIO1_D7", role: "gpio" },
+      { position: 27, label: "GPIO1_B7", role: "gpio", aliases: ["UART1_RX", "I2C5_SDA"] },
+      { position: 29, label: "GPIO1_D7", role: "gpio", aliases: ["I2C8_SDA"] },
       { position: 31, label: "GPIO3_A0", role: "gpio" },
       { position: 33, label: "GPIO3_C2", role: "gpio" },
-      { position: 35, label: "GPIO3_A2", role: "gpio" },
+      { position: 35, label: "GPIO3_A2", role: "gpio", aliases: ["UART8_TX"] },
       { position: 37, label: "GPIO3_C1", role: "gpio" },
       { position: 39, label: "GND", role: "ground" },
     ],
@@ -14770,23 +14797,23 @@ const orangePi5PlusHeader: Pinout = {
       { position: 2, label: "5V", role: "power" },
       { position: 4, label: "5V", role: "power" },
       { position: 6, label: "GND", role: "ground" },
-      { position: 8, label: "GPIO1_A1", role: "gpio" },
-      { position: 10, label: "GPIO1_A0", role: "gpio" },
+      { position: 8, label: "GPIO1_A1", role: "gpio", aliases: ["UART6_TX"] },
+      { position: 10, label: "GPIO1_A0", role: "gpio", aliases: ["UART6_RX"] },
       { position: 12, label: "GPIO3_A1", role: "gpio" },
       { position: 14, label: "GND", role: "ground" },
-      { position: 16, label: "GPIO3_B5", role: "gpio" },
-      { position: 18, label: "GPIO3_B6", role: "gpio" },
+      { position: 16, label: "GPIO3_B5", role: "gpio", aliases: ["UART3_TX"] },
+      { position: 18, label: "GPIO3_B6", role: "gpio", aliases: ["UART3_RX"] },
       { position: 20, label: "GND", role: "ground" },
-      { position: 22, label: "GPIO1_A2", role: "gpio" },
-      { position: 24, label: "SPI0_CS0", role: "spi" },
-      { position: 26, label: "SPI0_CS1", role: "spi" },
-      { position: 28, label: "GPIO1_B6", role: "gpio" },
+      { position: 22, label: "GPIO1_A2", role: "gpio", aliases: ["I2C4_SDA"] },
+      { position: 24, label: "SPI0_CS0", role: "spi", aliases: ["GPIO1_B4", "UART7_RX"] },
+      { position: 26, label: "SPI0_CS1", role: "spi", aliases: ["GPIO1_B5", "UART7_TX"] },
+      { position: 28, label: "GPIO1_B6", role: "gpio", aliases: ["UART1_TX", "I2C5_SCL"] },
       { position: 30, label: "GND", role: "ground" },
-      { position: 32, label: "GPIO1_A3", role: "gpio" },
+      { position: 32, label: "GPIO1_A3", role: "gpio", aliases: ["I2C4_SCL"] },
       { position: 34, label: "GND", role: "ground" },
       { position: 36, label: "GPIO3_A5", role: "gpio" },
       { position: 38, label: "GPIO3_A4", role: "gpio" },
-      { position: 40, label: "GPIO3_A3", role: "gpio" },
+      { position: 40, label: "GPIO3_A3", role: "gpio", aliases: ["UART8_RX"] },
     ],
   },
 };
@@ -15040,8 +15067,8 @@ const november2026Boards: Board[] = [
     tags: ["STM32", "Nucleo", "Nucleo-32", "Cortex-M4", "Arduino Nano"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: ["Arduino Nano layout on a breadboard-friendly board.", "Integrated ST-LINK debugger."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pin functions depend on solder bridges and alternate functions.", "D7 and D8 reach PC14 and PC15 only when SB6 and SB8 are closed; they are open by default."],
-    sourceLinks: [{"label": "NUCLEO-L432KC product page", "url": "https://www.st.com/en/evaluation-tools/nucleo-l432kc.html", "type": "Docs"}, {"label": "stm32duino 3.0.0 variant_NUCLEO_L432KC.cpp: the pin behind each header position", "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32L4xx/L432K%28B-C%29U_L442KCU/variant_NUCLEO_L432KC.cpp", "type": "Docs"}],
+    warnings: ["Pin functions depend on solder bridges and alternate functions.", "D7 and D8 reach PC14 and PC15 only when SB6 and SB8 are closed; they are open by default.", "On the Nucleo-F303K8, solder bridges join A4 to D4 and A5 to D5 by default. Check SB16 and SB18 in the manual before using them as separate pins."],
+    sourceLinks: [{"label": "NUCLEO-L432KC product page", "url": "https://www.st.com/en/evaluation-tools/nucleo-l432kc.html", "type": "Docs"}, {"label": "stm32duino 3.0.0 variant_NUCLEO_L432KC.cpp: the pin behind each header position", "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32L4xx/L432K%28B-C%29U_L442KCU/variant_NUCLEO_L432KC.cpp", "type": "Docs"}, {"label": "Mbed OS 6.17 NUCLEO_L432KC PinNames.h: second source for the header map", "url": "https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.17.0/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L432xC/TARGET_NUCLEO_L432KC/PinNames.h", "type": "Docs"}, {"label": "MicroPython NUCLEO_L432KC pins.csv: third source for the header map", "url": "https://github.com/micropython/micropython/blob/v1.27.0/ports/stm32/boards/NUCLEO_L432KC/pins.csv", "type": "Docs"}],
     pinout: nucleo32Headers,
   },
   {
@@ -15058,9 +15085,9 @@ const november2026Boards: Board[] = [
     tags: ["STM32", "Nucleo", "Nucleo-32", "Cortex-M4", "Arduino Nano"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: ["Arduino Nano layout on a breadboard-friendly board.", "Integrated ST-LINK debugger."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pin functions depend on solder bridges and alternate functions.", "D5 and D4 are PA15 and PB7; solder bridges also tie them to A5 and A4. Check SB2 and SB3."],
-    sourceLinks: [{"label": "NUCLEO-G431KB product page", "url": "https://www.st.com/en/evaluation-tools/nucleo-g431kb.html", "type": "Docs"}, {"label": "stm32duino 3.0.0 variant_NUCLEO_G431KB.cpp: the pin behind each header position", "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32G4xx/G431K%286-8-B%29%28T-U%29_G441KB%28T-U%29/variant_NUCLEO_G431KB.cpp", "type": "Docs"}],
-    pinout: nucleo32Headers,
+    warnings: ["Pin functions depend on solder bridges and alternate functions.", "D5 and D4 are PA15 and PB7; solder bridges also tie them to A5 and A4. Check SB2 and SB3.", "Mbed lists A4 as PB7, A5 as PA15, and D13 as PB3, and notes PA5, PA6, and PB8 from ST's manual. This map uses the manual's pins; check the solder bridges on your board."],
+    sourceLinks: [{"label": "NUCLEO-G431KB product page", "url": "https://www.st.com/en/evaluation-tools/nucleo-g431kb.html", "type": "Docs"}, {"label": "stm32duino 3.0.0 variant_NUCLEO_G431KB.cpp: the pin behind each header position", "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32G4xx/G431K%286-8-B%29%28T-U%29_G441KB%28T-U%29/variant_NUCLEO_G431KB.cpp", "type": "Docs"}, {"label": "Mbed OS 6.17 NUCLEO_G431KB PinNames.h: second source for the header map", "url": "https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.17.0/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G431xB/TARGET_NUCLEO_G431KB/PinNames.h", "type": "Docs"}],
+    pinout: nucleoG431kbHeaders,
   },
   {
     id: "stm32-nucleo-f303k8",
@@ -15076,8 +15103,8 @@ const november2026Boards: Board[] = [
     tags: ["STM32", "Nucleo", "Nucleo-32", "Cortex-M4", "Arduino Nano"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "ADC", "PWM", "USB", "SWD"],
     highlights: ["Arduino Nano layout on a breadboard-friendly board.", "Integrated ST-LINK debugger."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pin functions depend on solder bridges and alternate functions.", "D7 and D8 are PF0 and PF1, and A7 is the ST-LINK TX pin."],
-    sourceLinks: [{"label": "NUCLEO-F303K8 product page", "url": "https://www.st.com/en/evaluation-tools/nucleo-f303k8.html", "type": "Docs"}, {"label": "stm32duino 3.0.0 variant_NUCLEO_F303K8.cpp: the pin behind each header position", "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F3xx/F303K%286-8%29T_F334K%284-6-8%29T/variant_NUCLEO_F303K8.cpp", "type": "Docs"}],
+    warnings: ["Pin functions depend on solder bridges and alternate functions.", "D7 and D8 are PF0 and PF1, and A7 is the ST-LINK TX pin.", "SB18 joins PA5 (A4) to PB7 (D4) and SB16 joins PA6 (A5) to PB6 (D5) by default, so each pair is one net until its bridge is opened."],
+    sourceLinks: [{"label": "NUCLEO-F303K8 product page", "url": "https://www.st.com/en/evaluation-tools/nucleo-f303k8.html", "type": "Docs"}, {"label": "stm32duino 3.0.0 variant_NUCLEO_F303K8.cpp: the pin behind each header position", "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F3xx/F303K%286-8%29T_F334K%284-6-8%29T/variant_NUCLEO_F303K8.cpp", "type": "Docs"}, {"label": "Mbed OS 6.17 NUCLEO_F303K8 PinNames.h: second source for the header map", "url": "https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.17.0/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/TARGET_NUCLEO_F303K8/PinNames.h", "type": "Docs"}],
     pinout: nucleo32Headers,
   },
   {
@@ -15312,7 +15339,7 @@ const november2026Boards: Board[] = [
     highlights: ["MKR header layout shared with the MKR WiFi 1010."],
     warnings: ["GPIO is 3.3 V and not 5 V tolerant."],
     sourceLinks: [{"label": "Arduino MKR 1000 WiFi documentation", "url": "https://docs.arduino.cc/hardware/mkr-1000-wifi/", "type": "Docs"}],
-    pinout: arduinoMkrWifi1010Pinout,
+    pinout: arduinoMkr1000Pinout,
   },
   {
     id: "sparkfun-redboard-qwiic",
@@ -15330,7 +15357,7 @@ const november2026Boards: Board[] = [
     highlights: ["UNO headers and the Arduino standard core variant.", "A Qwiic connector carries the I2C bus."],
     warnings: ["GPIO is 5 V and Qwiic parts are 3.3 V; check SparkFun's hookup guide before mixing them with header signals.", "D0 and D1 are shared with the USB serial bridge."],
     sourceLinks: [{"label": "SparkFun RedBoard Qwiic product page", "url": "https://www.sparkfun.com/products/15123", "type": "Docs"}, {"label": "RedBoard Qwiic hookup guide", "url": "https://learn.sparkfun.com/tutorials/redboard-qwiic-hookup-guide", "type": "Manual"}],
-    pinout: arduinoUnoHeaders,
+    pinout: sparkfunRedboardQwiicPinout,
   },
   {
     id: "sparkfun-pro-micro",
@@ -15400,8 +15427,8 @@ const november2026Boards: Board[] = [
     tags: ["Libre Computer", "Linux", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet"],
     highlights: ["Header table published as a machine-readable map by the vendor."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Alternate functions need the matching device-tree overlay."],
-    sourceLinks: [{"label": "Libre Computer AML-A311D-CC documentation", "url": "https://libre.computer/", "type": "Docs"}, {"label": "libretech-wiring-tool aml-a311d-cc/gpio.map", "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-a311d-cc/gpio.map", "type": "Pinout"}],
+    warnings: ["Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Alternate functions need the matching device-tree overlay."],
+    sourceLinks: [{"label": "Libre Computer AML-A311D-CC documentation", "url": "https://libre.computer/", "type": "Docs"}, {"label": "libretech-wiring-tool aml-a311d-cc/gpio.map", "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-a311d-cc/gpio.map", "type": "Pinout"}, {"label": "Libre Computer GPIO pin header maps (sheets derived from the board schematics)", "url": "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28", "type": "Pinout"}],
     pinout: libreAltaHeader,
   },
   {
@@ -15418,8 +15445,8 @@ const november2026Boards: Board[] = [
     tags: ["Libre Computer", "Linux", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet"],
     highlights: ["Header table published as a machine-readable map by the vendor."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Alternate functions need the matching device-tree overlay."],
-    sourceLinks: [{"label": "Libre Computer AML-S905D3-CC documentation", "url": "https://libre.computer/", "type": "Docs"}, {"label": "libretech-wiring-tool aml-s905d3-cc/gpio.map", "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-s905d3-cc/gpio.map", "type": "Pinout"}],
+    warnings: ["Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Alternate functions need the matching device-tree overlay."],
+    sourceLinks: [{"label": "Libre Computer AML-S905D3-CC documentation", "url": "https://libre.computer/", "type": "Docs"}, {"label": "libretech-wiring-tool aml-s905d3-cc/gpio.map", "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-s905d3-cc/gpio.map", "type": "Pinout"}, {"label": "Libre Computer GPIO pin header maps (sheets derived from the board schematics)", "url": "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28", "type": "Pinout"}],
     pinout: libreSolitudeHeader,
   },
   {
@@ -15436,8 +15463,8 @@ const november2026Boards: Board[] = [
     tags: ["Libre Computer", "Linux", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Ethernet"],
     highlights: ["Header table published as a machine-readable map by the vendor."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Alternate functions need the matching device-tree overlay."],
-    sourceLinks: [{"label": "Libre Computer ALL-H5-CC documentation", "url": "https://libre.computer/", "type": "Docs"}, {"label": "libretech-wiring-tool all-h3-cc-h5/gpio.map", "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/all-h3-cc-h5/gpio.map", "type": "Pinout"}],
+    warnings: ["Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Alternate functions need the matching device-tree overlay."],
+    sourceLinks: [{"label": "Libre Computer ALL-H5-CC documentation", "url": "https://libre.computer/", "type": "Docs"}, {"label": "libretech-wiring-tool all-h3-cc-h5/gpio.map", "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/all-h3-cc-h5/gpio.map", "type": "Pinout"}, {"label": "Libre Computer GPIO pin header maps (sheets derived from the board schematics)", "url": "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28", "type": "Pinout"}],
     pinout: libreTritiumHeader,
   },
   {
@@ -15472,8 +15499,8 @@ const november2026Boards: Board[] = [
     tags: ["Orange Pi", "Linux", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi"],
     highlights: ["Header names come from Orange Pi's own wiringOP table."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Bus numbers depend on the device-tree overlay you enable."],
-    sourceLinks: [{"label": "Orange Pi product documentation", "url": "https://www.orangepi.org/", "type": "Docs"}, {"label": "wiringOP gpio readall table (readall.c)", "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c", "type": "Pinout"}],
+    warnings: ["Unverified pin 26: Orange Pi's wiringOP tables give GPIO3_D6, and Adafruit Blinka gives GPIO4_A7. The other 39 pins agree. Confirm pin 26 against the schematic or manual for your exact board revision before wiring.", "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Bus numbers depend on the device-tree overlay you enable."],
+    sourceLinks: [{"label": "Orange Pi product documentation", "url": "https://www.orangepi.org/", "type": "Docs"}, {"label": "wiringOP gpio readall table (readall.c)", "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c", "type": "Pinout"}, {"label": "Adafruit Blinka orangepi3b.py (third party): second source for the header map", "url": "https://github.com/adafruit/Adafruit_Blinka/blob/8.70.0/src/adafruit_blinka/board/orangepi/orangepi3b.py", "type": "Docs"}],
     pinout: orangePi3BHeader,
   },
   {
@@ -15490,8 +15517,8 @@ const november2026Boards: Board[] = [
     tags: ["Orange Pi", "Linux", "40-pin"],
     interfaces: ["GPIO", "I2C", "SPI", "UART", "PWM", "USB", "Wi-Fi"],
     highlights: ["Header names come from Orange Pi's own wiringOP table."],
-    warnings: ["Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring.", "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Bus numbers depend on the device-tree overlay you enable."],
-    sourceLinks: [{"label": "Orange Pi product documentation", "url": "https://www.orangepi.org/", "type": "Docs"}, {"label": "wiringOP gpio readall table (readall.c)", "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c", "type": "Pinout"}],
+    warnings: ["Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT.", "GPIO is not stated as 5 V tolerant; keep it at 3.3 V.", "Bus numbers depend on the device-tree overlay you enable."],
+    sourceLinks: [{"label": "Orange Pi product documentation", "url": "https://www.orangepi.org/", "type": "Docs"}, {"label": "wiringOP gpio readall table (readall.c)", "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c", "type": "Pinout"}, {"label": "Adafruit Blinka orangepi5plus.py (third party): second source for the header map, with UART and I2C pins", "url": "https://github.com/adafruit/Adafruit_Blinka/blob/8.70.0/src/adafruit_blinka/board/orangepi/orangepi5plus.py", "type": "Docs"}],
     pinout: orangePi5PlusHeader,
   },
 ];

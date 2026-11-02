@@ -87,9 +87,8 @@ export function BoardStage({
   // with several physical connectors repeats position 1, so each connector
   // carries its own square.
   const netPath = netKeys.size > 1 ? buildNetPath(anchors, netKeys) : null;
-  // A 40-pin header shown at phone width leaves each pad about 16 physical
-  // pixels across, so the invisible hit area is grown to tile the row: as much
-  // of the gap as can be claimed without a tap landing on two pins at once.
+  // The invisible hit area reaches as far into the gap as it can without a tap
+  // landing on two pins at once; the shared sizing helper sets that limit.
   const hitR = padHitRadius(geometry);
 
   function focusPad(index: number) {

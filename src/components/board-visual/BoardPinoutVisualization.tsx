@@ -28,9 +28,23 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [expanded, setExpanded] = useState(false);
   const expandButtonRef = useRef<HTMLButtonElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [pannable, setPannable] = useState(false);
   // Interaction state is reset across board switches by remounting via a
   // `key={board.id}` on this component (see PinHubApp), so no reset effect is
   // needed here.
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() =>
+      setPannable(
+        stage.scrollWidth > stage.clientWidth + 1 || stage.scrollHeight > stage.clientHeight + 1,
+      ),
+    );
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [geometry]);
 
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
@@ -67,9 +81,8 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   // the narrow detail column, so we steer users to the roomy standalone view.
   const isComplex =
     geometry.kind === "group-strips" || geometry.anchors.length > 48;
-  // Very tall drawings letterbox down to an unreadable sliver if we force the
-  // whole thing into the panel height. For those we render at full panel width
-  // and scroll vertically; flatter boards keep the fit-to-view look.
+  // Very tall drawings would shrink to an unreadable sliver at the panel's
+  // height, so their stage is capped and scrolls vertically.
   const tall = geometry.vbh / geometry.vbw > 1.4;
 
   function handleEscape() {
@@ -139,14 +152,13 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         />
       </div>
 
-      {/* Tall boards render at full panel width and scroll vertically so pads
-          stay legible; flatter ones letterbox to fit the panel. */}
+      {/* The drawing keeps a touch-sized width, so it pans inside this stage
+          when the panel is narrower than that or the board is tall. */}
       <div
-        className={clsx(
-          "bv-stage-wrap mt-3 w-full rounded-md",
-          "overflow-auto",
-        )}
+        ref={stageRef}
+        className="bv-stage-wrap mt-3 w-full overflow-auto rounded-md"
         style={tall ? { maxHeight: 460 } : undefined}
+        {...(pannable ? { tabIndex: 0, role: "group", "aria-label": "Scrollable pin map" } : {})}
       >
         <div
           className="w-full"
@@ -186,6 +198,12 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             Full view
           </a>{" "}
           for a roomier, fully-labelled diagram.
+        </p>
+      ) : null}
+
+      {pannable ? (
+        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
+          Swipe the drawing, or focus it and use the arrow keys, to reach every pad.
         </p>
       ) : null}
 

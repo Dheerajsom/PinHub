@@ -13,7 +13,7 @@ import {
   getBoardDiscoveryProfile,
   sharedDiscoveryReasons,
 } from "@/lib/board-discovery";
-import { classifySource, verificationSourceFor } from "@/lib/source-trust";
+import { classifySource, isOfficialVerificationSource, verificationSourceFor } from "@/lib/source-trust";
 import { siteName } from "@/lib/site";
 import { boardVisuals } from "@/lib/board-visuals";
 import { revisionNotesFor } from "@/lib/board-utilities";
@@ -152,11 +152,7 @@ export default async function BoardPage({
           <WiringCautions
             warnings={board.warnings}
             verifySource={verifySource}
-            verifySourceOfficial={
-              verifySource
-                ? classifySource(board.vendor, verifySource.url) === "official"
-                : false
-            }
+            verifySourceOfficial={isOfficialVerificationSource(board, verifySource)}
             reportUrl={pinReportUrl(pinReportContextFor(board))}
             className="lg:col-start-2 lg:row-start-1"
           />

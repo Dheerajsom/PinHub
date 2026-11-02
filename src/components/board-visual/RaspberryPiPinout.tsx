@@ -65,7 +65,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
       <div className="pi-component-layout">
         <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
           <div className="pi-canvas-scroll" tabIndex={0} role="group" aria-label="Scrollable board detail">
-            <div className={zoomed ? "pi-board-frame is-zoomed" : "pi-board-frame"} style={{ boxSizing: "content-box", aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}`, minWidth: touchDrawingWidth(geometry, true) * (zoomed ? 1.5 : 1) }}>
+            <div className="pi-board-frame" style={{ boxSizing: "content-box", aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}`, minWidth: touchDrawingWidth(geometry, true) * (zoomed ? 1.5 : 1) }}>
               <BoardStage geometry={geometry} title={`${board.name} — ${board.pinout.connector}`} sheetLabel={board.name}
                 compact selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={false} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
             </div>

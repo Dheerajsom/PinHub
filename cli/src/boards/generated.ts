@@ -8128,7 +8128,7 @@ export const generatedBoards: Board[] = [
             "label": "D0 / RX",
             "category": "communication",
             "functions": [
-              "P1.03"
+              "P1.10"
             ]
           },
           {
@@ -8140,7 +8140,10 @@ export const generatedBoards: Board[] = [
             "label": "D1 / TX",
             "category": "communication",
             "functions": [
-              "P1.10"
+              "P1.03"
+            ],
+            "notes": [
+              "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX."
             ]
           }
         ]
@@ -78152,10 +78155,6 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "warning",
         "text": "Pin functions depend on solder bridges and alternate functions."
       },
       {
@@ -78163,16 +78162,16 @@ export const generatedBoards: Board[] = [
         "text": "D7 and D8 reach PC14 and PC15 only when SB6 and SB8 are closed; they are open by default."
       },
       {
+        "severity": "warning",
+        "text": "On the Nucleo-F303K8, solder bridges join A4 to D4 and A5 to D5 by default. Check SB16 and SB18 in the manual before using them as separate pins."
+      },
+      {
         "severity": "info",
         "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "info",
-        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers."
+        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers. Each map was matched row by row against stm32duino and Mbed OS."
       },
       {
         "severity": "info",
@@ -78193,6 +78192,18 @@ export const generatedBoards: Board[] = [
       {
         "title": "stm32duino 3.0.0 variant_NUCLEO_L432KC.cpp: the pin behind each header position",
         "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32L4xx/L432K%28B-C%29U_L442KCU/variant_NUCLEO_L432KC.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Mbed OS 6.17 NUCLEO_L432KC PinNames.h: second source for the header map",
+        "url": "https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.17.0/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L432xC/TARGET_NUCLEO_L432KC/PinNames.h",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "MicroPython NUCLEO_L432KC pins.csv: third source for the header map",
+        "url": "https://github.com/micropython/micropython/blob/v1.27.0/ports/stm32/boards/NUCLEO_L432KC/pins.csv",
         "official": false,
         "type": "Docs"
       }
@@ -78498,10 +78509,6 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "warning",
         "text": "Pin functions depend on solder bridges and alternate functions."
       },
       {
@@ -78509,16 +78516,16 @@ export const generatedBoards: Board[] = [
         "text": "D5 and D4 are PA15 and PB7; solder bridges also tie them to A5 and A4. Check SB2 and SB3."
       },
       {
+        "severity": "warning",
+        "text": "Mbed lists A4 as PB7, A5 as PA15, and D13 as PB3, and notes PA5, PA6, and PB8 from ST's manual. This map uses the manual's pins; check the solder bridges on your board."
+      },
+      {
         "severity": "info",
         "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "info",
-        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers."
+        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers. Each map was matched row by row against stm32duino and Mbed OS."
       },
       {
         "severity": "info",
@@ -78539,6 +78546,12 @@ export const generatedBoards: Board[] = [
       {
         "title": "stm32duino 3.0.0 variant_NUCLEO_G431KB.cpp: the pin behind each header position",
         "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32G4xx/G431K%286-8-B%29%28T-U%29_G441KB%28T-U%29/variant_NUCLEO_G431KB.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Mbed OS 6.17 NUCLEO_G431KB PinNames.h: second source for the header map",
+        "url": "https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.17.0/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G431xB/TARGET_NUCLEO_G431KB/PinNames.h",
         "official": false,
         "type": "Docs"
       }
@@ -78700,10 +78713,7 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "D13",
-            "category": "communication",
-            "functions": [
-              "SCK"
-            ]
+            "category": "gpio"
           },
           {
             "physical": 17,
@@ -78844,10 +78854,6 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "warning",
         "text": "Pin functions depend on solder bridges and alternate functions."
       },
       {
@@ -78855,16 +78861,16 @@ export const generatedBoards: Board[] = [
         "text": "D7 and D8 are PF0 and PF1, and A7 is the ST-LINK TX pin."
       },
       {
+        "severity": "warning",
+        "text": "SB18 joins PA5 (A4) to PB7 (D4) and SB16 joins PA6 (A5) to PB6 (D5) by default, so each pair is one net until its bridge is opened."
+      },
+      {
         "severity": "info",
         "text": "Logic level: 3.3 V MCU IO. Power: USB, VIN, 5 V, 3.3 V rail."
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "info",
-        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers."
+        "text": "Models the Arduino Nano V3 pin layout of the Nucleo-32 CN3 and CN4 headers. Each map was matched row by row against stm32duino and Mbed OS."
       },
       {
         "severity": "info",
@@ -78885,6 +78891,12 @@ export const generatedBoards: Board[] = [
       {
         "title": "stm32duino 3.0.0 variant_NUCLEO_F303K8.cpp: the pin behind each header position",
         "url": "https://github.com/stm32duino/Arduino_Core_STM32/blob/3.0.0/variants/STM32F3xx/F303K%286-8%29T_F334K%284-6-8%29T/variant_NUCLEO_F303K8.cpp",
+        "official": false,
+        "type": "Docs"
+      },
+      {
+        "title": "Mbed OS 6.17 NUCLEO_F303K8 PinNames.h: second source for the header map",
+        "url": "https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.17.0/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/TARGET_NUCLEO_F303K8/PinNames.h",
         "official": false,
         "type": "Docs"
       }
@@ -83391,7 +83403,7 @@ export const generatedBoards: Board[] = [
             "label": "D0 / RX",
             "category": "communication",
             "functions": [
-              "P1.03"
+              "P1.10"
             ]
           },
           {
@@ -83403,7 +83415,10 @@ export const generatedBoards: Board[] = [
             "label": "D1 / TX",
             "category": "communication",
             "functions": [
-              "P1.10"
+              "P1.03"
+            ],
+            "notes": [
+              "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX."
             ]
           }
         ]
@@ -83795,7 +83810,7 @@ export const generatedBoards: Board[] = [
             "label": "D0 / RX",
             "category": "communication",
             "functions": [
-              "P1.03"
+              "P1.10"
             ]
           },
           {
@@ -83807,7 +83822,10 @@ export const generatedBoards: Board[] = [
             "label": "D1 / TX",
             "category": "communication",
             "functions": [
-              "P1.10"
+              "P1.03"
+            ],
+            "notes": [
+              "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX."
             ]
           }
         ]
@@ -83831,7 +83849,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "Standard Arduino MKR form factor; SAMD21G18 ports from the official Arduino pinout PDF."
+        "text": "Standard Arduino MKR form factor; SAMD21G18 ports from ArduinoCore-samd's mkr1000 variant."
       },
       {
         "severity": "info",
@@ -83839,7 +83857,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "A0 (PA02) is a true DAC output. NINA-W102 Wi-Fi/BLE module is internal (not on headers)."
+        "text": "A0 (PA02) is a true DAC output. The ATSAMW25 Wi-Fi module is internal (not on headers)."
       },
       {
         "severity": "info",
@@ -84224,11 +84242,11 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "UNO Rev3 and UNO R4 share the classic shield header footprint and 5 V operating voltage, but MCU-specific alternate functions differ."
+        "text": "Pin numbers and ports follow the Arduino standard core variant used for the ATmega328P."
       },
       {
         "severity": "info",
-        "text": "SPI is exposed on the ICSP header; D10 through D13 are commonly used with SPI shields."
+        "text": "SPI is also on the ICSP header; D10 through D13 are commonly used with SPI shields."
       },
       {
         "severity": "info",
@@ -85258,10 +85276,6 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "warning",
         "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
@@ -85278,11 +85292,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "info",
-        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board."
+        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board, and matched on all 40 pins against Libre Computer's schematic-derived GPIO sheet."
       },
       {
         "severity": "info",
@@ -85304,6 +85314,12 @@ export const generatedBoards: Board[] = [
         "title": "libretech-wiring-tool aml-a311d-cc/gpio.map",
         "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-a311d-cc/gpio.map",
         "official": false,
+        "type": "Pinout"
+      },
+      {
+        "title": "Libre Computer GPIO pin header maps (sheets derived from the board schematics)",
+        "url": "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28",
+        "official": true,
         "type": "Pinout"
       }
     ],
@@ -85758,10 +85774,6 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "warning",
         "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
@@ -85778,11 +85790,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "info",
-        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board."
+        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board, and matched on all 40 pins against Libre Computer's schematic-derived GPIO sheet."
       },
       {
         "severity": "info",
@@ -85804,6 +85812,12 @@ export const generatedBoards: Board[] = [
         "title": "libretech-wiring-tool aml-s905d3-cc/gpio.map",
         "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/aml-s905d3-cc/gpio.map",
         "official": false,
+        "type": "Pinout"
+      },
+      {
+        "title": "Libre Computer GPIO pin header maps (sheets derived from the board schematics)",
+        "url": "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28",
+        "official": true,
         "type": "Pinout"
       }
     ],
@@ -86258,10 +86272,6 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "warning",
         "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
@@ -86278,11 +86288,7 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "info",
-        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board."
+        "text": "Taken row by row from Libre Computer's libretech-wiring-tool gpio.map for this board, and matched on all 40 pins against Libre Computer's schematic-derived GPIO sheet."
       },
       {
         "severity": "info",
@@ -86304,6 +86310,12 @@ export const generatedBoards: Board[] = [
         "title": "libretech-wiring-tool all-h3-cc-h5/gpio.map",
         "url": "https://github.com/libre-computer-project/libretech-wiring-tool/blob/c5152bc6b62c/libre-computer/all-h3-cc-h5/gpio.map",
         "official": false,
+        "type": "Pinout"
+      },
+      {
+        "title": "Libre Computer GPIO pin header maps (sheets derived from the board schematics)",
+        "url": "https://hub.libre.computer/t/gpio-pin-header-maps-and-wiring-tool-for-libre-computer-boards/28",
+        "official": true,
         "type": "Pinout"
       }
     ],
@@ -87199,7 +87211,7 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+        "text": "Unverified pin 26: Orange Pi's wiringOP tables give GPIO3_D6, and Adafruit Blinka gives GPIO4_A7. The other 39 pins agree. Confirm pin 26 against the schematic or manual for your exact board revision before wiring."
       },
       {
         "severity": "warning",
@@ -87219,7 +87231,11 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+        "text": "Unverified pin 26: Orange Pi's wiringOP tables give GPIO3_D6, and Adafruit Blinka gives GPIO4_A7. The other 39 pins agree. Confirm pin 26 against the schematic or manual for your exact board revision before wiring."
+      },
+      {
+        "severity": "info",
+        "text": "Pin 24 is SPI3_CS1 in wiringOP's name table, but the GPIO number wiringOP gives it (134, GPIO4_A6) is SPI3_CS0 in Adafruit Blinka, so it is labelled SPI3_CS0 here."
       },
       {
         "severity": "info",
@@ -87246,6 +87262,12 @@ export const generatedBoards: Board[] = [
         "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c",
         "official": false,
         "type": "Pinout"
+      },
+      {
+        "title": "Adafruit Blinka orangepi3b.py (third party): second source for the header map",
+        "url": "https://github.com/adafruit/Adafruit_Blinka/blob/8.70.0/src/adafruit_blinka/board/orangepi/orangepi3b.py",
+        "official": false,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -87542,8 +87564,11 @@ export const generatedBoards: Board[] = [
               "row": 12,
               "column": 2
             },
-            "label": "SPI3_CS1",
-            "category": "communication"
+            "label": "SPI3_CS0",
+            "category": "communication",
+            "functions": [
+              "GPIO4_A6"
+            ]
           },
           {
             "physical": 26,
@@ -87630,10 +87655,6 @@ export const generatedBoards: Board[] = [
     "warnings": [
       {
         "severity": "warning",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
-      },
-      {
-        "severity": "warning",
         "text": "Pins do not match a Raspberry Pi function for function; verify the board schematic before using a Pi HAT."
       },
       {
@@ -87650,11 +87671,11 @@ export const generatedBoards: Board[] = [
       },
       {
         "severity": "info",
-        "text": "Unverified pinout: this map has only one checked vendor source and has not been cross-checked against a second source. Confirm every connection against the schematic or manual for your exact board revision before wiring."
+        "text": "Names and order follow Orange Pi's wiringOP gpio readall table for this board. All 28 GPIO positions match Adafruit Blinka's board file."
       },
       {
         "severity": "info",
-        "text": "Names and order follow Orange Pi's wiringOP gpio readall table for this board."
+        "text": "UART and I2C aliases come from Adafruit Blinka (third party). Each bus works only with its overlay enabled."
       },
       {
         "severity": "info",
@@ -87677,6 +87698,12 @@ export const generatedBoards: Board[] = [
         "url": "https://github.com/orangepi-xunlong/wiringOP/blob/a7921ca2f5c1/gpio/readall.c",
         "official": false,
         "type": "Pinout"
+      },
+      {
+        "title": "Adafruit Blinka orangepi5plus.py (third party): second source for the header map, with UART and I2C pins",
+        "url": "https://github.com/adafruit/Adafruit_Blinka/blob/8.70.0/src/adafruit_blinka/board/orangepi/orangepi5plus.py",
+        "official": false,
+        "type": "Docs"
       }
     ],
     "headers": [
@@ -87722,7 +87749,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "PWM14",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "GPIO1_D6",
+              "I2C8_SCL"
+            ]
           },
           {
             "physical": 9,
@@ -87776,7 +87807,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "SPI0_TXD",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "GPIO1_B2",
+              "UART4_RX"
+            ]
           },
           {
             "physical": 21,
@@ -87785,7 +87820,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "SPI0_RXD",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "GPIO1_B1"
+            ]
           },
           {
             "physical": 23,
@@ -87794,7 +87832,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "SPI0_CLK",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "GPIO1_B3",
+              "UART4_TX"
+            ]
           },
           {
             "physical": 25,
@@ -87812,7 +87854,11 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO1_B7",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART1_RX",
+              "I2C5_SDA"
+            ]
           },
           {
             "physical": 29,
@@ -87821,7 +87867,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO1_D7",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "I2C8_SDA"
+            ]
           },
           {
             "physical": 31,
@@ -87848,7 +87897,10 @@ export const generatedBoards: Board[] = [
               "column": 1
             },
             "label": "GPIO3_A2",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART8_TX"
+            ]
           },
           {
             "physical": 37,
@@ -87902,7 +87954,10 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO1_A1",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART6_TX"
+            ]
           },
           {
             "physical": 10,
@@ -87911,7 +87966,10 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO1_A0",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART6_RX"
+            ]
           },
           {
             "physical": 12,
@@ -87938,7 +87996,10 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_B5",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART3_TX"
+            ]
           },
           {
             "physical": 18,
@@ -87947,7 +88008,10 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_B6",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART3_RX"
+            ]
           },
           {
             "physical": 20,
@@ -87965,7 +88029,10 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO1_A2",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "I2C4_SDA"
+            ]
           },
           {
             "physical": 24,
@@ -87974,7 +88041,11 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "SPI0_CS0",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "GPIO1_B4",
+              "UART7_RX"
+            ]
           },
           {
             "physical": 26,
@@ -87983,7 +88054,11 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "SPI0_CS1",
-            "category": "communication"
+            "category": "communication",
+            "functions": [
+              "GPIO1_B5",
+              "UART7_TX"
+            ]
           },
           {
             "physical": 28,
@@ -87992,7 +88067,11 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO1_B6",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART1_TX",
+              "I2C5_SCL"
+            ]
           },
           {
             "physical": 30,
@@ -88010,7 +88089,10 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO1_A3",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "I2C4_SCL"
+            ]
           },
           {
             "physical": 34,
@@ -88046,7 +88128,10 @@ export const generatedBoards: Board[] = [
               "column": 2
             },
             "label": "GPIO3_A3",
-            "category": "gpio"
+            "category": "gpio",
+            "functions": [
+              "UART8_RX"
+            ]
           }
         ]
       }

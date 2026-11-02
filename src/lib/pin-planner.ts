@@ -129,6 +129,8 @@ type Option = {
   signal: string;
   routed: boolean;
   isDefault: boolean;
+  /** A chip select driven as plain GPIO, on a pin with no CS function of its own. */
+  softwareCs?: boolean;
 };
 
 type Unit = { peripheral: PlanPeripheral; unit: number };
@@ -290,7 +292,7 @@ export class PinPlanModel {
         options.push({ candidate, instance, signal, routed: true, isDefault: false });
       } else if (signal === "CS" && this.data.mux.softwareCs) {
         // Driven as a plain GPIO, so any free output serves.
-        options.push({ candidate, instance, signal, routed: false, isDefault: false });
+        options.push({ candidate, instance, signal, routed: false, isDefault: false, softwareCs: true });
       }
     }
     return options;
@@ -468,9 +470,11 @@ function solve(
   function placeChipSelects(): boolean {
     const placed: Option[] = [];
     for (const { unit, instance, anchorOrder } of pendingCs) {
-      const option = orderOptions(model.busOptions("SPI", instance, "CS"), "SPI", anchorOrder).find(
+      const free = orderOptions(model.busOptions("SPI", instance, "CS"), "SPI", anchorOrder).filter(
         (item) => allowed(item, "SPI"),
       );
+      // The pin the chip names for this bus reads best on a wiring list.
+      const option = free.find((item) => !item.softwareCs) ?? free[0];
       if (!option) {
         for (const item of placed) {
           state.used.delete(item.candidate.pin);

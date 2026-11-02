@@ -42,7 +42,7 @@ const pwmChannels = ["CH0", "CH1", "CH2", "CH3"];
 
 const ledReference =
   "“The constant LED_BUILTIN is the number of the pin to which the on-board LED is connected.”";
-const softwareCs =
+const softwareCsNote =
   "Chip select is any free digital pin, driven by software.";
 
 const coreFamilies = {
@@ -55,7 +55,7 @@ const coreFamilies = {
   },
   samd: {
     files: ["variant.cpp", "variant.h"],
-    note: "Serial, Wire, and SPI use the SERCOM pads the core variant assigns; other pads need a custom SERCOM setup. PWM and analog rows follow the variant's g_APinDescription table.",
+    note: "Serial, Wire, and SPI use the SERCOM pads the core variant assigns; other pads need a custom SERCOM setup. PWM and analog rows follow the variant's g_APinDescription table. DAC rows follow PA02 (A0) and, on SAMD51 boards, PA05 (A1), the pins the core's analogWrite drives as DAC outputs.",
     usb: undefined,
     exports: ["arduino", "json"],
     softwareCs: true,
@@ -227,7 +227,7 @@ export const arduinoCoreBoards = {
     repo: "adafruit",
     led: "13",
     pins: {
-      "A0": "PA02@14 | A:ADC.CH0",
+      "A0": "PA02@14 | D:DAC.CH0 A:ADC.CH0",
       "A1": "PB08@15 | P:TC4.CH0 A:ADC.CH2",
       "A2": "PB09@16 | P:TC4.CH1 A:ADC.CH3",
       "A3": "PA04@17 | A:ADC.CH4",
@@ -255,8 +255,8 @@ export const arduinoCoreBoards = {
     repo: "adafruit",
     led: "13",
     pins: {
-      "A0": "PA02@14 | A:ADC.CH0",
-      "A1": "PA05@15 | A:ADC.CH5",
+      "A0": "PA02@14 | D:DAC.CH0 A:ADC.CH0",
+      "A1": "PA05@15 | D:DAC.CH1 A:ADC.CH5",
       "A2": "PB08@16 | P:TC4.CH0 A:ADC.CH2",
       "A3": "PB09@17 | P:TC4.CH1 A:ADC.CH3",
       "A4": "PA04@18 | P:TC0.CH0 A:ADC.CH4",
@@ -362,26 +362,26 @@ export const arduinoCoreBoards = {
       "D47": "PC07@47",
       "D48": "PC04@48",
       "D49": "PC05@49",
-      "D50": "PD11@50",
-      "D51": "PD08@51",
-      "D52": "PD09@52",
-      "D53": "PD10@53",
-      "A0": "PA02@67 | A:ADC.CH0",
-      "A1": "PA05@68 | A:ADC.CH5",
+      "D50": "PD11@50 | S:SPI.MISO",
+      "D51": "PD08@51 | S:SPI.MOSI",
+      "D52": "PD09@52 | S:SPI.SCK",
+      "D53": "PD10@53 | S:SPI.CS",
+      "A0": "PA02@67 | D:DAC.CH0 A:ADC.CH0",
+      "A1": "PA05@68 | D:DAC.CH1 A:ADC.CH5",
       "A2": "PB03@69 | P:TC6.CH1 A:ADC.CH15",
       "A3": "PC00@70 | A:ADC.CH10",
       "A4": "PC01@71 | A:ADC.CH11",
       "A5": "PC02@72 | A:ADC.CH4",
       "A6": "PC03@73 | A:ADC.CH5",
       "A7": "PB04@74 | A:ADC.CH6",
-      "A8": "PC31@75",
-      "A9": "PC30@76",
-      "A10": "PA27@77",
-      "A11": "PA24@78",
-      "A12": "PA25@79",
-      "A13": "PB29@80",
-      "A14": "PB27@81",
-      "A15": "PB26@82",
+      "A8": "PB05@54 | A:ADC1.CH7",
+      "A9": "PB06@55 | A:ADC1.CH8",
+      "A10": "PB07@56 | A:ADC1.CH9",
+      "A11": "PB08@57 | A:ADC1.CH0",
+      "A12": "PB09@58 | A:ADC1.CH1",
+      "A13": "PA04@59 | P:TC0.CH0 A:ADC.CH4",
+      "A14": "PA06@60 | P:TC1.CH0 A:ADC.CH6",
+      "A15": "PA07@61 | P:TC1.CH1 A:ADC.CH7",
     },
   },
   "adafruit-itsybitsy-m4": {
@@ -390,8 +390,8 @@ export const arduinoCoreBoards = {
     repo: "adafruit",
     led: "13",
     pins: {
-      "A0": "PA02@14 | A:ADC.CH0",
-      "A1": "PA05@15 | A:ADC.CH5",
+      "A0": "PA02@14 | D:DAC.CH0 A:ADC.CH0",
+      "A1": "PA05@15 | D:DAC.CH1 A:ADC.CH5",
       "A2": "PB08@16 | A:ADC.CH2",
       "A3": "PB09@17 | A:ADC.CH3",
       "A4": "PA04@18 | P:TC0.CH0 A:ADC.CH4",
@@ -435,8 +435,8 @@ export const arduinoCoreBoards = {
       "D11": "PA19@11 | P:TCC1.CH3",
       "D12": "PA17@12 | P:TCC1.CH1",
       "D13 / LED": "PA16@13 | P:TCC1.CH0 | onboard-led",
-      "A0": "PA02@14 | A:ADC.CH0",
-      "A1": "PA05@15 | A:ADC.CH5",
+      "A0": "PA02@14 | D:DAC.CH0 A:ADC.CH0",
+      "A1": "PA05@15 | D:DAC.CH1 A:ADC.CH5",
       "A2": "PA06@16 | P:TC1.CH0 A:ADC.CH6",
       "A3": "PA04@17 | P:TC0.CH0 A:ADC.CH4",
       "A4": "PB08@18 | P:TC4.CH0 A:ADC.CH2",
@@ -453,6 +453,9 @@ export const arduinoCoreBoards = {
     variant: "leonardo",
     led: "13",
     pins: {
+      "CIPO": "PB3@14 | S:SPI.MISO",
+      "SCK": "PB1@15 | S:SPI.SCK",
+      "COPI": "PB2@16 | S:SPI.MOSI",
       "D0 / RX": "PD2@0 | U:Serial1.RX",
       "D1 / TX": "PD3@1 | U:Serial1.TX",
       "D2 / SDA": "PD1@2 | I:Wire.SDA",
@@ -588,7 +591,7 @@ export const arduinoCoreBoards = {
     variant: "mkr1000",
     led: "6",
     pins: {
-      "A0 / DAC0": "PA02@15 | A:ADC.CH0",
+      "A0 / DAC0": "PA02@15 | D:DAC.CH0 A:ADC.CH0",
       "A1": "PB02@16 | A:ADC.CH10",
       "A2": "PB03@17 | A:ADC.CH11",
       "A3": "PA04@18 | P:TCC0.CH0 A:ADC.CH4",
@@ -617,7 +620,7 @@ export const arduinoCoreBoards = {
     variant: "mkrwan1300",
     led: "6",
     pins: {
-      "A0 / DAC0": "PA02@15 | A:ADC.CH0",
+      "A0 / DAC0": "PA02@15 | D:DAC.CH0 A:ADC.CH0",
       "A1": "PB02@16 | A:ADC.CH10",
       "A2": "PB03@17 | A:ADC.CH11",
       "A3": "PA04@18 | P:TCC0.CH0 A:ADC.CH4",
@@ -646,7 +649,7 @@ export const arduinoCoreBoards = {
     variant: "mkrwifi1010",
     led: "6",
     pins: {
-      "A0 / DAC0": "PA02@15 | A:ADC.CH0",
+      "A0 / DAC0": "PA02@15 | D:DAC.CH0 A:ADC.CH0",
       "A1": "PB02@16 | A:ADC.CH10",
       "A2": "PB03@17 | A:ADC.CH11",
       "A3": "PA04@18 | P:TCC0.CH0 A:ADC.CH4",
@@ -675,7 +678,7 @@ export const arduinoCoreBoards = {
     variant: "mkrzero",
     led: "6",
     pins: {
-      "A0 / DAC0": "PA02@15 | A:ADC.CH0",
+      "A0 / DAC0": "PA02@15 | D:DAC.CH0 A:ADC.CH0",
       "A1": "PB02@16 | A:ADC.CH10",
       "A2": "PB03@17 | A:ADC.CH11",
       "A3": "PA04@18 | P:TCC0.CH0 A:ADC.CH4",
@@ -724,8 +727,8 @@ export const arduinoCoreBoards = {
       "A3": "PC3@A3 | A:ADC.CH3",
       "A4 / SDA": "PC4@A4 | I:Wire.SDA A:ADC.CH4",
       "A5 / SCL": "PC5@A5 | I:Wire.SCL A:ADC.CH5",
-      "A6": "ADC6@A6 | A:ADC.CH6",
-      "A7": "ADC7@A7 | A:ADC.CH7",
+      "A6": "ADC6@A6 | A:ADC.CH6 | input-only",
+      "A7": "ADC7@A7 | A:ADC.CH7 | input-only",
     },
   },
   "arduino-nano-33-ble": {
@@ -752,8 +755,8 @@ export const arduinoCoreBoards = {
       "D4": "P1_15#47",
       "D3": "P1_12#44",
       "D2": "P1_11#43",
-      "D0 / RX": "P1_03#35 | U:UART0.RX*",
-      "D1 / TX": "P1_10#42 | U:UART0.TX*",
+      "D0 / RX": "P1_10#42 | U:UART0.RX*",
+      "D1 / TX": "P1_03#35 | U:UART0.TX*",
     },
   },
   "arduino-nano-33-ble-sense": {
@@ -780,8 +783,8 @@ export const arduinoCoreBoards = {
       "D4": "P1_15#47",
       "D3": "P1_12#44",
       "D2": "P1_11#43",
-      "D0 / RX": "P1_03#35 | U:UART0.RX*",
-      "D1 / TX": "P1_10#42 | U:UART0.TX*",
+      "D0 / RX": "P1_10#42 | U:UART0.RX*",
+      "D1 / TX": "P1_03#35 | U:UART0.TX*",
     },
   },
   "arduino-nano-33-ble-sense-rev2": {
@@ -808,8 +811,8 @@ export const arduinoCoreBoards = {
       "D4": "P1_15#47",
       "D3": "P1_12#44",
       "D2": "P1_11#43",
-      "D0 / RX": "P1_03#35 | U:UART0.RX*",
-      "D1 / TX": "P1_10#42 | U:UART0.TX*",
+      "D0 / RX": "P1_10#42 | U:UART0.RX*",
+      "D1 / TX": "P1_03#35 | U:UART0.TX*",
     },
   },
   "arduino-nano-33-iot": {
@@ -818,7 +821,7 @@ export const arduinoCoreBoards = {
     led: "13",
     pins: {
       "D13 / SCK": "PA17@13 | S:SPI.SCK | onboard-led",
-      "A0 / D14": "PA02@14 | A:ADC.CH0",
+      "A0 / D14": "PA02@14 | D:DAC.CH0 A:ADC.CH0",
       "A1 / D15": "PB02@15 | A:ADC.CH10",
       "A2 / D16": "PA11@16 | P:TCC0.CH3 A:ADC.CH19",
       "A3 / D17": "PA10@17 | P:TCC0.CH2 A:ADC.CH18",
@@ -926,8 +929,8 @@ export const arduinoCoreBoards = {
       "A3": "PC3@A3 | A:ADC.CH3",
       "A4 / SDA": "PC4@A4 | I:Wire.SDA A:ADC.CH4",
       "A5 / SCL": "PC5@A5 | I:Wire.SCL A:ADC.CH5",
-      "A6": "ADC6@A6 | A:ADC.CH6",
-      "A7": "ADC7@A7 | A:ADC.CH7",
+      "A6": "ADC6@A6 | A:ADC.CH6 | input-only",
+      "A7": "ADC7@A7 | A:ADC.CH7 | input-only",
     },
   },
   "arduino-uno-r4-minima": {
@@ -1007,7 +1010,7 @@ export const arduinoCoreBoards = {
       "D13 / LED": "PA17@13 | P:TCC2.CH1 | onboard-led",
       "D20 / SDA": "PA22@20 | I:Wire.SDA",
       "D21 / SCL": "PA23@21 | I:Wire.SCL",
-      "A0 / D14 / DAC0": "PA02@14 | A:ADC.CH0",
+      "A0 / D14 / DAC0": "PA02@14 | D:DAC.CH0 A:ADC.CH0",
       "A1 / D15": "PB08@15 | P:TC4.CH0 A:ADC.CH2",
       "A2 / D16": "PB09@16 | P:TC4.CH1 A:ADC.CH3",
       "A3 / D17": "PA04@17 | A:ADC.CH4",
@@ -1048,7 +1051,7 @@ export const arduinoCoreBoards = {
     variant: "d1_mini",
     repo: "esp8266",
     pins: {
-      "A0": "A0@A0 | A:ADC.CH0",
+      "A0": "A0@A0 | A:ADC.CH0 | input-only",
       "D0 / GPIO16": "GPIO16#16@16",
       "D5 / GPIO14": "GPIO14#14@14 | S:SPI.SCK* P:PWM.GPIO14",
       "D6 / GPIO12": "GPIO12#12@12 | S:SPI.MISO* P:PWM.GPIO12",
@@ -1067,7 +1070,7 @@ export const arduinoCoreBoards = {
     variant: "nodemcu",
     repo: "esp8266",
     pins: {
-      "A0": "A0@A0 | A:ADC.CH0",
+      "A0": "A0@A0 | A:ADC.CH0 | input-only",
       "D0": "GPIO16#16@16",
       "D1": "GPIO5#5@5 | I:Wire.SCL* P:PWM.GPIO5",
       "D2": "GPIO4#4@4 | I:Wire.SDA* P:PWM.GPIO4",
@@ -1204,7 +1207,7 @@ export const arduinoCoreBoards = {
     variant: "XIAO_m0",
     repo: "seeed",
     pins: {
-      "D0 / A0": "PA02@0 | A:ADC.CH0",
+      "D0 / A0": "PA02@0 | D:DAC.CH0 A:ADC.CH0",
       "D1 / A1": "PA04@1 | P:TCC0.CH0 A:ADC.CH4",
       "D2 / A2": "PA10@2 | P:TCC0.CH2 A:ADC.CH18",
       "D3 / A3": "PA11@3 | P:TCC0.CH3 A:ADC.CH19",
@@ -1288,7 +1291,7 @@ export const arduinoCoreBoards = {
       "D11": "PA16@11 | P:TCC2.CH0",
       "D12": "PA19@12 | P:TCC0.CH3",
       "D13": "PA17@13 | P:TCC2.CH1 | onboard-led",
-      "A0": "PA02@14 | A:ADC.CH0",
+      "A0": "PA02@14 | D:DAC.CH0 A:ADC.CH0",
       "A1": "PB08@15 | P:TC4.CH0 A:ADC.CH2",
       "A2": "PB09@16 | P:TC4.CH1 A:ADC.CH3",
       "A3": "PA04@17 | A:ADC.CH4",
@@ -1404,6 +1407,12 @@ function coreData(id: string, entry: CoreBoard, used: Set<string>): PinFunctionD
     flagNotes.strapping =
       "ESP8266 Arduino: “The ESP module checks at every boot the Pins 0, 2 and 15. based on them its boots in different modes”.";
   }
+  if (used.has("input-only")) {
+    flagNotes["input-only"] =
+      entry.family === "esp8266"
+        ? "ESP8266 Arduino: “ESP8266 has a single ADC channel available to users.” A0 is that ADC pin, not a GPIO."
+        : "ATmega328P datasheet: “ADC7:6 serve as analog inputs to the A/D converter.” They have no digital input or output.";
+  }
   const common: PinFunctionData["sources"] =
     entry.family === "esp8266"
       ? [{ label: `${repo.name} variants/generic/common.h: SPI pins`, url: `${repo.url}/generic/common.h`, type: "Docs" }]
@@ -1417,7 +1426,7 @@ function coreData(id: string, entry: CoreBoard, used: Set<string>): PinFunctionD
       })),
       ...common,
     ],
-    mux: { model: "fixed", note: `${family.note} ${softwareCs}`, softwareCs: family.softwareCs },
+    mux: { model: "fixed", note: `${family.note} ${softwareCsNote}`, softwareCs: family.softwareCs },
     flagNotes,
     exports: [...family.exports],
   };

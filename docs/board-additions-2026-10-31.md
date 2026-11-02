@@ -2,7 +2,9 @@
 
 This is the original implementation record. The follow-up review, provenance
 disclosures, UI fixes, and fresh verification are recorded in
-[`code-audit-2026-10-31.md`](code-audit-2026-10-31.md).
+[`code-audit-2026-10-31.md`](code-audit-2026-10-31.md). The later data review in
+[`code-audit-2026-11-01.md`](code-audit-2026-11-01.md) corrects maps and the
+single-source list here, and takes UART link boards to 179.
 
 Branch `feature/planner-link-more-boards`, from `main` at `4c631c3`.
 

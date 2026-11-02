@@ -1,6 +1,8 @@
 # Pre-shipping review — 2026-10-31
 
-Follow-up to `4566b1a` and `docs/board-additions-2026-10-31.md`.
+Follow-up to `4566b1a` and `docs/board-additions-2026-10-31.md`. The later review
+in [`code-audit-2026-11-01.md`](code-audit-2026-11-01.md) second-sources most of
+the maps below and supersedes the provenance section.
 
 ## Hardware provenance
 

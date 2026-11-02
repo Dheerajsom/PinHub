@@ -92,9 +92,9 @@ describe("PlannerBoardPicker", () => {
 
 describe("PlannerWorkspace", () => {
   it("shows unverified board warnings on a direct planner visit", async () => {
-    render(<PlannerWorkspace board={board("stm32-nucleo-l432kc")} onChangeBoard={() => {}} />);
+    render(<PlannerWorkspace board={board("stm32-nucleo-f303re")} onChangeBoard={() => {}} />);
     await settle();
-    expect(screen.getByText(/^Unverified pinout:/)).toBeTruthy();
+    expect(screen.getByText(/Zephyr v4.2.0/)).toBeTruthy();
   });
 
   it("Escape closes the pin editor and restores focus to its pad", async () => {

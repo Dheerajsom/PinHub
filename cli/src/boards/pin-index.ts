@@ -6753,14 +6753,20 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 25,
         "label": "A6",
         "role": "adc",
-        "note": "Analog input only; not a digital IO."
+        "note": "Analog input only; not a digital IO.",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pR:10",
         "position": 26,
         "label": "A7",
         "role": "adc",
-        "note": "Analog input only; not a digital IO."
+        "note": "Analog input only; not a digital IO.",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pR:11",
@@ -7043,7 +7049,7 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "D0 / RX",
         "role": "uart",
         "aliases": [
-          "P1.03"
+          "P1.10"
         ],
         "net": "UART"
       },
@@ -7053,8 +7059,9 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "D1 / TX",
         "role": "uart",
         "aliases": [
-          "P1.10"
+          "P1.03"
         ],
+        "note": "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX.",
         "net": "UART"
       }
     ]
@@ -15113,7 +15120,10 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 3,
         "label": "A0",
         "role": "adc",
-        "note": "0–3.2 V via 220 kΩ/100 kΩ divider; bare chip ADC is 0–1 V."
+        "note": "0–3.2 V via 220 kΩ/100 kΩ divider; bare chip ADC is 0–1 V.",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pL:2",
@@ -15506,7 +15516,10 @@ export const pinIndex: PinIndexBoard[] = [
           "ADC0",
           "TOUT"
         ],
-        "note": "0-3.3 V via divider"
+        "note": "0-3.3 V via divider",
+        "flags": [
+          "input-only"
+        ]
       },
       {
         "key": "pL:1",
@@ -17890,6 +17903,9 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "A6",
         "role": "adc",
         "note": "Analog input only.",
+        "flags": [
+          "input-only"
+        ],
         "group": "Analog / power"
       },
       {
@@ -17898,6 +17914,9 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "A7",
         "role": "adc",
         "note": "Analog input only.",
+        "flags": [
+          "input-only"
+        ],
         "group": "Analog / power"
       },
       {
@@ -55504,14 +55523,10 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:0",
         "position": 16,
         "label": "D13",
-        "role": "spi",
-        "aliases": [
-          "SCK"
-        ],
+        "role": "gpio",
         "flags": [
           "onboard-led"
-        ],
-        "net": "SPI"
+        ]
       },
       {
         "key": "pR:1",
@@ -58656,7 +58671,7 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "D0 / RX",
         "role": "uart",
         "aliases": [
-          "P1.03"
+          "P1.10"
         ],
         "net": "UART"
       },
@@ -58666,8 +58681,9 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "D1 / TX",
         "role": "uart",
         "aliases": [
-          "P1.10"
+          "P1.03"
         ],
+        "note": "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX.",
         "net": "UART"
       }
     ]
@@ -58924,7 +58940,7 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "D0 / RX",
         "role": "uart",
         "aliases": [
-          "P1.03"
+          "P1.10"
         ],
         "net": "UART"
       },
@@ -58934,8 +58950,9 @@ export const pinIndex: PinIndexBoard[] = [
         "label": "D1 / TX",
         "role": "uart",
         "aliases": [
-          "P1.10"
+          "P1.03"
         ],
+        "note": "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX.",
         "net": "UART"
       }
     ]
@@ -61390,8 +61407,11 @@ export const pinIndex: PinIndexBoard[] = [
       {
         "key": "pR:11",
         "position": 24,
-        "label": "SPI3_CS1",
+        "label": "SPI3_CS0",
         "role": "spi",
+        "aliases": [
+          "GPIO4_A6"
+        ],
         "net": "SPI"
       },
       {
@@ -61475,7 +61495,11 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pL:3",
         "position": 7,
         "label": "PWM14",
-        "role": "pwm"
+        "role": "pwm",
+        "aliases": [
+          "GPIO1_D6",
+          "I2C8_SCL"
+        ]
       },
       {
         "key": "pL:4",
@@ -61514,6 +61538,10 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 19,
         "label": "SPI0_TXD",
         "role": "spi",
+        "aliases": [
+          "GPIO1_B2",
+          "UART4_RX"
+        ],
         "net": "SPI"
       },
       {
@@ -61521,6 +61549,9 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 21,
         "label": "SPI0_RXD",
         "role": "spi",
+        "aliases": [
+          "GPIO1_B1"
+        ],
         "net": "SPI"
       },
       {
@@ -61528,6 +61559,10 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 23,
         "label": "SPI0_CLK",
         "role": "spi",
+        "aliases": [
+          "GPIO1_B3",
+          "UART4_TX"
+        ],
         "net": "SPI"
       },
       {
@@ -61541,13 +61576,20 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pL:13",
         "position": 27,
         "label": "GPIO1_B7",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART1_RX",
+          "I2C5_SDA"
+        ]
       },
       {
         "key": "pL:14",
         "position": 29,
         "label": "GPIO1_D7",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "I2C8_SDA"
+        ]
       },
       {
         "key": "pL:15",
@@ -61565,7 +61607,10 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pL:17",
         "position": 35,
         "label": "GPIO3_A2",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART8_TX"
+        ]
       },
       {
         "key": "pL:18",
@@ -61605,13 +61650,19 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:3",
         "position": 8,
         "label": "GPIO1_A1",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART6_TX"
+        ]
       },
       {
         "key": "pR:4",
         "position": 10,
         "label": "GPIO1_A0",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART6_RX"
+        ]
       },
       {
         "key": "pR:5",
@@ -61630,13 +61681,19 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:7",
         "position": 16,
         "label": "GPIO3_B5",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART3_TX"
+        ]
       },
       {
         "key": "pR:8",
         "position": 18,
         "label": "GPIO3_B6",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART3_RX"
+        ]
       },
       {
         "key": "pR:9",
@@ -61649,13 +61706,20 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:10",
         "position": 22,
         "label": "GPIO1_A2",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "I2C4_SDA"
+        ]
       },
       {
         "key": "pR:11",
         "position": 24,
         "label": "SPI0_CS0",
         "role": "spi",
+        "aliases": [
+          "GPIO1_B4",
+          "UART7_RX"
+        ],
         "net": "SPI"
       },
       {
@@ -61663,13 +61727,21 @@ export const pinIndex: PinIndexBoard[] = [
         "position": 26,
         "label": "SPI0_CS1",
         "role": "spi",
+        "aliases": [
+          "GPIO1_B5",
+          "UART7_TX"
+        ],
         "net": "SPI"
       },
       {
         "key": "pR:13",
         "position": 28,
         "label": "GPIO1_B6",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART1_TX",
+          "I2C5_SCL"
+        ]
       },
       {
         "key": "pR:14",
@@ -61682,7 +61754,10 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:15",
         "position": 32,
         "label": "GPIO1_A3",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "I2C4_SCL"
+        ]
       },
       {
         "key": "pR:16",
@@ -61707,7 +61782,10 @@ export const pinIndex: PinIndexBoard[] = [
         "key": "pR:19",
         "position": 40,
         "label": "GPIO3_A3",
-        "role": "gpio"
+        "role": "gpio",
+        "aliases": [
+          "UART8_RX"
+        ]
       }
     ]
   }

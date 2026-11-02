@@ -273,7 +273,7 @@ Pinout data can destroy hardware; provenance is a first-class UI concern.
   the sheet); detail stacks below results; selecting a board smooth-scrolls
   to it; "Back to results" returns.
 - **Mobile**: command bar controls scroll horizontally in one row (no tall
-  stacks), safe-area insets respected, hit targets ≥36px. Pin maps stay
+  stacks), safe-area insets respected, hit targets ≥44px. Pin maps stay
   usable because both presentations are **container-query** driven: pads
   shrink (`size-9`→`size-11` by container), grouped grids re-flow by
   auto-fill, and the dual-row map keeps labels adjacent to pads at any
@@ -317,7 +317,7 @@ Pinout data can destroy hardware; provenance is a first-class UI concern.
   the 100-weight tint on a 10–15% alpha fill — verify AA per role hue.
 - Reduced motion: every animation (background drift, star pop, pad rings)
   is removed under `prefers-reduced-motion`, composition unchanged.
-- Hit targets ≥36px on touch (pads, stars, chips-as-buttons).
+- Hit targets ≥44px on touch (pads, stars, chips-as-buttons).
 - The static pin map is the accessible table equivalent of the SVG diagram;
   keep both presentations data-identical (build-time validation enforces).
 
@@ -496,7 +496,7 @@ embedding it.
 ## 19. Board link (2026-10-04)
 
 `/link`, in the header nav between Planner and Compare. Two boards and a bus
-in, the wire list out. Updates the section-nav note in section 18: five links
+in, the wire list out, with each board's cautions in the notes. Updates the section-nav note in section 18: five links
 now share the row, so the icons give way to the labels below 480 px and the
 padding tightens below 400 px.
 

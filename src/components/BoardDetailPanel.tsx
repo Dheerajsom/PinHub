@@ -16,7 +16,7 @@ import { VendorLogo } from "@/components/VendorLogo";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { BoardActions } from "@/components/BoardActions";
 import { BoardPriceLink } from "@/components/BoardPriceLink";
-import { classifySource, verificationSourceFor } from "@/lib/source-trust";
+import { classifySource, isOfficialVerificationSource, verificationSourceFor } from "@/lib/source-trust";
 import { revisionNotesFor } from "@/lib/board-utilities";
 import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
 import { SpecTable } from "@/components/SpecTable";
@@ -116,9 +116,7 @@ export function BoardDetailPanel({
 }
 function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   const verifySource = verificationSourceFor(board);
-  const verifySourceOfficial = verifySource
-    ? classifySource(board.vendor, verifySource.url) === "official"
-    : false;
+  const verifySourceOfficial = isOfficialVerificationSource(board, verifySource);
   const revisionNotes = revisionNotesFor(board);
   return (
     <aside className="min-w-0 space-y-4 xl:sticky xl:top-[5.25rem] xl:max-h-[calc(100vh-6.25rem)] xl:self-start xl:overflow-y-auto xl:pb-2 xl:pr-1">
