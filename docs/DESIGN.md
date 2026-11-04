@@ -273,7 +273,7 @@ Pinout data can destroy hardware; provenance is a first-class UI concern.
   the sheet); detail stacks below results; selecting a board smooth-scrolls
   to it; "Back to results" returns.
 - **Mobile**: command bar controls scroll horizontally in one row (no tall
-  stacks), safe-area insets respected, hit targets ≥36px. Pin maps stay
+  stacks), safe-area insets respected, hit targets ≥44px. Pin maps stay
   usable because both presentations are **container-query** driven: pads
   shrink (`size-9`→`size-11` by container), grouped grids re-flow by
   auto-fill, and the dual-row map keeps labels adjacent to pads at any
@@ -317,7 +317,7 @@ Pinout data can destroy hardware; provenance is a first-class UI concern.
   the 100-weight tint on a 10–15% alpha fill — verify AA per role hue.
 - Reduced motion: every animation (background drift, star pop, pad rings)
   is removed under `prefers-reduced-motion`, composition unchanged.
-- Hit targets ≥36px on touch (pads, stars, chips-as-buttons).
+- Hit targets ≥44px on touch (pads, stars, chips-as-buttons).
 - The static pin map is the accessible table equivalent of the SVG diagram;
   keep both presentations data-identical (build-time validation enforces).
 
@@ -467,6 +467,13 @@ embedding it.
   labels out to either side, and no illustrated components, copper, or
   Raspberry Pi artwork. It claims nothing about the board around the pins.
   Other layouts use their usual pad positions on a flat outline.
+- **Touch scale before fit.** Interactive pads have at least a 44 × 44 CSS px
+  hit region. Hit regions stay within the connector pitch; diagrams grow and
+  scroll within their panel instead of overlapping neighboring pins. This
+  applies to planner/link sheets, full inspectors, and compact artwork.
+  The inspector offers **Zoom labels** and **Working size** rather than a
+  fit-to-width action that would shrink labels and controls below usable size.
+  Scroll instructions and keyboard access accompany the drawing.
 - **Three marks, never alike.** Solid neutral ring = claimed by hand. Dashed
   ring in the role's `ink` = auto-assigned. Solid cyan = the probe, and
   nothing else. Free pads recede to half strength once a plan exists; they
@@ -481,14 +488,15 @@ embedding it.
   touch-down and touch-up.
 - **Cautions** for a claimed pin come only from the record (the pin's flags
   with the board's notes, and the reserved role), in the same orange rows as
-  auto-assigned pins.
+  auto-assigned pins. Board-level cautions appear before the planner drawing;
+  a single-source map's unverified disclosure stays first in a folded list.
 - **Section nav** holds four links on one row down to 360 px: below 400 px
   the icons give way to the labels. Links are 44 px tall at every width.
 
 ## 19. Board link (2026-10-04)
 
 `/link`, in the header nav between Planner and Compare. Two boards and a bus
-in, the wire list out. Updates the section-nav note in section 18: five links
+in, the wire list out, with each board's cautions in the notes. Updates the section-nav note in section 18: five links
 now share the row, so the icons give way to the labels below 480 px and the
 padding tightens below 400 px.
 

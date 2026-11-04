@@ -14,12 +14,12 @@ links to official documentation, and most carry an interactive pin map.
 | Route | What it does |
 |---|---|
 | `/` | Catalog: search boards and pins (`pico sda`, `rpi5 spi`, `esp32 gpio27`), filter, favorite, and open board detail |
-| `/pinout/[id]` | Full interactive pin map with role filters, net probing, and Markdown/CSV export |
+| `/pinout/[id]` | Interactive pin map with scrollable touch controls, label zoom, role filters, net probing, and Markdown/CSV export |
 | `/boards/[id]` | Specs, wiring warnings, and sources |
 | `/pinout/[id]/opengraph-image`, `/boards/[id]/opengraph-image` | 1200×630 link-preview image of the board's pins, colored by role |
-| `/compare` | Up to four boards side by side; differences first; shareable URL |
-| `/planner` | Mark the pins you use and fit I2C, SPI, UART, PWM, and ADC into what's left |
-| `/link` | Wire two boards over UART or I2C, with logic-level mismatch warnings |
+| `/compare` | Discover boards with labeled filters, then compare up to four side by side; differences first; shareable URL |
+| `/planner` | Review board cautions, mark the pins you use, and fit I2C, SPI, UART, PWM, and ADC into what's left |
+| `/link` | Wire two boards over UART or I2C, with board cautions and logic-level mismatch warnings |
 | `/prices` | Dated USD prices and stock for curated listings, refreshed hourly |
 | `/collections` | Shareable board sets from your local library |
 

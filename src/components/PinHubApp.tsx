@@ -563,14 +563,14 @@ export function PinHubApp({
               placeholder="Search boards, vendors, interfaces, warnings…"
               aria-label="Search boards"
               aria-controls="board-results"
-              className="ph-search-input h-10 w-full rounded-xl border-0 bg-transparent pl-10 pr-12 text-sm outline-none"
+              className="ph-search-input min-h-11 w-full rounded-xl border-0 bg-transparent pl-10 pr-12 text-sm outline-none"
             />
             {query ? (
               <button
                 type="button"
                 onClick={() => changeQuery("")}
                 aria-label="Clear search"
-                className="absolute right-1 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-lg text-zinc-500 transition hover:bg-white/[0.06] hover:text-white"
+                className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-lg text-zinc-500 transition hover:bg-white/[0.06] hover:text-white"
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
@@ -610,7 +610,7 @@ export function PinHubApp({
             }
             aria-pressed={showFavoritesOnly}
             className={clsx(
-              "fav-button inline-flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-xs font-semibold leading-none",
+              "fav-button inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-xs font-semibold leading-none",
               showFavoritesOnly
                 ? "bg-amber-300 text-zinc-950"
                 : "bg-amber-400/10 text-amber-200 hover:bg-amber-400/20 hover:text-amber-50",
@@ -910,7 +910,7 @@ export function PinHubApp({
                 <button
                   type="button"
                   onClick={() => updateFilters(() => ({ favoritesOnly: false }))}
-                  className="mt-4 min-h-10 rounded-lg border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-medium text-amber-50 transition hover:bg-amber-300/20"
+                  className="mt-4 min-h-11 rounded-lg border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-medium text-amber-50 transition hover:bg-amber-300/20"
                 >
                   Browse the catalog
                 </button>
@@ -933,7 +933,7 @@ export function PinHubApp({
                       key={suggestion}
                       type="button"
                       onClick={() => changeQuery(suggestion)}
-                      className="ph-quick-chip min-h-11 rounded-full lg:min-h-9 border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
+                      className="ph-quick-chip min-h-11 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
                     >
                       {suggestion}
                     </button>
@@ -942,7 +942,7 @@ export function PinHubApp({
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="mt-4 min-h-10 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-300/20"
+                  className="mt-4 min-h-11 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-300/20"
                 >
                   Reset filters
                 </button>
@@ -1034,7 +1034,7 @@ function CommonBoards({
             key={suggestion}
             type="button"
             onClick={() => onQuery(suggestion)}
-            className="ph-quick-chip min-h-11 shrink-0 rounded-full lg:min-h-9 border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
+            className="ph-quick-chip min-h-11 shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100"
           >
             {suggestion}
           </button>

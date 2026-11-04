@@ -15,6 +15,22 @@ import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
 const maxResults = 12;
 const maxQueryLength = 256;
 
+/** A short list to start from; the search reaches every other board. */
+const plannerQuickPicks = [
+  "raspberry-pi-5",
+  "raspberry-pi-4-model-b",
+  "raspberry-pi-pico",
+  "raspberry-pi-pico-2",
+  "arduino-uno-rev3",
+  "arduino-nano",
+  "arduino-mega-2560-rev3",
+  "esp32-devkitc",
+  "esp32-s3-devkitc-1",
+  "esp32-c3-devkitm-1",
+  "stm32-nucleo-f401re",
+  "teensy-41",
+];
+
 /**
  * Step one of the planner: find the board. Every board with a pin map can be
  * planned by hand; the tag says which ones PinHub can also auto-assign.
@@ -38,7 +54,11 @@ export function PlannerBoardPicker({
   const index = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
   const auto = useMemo(() => new Set(autoAssignIds), [autoAssignIds]);
   const quickPicks = useMemo(
-    () => catalog.filter((board) => auto.has(board.id)),
+    () =>
+      plannerQuickPicks.flatMap((id) => {
+        const board = catalog.find((item) => item.id === id);
+        return board && auto.has(id) ? [board] : [];
+      }),
     [auto, catalog],
   );
 
@@ -150,8 +170,8 @@ export function PlannerBoardPicker({
             >
               <VendorLogo vendor={board.vendor} />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium text-white">{board.name}</span>
-                <span className="block truncate font-mono text-[11px] text-zinc-500">
+                <span className="block break-words text-sm font-medium text-white">{board.name}</span>
+                <span className="block break-words font-mono text-[11px] text-zinc-500">
                   {board.vendor} / {board.family}
                 </span>
               </span>
@@ -175,7 +195,7 @@ export function PlannerBoardPicker({
       {quickPicks.length ? (
         <div role="group" aria-labelledby={`${listId}-quick`} className="mt-6">
           <h2 id={`${listId}-quick`} className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
-            Boards with auto-assign
+            Common boards · {auto.size} can auto-assign
           </h2>
           <div className="mt-2 grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr))]">
             {quickPicks.map((board) => (

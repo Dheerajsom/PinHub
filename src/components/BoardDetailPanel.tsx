@@ -16,7 +16,7 @@ import { VendorLogo } from "@/components/VendorLogo";
 import { PinoutTabs } from "@/components/PinoutTabs";
 import { BoardActions } from "@/components/BoardActions";
 import { BoardPriceLink } from "@/components/BoardPriceLink";
-import { classifySource, verificationSourceFor } from "@/lib/source-trust";
+import { classifySource, isOfficialVerificationSource, verificationSourceFor } from "@/lib/source-trust";
 import { revisionNotesFor } from "@/lib/board-utilities";
 import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
 import { SpecTable } from "@/components/SpecTable";
@@ -71,7 +71,7 @@ export function BoardDetailPanel({
           <button
             type="button"
             onClick={onBackToResults}
-            className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white xl:hidden"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 transition hover:border-cyan-300/50 hover:text-white xl:hidden"
           >
             <ArrowUp className="size-4" aria-hidden="true" />
             Back to results
@@ -116,9 +116,7 @@ export function BoardDetailPanel({
 }
 function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
   const verifySource = verificationSourceFor(board);
-  const verifySourceOfficial = verifySource
-    ? classifySource(board.vendor, verifySource.url) === "official"
-    : false;
+  const verifySourceOfficial = isOfficialVerificationSource(board, verifySource);
   const revisionNotes = revisionNotesFor(board);
   return (
     <aside className="min-w-0 space-y-4 xl:sticky xl:top-[5.25rem] xl:max-h-[calc(100vh-6.25rem)] xl:self-start xl:overflow-y-auto xl:pb-2 xl:pr-1">
@@ -127,7 +125,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
       <button
         type="button"
         onClick={onBackToResults}
-        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] xl:hidden"
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#15181f] px-3 text-sm font-medium text-zinc-300 shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:border-cyan-300/50 hover:bg-[#1c2029] hover:text-white active:scale-[0.99] xl:hidden"
       >
         <ArrowUp className="size-4" aria-hidden="true" />
         Back to results

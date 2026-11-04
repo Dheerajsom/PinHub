@@ -129,6 +129,8 @@ type Option = {
   signal: string;
   routed: boolean;
   isDefault: boolean;
+  /** A chip select driven as plain GPIO, on a pin with no CS function of its own. */
+  softwareCs?: boolean;
 };
 
 type Unit = { peripheral: PlanPeripheral; unit: number };
@@ -288,6 +290,9 @@ export class PinPlanModel {
         });
       } else if (routable) {
         options.push({ candidate, instance, signal, routed: true, isDefault: false });
+      } else if (signal === "CS" && this.data.mux.softwareCs) {
+        // Driven as a plain GPIO, so any free output serves.
+        options.push({ candidate, instance, signal, routed: false, isDefault: false, softwareCs: true });
       }
     }
     return options;
@@ -456,8 +461,37 @@ function solve(
     return outputsFrom[index] <= freeOutputs && pinsFrom[index] <= freePins;
   };
 
+  // A software chip select can sit on any free pin, so it is chosen after every
+  // other pin is settled. Branching on it would multiply the search by the pin
+  // count without ever changing whether a plan exists.
+  const softwareCs = model.data.mux.softwareCs === true;
+  const pendingCs: { unit: Unit; instance: string; anchorOrder: number | null }[] = [];
+
+  function placeChipSelects(): boolean {
+    const placed: Option[] = [];
+    for (const { unit, instance, anchorOrder } of pendingCs) {
+      const free = orderOptions(model.busOptions("SPI", instance, "CS"), "SPI", anchorOrder).filter(
+        (item) => allowed(item, "SPI"),
+      );
+      // The pin the chip names for this bus reads best on a wiring list.
+      const option = free.find((item) => !item.softwareCs) ?? free[0];
+      if (!option) {
+        for (const item of placed) {
+          state.used.delete(item.candidate.pin);
+          state.assignments.pop();
+        }
+        return false;
+      }
+      tick();
+      state.used.add(option.candidate.pin);
+      state.assignments.push(assign(unit, option));
+      placed.push(option);
+    }
+    return true;
+  }
+
   function place(index: number): boolean {
-    if (index === units.length) return true;
+    if (index === units.length) return placeChipSelects();
     if (!canFinish(index)) return false;
     const unit = units[index];
     const { peripheral } = unit;
@@ -518,8 +552,16 @@ function solve(
     unitIndex: number,
   ): boolean {
     const peripheral = unit.peripheral as BusPeripheral;
-    const signals = busSignals[peripheral];
-    if (signalIndex === signals.length) return place(unitIndex + 1);
+    const signals = busSignals[peripheral].filter(
+      (signal) => !(softwareCs && signal === "CS"),
+    );
+    if (signalIndex === signals.length) {
+      if (!softwareCs || peripheral !== "SPI") return place(unitIndex + 1);
+      pendingCs.push({ unit, instance, anchorOrder });
+      if (place(unitIndex + 1)) return true;
+      pendingCs.pop();
+      return false;
+    }
     const options = orderOptions(
       model.busOptions(peripheral, instance, signals[signalIndex]),
       peripheral,

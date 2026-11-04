@@ -19,7 +19,7 @@ export function Footer() {
           arising from its use.{" "}
           <Link
             href="/privacy"
-            className="underline underline-offset-2 transition hover:text-zinc-200"
+            className="inline-flex min-h-11 min-w-11 items-center underline underline-offset-2 transition hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-cyan-300"
           >
             Privacy
           </Link>
@@ -32,7 +32,7 @@ export function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="PinHub terminal client: ph rpi5 (opens the install guide in a new tab)"
-            className="ph-quick-chip inline-flex min-h-11 lg:min-h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
+            className="ph-quick-chip inline-flex min-h-11 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
           >
             <SquareTerminal className="size-3" aria-hidden="true" />
             ph rpi5
@@ -43,7 +43,7 @@ export function Footer() {
           <a
             href="/api/boards"
             aria-label="Board JSON API index"
-            className="ph-quick-chip inline-flex min-h-11 lg:min-h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
+            className="ph-quick-chip inline-flex min-h-11 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-400 hover:border-cyan-300/40 hover:text-cyan-100"
           >
             <Braces className="size-3" aria-hidden="true" />
             /api/boards

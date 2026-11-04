@@ -158,6 +158,7 @@ export function isPinFunctionData(value: unknown): value is PinFunctionData {
     !isRecord(mux) ||
     (mux.model !== "fixed" && mux.model !== "matrix") ||
     !isShortText(mux.note, maxNoteLength) ||
+    (mux.softwareCs !== undefined && mux.softwareCs !== true) ||
     (mux.routable !== undefined &&
       (mux.model !== "matrix" ||
         !Array.isArray(mux.routable) ||

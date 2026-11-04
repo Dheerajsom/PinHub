@@ -39,13 +39,12 @@
 
 ## GitHub Commit Rules
 
-- Always commit to the MAIN branch unless explicitly commanded not to.
 - The agent may push its own commits to GitHub when the user asks it to publish changes.
 - After a branch has been merged, automatically delete both its local and remote refs. Never delete `main`, the currently checked-out branch, or a branch that has not been fully merged.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 

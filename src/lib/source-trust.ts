@@ -219,3 +219,8 @@ export function verificationSourceFor(board: Board): SourceLink | undefined {
       : best;
   }, undefined);
 }
+
+/** Whether a board's verification source comes from the board's own vendor. */
+export function isOfficialVerificationSource(board: Board, source: SourceLink | null | undefined): boolean {
+  return source ? classifySource(board.vendor, source.url) === "official" : false;
+}

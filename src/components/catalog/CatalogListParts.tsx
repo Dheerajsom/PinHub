@@ -20,7 +20,7 @@ export function ActiveFilterChip({ label, onClear }: ActiveFilterChipProps) {
       type="button"
       onClick={onClear}
       aria-label={`Remove ${label} filter`}
-      className="group flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-cyan-300/50 bg-cyan-300/10 py-1 pl-2.5 pr-2 text-xs font-medium text-cyan-50 transition hover:border-cyan-300/80 hover:bg-cyan-300/15 lg:min-h-8"
+      className="group flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-cyan-300/50 bg-cyan-300/10 py-1 pl-2.5 pr-2 text-xs font-medium text-cyan-50 transition hover:border-cyan-300/80 hover:bg-cyan-300/15"
     >
       {label}
       <X
@@ -78,7 +78,7 @@ export function FilterPanel({
                 aria-label={count === undefined ? undefined : `${item}, ${count} boards`}
                 title={count === undefined ? undefined : `${count} boards`}
                 className={clsx(
-                  "ph-token flex min-h-11 min-w-11 items-center justify-center rounded-md border px-2 transition lg:min-h-8 lg:min-w-0",
+                  "ph-token flex min-h-11 min-w-11 items-center justify-center rounded-md border px-2 transition",
                   isActive
                     ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50"
                     : "border-white/10 text-zinc-400 hover:border-white/25 hover:text-white",
@@ -99,7 +99,7 @@ export function FilterPanel({
                 type="button"
                 onClick={() => onChange(item)}
                 className={clsx(
-                  "flex min-h-11 items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[13px] transition lg:min-h-0 lg:py-[7px]",
+                  "flex min-h-11 items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[13px] transition lg:py-[7px]",
                   isActive
                     ? "border-cyan-300/60 bg-cyan-300/10 font-medium text-cyan-50 shadow-[inset_0_1px_0_rgba(103,232,249,0.12)]"
                     : "ph-filter-option border-transparent text-zinc-400 hover:text-white",
@@ -214,7 +214,7 @@ export const BoardResult = memo(function BoardResult({
         className="absolute inset-0 z-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0e13]"
       />
       <div className="pointer-events-none relative z-10 p-4">
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 pr-10">
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 pr-12">
           <div className="flex min-w-0 items-center gap-2.5">
             <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-[#0a0c11] text-sm font-bold text-zinc-300">
               <VendorLogo vendor={board.vendor} size={20} />
@@ -279,7 +279,7 @@ export const BoardResult = memo(function BoardResult({
         aria-pressed={favorite}
         title={favorite ? "Remove from favorites" : "Add to favorites"}
         className={clsx(
-          "absolute right-2 top-2.5 z-20 grid size-9 place-items-center rounded-lg border transition",
+          "absolute right-2 top-2.5 z-20 grid size-11 place-items-center rounded-lg border transition",
           favorite
             ? "ph-fav-active border-amber-300/50 bg-amber-300/15 text-amber-300 hover:bg-amber-300/20"
             : "border-transparent text-zinc-600 hover:border-white/10 hover:bg-white/[0.08] hover:text-amber-200",

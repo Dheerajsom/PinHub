@@ -128,15 +128,34 @@ test.describe("planner page", () => {
     }
   });
 
-  test("a Raspberry Pi is a flat sheet, and a manual-only board gets no guessed plan", async ({ page }) => {
+  test("a Raspberry Pi is a flat sheet that can auto-assign", async ({ page }) => {
     await page.goto("/planner?board=raspberry-pi-4-model-b&plan=i2c1");
+    const section = await workspace(page);
+    await expect(section).not.toContainText("Auto-assign isn't available for this board yet.");
+    await expect(section.locator(".bv-planned-ring")).toHaveCount(2);
+    // The realistic Pi artwork draws square gold pins; the planner's sheet does not.
+    await expect(section.locator(".bv-stage .bv-pad")).toHaveCount(40);
+    await expect(section.locator(".bv-stage .bv-pad circle.bv-pad-body")).toHaveCount(39);
+  });
+
+  test("search results tell two similar boards apart on a phone", async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto("/planner");
+    await page.getByRole("combobox").fill("nucleo g431");
+    const options = page.getByRole("option");
+    await expect(options).toHaveCount(2);
+    for (const span of await options.locator("span span").all()) {
+      expect(await span.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(0);
+    }
+    await expect(options.first()).toContainText("STM32 Nucleo-G431");
+  });
+
+  test("a manual-only board gets no guessed plan", async ({ page }) => {
+    await page.goto("/planner?board=seeed-reterminal&plan=i2c1");
     const section = await workspace(page);
     await expect(section).toContainText("Auto-assign isn't available for this board yet.");
     await expect(section.getByRole("button", { name: /^Add one/ })).toHaveCount(0);
     await expect(section.locator(".bv-planned-ring")).toHaveCount(0);
-    // The realistic Pi artwork draws square gold pins; the planner's sheet does not.
-    await expect(section.locator(".bv-stage .bv-pad")).toHaveCount(40);
-    await expect(section.locator(".bv-stage .bv-pad circle.bv-pad-body")).toHaveCount(39);
     const report = section.getByRole("link", { name: /Report a data error/ });
     expect(new URL((await report.getAttribute("href")) ?? "").protocol).toBe("https:");
     await expect(report).toHaveAttribute("rel", "noopener noreferrer");

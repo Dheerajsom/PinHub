@@ -106,7 +106,7 @@ export function PinoutFullView({ board }: { board: Board }) {
                   type="button"
                   onClick={() => setQuery("")}
                   aria-label="Clear pin search"
-                  className="absolute right-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-zinc-500 transition hover:text-white"
+                  className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center text-zinc-500 transition hover:text-white"
                 >
                   <X className="size-4" />
                 </button>
@@ -125,7 +125,7 @@ export function PinoutFullView({ board }: { board: Board }) {
                         setSelectedKey(anchor.key);
                         setActiveKey(anchor.key);
                       }}
-                      className="rounded-md border border-white/15 bg-white/[0.04] px-2 py-1 font-mono text-xs text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
+                      className="min-h-11 min-w-11 rounded-md border border-white/15 bg-white/[0.04] px-2 py-1 font-mono text-xs text-zinc-200 transition hover:border-cyan-300/60 hover:text-white"
                     >
                       {anchor.pin.position} · {anchor.pin.label}
                       {anchor.group ? ` · ${anchor.group}` : ""}

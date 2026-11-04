@@ -4,17 +4,24 @@ import {
   type Board,
   type Pin,
   type PinFlag,
+  type PinFunctionData,
   type PinPeripheral,
 } from "@/lib/boards";
+import { arduinoCoreBoards } from "@/lib/pin-functions/arduino-core";
+import { espressifBoards } from "@/lib/pin-functions/espressif";
+import { raspberryPiBoards } from "@/lib/pin-functions/raspberry-pi";
+import { stm32Boards } from "@/lib/pin-functions/stm32";
 import { isSafeExternalUrl } from "@/lib/source-trust";
 
 // Integrity gate for the pin planner's peripheral data. The planner assigns
 // real wires from these rows, so a gap (SDA without SCL, a function on a power
 // pin, a flag without its quoted reason) must fail the build, not a user.
 
-const pilotIds = [
+const inlineIds = [
   "adafruit-feather-rp2040",
+  "adafruit-feather-rp2350",
   "adafruit-itsybitsy-rp2040",
+  "adafruit-kb2040",
   "adafruit-qt-py-rp2040",
   "arduino-nano-rp2040-connect",
   "arduino-uno-rev3",
@@ -29,7 +36,17 @@ const pilotIds = [
   "sparkfun-pro-micro-rp2040",
   "sparkfun-thing-plus-rp2040",
   "waveshare-rp2040-zero",
+  "waveshare-rp2350-plus",
+  "waveshare-rp2350-zero",
 ];
+
+const plannerIds = [
+  ...inlineIds,
+  ...Object.keys(arduinoCoreBoards),
+  ...Object.keys(espressifBoards),
+  ...Object.keys(raspberryPiBoards),
+  ...Object.keys(stm32Boards),
+].sort();
 
 const busSignals: Partial<Record<PinPeripheral, string[]>> = {
   I2C: ["SDA", "SCL"],
@@ -38,6 +55,11 @@ const busSignals: Partial<Record<PinPeripheral, string[]>> = {
   SPI: ["SCK", "MOSI", "MISO"],
 };
 const isChipSelect = (signal: string) => /^CS\d*$/.test(signal);
+/** A GPIO matrix can place this SPI instance's chip select on any pin. */
+const routedSpi = (data: PinFunctionData, key: string) =>
+  (data.mux.routable ?? []).some(
+    (item) => item.peripheral === "SPI" && item.instances.includes(key.split(":")[1]),
+  );
 const nonAssignableRoles = new Set(["power", "ground", "reserved"]);
 
 function pinsOf(board: Board): Pin[] {
@@ -52,7 +74,7 @@ const withData = boards.filter((board) => board.pinFunctions);
 
 describe("pin function data", () => {
   it("covers exactly the boards with sourced pin functions", () => {
-    expect(withData.map((board) => board.id).sort()).toEqual(pilotIds);
+    expect(withData.map((board) => board.id).sort()).toEqual(plannerIds);
   });
 
   it("only appears on boards that carry its sources", () => {
@@ -134,7 +156,7 @@ describe("pin function data", () => {
           for (const signal of busSignals[peripheral]!) {
             expect(present.has(signal), `${key} lacks ${signal}`).toBe(true);
           }
-          if (peripheral === "SPI") {
+          if (peripheral === "SPI" && !data.mux.softwareCs && !routedSpi(data, key)) {
             expect([...present].some(isChipSelect), `${key} lacks a chip select`).toBe(true);
           }
         }

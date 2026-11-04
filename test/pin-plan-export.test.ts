@@ -87,7 +87,7 @@ describe("pin plan exports", () => {
 
   it("returns nothing for an empty plan, an unsupported board, or a bad date stamp", () => {
     expect(planExports(board("raspberry-pi-pico"), [], date)).toEqual([]);
-    expect(planExports(board("raspberry-pi-4-model-b"), [], date)).toEqual([]);
+    expect(planExports(board("seeed-reterminal"), [], date)).toEqual([]);
     const target = board("raspberry-pi-pico");
     const [header] = planExports(target, plan(target, { GPIO: 1 }), "2026-09-26T00:00:00Z<");
     expect(header.text).not.toContain("<");
@@ -193,13 +193,13 @@ describe("exports with manual claims", () => {
   });
 
   it("gives a board without pin functions JSON and CSV only", () => {
-    const pi4 = board("raspberry-pi-4-model-b");
+    const pi4 = board("seeed-reterminal");
     const exports = planExports(pi4, [], date, [
       { name: "LED", pin: pinByLabel(pi4, "GPIO2"), cautions: [] },
     ]);
     expect(exports.map((item) => item.format)).toEqual(["json", "csv"]);
     expect(JSON.parse(exports[0].text).claims[0].name).toBe("LED");
-    expect(exports[1].filename).toBe("pinhub-plan-raspberry-pi-4-model-b.csv");
+    expect(exports[1].filename).toBe("pinhub-plan-seeed-reterminal.csv");
     expect(planExports(pi4, [], date, [])).toEqual([]);
   });
 });

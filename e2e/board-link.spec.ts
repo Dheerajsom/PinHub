@@ -25,6 +25,13 @@ test("picks two boards, lists the wires, and rings the selected wire on both boa
 
 test.describe("board link on a phone", () => {
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 360, height: 800 } });
+  test("shows long board names in full", async ({ page }) => {
+    await page.goto("/link?a=libre-computer-le-potato&b=adafruit-grand-central-m4-express&bus=uart");
+    const name = page.getByText("Adafruit Grand Central M4 Express", { exact: true }).first();
+    await expect(name).toBeVisible();
+    expect(await name.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(0);
+  });
+
   test("fits 360 px with 44 px controls", async ({ page }) => {
     await page.goto("/link?a=raspberry-pi-pico&b=arduino-mega-2560-rev3&bus=uart");
     await expect(page.getByRole("button", { name: /^Wire 1/ })).toBeVisible();

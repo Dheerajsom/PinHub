@@ -210,7 +210,7 @@ export function PinoutTable({
                       event.stopPropagation();
                       toggleSelection();
                     }}
-                    className="w-full truncate rounded text-left font-mono text-[13px] font-semibold text-white outline-none transition hover:text-cyan-200 focus-visible:ring-1 focus-visible:ring-cyan-300"
+                    className="min-h-11 min-w-11 w-full truncate rounded text-left font-mono text-[13px] font-semibold text-white outline-none transition hover:text-cyan-200 focus-visible:ring-1 focus-visible:ring-cyan-300"
                     aria-label={`${isSelected ? "Unselect" : "Select"} pin ${anchor.pin.position}, ${anchor.pin.label}`}
                     aria-pressed={isSelected}
                   >

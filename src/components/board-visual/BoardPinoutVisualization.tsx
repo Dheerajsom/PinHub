@@ -11,6 +11,7 @@ import {
   type PinAnchor,
 } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
@@ -27,9 +28,23 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [expanded, setExpanded] = useState(false);
   const expandButtonRef = useRef<HTMLButtonElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [pannable, setPannable] = useState(false);
   // Interaction state is reset across board switches by remounting via a
   // `key={board.id}` on this component (see PinHubApp), so no reset effect is
   // needed here.
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() =>
+      setPannable(
+        stage.scrollWidth > stage.clientWidth + 1 || stage.scrollHeight > stage.clientHeight + 1,
+      ),
+    );
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [geometry]);
 
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
@@ -66,9 +81,8 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   // the narrow detail column, so we steer users to the roomy standalone view.
   const isComplex =
     geometry.kind === "group-strips" || geometry.anchors.length > 48;
-  // Very tall drawings letterbox down to an unreadable sliver if we force the
-  // whole thing into the panel height. For those we render at full panel width
-  // and scroll vertically; flatter boards keep the fit-to-view look.
+  // Very tall drawings would shrink to an unreadable sliver at the panel's
+  // height, so their stage is capped and scrolls vertically.
   const tall = geometry.vbh / geometry.vbw > 1.4;
 
   function handleEscape() {
@@ -138,20 +152,19 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         />
       </div>
 
-      {/* Tall boards render at full panel width and scroll vertically so pads
-          stay legible; flatter ones letterbox to fit the panel. */}
+      {/* The drawing keeps a touch-sized width, so it pans inside this stage
+          when the panel is narrower than that or the board is tall. */}
       <div
-        className={clsx(
-          "bv-stage-wrap mt-3 w-full rounded-md",
-          tall ? "overflow-y-auto overflow-x-hidden" : "overflow-hidden",
-        )}
+        ref={stageRef}
+        className="bv-stage-wrap mt-3 w-full overflow-auto rounded-md"
         style={tall ? { maxHeight: 460 } : undefined}
+        {...(pannable ? { tabIndex: 0, role: "group", "aria-label": "Scrollable pin map" } : {})}
       >
         <div
           className="w-full"
           style={{
             aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-            maxHeight: tall ? undefined : 460,
+            minWidth: touchDrawingWidth(geometry),
           }}
         >
           <BoardStage
@@ -173,18 +186,24 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </div>
 
       {isComplex ? (
-        <p className="mt-2 flex items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
+        <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
           <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
           Dense header — open{" "}
           <a
             href={fullViewHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium underline underline-offset-2 hover:text-cyan-100"
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center font-medium underline underline-offset-2 hover:text-cyan-100"
           >
             Full view
           </a>{" "}
           for a roomier, fully-labelled diagram.
+        </p>
+      ) : null}
+
+      {pannable ? (
+        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
+          Swipe the drawing, or focus it and use the arrow keys, to reach every pad.
         </p>
       ) : null}
 
@@ -222,7 +241,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </ul>
 
       <details className="mt-3 border-t border-white/10 pt-3">
-        <summary className="cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
+        <summary className="min-h-11 cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
           All {geometry.anchors.length} pins (table)
         </summary>
         <div className="mt-2 max-h-80 overflow-y-auto pr-1">

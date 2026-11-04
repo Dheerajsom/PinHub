@@ -225,7 +225,7 @@ export function DiscoveryApp({
               className="h-11 w-full rounded-lg border border-white/10 bg-[#090b10] pl-10 pr-12 text-sm text-white outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/30"
             />
             {state.query ? (
-              <button type="button" onClick={() => setQuery("")} aria-label="Clear search" className="absolute right-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-zinc-500 hover:text-white">
+              <button type="button" onClick={() => setQuery("")} aria-label="Clear search" className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center text-zinc-500 hover:text-white">
                 <X className="size-4" />
               </button>
             ) : (
@@ -234,11 +234,11 @@ export function DiscoveryApp({
           </label>
           <div className="flex min-w-0 flex-wrap items-center gap-2 sm:contents">
             <SectionNav current="/compare" className="max-sm:w-full max-sm:justify-between sm:order-1" />
-            <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 sm:order-3 sm:shrink lg:hidden">
+            <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 sm:order-3 sm:shrink lg:hidden">
               <SlidersHorizontal className="size-4 text-cyan-200" /> Filters
               {activeCount ? <span className="rounded bg-cyan-300/15 px-1.5 font-mono text-xs text-cyan-100">{activeCount}</span> : null}
             </button>
-            <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: !current.favoritesOnly }))} aria-pressed={state.favoritesOnly} className={clsx("inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm transition sm:order-4 sm:shrink", state.favoritesOnly ? "fav-button border-amber-300/60 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
+            <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: !current.favoritesOnly }))} aria-pressed={state.favoritesOnly} className={clsx("inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm transition sm:order-4 sm:shrink", state.favoritesOnly ? "fav-button border-amber-300/60 bg-amber-300/10 text-amber-100" : "border-white/10 bg-[#15181f] text-zinc-300 hover:text-white")}>
               <Star className={clsx("fav-star size-4", state.favoritesOnly && "fill-amber-300")} /> Favorites
             </button>
             <SortMenu value={state.sort} options={sortOptionsFor(discoverySorts, Boolean(state.query))} onChange={(sort) => setState((current) => ({ ...current, sort, page: 1 }))} className="min-w-0 shrink-0 max-sm:order-last max-sm:basis-full sm:order-5" />
@@ -251,7 +251,7 @@ export function DiscoveryApp({
         <aside className={clsx("space-y-3 lg:sticky lg:top-[5.25rem] lg:block lg:max-h-[calc(100vh-6.25rem)] lg:overflow-y-auto lg:pr-1", filtersOpen ? "block" : "hidden")}>
           <div className="flex items-center justify-between px-1">
             <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">Discovery facets</span>
-            {activeCount ? <button type="button" onClick={() => setState(discoveryDefaultState)} className="text-xs text-cyan-200 hover:text-white">Clear all</button> : null}
+            {activeCount ? <button type="button" onClick={() => setState(discoveryDefaultState)} className="min-h-11 min-w-11 text-xs text-cyan-200 hover:text-white">Clear all</button> : null}
           </div>
           <Facet title="Platform" icon={<Cpu className="size-4" />} filterKey="platform" values={options.platform} selected={state.platform} onToggle={toggleFilter} />
           <Facet title="Category" icon={<Layers3 className="size-4" />} filterKey="category" values={options.category} selected={state.category} onToggle={toggleFilter} />
@@ -265,13 +265,13 @@ export function DiscoveryApp({
           <Facet title="Interfaces" icon={<SlidersHorizontal className="size-4" />} filterKey="interface" values={options.interface} selected={state.interface} onToggle={toggleFilter} collapsed />
           <section className="surface-panel grid gap-2 rounded-lg p-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-white"><Wifi className="size-4" /> Wireless capability</div>
-            <select value={state.wirelessCapability} onChange={(event) => setState((current) => ({ ...current, wirelessCapability: event.target.value as "any" | "has" | "none", page: 1 }))} className="h-10 rounded-md border border-white/10 bg-[#0a0c11] px-2.5 text-sm text-zinc-200 outline-none focus:border-cyan-300/60">
+            <select aria-label="Wireless capability" value={state.wirelessCapability} onChange={(event) => setState((current) => ({ ...current, wirelessCapability: event.target.value as "any" | "has" | "none", page: 1 }))} className="min-h-11 rounded-md border border-white/10 bg-[#0a0c11] px-2.5 text-base sm:text-sm text-zinc-200 outline-none focus:border-cyan-300/60">
               <option value="any">Any</option><option value="has">Has wireless</option><option value="none">No wireless</option>
             </select>
           </section>
           <section className="surface-panel grid gap-2 rounded-lg p-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-white"><BookCheck className="size-4" /> Documentation</div>
-            <select value={state.officialDocumentation} onChange={(event) => setState((current) => ({ ...current, officialDocumentation: event.target.value as "any" | "has" | "none", page: 1 }))} className="h-10 rounded-md border border-white/10 bg-[#0a0c11] px-2.5 text-sm text-zinc-200 outline-none focus:border-cyan-300/60">
+            <select aria-label="Documentation" value={state.officialDocumentation} onChange={(event) => setState((current) => ({ ...current, officialDocumentation: event.target.value as "any" | "has" | "none", page: 1 }))} className="min-h-11 rounded-md border border-white/10 bg-[#0a0c11] px-2.5 text-base sm:text-sm text-zinc-200 outline-none focus:border-cyan-300/60">
               <option value="any">Any</option><option value="has">Official docs available</option><option value="none">No official source</option>
             </select>
           </section>
@@ -321,7 +321,7 @@ export function DiscoveryApp({
                 <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-400">
                   Tap the star on any board to keep it here. Favorites stay on this device, so your shortlist survives a reload.
                 </p>
-                <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: false }))} className="mt-4 rounded-lg border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm text-amber-50 transition hover:bg-amber-300/20">
+                <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: false }))} className="mt-4 min-h-11 rounded-lg border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm text-amber-50 transition hover:bg-amber-300/20">
                   Browse the catalog
                 </button>
               </div>
@@ -330,7 +330,7 @@ export function DiscoveryApp({
                 <Database className="mx-auto size-8 text-zinc-500" />
                 <h2 className="mt-4 text-lg font-semibold text-white">No boards match this stack</h2>
                 <p className="mt-2 text-sm text-zinc-400">Remove one constraint or clear the complete filter set.</p>
-                <button type="button" onClick={() => setState(discoveryDefaultState)} className="mt-4 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
+                <button type="button" onClick={() => setState(discoveryDefaultState)} className="mt-4 min-h-11 rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Reset filters</button>
               </div>
             )
           ) : null}
@@ -348,12 +348,12 @@ export function DiscoveryApp({
               <div className="flex flex-wrap gap-1.5">
                 {compareIds.map((id) => {
                   const board = catalog.find((item) => item.id === id);
-                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} aria-label={`Remove ${board.name} from comparison`} className="inline-flex min-h-11 max-w-full items-center gap-1 rounded-md lg:min-h-9 border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200 transition hover:border-white/25 hover:text-white"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" aria-hidden="true" /></button> : null;
+                  return board ? <button key={id} type="button" onClick={() => toggleCompare(id)} aria-label={`Remove ${board.name} from comparison`} className="inline-flex min-h-11 max-w-full items-center gap-1 rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-xs text-zinc-200 transition hover:border-white/25 hover:text-white"><span className="truncate">{board.name}</span><X className="size-3 shrink-0" aria-hidden="true" /></button> : null;
                 })}
               </div>
               <p className="mt-1 text-[11px] text-zinc-500">{compareIds.length < 2 ? "Choose one more board." : compareIds.length === maxComparedBoards ? "Comparison set is full." : "Ready to compare."}</p>
             </div>
-            <Link href={compareIds.length > 1 ? compareUrl(compareIds) : "#board-results"} aria-disabled={compareIds.length < 2} tabIndex={compareIds.length < 2 ? -1 : undefined} className={clsx("inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition sm:w-auto", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
+            <Link href={compareIds.length > 1 ? compareUrl(compareIds) : "#board-results"} aria-disabled={compareIds.length < 2} tabIndex={compareIds.length < 2 ? -1 : undefined} className={clsx("inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition sm:w-auto", compareIds.length > 1 ? "bg-cyan-300 text-slate-950 hover:bg-cyan-200" : "pointer-events-none bg-white/10 text-zinc-600")}>Compare <ArrowRight className="size-4" /></Link>
           </div>
         </div>
       ) : null}
@@ -380,9 +380,9 @@ function Facet({
 }) {
   const content = <div className="mt-2 grid gap-1">{values.map((value) => {
     const active = selected.includes(value);
-    return <button key={value} type="button" onClick={() => onToggle(filterKey, value)} aria-pressed={active} className={clsx("flex min-h-11 items-center gap-2 rounded-md border px-2.5 text-left text-sm transition lg:min-h-9", active ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50" : "border-transparent text-zinc-400 hover:bg-white/[0.05] hover:text-white")}>{active ? <Check className="size-3.5 text-cyan-200" /> : <span className="size-3.5 rounded border border-white/15" />}{value}</button>;
+    return <button key={value} type="button" onClick={() => onToggle(filterKey, value)} aria-pressed={active} className={clsx("flex min-h-11 items-center gap-2 rounded-md border px-2.5 text-left text-sm transition", active ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50" : "border-transparent text-zinc-400 hover:bg-white/[0.05] hover:text-white")}>{active ? <Check className="size-3.5 text-cyan-200" /> : <span className="size-3.5 rounded border border-white/15" />}{value}</button>;
   })}</div>;
-  return <section className="surface-panel rounded-lg p-3">{collapsed ? <details><summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold text-white">{icon}{title}<span className="ml-auto text-xs text-zinc-500">{selected.length || values.length}</span></summary>{content}</details> : <><div className="flex items-center gap-2 text-sm font-semibold text-white">{icon}{title}</div>{content}</>}</section>;
+  return <section className="surface-panel rounded-lg p-3">{collapsed ? <details><summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-sm font-semibold text-white">{icon}{title}<span className="ml-auto text-xs text-zinc-500">{selected.length || values.length}</span></summary>{content}</details> : <><div className="flex items-center gap-2 text-sm font-semibold text-white">{icon}{title}</div>{content}</>}</section>;
 }
 
 function BoardCard({
@@ -434,7 +434,7 @@ function BoardCard({
       </dl>
       <div className="relative z-10 mt-3 flex items-center justify-between gap-3 border-t border-white/8 pt-3">
         <span className={clsx("inline-flex items-center gap-1.5 text-xs", board.warningCount ? "text-orange-200" : "text-zinc-500")}><ShieldAlert className="size-3.5" />{board.warningCount} wiring cautions</span>
-        <button type="button" onClick={() => onCompare(board.id)} disabled={compareFull && !comparing} aria-pressed={comparing} className={clsx("inline-flex h-10 items-center gap-1.5 rounded-md border px-3 text-xs font-medium transition", comparing ? "border-cyan-300/60 bg-cyan-300/12 text-cyan-50" : "border-white/10 bg-white/[0.03] text-zinc-300 hover:border-cyan-300/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-35")}><GitCompareArrows className="size-3.5" />{comparing ? "Selected" : "Compare"}</button>
+        <button type="button" onClick={() => onCompare(board.id)} disabled={compareFull && !comparing} aria-pressed={comparing} className={clsx("inline-flex min-h-11 items-center gap-1.5 rounded-md border px-3 text-xs font-medium transition", comparing ? "border-cyan-300/60 bg-cyan-300/12 text-cyan-50" : "border-white/10 bg-white/[0.03] text-zinc-300 hover:border-cyan-300/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-35")}><GitCompareArrows className="size-3.5" />{comparing ? "Selected" : "Compare"}</button>
       </div>
     </article>
   );

@@ -247,7 +247,8 @@ break out into code. Filenames are `pinhub-plan-<id>…` from `[a-z0-9-]`.
    pin header, a core variant file, or an HTML pin table. Pin it to a release
    tag or commit and read it. Do not rely on a PDF you cannot read here or on
    memory.
-2. Write a label-keyed table in `src/lib/pin-function-data.ts`:
+2. Write a label-keyed table in the chip family's module in
+   `src/lib/pin-functions/` (RP2 boards stay in `src/lib/pin-function-data.ts`):
    - `mcu` for every assignable pin
    - `functions` with source instance names and normalised signals
      (SDA/SCL, SCK/MOSI/MISO/CS, TX/RX, CHn)

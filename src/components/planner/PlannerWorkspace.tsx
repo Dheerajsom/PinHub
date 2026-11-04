@@ -25,6 +25,9 @@ import {
   type PinClaim,
 } from "@/lib/planner-claims";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { WiringCautions } from "@/components/WiringCautions";
+import { isOfficialVerificationSource, verificationSourceFor } from "@/lib/source-trust";
 import { VendorLogo } from "@/components/VendorLogo";
 import { PlannerAutoAssign } from "@/components/planner/PlannerAutoAssign";
 import { PlannerExports } from "@/components/planner/PlannerExports";
@@ -33,9 +36,8 @@ import { PlannerPinsTable, type PlannerRow } from "@/components/planner/PlannerP
 import { peripheralRole } from "@/components/planner/peripherals";
 
 /**
- * Tallest the planner's drawing gets: the room the window has, and never less
- * than this floor. Tall connectors shrink to fit rather than scroll, so every
- * planned pad stays in view.
+ * Preferred drawing height. The minimum touch scale takes precedence so
+ * dense connectors scroll rather than shrinking their controls.
  */
 const minDrawingHeight = 560;
 const noNet = new Set<string>();
@@ -205,6 +207,19 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
   const liveAnchor = liveKey ? anchorByKey.get(liveKey) ?? null : null;
   const selectedAnchor = selectedKey ? anchorByKey.get(selectedKey) ?? null : null;
 
+  useEffect(() => {
+    if (!selectedKey) return;
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setSelectedKey(null);
+      setActiveKey(null);
+      const pad = drawingRef.current?.querySelector<SVGGElement>('.bv-pad[aria-pressed="true"]');
+      pad?.focus({ preventScroll: true });
+    };
+    document.addEventListener("keydown", escape);
+    return () => document.removeEventListener("keydown", escape);
+  }, [selectedKey]);
+
   const step = useCallback(
     (peripheral: PlanPeripheral, delta: number) => {
       const apply = (current: PlanRequirements) =>
@@ -266,6 +281,7 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
   const hasPlan = claims.length > 0 || Object.keys(requirements).length > 0;
   const liveName = liveAnchor ? claimNameByKey.get(liveAnchor.key) : undefined;
   const liveAssignment = liveAnchor ? assignmentByPin.get(liveAnchor.pin) : undefined;
+  const verifySource = verificationSourceFor(board);
 
   return (
     <section aria-label="Pin planner" className="@container min-w-0">
@@ -324,6 +340,10 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
         )}
       </header>
 
+      <div className="mt-4">
+        <WiringCautions warnings={board.warnings} verifySource={verifySource} verifySourceOfficial={isOfficialVerificationSource(board, verifySource)} collapseAfter={3} />
+      </div>
+
       <div className="mt-4 grid gap-4 @3xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] @3xl:items-start">
         <div
           ref={drawingRef}
@@ -346,14 +366,14 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
                     }`
                   : "Select a pin to claim it. Solid rings are yours; dashed rings are auto-assigned."}
               </p>
-              {/* The whole connector stays in view: tall ones shrink to the
-                  height cap instead of hiding pins below a scroll. */}
-              <div className="bv-stage-wrap w-full overflow-hidden rounded-md">
+              <p className="mb-2 text-[11px] leading-5 text-zinc-400">Scroll the sheet to reach pins outside the view.</p>
+              <div className="bv-stage-wrap w-full overflow-auto rounded-md" role="group" aria-label={`${board.name} connector sheet`} tabIndex={0}>
                 <div
                   className="mx-auto"
                   style={{
                     aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
                     width: `min(100%, calc(max(${minDrawingHeight}px, 100dvh - 11rem) * ${(geometry.vbw / geometry.vbh).toFixed(4)}))`,
+                    minWidth: touchDrawingWidth(geometry),
                   }}
                 >
                   <BoardStage
@@ -465,9 +485,9 @@ function PlanNotes({ board, muxNote, matrix }: { board: Board; muxNote: string; 
                 href={source.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="break-words underline-offset-2 hover:text-white hover:underline"
+                className="flex min-h-11 min-w-11 max-w-full items-center underline-offset-2 hover:text-white hover:underline focus-visible:outline-2 focus-visible:outline-cyan-300"
               >
-                {source.label}
+                <span className="min-w-0 break-words">{source.label}</span>
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </li>

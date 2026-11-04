@@ -103,7 +103,7 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
         {recent.length ? (
           <div className="flex flex-wrap gap-1.5">
             {recent.map((board) => (
-              <Link key={board.id} href={`/boards/${board.id}`} className="ph-quick-chip surface-well rounded-lg px-2 py-1 text-xs font-medium text-zinc-300 hover:border-cyan-300/40 hover:text-white">
+              <Link key={board.id} href={`/boards/${board.id}`} className="ph-quick-chip surface-well inline-flex min-h-11 min-w-11 items-center rounded-lg px-2 py-1 text-xs font-medium text-zinc-300 hover:border-cyan-300/40 hover:text-white">
                 {board.name}
               </Link>
             ))}
