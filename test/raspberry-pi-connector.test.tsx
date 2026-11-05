@@ -114,3 +114,32 @@ it("moves between board pads with the keyboard", () => {
   fireEvent.keyDown(document.activeElement!, { key: "Enter" });
   expect(pads[pads.length - 1].getAttribute("aria-pressed")).toBe("true");
 });
+
+it("keeps the tab stop on the pin selected from the picker", () => {
+  render(<RaspberryPiPinout board={boards.find((board) => board.id === "raspberry-pi-5")!} />);
+  const connector = screen.getByRole("group", { name: "Select a physical pin from the connector" });
+  const picker = screen.getByRole("combobox", { name: "Select physical pin" });
+  const pin17 = within(picker).getAllByRole("option").find((option) => option.textContent?.startsWith("17 ·"))!;
+  fireEvent.change(picker, { target: { value: pin17.getAttribute("value") } });
+  const tabbable = within(connector).getAllByRole("button").filter((pin) => pin.tabIndex === 0);
+  expect(tabbable).toHaveLength(1);
+  expect(tabbable[0].getAttribute("aria-label")).toMatch(/^Pin 17,/);
+});
+
+it("moves through connector rows and columns without wrapping to the other header", () => {
+  render(<RaspberryPiPinout board={boards.find((board) => board.id === "raspberry-pi-5")!} />);
+  const connector = screen.getByRole("group", { name: "Select a physical pin from the connector" });
+  const pins = within(connector).getAllByRole("button");
+  const named = (position: number) => pins.find((pin) => pin.getAttribute("aria-label")?.startsWith(`Pin ${position},`))!;
+  named(1).focus();
+  fireEvent.keyDown(named(1), { key: "ArrowDown" });
+  expect(document.activeElement).toBe(named(3));
+  fireEvent.keyDown(named(3), { key: "ArrowRight" });
+  expect(document.activeElement).toBe(named(4));
+  // The last odd pin's ArrowDown used to wrap to pin 2 at the top of the even header.
+  named(39).focus();
+  fireEvent.keyDown(named(39), { key: "ArrowDown" });
+  expect(document.activeElement).toBe(named(39));
+  fireEvent.keyDown(named(39), { key: "ArrowLeft" });
+  expect(document.activeElement).toBe(named(39));
+});

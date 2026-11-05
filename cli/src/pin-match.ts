@@ -75,8 +75,14 @@ export function isPinLikeQuery(query: string): boolean {
     (tokens.length > 1 && (/^(sda|scl|mosi|miso|sck|sclk|tx|rx)\d*$/.test(last) || pinRoles.some((role) => role === last)));
 }
 
-/** Board lists search the board qualifier; the on-demand lookup answers the signal. */
+/**
+ * Board lists search the board qualifier; the on-demand lookup answers the
+ * signal. A single word has no qualifier to keep: labels such as D1 or A7 are
+ * also board-name words (LOLIN D1 mini, Arty A7), so the word stays the board
+ * query rather than emptying it and listing the whole catalog.
+ */
 export function pinBoardQuery(query: string): string {
-  if (!isPinLikeQuery(query)) return query;
-  return pinQueryTokens(query).slice(0, -1).join(" ");
+  const tokens = pinQueryTokens(query);
+  if (tokens.length < 2 || !isPinLikeQuery(query)) return query;
+  return tokens.slice(0, -1).join(" ");
 }

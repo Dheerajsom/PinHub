@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Expand, ExternalLink, Search, ShieldAlert, ZoomIn, ZoomOut } from "lucide-react";
-import type { Board, PinRole } from "@/lib/boards";
+import type { Board, Pin, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { connectorCells, connectorKeyTarget } from "@/components/board-visual/connector-cells";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinDetails } from "@/components/board-visual/PinDetails";
@@ -25,7 +26,6 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const [focusIndex, setFocusIndex] = useState(0);
   // Fit is the default: the whole physical board is visible in a 334 px panel.
   // Touch size enlarges it so every pad's hit area is at least 44 px.
   const [zoomed, setZoomed] = useState(false);
@@ -37,21 +37,32 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
   const liveKey = hoverKey ?? selectedKey;
   const probe = probedNet(nets, liveKey);
   const anchors = useMemo(() => [...(geometry?.anchors ?? [])].sort((a, b) => a.pin.position - b.pin.position), [geometry]);
-  // Preserve the source's physical pairs: GPIO is 1/2, Pico is 1/40.
+  // Preserve the source's physical pairs: GPIO is 1/2, Pico is 1/40. Each
+  // side keeps its own column, so an uneven side never drops or shifts pins.
   const connectorPins = useMemo(() => {
     const pins = board.pinout?.pins;
-    if (!pins) return anchors;
-    return pins.left.flatMap((pin, index) => [pin, pins.right[index]])
-      .filter(Boolean).map((pin) => anchors.find((anchor) => anchor.pin === pin)!)
-      .filter(Boolean);
+    const anchorFor = (pin: Pin) => anchors.find((anchor) => anchor.pin === pin);
+    if (!pins) return anchors.map((item, index) => ({ item, row: Math.floor(index / 2), col: (index % 2) as 0 | 1 }));
+    return connectorCells(pins.left.map(anchorFor), pins.right.map(anchorFor))
+      .flatMap(({ item, row, col }) => (item ? [{ item, row, col }] : []));
   }, [anchors, board.pinout]);
+  // Roving tab stop: the last pin focused in the list, moved to the selected
+  // pin whenever the selection changes elsewhere (picker, board pads), so Tab
+  // re-enters the list at the pin the readout describes.
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+  const [seenSelection, setSeenSelection] = useState<string | null>(null);
+  if (seenSelection !== selectedKey) {
+    setSeenSelection(selectedKey);
+    if (selectedKey) setFocusKey(selectedKey);
+  }
+  const tabStop = connectorPins.some(({ item }) => item.key === focusKey) ? focusKey : connectorPins[0]?.item.key;
   const roleCounts = useMemo(() => countRoles(anchors.map(({ pin }) => pin)), [anchors]);
   const source = verificationSourceFor(board);
   const sourceInfo = source ? { ...source, provenance: classifySource(board.vendor, source.url) } : undefined;
   const report = useMemo(() => pinReportContextFor(board), [board]);
   const caution = fiveVoltCaution(board);
   useEffect(() => {
-    const index = connectorPins.findIndex((pin) => pin.key === selectedKey);
+    const index = connectorPins.findIndex(({ item }) => item.key === selectedKey);
     const element = pinRefs.current[index];
     const region = connectorRef.current;
     if (!element || !region) return;
@@ -135,18 +146,17 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
         </div>
         <div ref={connectorRef} className="pi-connector-scroll" role="group" aria-label="Select a physical pin from the connector">
           <div className="pi-connector-grid">
-            {connectorPins.map((anchor, index) => <button key={anchor.key} type="button"
+            {connectorPins.map(({ item: anchor, row, col }, index) => <button key={anchor.key} type="button"
               ref={(element) => { pinRefs.current[index] = element; }}
               aria-label={pinAccessibleLabel(anchor.pin)} aria-pressed={selectedKey === anchor.key}
-              tabIndex={focusIndex === index ? 0 : -1}
+              tabIndex={tabStop === anchor.key ? 0 : -1}
               className="pi-connector-pin" data-selected={selectedKey === anchor.key || undefined}
               data-dimmed={activeRole !== null && activeRole !== anchor.pin.role || undefined}
-              style={{ borderInlineStartColor: roleColors[anchor.pin.role].edge }}
-              onFocus={() => setFocusIndex(index)}
+              style={{ borderInlineStartColor: roleColors[anchor.pin.role].edge, gridRow: row + 1, gridColumn: col + 1 }}
+              onFocus={() => setFocusKey(anchor.key)}
               onClick={() => select(selectedKey === anchor.key ? null : anchor.key)}
               onKeyDown={(event) => {
-                const offset = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 2, ArrowUp: -2 }[event.key];
-                const next = event.key === "Home" ? 0 : event.key === "End" ? connectorPins.length - 1 : offset !== undefined ? (index + offset + connectorPins.length) % connectorPins.length : null;
+                const next = connectorKeyTarget(connectorPins, index, event.key);
                 if (next !== null) { event.preventDefault(); pinRefs.current[next]?.focus(); }
               }}>
               <span className="pi-connector-number">{anchor.pin.position}</span>

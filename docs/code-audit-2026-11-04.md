@@ -478,3 +478,66 @@ component placement is illustrated.
   whole board cannot be seen simultaneously on that short screen. Geometry
   has no internal clipping. Verification used Chrome mobile UA/touch emulation
   and fresh T3 preview, not physical devices, Safari or virtual keyboards.
+
+## Post-council review fixes — 2026-11-05
+
+A review of the three council commits (`a7dd1e6`, `3ad2d4c`, `3236786`)
+found one regression and two Raspberry Pi connector-list weaknesses.
+
+### Findings and changes
+
+- **One-word board search listed the whole catalog (regression, fixed).**
+  `pinBoardQuery` dropped the last word of any pin-like query so the board
+  list would search only the board part of `pico sda`. A single word that
+  looks like a pin label is also a board-name word, so `d1` (LOLIN D1 mini)
+  went from 35 results to all 196 and `a7` (Arty A7) from 16 to 196, on both
+  `/` and `/compare`. A one-word query now stays the board query; the pin
+  lookup still answers it. Regression: `test/catalog-board-query.test.tsx`
+  (fails without the fix). The generated CLI copy (`cli/src/pin-match.ts`)
+  was regenerated; the CLI catalog and pin index are unchanged.
+- **Uneven headers could drop pins from the Pi connector list (latent,
+  hardened).** Pairs were built by walking the left header only, so right
+  pins past the left side's length would vanish. No catalog board is
+  affected today (all 18 Raspberry Pi records have 20 pins per side). The
+  new `connectorCells` helper keeps each side in its own column and row;
+  each button gets an explicit grid row and column, so an extra pin sits
+  opposite an empty cell instead of shifting into the other header.
+  Regression: `test/connector-cells.test.ts`.
+- **Pi connector-list keyboard model (fixed).** The roving tab stop stayed
+  on the last pin focused in the list after a pin was chosen from the picker
+  or the board pads, so Tab re-entered at a pin the readout was not
+  describing; and Arrow Down on the last odd pin wrapped to pin 2 at the top
+  of the even header. The tab stop now follows the selection, and arrows
+  move by physical row and column and stop at the edges. Regressions in
+  `test/raspberry-pi-connector.test.tsx` (both fail without the fix).
+
+### Reviewed and left as is
+
+- The 5 V tolerance reordering in `board-discovery.ts` changes no catalog
+  board's result. The render-coverage inventory above (18/98/31/43/6)
+  matches `renderCoverage`. Family button labels stay inside the clear
+  field on every family board. The `/api/pins` payload is 1,174,195
+  characters, under the 2,000,000-character client cap that a unit test
+  guards.
+- Known limit, not changed: shield-split boards (UNO/Mega footprints) still
+  draw header pads in catalog signal order, disclosed by `SHIELD_ORDER_NOTE`.
+
+### Verification
+
+- Lint, typecheck, 1,751 unit/component tests (77 files) and the production
+  build passed. All 132 Playwright tests passed against the production
+  server (`CI=1`, retries disabled). CLI `check:boards`, lint, 139 tests and
+  build passed.
+- Under the local `next dev` server the 8 mobile release-gate runs time out
+  (first-request compilation with 8 parallel workers); the same tests pass
+  in 16 s against `next start`, which is what CI uses.
+- Mobile gate (mobile-mojo, production build, headed Chrome with emulated
+  Pixel 5 touch viewports, measured innerWidth 360/390/412/844) passed in
+  dark and light at 360×800, 390×844, 412×915 and 844×390: `d1`, `a7` and
+  `pico sda` on `/`, `a7` on `/compare`, and the Pi 5, Pico 2 W and inline
+  Pi 5 connector lists (40 unique pins, two aligned columns, 48 px minimum
+  button height, no horizontal overflow, picker selection scrolled into
+  view and set as the tab stop, arrow movement and edge stops). No console
+  errors. Not covered: other browsers, real touch hardware, iOS Safari. In
+  844×390 landscape the connector list shows about two rows at a time under
+  the sticky header; it scrolls and keeps the selected pin in view.
