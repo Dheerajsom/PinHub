@@ -168,15 +168,34 @@ Two presentations of one dataset, behind a persisted segmented control:
   draws a leader line, and shows the label; click/Enter pins the selection
   and fills the inspector with role, aliases, and note. Pads are real
   buttons: `Tab`/arrow navigable with visible focus rings.
-- **Embedded Raspberry Pi maps** — named physical pin pairs are the primary
-  controls, with a bounded vertical scroll and a physical-pin selector above
-  them. Preserve the source pairing (GPIO 1/2, Pico 1/40). Readout and cautions
-  follow the connector, or sit beside it when its container is wide enough.
-  The optional **Board overview and orientation** fits the panel and is an
-  illustration, not a second set of tiny controls. **Inspect** and **Full view**
-  retain the interactive board drawing. Never enlarge the entire embedded
-  board to make its SVG pads touch-sized at the expense of visible pin names
-  and a reachable readout.
+- **Embedded Raspberry Pi maps** — the physical board is the primary view.
+  It opens fitted whole inside the panel (334 px catalog column, 360 px
+  phones), with its orientation line above and pin 1 marked, and its pads stay
+  interactive: tap, click, or `Tab`/arrows then Enter. At fit size the pads are
+  small and the footer says so; **Zoom to touch size** enlarges the board until
+  every pad's hit region is at least 44 px and lets it pan, and **Fit whole
+  board** returns. The readout and cautions sit directly after the board, or
+  beside it in a wide container. A named pin list (44 px+ buttons in the
+  source's physical pairs, GPIO 1/2 and Pico 1/40) and a physical-pin picker
+  follow as the secondary selector; the board, list, picker and readout share
+  one selection. Never hide the board in a collapsed or inert disclosure, and
+  never describe fit-size pads as touch-sized. **Inspect** and **Full view**
+  keep the large interactive drawing.
+- **Board renders** — every Dynamic drawing is one of five tiers, computed by
+  `renderTier` in `src/lib/board-render-coverage.ts` from the same geometry
+  the renderer uses (a unit test pins the counts):
+  dedicated model artwork (Raspberry Pi), family illustration, generic
+  outline, function-grouped schematic, or no map yet. Family illustrations
+  (`src/lib/board-family-art.ts`) add only features the family is known for
+  and the record can back — a shielded module and antenna only when the board
+  records a radio, Espressif EN/BOOT beside the USB, the Nucleo ST-LINK
+  section with USER/RESET, the micro:bit LED matrix and A/B buttons, an SBC's
+  SoC and memory, a Jetson heatsink. They are placed only in the clear field
+  between connectors, never over a pad, and the caption calls them
+  representative, not the model's layout. Shield-footprint boards (UNO, Mega,
+  Nucleo-64, Nordic DK, LaunchPad) draw their header pads in the catalog's
+  signal order, and the caption says so. Never copy Raspberry Pi artwork onto
+  another board, and never draw a feature the catalog cannot back.
 - **Distinguishing roles**: color + on-pad number + text role label +
   legend — never color alone. Reserved and strap pins additionally carry
   notes explaining *why* they're risky.
@@ -487,9 +506,11 @@ embedding it.
 - **Touch scale before fit.** Interactive pads have at least a 44 × 44 CSS px
   hit region. Hit regions stay within the connector pitch; diagrams grow and
   scroll within their panel instead of overlapping neighboring pins. This
-  applies to planner/link sheets and full inspectors. Embedded Raspberry Pi
-  views use separate named, touch-sized connector buttons; their optional
-  fitted artwork is noninteractive.
+  applies to planner/link sheets and full inspectors. Embedded Dynamic maps
+  of physical boards open fitted whole and offer **Zoom to touch size** for
+  this scale; their named pin list (Raspberry Pi) or pin table carries the
+  touch-sized selection meanwhile. Function-grouped schematics stay at touch
+  scale.
   The inspector offers **Zoom labels** and **Working size** rather than a
   fit-to-width action that would shrink labels and controls below usable size.
   Scroll instructions and keyboard access accompany the drawing.

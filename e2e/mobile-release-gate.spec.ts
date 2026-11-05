@@ -115,11 +115,8 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await page.keyboard.press("Enter");
         await expect(page.getByRole("button", { name: /^Copy pin 40,/ })).toBeVisible();
         expect(await connector.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(0);
-        const overview = page.locator(".pi-board-overview");
-        expect(await overview.getAttribute("open")).toBeNull();
-        await overview.locator("summary").tap();
+        await expect(page.getByRole("group", { name: /^Raspberry Pi Pico physical board/ })).toBeVisible();
         expect((await page.locator(".pi-board-frame").boundingBox())!.width).toBeLessThanOrEqual(viewport.width);
-        await overview.locator("summary").tap();
         await noOverflow(page);
         await page.locator(".pi-schedule summary").tap();
         await touchSize(page.getByRole("button", { name: "Select pin 1, GP0", exact: true }));

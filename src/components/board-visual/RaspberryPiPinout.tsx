@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Expand, ExternalLink, Search, ShieldAlert } from "lucide-react";
+import { Expand, ExternalLink, Search, ShieldAlert, ZoomIn, ZoomOut } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinDetails } from "@/components/board-visual/PinDetails";
@@ -25,6 +26,10 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [focusIndex, setFocusIndex] = useState(0);
+  // Fit is the default: the whole physical board is visible in a 334 px panel.
+  // Touch size enlarges it so every pad's hit area is at least 44 px.
+  const [zoomed, setZoomed] = useState(false);
+  const boardScrollRef = useRef<HTMLDivElement>(null);
   const expandRef = useRef<HTMLButtonElement>(null);
   const connectorRef = useRef<HTMLDivElement>(null);
   const pinRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -57,6 +62,16 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
     if (pinBox.top < regionBox.top) region.scrollTop -= regionBox.top - pinBox.top;
     else if (pinBox.bottom > regionBox.bottom) region.scrollTop += pinBox.bottom - regionBox.bottom;
   }, [connectorPins, selectedKey]);
+  useEffect(() => {
+    const region = boardScrollRef.current;
+    if (!zoomed || !region || !selectedKey) return;
+    const pad = region.querySelector(`[data-pin-key="${CSS.escape(selectedKey)}"]`);
+    if (!pad) return;
+    const padBox = pad.getBoundingClientRect();
+    const regionBox = region.getBoundingClientRect();
+    region.scrollLeft += padBox.left + padBox.width / 2 - (regionBox.left + regionBox.width / 2);
+    region.scrollTop += padBox.top + padBox.height / 2 - (regionBox.top + regionBox.height / 2);
+  }, [zoomed, selectedKey]);
   if (!geometry || !board.pinout) return null;
   const model = raspberryPiModel(board.id)!;
   const liveAnchor = anchors.find((anchor) => anchor.key === liveKey) ?? null;
@@ -81,37 +96,21 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
       </header>
 
       <div className="pi-component-layout">
-        <div className="pi-canvas">
-          <div className="pi-connector-heading">
-            <p>Select a labelled pin for details and cautions. Keyboard: arrows, then Enter.</p>
-            <select className="pi-pin-picker" aria-label="Select physical pin" value={selectedKey ?? ""} onChange={(event) => select(event.target.value || null)}>
-              <option value="">Choose a pin…</option>
-              {anchors.map(({ key, pin }) => <option key={key} value={key}>{pin.position} · {pin.label}{pin.aliases?.length ? ` / ${pin.aliases.join(", ")}` : ""}</option>)}
-            </select>
-            <p className="pi-connector-orientation">Physical pin pairs · {model.family === "pico" ? "1 opposite 40" : "odd / even"} · scroll for all {anchors.length} pins</p>
-          </div>
-          <div ref={connectorRef} className="pi-connector-scroll" role="group" aria-label="Select a physical pin from the connector">
-            <div className="pi-connector-grid">
-              {connectorPins.map((anchor, index) => <button key={anchor.key} type="button"
-                ref={(element) => { pinRefs.current[index] = element; }}
-                aria-label={pinAccessibleLabel(anchor.pin)} aria-pressed={selectedKey === anchor.key}
-                tabIndex={focusIndex === index ? 0 : -1}
-                className="pi-connector-pin" data-selected={selectedKey === anchor.key || undefined}
-                data-dimmed={activeRole !== null && activeRole !== anchor.pin.role || undefined}
-                style={{ borderInlineStartColor: roleColors[anchor.pin.role].edge }}
-                onFocus={() => setFocusIndex(index)}
-                onClick={() => select(selectedKey === anchor.key ? null : anchor.key)}
-                onKeyDown={(event) => {
-                  const offset = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 2, ArrowUp: -2 }[event.key];
-                  const next = event.key === "Home" ? 0 : event.key === "End" ? connectorPins.length - 1 : offset !== undefined ? (index + offset + connectorPins.length) % connectorPins.length : null;
-                  if (next !== null) { event.preventDefault(); pinRefs.current[next]?.focus(); }
-                }}>
-                <span className="pi-connector-number">{anchor.pin.position}</span>
-                <span className="pi-connector-signal"><strong>{anchor.pin.label}</strong>
-                  <small>{anchor.pin.aliases?.slice(0, 2).join(" / ") || roleLabels[anchor.pin.role]}</small>
-                </span>
-              </button>)}
+        <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
+          <p className="pi-board-orientation">{geometry.orientation}</p>
+          <div ref={boardScrollRef} className="pi-canvas-scroll" data-zoomed={zoomed || undefined}
+            {...(zoomed ? { tabIndex: 0, role: "group", "aria-label": "Scrollable board at touch size" } : {})}>
+            <div className="pi-board-frame" data-board-view={zoomed ? "touch" : "fit"}
+              style={{ aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}`, ...(zoomed ? { boxSizing: "content-box", minWidth: touchDrawingWidth(geometry, true), maxWidth: "none" } : {}) }}>
+              <BoardStage geometry={geometry} title={`${board.name} physical board — ${board.pinout.connector}`} sheetLabel={board.name}
+                compact selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={false} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
             </div>
+          </div>
+          <div className="pi-canvas-footer">
+            <span>{zoomed ? "Touch size · every pad has a 44 px target · swipe to pan" : "Whole board · pads are small at this size"}</span>
+            <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(!zoomed)}>
+              {zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Fit whole board" : "Zoom to touch size"}
+            </button>
           </div>
         </div>
 
@@ -125,20 +124,44 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
         </aside>
       </div>
 
+      <section className="pi-pin-list" aria-label="Pin list">
+        <div className="pi-connector-heading">
+          <p>Pick a pin by name: the board pads, this list and the picker select the same pin. Keyboard: arrows, then Enter.</p>
+          <select className="pi-pin-picker" aria-label="Select physical pin" value={selectedKey ?? ""} onChange={(event) => select(event.target.value || null)}>
+            <option value="">Choose a pin…</option>
+            {anchors.map(({ key, pin }) => <option key={key} value={key}>{pin.position} · {pin.label}{pin.aliases?.length ? ` / ${pin.aliases.join(", ")}` : ""}</option>)}
+          </select>
+          <p className="pi-connector-orientation">Physical pin pairs · {model.family === "pico" ? "1 opposite 40" : "odd / even"} · scroll for all {anchors.length} pins</p>
+        </div>
+        <div ref={connectorRef} className="pi-connector-scroll" role="group" aria-label="Select a physical pin from the connector">
+          <div className="pi-connector-grid">
+            {connectorPins.map((anchor, index) => <button key={anchor.key} type="button"
+              ref={(element) => { pinRefs.current[index] = element; }}
+              aria-label={pinAccessibleLabel(anchor.pin)} aria-pressed={selectedKey === anchor.key}
+              tabIndex={focusIndex === index ? 0 : -1}
+              className="pi-connector-pin" data-selected={selectedKey === anchor.key || undefined}
+              data-dimmed={activeRole !== null && activeRole !== anchor.pin.role || undefined}
+              style={{ borderInlineStartColor: roleColors[anchor.pin.role].edge }}
+              onFocus={() => setFocusIndex(index)}
+              onClick={() => select(selectedKey === anchor.key ? null : anchor.key)}
+              onKeyDown={(event) => {
+                const offset = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 2, ArrowUp: -2 }[event.key];
+                const next = event.key === "Home" ? 0 : event.key === "End" ? connectorPins.length - 1 : offset !== undefined ? (index + offset + connectorPins.length) % connectorPins.length : null;
+                if (next !== null) { event.preventDefault(); pinRefs.current[next]?.focus(); }
+              }}>
+              <span className="pi-connector-number">{anchor.pin.position}</span>
+              <span className="pi-connector-signal"><strong>{anchor.pin.label}</strong>
+                <small>{anchor.pin.aliases?.slice(0, 2).join(" / ") || roleLabels[anchor.pin.role]}</small>
+              </span>
+            </button>)}
+          </div>
+        </div>
+      </section>
+
       <details className="pi-role-disclosure">
         <summary>Highlight pin roles{activeRole ? ` · ${roleLabels[activeRole]}` : ""}</summary>
         <div className="pi-role-bar"><PinRoleLegend counts={roleCounts} activeRole={activeRole} onToggle={setActiveRole} />
           {activeRole ? <button className="pi-clear" type="button" onClick={() => setActiveRole(null)}>Show all roles</button> : null}
-        </div>
-      </details>
-      <details className="pi-board-overview">
-        <summary>Board overview and orientation</summary>
-        <p className="pi-overview-orientation">{geometry.orientation}</p>
-        <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
-          <div className="pi-board-frame" inert aria-hidden="true" style={{ aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}` }}>
-            <BoardStage geometry={geometry} title={`${board.name} — ${board.pinout.connector}`} sheetLabel={board.name}
-              compact selectedKey={selectedKey} activeKey={selectedKey} activeRole={activeRole} showAllLabels={false} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
-          </div>
         </div>
       </details>
 

@@ -7,6 +7,7 @@ import type { Board, PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { illustrationCaption } from "@/components/board-visual/illustration-caption";
 import {
   PinDetails,
   type PinoutSource,
@@ -331,9 +332,7 @@ export function InspectorBody({
             ) : null}
           </div>
           <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-            {geometry.notToScale
-              ? "Simplified diagram, grouped by function — not to physical scale. Pin data is source-backed; verify against the linked documentation."
-              : "Simplified technical illustration. Pin data is source-backed; verify against the linked documentation before wiring."}
+            {illustrationCaption(geometry)}
           </p>
         </div>
 

@@ -1,5 +1,7 @@
 import { useId } from "react";
 import { RaspberryPiArtwork } from "@/components/board-visual/RaspberryPiArtwork";
+import { FamilyArtwork } from "@/components/board-visual/FamilyArtwork";
+import { freeField, layoutFamilyArt, overlaps } from "@/lib/board-family-art";
 import type {
   BoardGeometry,
   Hole,
@@ -135,7 +137,20 @@ export function BoardArtwork({
   const mid = shade(accent, -0.24);
   const light = shade(accent, 0.14);
   const field = freeField(body, headerZones, ports);
-  const parts = populate(field);
+  // Family features (module can, buttons, debugger section) take their part of
+  // the clear field first; the generic parts fill what is left, or stand down
+  // when the family drawing replaces them.
+  const family = geometry.familyArt
+    ? layoutFamilyArt(geometry.familyArt, field, geometry.usbEdge)
+    : null;
+  const parts = family
+    ? clearOf(family.rest ? populate(family.rest) : noParts, family.features.map((feature) => feature.rect))
+    : populate(field);
+  // The silkscreen name sits along the bottom of the field; leave it off when a
+  // family feature already occupies that strip.
+  const labelClear = !family || family.features.every(
+    (feature) => feature.rect.y + feature.rect.h < field.y + field.h - 26,
+  );
   const traces = routeTraces(parts.chip, headerZones, body);
 
   return (
@@ -300,7 +315,7 @@ export function BoardArtwork({
         </text>
       ))}
 
-      {label && field.w > 150 ? (
+      {label && field.w > 150 && labelClear ? (
         <text
           x={field.x + field.w / 2}
           y={field.y + field.h - 4}
@@ -348,6 +363,9 @@ export function BoardArtwork({
       {parts.leds.map((rect, index) => (
         <Led key={`led-${index}`} rect={rect} warm={index % 2 === 1} />
       ))}
+      {family ? (
+        <FamilyArtwork layout={family} metal={id("metal")} silicon={id("silicon")} />
+      ) : null}
 
       {/* Connectors, on the edges the catalog records. */}
       {ports.map((port, index) => (
@@ -741,47 +759,6 @@ function MountingHole({ hole, gold }: { hole: Hole; gold: string }) {
 
 // --- layout ----------------------------------------------------------------
 
-/** The clear board area: inside the outline, outside every header and port. */
-function freeField(body: Rect, zones: Rect[], ports: PortMark[]): Rect {
-  const pad = 22;
-  let x0 = body.x + pad;
-  let y0 = body.y + pad;
-  let x1 = body.x + body.w - pad;
-  let y1 = body.y + body.h - pad;
-  const cx = body.x + body.w / 2;
-  const cy = body.y + body.h / 2;
-
-  const push = (region: Rect, gap: number) => {
-    const overlaps =
-      region.x < body.x + body.w &&
-      region.x + region.w > body.x &&
-      region.y < body.y + body.h &&
-      region.y + region.h > body.y;
-    if (!overlaps) return;
-    if (region.w >= region.h) {
-      if (region.y + region.h / 2 < cy) {
-        y0 = Math.max(y0, region.y + region.h + gap);
-      } else {
-        y1 = Math.min(y1, region.y - gap);
-      }
-    } else if (region.x + region.w / 2 < cx) {
-      x0 = Math.max(x0, region.x + region.w + gap);
-    } else {
-      x1 = Math.min(x1, region.x - gap);
-    }
-  };
-
-  for (const zone of zones) push(zone, pad);
-  for (const port of ports) push(port, 10);
-
-  // A board whose connectors leave no clear field gets no components, rather
-  // than components stacked on top of its ports.
-  if (x1 - x0 < 46 || y1 - y0 < 46) {
-    return { x: cx, y: cy, w: 0, h: 0 };
-  }
-  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
-}
-
 type Parts = {
   chip: Rect | null;
   crystal: Rect | null;
@@ -884,6 +861,20 @@ function populate(field: Rect): Parts {
     caps: caps.filter((rect) => inside(rect, field)),
     resistors: resistors.filter((rect) => inside(rect, field)),
     leds: leds.filter((rect) => inside(rect, field)),
+  };
+}
+
+// Generic parts never sit under a family feature: any that would is dropped.
+function clearOf(parts: Parts, taken: Rect[]): Parts {
+  const free = (rect: Rect | null) => (rect && !taken.some((other) => overlaps(rect, other, 6)) ? rect : null);
+  const many = (rects: Rect[]) => rects.filter((rect) => free(rect));
+  return {
+    chip: free(parts.chip),
+    crystal: free(parts.crystal),
+    regulator: free(parts.regulator),
+    caps: many(parts.caps),
+    resistors: many(parts.resistors),
+    leds: many(parts.leds),
   };
 }
 

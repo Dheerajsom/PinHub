@@ -15,7 +15,7 @@ links to official documentation, and most carry an interactive pin map.
 |---|---|
 | `/` | Catalog: search boards and pins (`pico sda`, `rpi5 spi`, `esp32 gpio27`), filter, favorite, and open board detail |
 | `/pinout/[id]` | Logic and wiring cautions, selected-pin summary and diagram jump, interactive pin map, recorded capability filters, primary-role highlighting, net probing, complete print schedule, and Markdown/CSV export |
-| `/boards/[id]` | Specs, wiring warnings, and sources |
+| `/boards/[id]` | Specs, wiring warnings, sources, Static pin map, and a fitted physical-board Dynamic view with touch-size zoom and Inspect (grouped maps remain connector schematics) |
 | `/pinout/[id]/opengraph-image`, `/boards/[id]/opengraph-image` | 1200×630 link-preview image of the board's pins, colored by role |
 | `/compare` | Discover boards with labeled filters, then compare up to four side by side; differences first; shareable URL |
 | `/planner` | Review board cautions, mark the pins you use, and fit I2C, SPI, UART, PWM, and ADC into what's left |

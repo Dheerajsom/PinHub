@@ -308,3 +308,173 @@ not counted as final coverage. The reviewer finished in an isolated Chrome
 Playwright browser with exact viewport and touch/mobile emulation. This is
 focused verification of the reported embedded-map failure, not a new full
 council score or physical-device, Safari, screen-reader or hardware validation.
+
+## Correction: physical board restored as the primary Dynamic view
+
+The user rejected the previous follow-up: the Dynamic view exists so people
+can see a physical representation of the board. That commit (`3ad2d4c`)
+replaced the board with a named list and moved the artwork into a collapsed
+**Board overview and orientation** disclosure whose drawing was `inert` and
+`aria-hidden`, so by default no board was visible and no board pad could be
+used. The list was not the defect. Hiding the board was.
+
+### Raspberry Pi Dynamic view
+
+- The interactive board (`BoardStage`, compact framing) is again the first
+  content under the heading, with the orientation line above it. It is fitted
+  to the container with no forced minimum width, so the whole Pi 5 board fits
+  the 334 px catalog panel and 360 px phones (Pico capped at 200 px wide).
+  The collapsed inert overview is removed.
+- Board pads stay interactive at fit size (pointer, `Tab`/arrows, Enter). The
+  footer says the pads are small at this size; it does not claim 44 px.
+  **Zoom to touch size** sets the frame to `touchDrawingWidth(geometry, true)`
+  (content-box, so the padding does not eat into it), makes it a focusable
+  pannable region, and scrolls the selected pad into view. **Fit whole board**
+  returns.
+- Readout and electrical note follow the board (beside it at 650 px+
+  container width). The 48 px named pin list in source physical pairs and the
+  physical-pin picker follow as the secondary selector. Board, list, picker and
+  readout share one selection state.
+- Source pins, cautions, logic-level note, official-docs link, wiring notes,
+  role highlighting, schedule table, **Inspect** and **Full view** are
+  unchanged.
+
+### Cross-family board renders
+
+Before this change, every non-Pi physical board used one generic outline: a
+rule-placed QFN, a few passives, and connectors on the recorded edges. A new
+family layer (`src/lib/board-family-art.ts`, drawn by
+`board-visual/FamilyArtwork.tsx`) adds the features a family is recognized by.
+Features are chosen from metadata the catalog already curates (visual
+template, recorded radio interfaces):
+
+- **Espressif DevKit / NodeMCU**: shielded module with PCB-antenna meander at
+  the end away from the USB, two push-buttons beside the USB.
+- **Arduino Nano** (Arduino-branded only): centre reset button; module can
+  when a radio is recorded. **UNO/Mega footprint**: reset button by the USB
+  corner.
+- **STM32 Nucleo-64**: dashed ST-LINK section with its MCU, then USER (blue)
+  and RESET (black) buttons. Nucleo-144 keeps its builder-drawn STLINK-V3E
+  delimiter.
+- **TI LaunchPad**: dashed eZ-FET emulation section.
+- **BBC micro:bit**: 5×5 LED matrix with A/B buttons, and no generic IC,
+  because the processor is on the back.
+- **STM32 pills**: boot jumpers and reset (blue pill), two buttons (black
+  pill).
+- **Feather, XIAO, MKR, D1 mini**: shielded radio module only when the record
+  lists a radio. XIAO cans have no PCB antenna. QT Py ESP32 boards, ESP32 Thing
+  and Nano Matter are excluded because their radios are not a separate
+  shielded module of that shape.
+- **40-pin and Zero-size SBCs** (non-Pi, non-enclosed): SoC with heat spreader
+  plus memory package. **Jetson dev kits**: heatsink and fan.
+
+Family features are placed only in the clear field between connectors.
+Generic parts that would sit under a feature are dropped, never moved onto a
+connector, and a feature that does not fit is dropped rather than shrunk. The
+caption names the family and calls the drawing representative, not the
+model's exact layout. No Raspberry Pi artwork is reused on another board, and
+no feature carries a pin or an electrical claim. References are cited in the
+module header: the Espressif DevKitC guide, micro:bit hardware pages, ST
+UM1724, TI SLAU772, Arduino hardware docs, and NVIDIA Jetson guides.
+
+The embedded generic map (`BoardPinoutVisualization`) now also opens physical
+boards fitted whole, with the same **Zoom to touch size** / **Fit whole
+board** toggle. Function-grouped schematics stay at touch size, unchanged.
+
+### Coverage inventory (derived by `renderCoverage`, pinned by a unit test)
+
+| Tier | Boards |
+| --- | --- |
+| dedicated | 18 |
+| family | 98 |
+| generic | 31 |
+| schematic | 43 |
+| unmapped | 6 |
+| total | 196 |
+
+Family illustrations by family and drawn features:
+
+- UNO-footprint board (button) — 5: `arduino-uno-r4-wifi`, `arduino-uno-rev3`, `arduino-uno-r4-minima`, `arduino-uno-q`, `sparkfun-redboard-qwiic`
+- Arduino Nano (rf-module, button) — 6: `arduino-nano-esp32`, `arduino-nano-33-ble-sense`, `arduino-nano-33-iot`, `arduino-nano-rp2040-connect`, `arduino-nano-33-ble`, `arduino-nano-33-ble-sense-rev2`
+- Espressif DevKit (rf-module, button, button) — 14: `esp32-devkit-v1`, `esp32-devkitc`, `esp32-s3-devkitc-1`, `esp32-c3-devkitm-1`, `esp32-c3-devkitc-02`, `esp32-s2-devkitm-1`, `esp32-c6-devkitc-1`, `esp32-s2-saola-1`, `nodemcu-devkit-v1`, `esp32-h2-devkitm-1`, `esp32-c61-devkitc-1`, `esp8684-devkitm-1`, `esp32-s3-devkitm-1`, `esp32-c6-devkitm-1`
+- STM32 Nucleo-64 (debug-section, button, button) — 18: `stm32-nucleo-f401re`, `stm32-nucleo-f103rb`, `stm32-nucleo-f446re`, `stm32-nucleo-l476rg`, `stm32-nucleo-g071rb`, `stm32-nucleo-f411re`, `stm32-nucleo-f072rb`, `stm32-nucleo-f091rc`, `stm32-nucleo-f303re`, `stm32-nucleo-f334r8`, `stm32-nucleo-g431rb`, `stm32-nucleo-g474re`, `stm32-nucleo-g0b1re`, `stm32-nucleo-c031c6`, `stm32-nucleo-l053r8`, `stm32-nucleo-l073rz`, `stm32-nucleo-l152re`, `stm32-nucleo-h503rb`
+- NVIDIA Jetson developer kit (heatsink) — 4: `jetson-orin-nano-dev-kit`, `nvidia-jetson-nano-dev-kit`, `nvidia-jetson-xavier-nx-dev-kit`, `nvidia-jetson-agx-orin-devkit`
+- Zero-size single-board computer (soc) — 3: `radxa-zero-3w`, `banana-pi-bpi-m2-zero`, `radxa-zero-3e`
+- 40-pin single-board computer (soc) — 20: `orange-pi-5`, `banana-pi-bpi-m5`, `odroid-c4`, `pine64-rockpro64`, `libre-computer-le-potato`, `beagley-ai`, `radxa-rock-5b`, `odroid-n2-plus`, `odroid-m1`, `pine64-quartz64-model-b`, `khadas-vim4`, `google-coral-dev-board`, `starfive-visionfive-2`, `radxa-rock-3a`, `libre-computer-alta`, `libre-computer-solitude`, `libre-computer-tritium-h5`, `orange-pi-zero-2w`, `orange-pi-3b`, `orange-pi-5-plus`
+- Mega-footprint board (button) — 2: `arduino-mega-2560-rev3`, `arduino-due`
+- Arduino Nano (button) — 4: `arduino-nano`, `arduino-nano-every`, `arduino-nano-r4`, `arduino-nano-matter`
+- Arduino MKR (rf-module) — 2: `arduino-mkr-wifi-1010`, `arduino-mkr-1000-wifi`
+- BBC micro:bit (led-matrix, button, button) — 1: `bbc-microbit-v2`
+- XIAO / QT Py (rf-module) — 10: `seeed-xiao-esp32s3`, `seeed-xiao-nrf52840`, `seeed-xiao-esp32c3`, `seeed-xiao-esp32c6`, `seeed-xiao-mg24`, `seeed-xiao-nrf54l15`, `seeed-xiao-nrf54lm20a`, `seeed-xiao-esp32c5`, `seeed-xiao-esp32s3-sense`, `seeed-xiao-nrf52840-sense`
+- STM32 pill (boot-jumpers, button) — 1: `stm32f103-blue-pill`
+- STM32 pill (button, button) — 1: `weact-black-pill-stm32f411`
+- TI LaunchPad (debug-section) — 1: `ti-msp-exp430g2et-launchpad`
+- ESP-12 module board (rf-module) — 1: `lolin-d1-mini`
+- Adafruit Feather (rf-module) — 4: `adafruit-feather-nrf52840-express`, `adafruit-esp32-s3-feather`, `adafruit-feather-esp32-v2`, `adafruit-feather-esp32-s2`
+- STM32 Nucleo-144 (builder ST-LINK delimiter) — 1: `stm32-nucleo-h753zi`
+
+Generic outline only (31): `teensy-41`, `adafruit-feather-rp2040`, `seeed-xiao-rp2040`, `adafruit-qt-py-esp32-s3`, `adafruit-qt-py-esp32-c3`, `nordic-nrf52840-dk`, `milkv-duo`, `seeed-wio-terminal`, `arduino-mkr-zero`, `arduino-mkr-wan-1310`, `adafruit-feather-m4-express`, `seeed-xiao-samd21`, `seeed-reterminal`, `sparkfun-pro-micro-rp2040`, `sparkfun-esp32-thing`, `teensy-40`, `teensy-lc`, `nordic-nrf5340-dk`, `nordic-nrf52-dk`, `adafruit-qt-py-rp2040`, `seeed-xiao-rp2350`, `seeed-xiao-ra4m1`, `stm32-nucleo-l432kc`, `stm32-nucleo-g431kb`, `stm32-nucleo-f303k8`, `adafruit-feather-rp2350`, `adafruit-kb2040`, `waveshare-rp2350-plus`, `adafruit-qt-py-esp32-s2`, `adafruit-feather-m0-express`, `sparkfun-pro-micro`.
+
+Function-grouped schematic (43): `beaglebone-black`, `adafruit-metro-esp32-s3`, `sparkfun-thing-plus-rp2040`, `sparkfun-thing-plus-esp32-wroom-usbc`, `sparkfun-redboard-artemis-atp`, `lilygo-t-display-s3`, `lolin-s2-mini`, `particle-photon-2`, `adafruit-itsybitsy-m4`, `arduino-giga-r1-wifi`, `arduino-pro-mini`, `seeed-beaglebone-green`, `arduino-leonardo`, `arduino-micro`, `arduino-zero`, `adafruit-itsybitsy-rp2040`, `adafruit-metro-m4-express`, `adafruit-grand-central-m4-express`, `sparkfun-redboard-turbo`, `teensy-32`, `particle-boron`, `particle-argon`, `beaglebone-ai-64`, `ti-lp-mspm0g3507`, `silabs-xg24-explorer-kit`, `waveshare-rp2040-zero`, `lattice-machxo2-breakout`, `lattice-machxo3d-breakout`, `lattice-icestick`, `lattice-machxo3l-starter`, `lattice-crosslink-nx-eval`, `nxp-frdm-kl25z`, `digilent-nexys-a7-100t`, `terasic-de10-lite`, `flipper-zero`, `esp32-p4-function-ev-board`, `digilent-zybo-z7-20`, `digilent-arty-s7-50`, `digilent-cmod-a7-35t`, `arduino-nicla-sense-me`, `milkv-duo-s-v12`, `esp32-c5-devkitc-1`, `waveshare-rp2350-zero`.
+
+No map yet (6): `stm32f4-discovery`, `ti-ek-tm4c123gxl-launchpad`, `digilent-arty-a7`, `digilent-basys-3`, `arduino-portenta-h7`, `nordic-nrf9160-dk`.
+The family tier means recognizable family features, not verified per-model
+placement. No board is claimed to have an exact model layout except the
+dedicated Raspberry Pi artwork, and that artwork's own caption says that
+component placement is illustrated.
+
+### Known limits (flagged, not fixed here)
+
+- Shield-split headers (UNO, Mega, Due, Nucleo-64, Nordic DKs, LaunchPad,
+  RedBoard, UNO Q) are drawn in the catalog's group order (D0 upward, analog
+  before power on the UNO records), not the physical sequence along the
+  board. The drawing now says so in its caption (`SHIELD_ORDER_NOTE`).
+  Reordering needs per-board physical sequences, including headers the
+  records omit (SCL/SDA/AREF), and was not attempted.
+- 31 physical boards remain on the generic outline (list above). Teensy,
+  RP2040/RP2350 Feathers and XIAOs without radios, QT Py, Nucleo-32, Nordic
+  DKs, Wio Terminal and reTerminal need model sources before adding
+  features.
+- Button and module positions are family-typical. Within a family, the exact
+  side or offset can differ by model and revision.
+- At fit size, board pads are below 44 px. The named list, picker, schedule
+  table and **Zoom to touch size** provide touch-sized selection.
+
+### Verification in this implementation pass
+
+- `npm run lint`, `npm run typecheck`: clean.
+- `npm test`: 1,742 tests in 75 files, all passing (baseline before this pass was 1,728 tests
+  in 74 files). The new and rewritten regressions are
+  `test/raspberry-pi-connector.test.tsx` (visible, non-inert board first;
+  fit-by-default with no min-width; every source pin is a board pad;
+  board ↔ list ↔ picker selection sync; 44 px zoom and back; board-pad
+  keyboard) and `test/board-family-art.test.tsx` (features never cover a pad,
+  leave the body, or overlap; Pi stays dedicated; RF can only with a recorded
+  radio; rendered feature sets; captions and order note; inventory counts;
+  generic fit/zoom; schematic stays touch-size).
+- Browser specs updated, not deleted: `e2e/raspberry-pi-redesign.spec.ts` now
+  requires the fitted board to be visible and interactive, zooms to touch size
+  and checks a ≥44 px hit region, selects pin 40 on the board, and checks list
+  sync. The landscape and desktop keyboard tests now use the board's own pads.
+  `e2e/mobile-release-gate.spec.ts` checks that the Pico board is visible and
+  fits.
+- Parent integration: production build `foZiZ69hjvzcq-SvWqWE3` passed; all 132
+  Playwright tests passed against that production server without retries.
+  The TI LaunchPad debugger illustration distinguishes MSP430 eZ-FET from
+  TM4C ICDI, checked against https://www.ti.com/tool/EK-TM4C123GXL and covered
+  by a regression. The TM4C board still has no pin map and is not counted as
+  a rendered board.
+- Independent final mobile-mojo gate passed: Pi 5 and Pico 2 W at
+  360×800, 390×844, 412×915 and 844×390 in both themes; ESP32-DevKitC V4,
+  UNO Rev3, Nucleo-F401RE and micro:bit V2 at 390×844 in both themes and
+  the narrow 1280×900 desktop catalog. Fit/zoom, pad targets, synchronized
+  artwork/picker/readout, keyboard navigation, inspector focus, captions,
+  console errors and page overflow were checked from real browser screenshots.
+  All 156 source-file hashes matched before/after. Evidence is under local
+  Temp/pinhub-physical-boards/mobile; prefer CLEAN-* captures, because earlier
+  captures had screenshot-positioning artifacts.
+- Landscape limit: at 844×390, fitted Pi/Pico canvases are 379/451 px high
+  beneath a 118 px sticky toolbar. Ordinary page scrolling is required; the
+  whole board cannot be seen simultaneously on that short screen. Geometry
+  has no internal clipping. Verification used Chrome mobile UA/touch emulation
+  and fresh T3 preview, not physical devices, Safari or virtual keyboards.
