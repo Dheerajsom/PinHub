@@ -241,3 +241,70 @@ current silicon/datasheets. This change preserves and presents existing recorded
 restrictions and sources; it cannot establish electrical compatibility or
 completeness of undocumented pin capabilities. No performance benchmark is
 claimed, and the existing summary/detail loading boundary remains a gate.
+
+## Corrective follow-up: embedded Raspberry Pi map usability
+
+The user's screenshot demonstrated a usability failure that the council's
+passing scores did not catch. A desktop catalog detail panel measured 334 px
+inside the map, while the SVG's touch-size calculation forced the entire board
+to 1,552 px wide and about 1,088 px high. Only numbered pads and a cropped part
+of the board were initially visible; the physical-pin picker and readout sat
+below the oversized artwork (the readout began around page y=1,608).
+
+The earlier review accepted internal diagram panning and verified the larger
+inspector, but did not establish that an engineer could identify and select a
+named pin in this narrow embedded state. A lack of document-wide overflow and
+44 px SVG hit regions were insufficient acceptance criteria. The prior council
+scores must not be used as evidence that this state was usable.
+
+`RaspberryPiPinout` now puts labelled physical pin pairs first. It preserves
+the source pairing (GPIO 1/2, Pico 1/40), numbers, aliases, notes and warnings.
+The connector is a bounded vertical list with buttons at least 48 px high;
+selection details follow it, or sit beside it in a wide container. The
+physical-pin selector is above the list and reveals its selection within that
+list. Arrow keys, Home/End, Enter and Escape support keyboard use.
+
+Board artwork is available under **Board overview and orientation**, fitted to
+the container and noninteractive. **Inspect** and **Full view** retain the full
+interactive drawing. Role highlighting is optional so it no longer pushes the
+named pins down the initial panel. Source data, loading boundaries and electrical
+claims are unchanged. The design notes now distinguish interactive inspector
+touch targets from the fitted embedded overview.
+
+Three component regressions cover source pair ordering, named selection,
+keyboard movement, picker selection and clearing. Five new browser regressions
+cover the embedded catalog at 360, 390, 412, 844 and 1280 px, including the
+narrow desktop detail panel. Existing Pi and mobile release gates now check the
+new interaction rather than the removed artwork zoom controls.
+
+The independent mobile check also caught a misleading shared empty-state hint:
+the new connector requires Enter to select a focused pin, whereas the hint
+promised that arrowing alone inspected it. The readout now says to select a
+pin, and the embedded connector explicitly explains arrows followed by Enter.
+
+Final automated verification: lint and typecheck passed; all 1,728 unit tests
+in 74 files passed; the production build passed (BUILD_ID
+`zNMDuUbJVjYWCHQPddeD5`); all 132 Chrome browser regressions passed without
+retries against that production server. The first broad browser run had eight
+failures because the older release-gate test still required the removed zoom
+controls; it was updated to verify named-pin selection, source pairing,
+keyboard access and fitted overview. Those failed attempts are not counted as
+passes. Browser logs and screenshots are in the local temporary evidence folder
+`pinhub-compact-map-fix`.
+
+The independent mobile-mojo subagent passed the final affected flows at
+360×800, 390×844, 412×915, 844×390 and the 1280×800 narrow desktop catalog,
+in both themes. It inspected screenshots and exercised named pins 3/40,
+the picker, copy/readout, cautions/source links, keyboard navigation,
+role highlighting, fitted overview, Inspect/focus return and Full view.
+Pi 4, Zero 2 W and Pico 2 W source pairing and endpoint readouts were also
+checked at 390 px. No remaining correction was identified in that scope.
+The final report and screenshot evidence are in the local temporary
+`pinhub-compact-map-fix/mobile` directory.
+
+The shared T3 preview became inconsistent after the production restart,
+reporting mismatched viewport sizes and stale frames. Those attempts were
+not counted as final coverage. The reviewer finished in an isolated Chrome
+Playwright browser with exact viewport and touch/mobile emulation. This is
+focused verification of the reported embedded-map failure, not a new full
+council score or physical-device, Safari, screen-reader or hardware validation.

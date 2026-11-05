@@ -168,6 +168,15 @@ Two presentations of one dataset, behind a persisted segmented control:
   draws a leader line, and shows the label; click/Enter pins the selection
   and fills the inspector with role, aliases, and note. Pads are real
   buttons: `Tab`/arrow navigable with visible focus rings.
+- **Embedded Raspberry Pi maps** — named physical pin pairs are the primary
+  controls, with a bounded vertical scroll and a physical-pin selector above
+  them. Preserve the source pairing (GPIO 1/2, Pico 1/40). Readout and cautions
+  follow the connector, or sit beside it when its container is wide enough.
+  The optional **Board overview and orientation** fits the panel and is an
+  illustration, not a second set of tiny controls. **Inspect** and **Full view**
+  retain the interactive board drawing. Never enlarge the entire embedded
+  board to make its SVG pads touch-sized at the expense of visible pin names
+  and a reachable readout.
 - **Distinguishing roles**: color + on-pad number + text role label +
   legend — never color alone. Reserved and strap pins additionally carry
   notes explaining *why* they're risky.
@@ -478,7 +487,9 @@ embedding it.
 - **Touch scale before fit.** Interactive pads have at least a 44 × 44 CSS px
   hit region. Hit regions stay within the connector pitch; diagrams grow and
   scroll within their panel instead of overlapping neighboring pins. This
-  applies to planner/link sheets, full inspectors, and compact artwork.
+  applies to planner/link sheets and full inspectors. Embedded Raspberry Pi
+  views use separate named, touch-sized connector buttons; their optional
+  fitted artwork is noninteractive.
   The inspector offers **Zoom labels** and **Working size** rather than a
   fit-to-width action that would shrink labels and controls below usable size.
   Scroll instructions and keyboard access accompany the drawing.

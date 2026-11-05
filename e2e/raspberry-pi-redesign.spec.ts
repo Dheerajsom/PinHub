@@ -88,10 +88,12 @@ for (const viewport of viewports) {
         await interactive.getByRole("button", { name: /^Pin 1,/ }).tap();
         await expect(interactive.getByRole("button", { name: /^Pin 1,/ })).toHaveAttribute("aria-pressed", "true");
         await expect(picker).not.toHaveValue("");
-        await interactive.getByRole("button", { name: "Zoom board", exact: true }).tap();
-        await expect(interactive.getByRole("button", { name: "Working size", exact: true })).toBeVisible();
+        await interactive.getByText("Board overview and orientation", { exact: true }).tap();
+        const overview = await interactive.locator(".pi-board-frame").boundingBox();
+        expect(overview!.width).toBeLessThanOrEqual(viewport.width);
         await fitsViewport(page);
-        await interactive.getByRole("button", { name: "Working size", exact: true }).tap();
+        await interactive.getByText("Board overview and orientation", { exact: true }).tap();
+        await interactive.getByText("Highlight pin roles", { exact: true }).tap();
         await interactive.getByRole("button", { name: /^Power —/ }).tap();
         await expect(interactive.getByRole("button", { name: "Show all roles", exact: true })).toBeVisible();
         await interactive.getByRole("button", { name: "Show all roles", exact: true }).tap();
@@ -145,6 +147,39 @@ test.describe("Raspberry Pi workbench in landscape", () => {
   });
 });
 
+for (const viewport of [...viewports, { width: 1280, height: 800 }]) {
+  test(`catalog dynamic Pi map is usable without a giant clipped board at ${viewport.width}`, async ({ page }, testInfo) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/?q=raspberry+pi+5");
+    if (viewport.width < 1024) await page.getByRole("button", { name: "Show Raspberry Pi 5 details", exact: true }).click();
+    const map = page.getByRole("region", { name: "Raspberry Pi 5 dynamic pinout", exact: true });
+    await expect(map).toBeVisible();
+    const connector = map.getByRole("group", { name: "Select a physical pin from the connector" });
+    const first = connector.getByRole("button", { name: /^Pin 1,/ });
+    await expect(first).toContainText("3V3");
+    await expect(connector.getByRole("button")).toHaveCount(40);
+    const layout = await connector.evaluate((element) => ({ height: element.clientHeight, width: element.clientWidth, contentWidth: element.scrollWidth }));
+    expect(layout.height).toBeLessThanOrEqual(320);
+    expect(layout.contentWidth).toBeLessThanOrEqual(layout.width);
+    expect((await first.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await first.click();
+    await expect(map.getByRole("button", { name: "Copy pin 1, 3V3", exact: true })).toBeVisible();
+    const bounds = await map.boundingBox();
+    const readout = await map.locator(".pi-readout").boundingBox();
+    expect(readout!.y - bounds!.y).toBeLessThan(650);
+    await first.focus();
+    await page.keyboard.press("End");
+    const last = connector.getByRole("button", { name: /^Pin 40,/ });
+    await expect(last).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(map.getByRole("button", { name: /^Copy pin 40,/ })).toBeVisible();
+    expect(await map.locator(".pi-board-overview").getAttribute("open")).toBeNull();
+    await connector.scrollIntoViewIfNeeded();
+    await page.screenshot({ path: testInfo.outputPath("labelled-connector.png"), scale: "css", animations: "disabled" });
+    await fitsViewport(page);
+  });
+}
+
 test.describe("remaining Raspberry Pi models", () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, userAgent: devices["Pixel 5"].userAgent });
   for (const id of otherModels) {
@@ -188,7 +223,7 @@ test("catalog inline Pi pinout and full inspector share the artwork", async ({ p
   await page.screenshot({ path: testInfo.outputPath("full-inspector.png"), scale: "css", animations: "disabled" });
 });
 
-test("desktop dynamic readout sits beside artwork in both themes with keyboard pin selection", async ({ page }, testInfo) => {
+test("desktop dynamic readout sits beside the connector in both themes with keyboard pin selection", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/boards/raspberry-pi-4-model-b");
   await page.getByRole("tab", { name: "Dynamic", exact: true }).click();
@@ -199,7 +234,7 @@ test("desktop dynamic readout sits beside artwork in both themes with keyboard p
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: "Clear selection" })).toBeVisible();
-  const canvas = await page.locator(".pi-canvas").boundingBox();
+  const canvas = await page.locator(".pi-component-layout > .pi-canvas").boundingBox();
   const readout = await page.locator(".pi-readout").boundingBox();
   expect(readout!.x).toBeGreaterThan(canvas!.x);
   await page.locator(".pi-workbench").scrollIntoViewIfNeeded();

@@ -119,7 +119,7 @@ export function PinDetails({
             <span className="font-mono text-[2rem] font-light leading-none text-zinc-600" aria-hidden="true">
               —
             </span>
-            Hover, tap, or arrow to a pad to inspect it.
+            Select a pin to inspect its details.
           </p>
         )}
       </div>
