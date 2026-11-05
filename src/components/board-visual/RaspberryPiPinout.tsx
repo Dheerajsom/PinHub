@@ -10,6 +10,7 @@ import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinDetails } from "@/components/board-visual/PinDetails";
+import { PinCautions } from "@/components/board-visual/PinCautions";
 import { countRoles, roleLabels, roleColors } from "@/components/board-visual/roles";
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
@@ -81,7 +82,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
             <option value="">Choose a pin…</option>
             {anchors.map(({ key, pin }) => <option key={key} value={key}>{pin.position} · {pin.label}{pin.aliases?.length ? ` / ${pin.aliases.join(", ")}` : ""}</option>)}
           </select>
-          <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} net={probe.net} netSize={probe.keys.size} report={report} onClear={() => select(null)} />
+          <PinDetails anchor={liveAnchor} pinned={selectedKey !== null} net={probe.net} netSize={probe.keys.size} flagNotes={board.pinFunctions?.flagNotes} report={report} onClear={() => select(null)} />
 
           <div className="pi-electrical-note">
             <p><ShieldAlert size={14} aria-hidden="true" /><span><strong>{board.logicLevel}</strong>{caution ? <> · {caution}</> : null}</span></p>
@@ -92,7 +93,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
 
       <p className="pi-illustration-note">{geometry.revisionNote} Decorative traces do not represent electrical connections.</p>
 
-      <details className="pi-schedule">
+      <details className="pin-reference-table pi-schedule">
         <summary>{`All ${anchors.length} pins (table)`}</summary>
         <div className="pi-schedule-tools">
           <label><Search size={16} aria-hidden="true" /><input aria-label="Search reference pins" value={query} maxLength={100} onChange={(event) => setQuery(event.target.value)} placeholder="Pin number, signal, or function" /></label>
@@ -105,7 +106,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
             <tbody>{visible.map(({ key, pin }) => <tr key={key} data-selected={selectedKey === key || undefined}>
               <th scope="row"><span className="pi-pin-number" style={{ borderColor: roleColors[pin.role].edge }}>{pin.position}</span></th>
               <td><strong>{pin.label}</strong><small>{roleLabels[pin.role]}</small></td>
-              <td>{pin.aliases?.length ? <span>{pin.aliases.join(" / ")}</span> : <span className="pi-muted">{roleLabels[pin.role]}</span>}{pin.note ? <p>{pin.note}</p> : null}</td>
+              <td>{pin.aliases?.length ? <span>{pin.aliases.join(" / ")}</span> : <span className="pi-muted">{roleLabels[pin.role]}</span>}<PinCautions pin={pin} flagNotes={board.pinFunctions?.flagNotes} /></td>
               <td><button className="pi-row-select" type="button" aria-label={`Select pin ${pin.position}, ${pin.label}`} aria-pressed={selectedKey === key} onClick={() => select(selectedKey === key ? null : key)}>Select</button></td>
             </tr>)}</tbody>
           </table>

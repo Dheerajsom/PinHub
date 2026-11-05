@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { boards, type Board, type Pin } from "@/lib/boards";
-import { buildBoardLink, busSignalsForPin, linkPorts } from "@/lib/board-link";
+import { buildBoardLink, busSignalsForPin, linkPorts, linkToText } from "@/lib/board-link";
+
+describe("wire-list safety export", () => {
+  it("preserves every endpoint caution in a real UNO UART link", () => {
+    const uno = boards.find((item) => item.id === "arduino-uno-rev3")!;
+    const link = buildBoardLink(uno, uno, "uart");
+    const text = linkToText(link, uno, uno);
+    const cautions = link.wires.flatMap((wire) => [...wire.a.cautions, ...wire.b.cautions]);
+    expect(cautions.some((caution) => caution.note.includes("failed uploads"))).toBe(true);
+    for (const caution of cautions) expect(text).toContain(caution.note);
+  });
+});
 
 function board(id: string): Board {
   const found = boards.find((entry) => entry.id === id);

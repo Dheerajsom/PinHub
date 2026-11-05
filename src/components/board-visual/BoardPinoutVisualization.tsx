@@ -220,6 +220,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           net={probe.net}
           netSize={probe.keys.size}
           report={report}
+          flagNotes={board.pinFunctions?.flagNotes}
           onClear={() => {
             setSelectedKey(null);
             setActiveKey(null);
@@ -240,13 +241,14 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         ))}
       </ul>
 
-      <details className="mt-3 border-t border-white/10 pt-3">
+      <details className="pin-reference-table mt-3 border-t border-white/10 pt-3">
         <summary className="min-h-11 cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
           All {geometry.anchors.length} pins (table)
         </summary>
         <div className="mt-2 max-h-80 overflow-y-auto pr-1">
           <PinoutTable
             anchors={geometry.anchors}
+            flagNotes={board.pinFunctions?.flagNotes}
             activeKey={liveKey}
             selectedKey={selectedKey}
             activeRole={activeRole}

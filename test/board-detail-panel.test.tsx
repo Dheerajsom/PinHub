@@ -1,6 +1,6 @@
 ﻿// @vitest-environment jsdom
 
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { boards, type Board } from "@/lib/boards";
 import { summarizeBoard } from "@/lib/board-summary";
@@ -37,6 +37,14 @@ beforeAll(() => {
 afterEach(cleanup);
 
 describe("BoardDetailPanel header card", () => {
+  it("keeps late hardware warnings visible and provides section headings", () => {
+    const board = catalogBoard("milkv-duo-s-v12");
+    renderPanel(board);
+    const cautions = screen.getByRole("region", { name: "Before you wire" });
+    for (const warning of board.warnings) expect(within(cautions).getByText(warning)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Interfaces" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Source references" })).toBeTruthy();
+  });
   it("links to the board page and, separately, to the planner", () => {
     const board = catalogBoard("raspberry-pi-pico");
     renderPanel(board);

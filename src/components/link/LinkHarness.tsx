@@ -154,7 +154,7 @@ function WireRow({
   }${cautioned ? ". The records state a caution for this wire; see pin cautions" : ""}`;
   return (
     <li className="ph-link-wire" data-active={active ? "" : undefined} data-kind={wire.kind === "ground" ? "ground" : bus}>
-      <button type="button" aria-pressed={active} aria-label={label} onClick={onToggle} className="ph-link-wire-button">
+      <button type="button" aria-pressed={active} aria-label={label} onClick={onToggle} className="ph-link-wire-button print-reference-control">
         <End end={wire.a} align="start" />
         <span className="ph-link-run" data-direction={wire.direction} aria-hidden="true">
           <span className="ph-link-name">{wire.name}</span>

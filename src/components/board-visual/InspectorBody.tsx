@@ -75,8 +75,9 @@ export function InspectorBody({
         query: explorerQuery,
         categories: explorerCategories,
         connector,
+        functionData: board.pinFunctions,
       }),
-    [connector, explorerCategories, explorerQuery, geometry.anchors],
+    [board.pinFunctions, connector, explorerCategories, explorerQuery, geometry.anchors],
   );
   // The same document "Before you wire" says to verify against, so the pin
   // readout, the board panel, and a filed report all cite one source.
@@ -194,7 +195,7 @@ export function InspectorBody({
         <div className={clsx("space-y-2", query === undefined ? "mt-3" : "mt-0")}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] uppercase tracking-[0.16em] text-zinc-500">
-              Filter pins
+              Show pins by capability
             </span>
             {explorerCategories.length || explorerQuery ? (
               <button
@@ -235,6 +236,7 @@ export function InspectorBody({
             Showing {filteredAnchors.length} of {geometry.anchors.length} pins
             {filterStatus ? ` · ${filterStatus}` : ""}
           </p>
+          <p className="text-[11px] leading-5 text-zinc-500">Recorded capabilities, including alternate functions. No match does not prove absence; verify mux settings and restrictions.</p>
         </div>
 
         <PinRoleLegend
@@ -343,6 +345,7 @@ export function InspectorBody({
             netSize={probe.keys.size}
             source={source}
             report={report}
+            flagNotes={board.pinFunctions?.flagNotes}
             onClear={() => onSelect(null)}
           />
         </div>
@@ -374,6 +377,7 @@ export function InspectorBody({
         {filteredAnchors.length ? (
           <PinoutTable
             anchors={filteredAnchors}
+            flagNotes={board.pinFunctions?.flagNotes}
             activeKey={activeKey}
             selectedKey={selectedKey}
             activeRole={activeRole}

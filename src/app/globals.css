@@ -1342,6 +1342,11 @@ button {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
+:root[data-theme="light"] .ph-iface[data-tone="default"] {
+  color: #334155;
+  background-color: #e2e8f0;
+}
+
 /* Tinted washes (cyan/emerald/orange at 7–15% alpha) nearly vanish on paper.
    Light mode densifies them so active filters, match badges, and caution
    chips keep their meaning instead of looking like bare text. */
@@ -1483,6 +1488,35 @@ button {
      table, which is opened for the occasion. */
   .bv-stage-wrap {
     display: none !important;
+  }
+  button.print-reference-control {
+    display: block !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    color: #111827 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-align: left !important;
+  }
+  header.pin-reference-heading { display: block !important; }
+  .pin-screen-reference { display: none !important; }
+  .pin-print-reference {
+    display: block !important;
+    color: #111827 !important;
+  }
+  .pin-print-reference table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-block: 1rem; }
+  .pin-print-reference th, .pin-print-reference td { border: 1px solid #9ca3af; padding: 0.3rem; text-align: left; font-size: 10pt; }
+  .pin-print-reference tr { break-inside: avoid; }
+  .pin-print-reference { overflow-wrap: anywhere; }
+  .pin-print-reference tbody th { overflow-wrap: normal; }
+  .pin-print-reference thead { display: table-header-group; break-inside: avoid; break-after: avoid; }
+  .pin-print-reference tbody tr:first-child { break-before: avoid; }
+  [data-sticky-header], .ph-commandbar {
+    display: none !important;
+  }
+  .pin-reference-table, .pin-reference-table * {
+    max-height: none !important;
+    overflow: visible !important;
   }
   details > *:not(summary) {
     display: block !important;

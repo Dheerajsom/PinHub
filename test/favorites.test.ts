@@ -131,6 +131,36 @@ describe("favorites store", () => {
     expect(window.localStorage.getItem("pinhub.favorites")).toHaveLength(64 * 1024 + 1);
   });
 
+  it("reports a refused write as session-only instead of saved, until a later write is stored", async () => {
+    const favorites = await loadFavorites();
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+    expect(favorites.toggleFavoriteWithOutcome("pico")).toEqual({ status: "session", favorited: true });
+    // The legacy boolean still means "the change applied" for this visit.
+    expect(favorites.toggleFavorite("uno")).toBe(true);
+    expect([...favorites.getFavoritesSnapshot()].sort()).toEqual(["pico", "uno"]);
+    expect(window.localStorage.getItem("pinhub.favorites")).toBeNull();
+    const firstFailure = favorites.getFavoritesUnsavedGeneration();
+    expect(firstFailure).not.toBe(0);
+
+    setItem.mockRestore();
+    expect(favorites.toggleFavoriteWithOutcome("uno")).toEqual({ status: "stored", favorited: false });
+    expect(favorites.getFavoritesUnsavedGeneration()).toBe(0);
+    expect(JSON.parse(window.localStorage.getItem("pinhub.favorites") ?? "[]")).toEqual(["pico"]);
+  });
+
+  it("returns limit and invalid outcomes without touching storage", async () => {
+    window.localStorage.setItem(
+      "pinhub.favorites",
+      JSON.stringify(Array.from({ length: 256 }, (_, index) => `board-${index}`)),
+    );
+    const favorites = await loadFavorites();
+    expect(favorites.toggleFavoriteWithOutcome("extra")).toEqual({ status: "limit" });
+    expect(favorites.toggleFavoriteWithOutcome("Bad/ID")).toEqual({ status: "invalid" });
+    expect(favorites.getFavoritesUnsavedGeneration()).toBe(0);
+  });
+
   it("renders nothing as favorited on the server", async () => {
     const favorites = await loadFavorites();
     expect(favorites.getServerFavoritesSnapshot().size).toBe(0);

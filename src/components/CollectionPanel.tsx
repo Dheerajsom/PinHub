@@ -3,13 +3,44 @@
 import { Check, Plus, X } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import {
-  createCollection,
   collectionBoardLimit,
   collectionLimit,
   collectionNameLimit,
+  saveCollection,
   setBoardInCollection,
   usePersonalLibrary,
+  usePersonalLibraryDurability,
+  type LibraryMutationOutcome,
 } from "@/lib/personal-library";
+
+const sessionOnly =
+  "This browser would not store it, so the change is lost after a reload. Allow site storage to keep it.";
+
+/** The status line for a membership toggle, matching what actually happened. */
+export function membershipMessage(
+  outcome: LibraryMutationOutcome,
+  boardName: string,
+  collectionName: string,
+  included: boolean,
+): string {
+  const done = included
+    ? `Added ${boardName} to ${collectionName}`
+    : `Removed ${boardName} from ${collectionName}`;
+  switch (outcome.status) {
+    case "stored":
+      return `${done}.`;
+    case "session":
+      return `${done} for this visit only. ${sessionOnly}`;
+    case "full":
+      return `${collectionName} is full (${collectionBoardLimit} boards). Remove one to add another.`;
+    case "missing":
+      return `${collectionName} no longer exists. It may have been deleted in another tab.`;
+    case "invalid":
+      return `${boardName} can’t be added to a collection.`;
+    default:
+      return "";
+  }
+}
 
 /**
  * The "Add to collection" dialog. It has no trigger of its own: the board's
@@ -23,6 +54,10 @@ export function CollectionPanel({ id, name, onClose }: {
   const library = usePersonalLibrary();
   const dialog = useRef<HTMLDivElement>(null);
   const [collectionName, setCollectionName] = useState("");
+  // The latest action's result. It is replaced by the next action rather than
+  // cleared on a timer, so it stays readable until the dialog closes.
+  const [status, setStatus] = useState("");
+  const durable = usePersonalLibraryDurability();
   const atLimit = library.collections.length >= collectionLimit;
 
   useEffect(() => {
@@ -36,8 +71,27 @@ export function CollectionPanel({ id, name, onClose }: {
 
   function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!createCollection(collectionName, [id])) return;
+    const cleanName = collectionName.trim();
+    const result = saveCollection(cleanName, [id]);
+    if (!result) {
+      setStatus(
+        atLimit
+          ? `You have ${collectionLimit} collections. Delete one from the catalog filters to create another.`
+          : "Name the collection to create it.",
+      );
+      return;
+    }
     setCollectionName("");
+    const savedName = cleanName.slice(0, collectionNameLimit);
+    setStatus(
+      result.durable
+        ? `Created ${savedName} with ${name}.`
+        : `Created ${savedName} with ${name} for this visit only. ${sessionOnly}`,
+    );
+  }
+
+  function toggle(collectionId: string, label: string, included: boolean) {
+    setStatus(membershipMessage(setBoardInCollection(collectionId, id, included), name, label, included));
   }
 
   return (
@@ -70,9 +124,7 @@ export function CollectionPanel({ id, name, onClose }: {
               <button
                 key={collection.id}
                 type="button"
-                onClick={() =>
-                  setBoardInCollection(collection.id, id, !included)
-                }
+                onClick={() => toggle(collection.id, collection.name, !included)}
                 aria-pressed={included}
                 disabled={full}
                 className="surface-well flex min-h-11 items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm text-zinc-300 transition hover:border-cyan-300/40 hover:text-white"
@@ -112,7 +164,15 @@ export function CollectionPanel({ id, name, onClose }: {
           Create
         </button>
       </form>
-      {atLimit ? <p role="status" className="mt-2 text-xs leading-5 text-zinc-400">You have {collectionLimit} collections. Delete one from the catalog filters to create another.</p> : null}
+      {/* Always mounted so the first result is announced. */}
+      <p role="status" aria-live="polite" className={status || atLimit ? "mt-2 text-xs leading-5 text-zinc-300" : "sr-only"}>
+        {status}{atLimit ? ` You have ${collectionLimit} collections. Delete one from the catalog filters to create another.` : ""}
+      </p>
+      {!durable && !status ? (
+        <p className="mt-2 text-xs leading-5 text-zinc-400">
+          Collections are kept for this visit only. This browser is not storing them, so they are lost after a reload.
+        </p>
+      ) : null}
     </div>
   );
 }

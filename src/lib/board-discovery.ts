@@ -1,3 +1,4 @@
+import { fiveVoltCaution } from "@/lib/board-utilities";
 import type { Board, BoardInterface } from "@/lib/boards";
 
 export type ComputeClass =
@@ -89,10 +90,10 @@ export function getBoardDiscoveryProfile(board: Board): BoardDiscoveryProfile {
   const partialTolerance =
     documentsFiveVoltTolerance &&
     /\b(some|many|most|input|inputs|only|mixed)\b/.test(logic);
-  const fiveVoltTolerance: FiveVoltTolerance = partialTolerance
-    ? "Mixed"
-    : logic.includes("not 5 v tolerant")
-      ? "No"
+  const fiveVoltTolerance: FiveVoltTolerance = logic.includes("not 5 v tolerant") || fiveVoltCaution(board) === "Not 5 V tolerant"
+    ? "No"
+    : partialTolerance
+      ? "Mixed"
       : documentsFiveVoltTolerance || logicProfile === "5 V"
         ? "Yes"
         : "Unknown";

@@ -83,7 +83,7 @@ export function CompareTable({ boards }: { boards: Board[] }) {
         return price ? JSON.stringify([price.amount, price.currency, price.variant, price.retailer, price.checkedAt]) : "No price recorded";
       }) },
       { label: "Manufacturer", values: boards.map((item) => item.vendor) },
-      { label: "Compute class", values: profiles.map((item) => item.computeClass) },
+      { label: "Platform", values: profiles.map((item) => item.computeClass) },
       { label: "Processor", values: boards.map((item) => item.processor) },
       { label: "Power", values: boards.map((item) => item.power) },
       { label: "Logic level", values: boards.map((item) => item.logicLevel) },
@@ -93,7 +93,7 @@ export function CompareTable({ boards }: { boards: Board[] }) {
       { label: "GPIO count", values: boards.map(gpioValue) },
       { label: "Form factor", values: boards.map((item) => item.formFactor) },
       { label: "Wireless", values: profiles.map((item) => item.wireless.join(", ") || "None listed") },
-      { label: "Connector ecosystem", values: profiles.map((item) => item.connectorEcosystems.join(", ") || "Board-specific") },
+      { label: "Connector", values: profiles.map((item) => item.connectorEcosystems.join(", ") || "Board-specific") },
       { label: "Interfaces", values: boards.map((item) => item.interfaces.join(", ") || missing) },
       { label: "In-app pin map", values: boards.map((item) => (item.pinout ? "Available" : "Not available")) },
       { label: "Wiring warnings", values: boards.map(warningValue) },
@@ -141,8 +141,6 @@ export function CompareTable({ boards }: { boards: Board[] }) {
         </div>
       </div>
 
-      <ConflictSummary conflicts={conflicts} />
-
       <div className="mt-4 md:hidden"><StackedComparison boards={boards} rows={visibleRows} onRemove={removeBoard} /></div>
       <div className="comparison-scroll hidden overflow-x-auto rounded-xl border border-white/10 bg-[#11141a] shadow-2xl md:block" tabIndex={0} role="region" aria-label="Board comparison table, scrolls horizontally">
         <table className="w-full min-w-[920px] border-collapse text-left">
@@ -150,6 +148,10 @@ export function CompareTable({ boards }: { boards: Board[] }) {
           <tbody>{visibleRows.map((row) => <DesktopRow key={row.label} row={row} boards={boards} />)}</tbody>
         </table>
       </div>
+      <details className="surface-panel mt-4 rounded-xl p-4">
+        <summary className="min-h-11 cursor-pointer text-sm font-medium text-zinc-300">Shared signals and capability overlaps ({conflicts.length})</summary>
+        <ConflictSummary conflicts={conflicts} />
+      </details>
       <SourceReferences boards={boards} />
     </>
   );

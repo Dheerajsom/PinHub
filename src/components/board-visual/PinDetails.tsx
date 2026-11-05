@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, BadgeCheck, Flag, TriangleAlert, Waypoints, X } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Flag, Waypoints, X } from "lucide-react";
 import type { SourceLink } from "@/lib/boards";
 import type { PinAnchor } from "@/lib/board-visual-geometry";
 import type { PinNet } from "@/lib/pin-nets";
@@ -8,6 +8,8 @@ import { netDescription } from "@/lib/pin-nets";
 import { pinReportUrl, type PinReportContext } from "@/lib/pin-report";
 import { roleChipStyle, roleColors, roleLabels } from "@/components/board-visual/roles";
 import { CopyPinButton } from "@/components/CopyPinButton";
+import { PinCautions } from "@/components/board-visual/PinCautions";
+import type { PinFlagNotes } from "@/lib/pin-reference";
 
 export type PinoutSource = SourceLink & {
   provenance: "official" | "third-party";
@@ -31,6 +33,7 @@ export function PinDetails({
   source,
   report,
   onClear,
+  flagNotes,
 }: {
   anchor: PinAnchor | null;
   pinned: boolean;
@@ -42,6 +45,7 @@ export function PinDetails({
   report?: PinReportContext;
   /** Clears the pinned pin; renders a Clear action while a pin is pinned. */
   onClear?: () => void;
+  flagNotes?: PinFlagNotes;
 }) {
   const reportUrl =
     anchor && pinned && report
@@ -55,7 +59,7 @@ export function PinDetails({
     <div
       className="pin-readout surface-well overflow-hidden rounded-md text-sm"
       style={anchor ? { borderLeftColor: roleColors[anchor.pin.role].edge } : undefined}
-      aria-live="polite"
+      aria-live={pinned ? "polite" : "off"}
     >
       <div className="px-4 py-3.5">
         <div className="flex min-h-6 items-center justify-between gap-3">
@@ -108,15 +112,7 @@ export function PinDetails({
               </p>
             ) : null}
 
-            {anchor.pin.note ? (
-              <p className="mt-3 flex items-start gap-2 rounded-md border border-orange-300/25 bg-orange-300/[0.06] px-2.5 py-2 text-[13px] leading-5 text-orange-100/90">
-                <TriangleAlert
-                  className="mt-0.5 size-3.5 shrink-0 text-orange-300"
-                  aria-hidden="true"
-                />
-                <span className="min-w-0">{anchor.pin.note}</span>
-              </p>
-            ) : null}
+            <PinCautions pin={anchor.pin} flagNotes={flagNotes} />
           </>
         ) : (
           <p className="mt-1.5 flex items-center gap-3.5 text-[13px] leading-5 text-zinc-500">
@@ -130,7 +126,7 @@ export function PinDetails({
 
       {anchor && pinned ? (
         <div className="pin-readout-actions">
-          <CopyPinButton pin={anchor.pin} withLabel />
+          <CopyPinButton pin={anchor.pin} flagNotes={flagNotes} withLabel />
           {reportUrl ? (
             <a
               href={reportUrl}

@@ -88,8 +88,8 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await page.getByRole("button", { name: "Clear pin search", exact: true }).tap();
         await page.getByRole("group", { name: "Filter pins by category" }).getByRole("button", { name: "PWM", exact: true }).tap();
         await touchSize(page.getByRole("button", { name: "Clear filters", exact: true }));
-        await touchSize(page.getByRole("button", { name: "Clear pin filters", exact: true }));
-        await page.getByRole("button", { name: "Clear pin filters", exact: true }).tap();
+        await expect(page.getByText("Showing 26 of 40 pins", { exact: true })).toBeVisible();
+        await page.getByRole("button", { name: "Clear filters", exact: true }).tap();
         await noOverflow(page);
         await page.screenshot({ path: testInfo.outputPath("pinout-fit.png"), fullPage: true });
         await touchSize(page.getByRole("link", { name: "Privacy", exact: true }));

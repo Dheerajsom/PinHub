@@ -9,7 +9,7 @@ orders the work. Phase 1 items are implemented in this repository.
 
 ## 1. Product Direction
 
-PinHub should feel like a bench instrument, not a website: a dark, dense,
+PinHub should feel like a bench instrument, not a website: a dense,
 always-ready lookup surface where an engineer lands mid-task ("which pin is
 SDA on the Pico?"), gets the answer in under ten seconds, and trusts it enough
 to wire against. The redesign keeps the catalog as the first screen and makes
@@ -55,12 +55,16 @@ encodes a real electrical or provenance fact.
   independently) — identity, specs, "Before you wire" cautions with the
   verify link, pin map tabs, highlights, sources. Container-query driven: it adapts to its own width, never the
   viewport.
-- **Full pinout page** (`/pinout/[id]`) — the pin map at full width for
-  deep inspection, shareable/bookmarkable per board.
+- **Full pinout page** (`/pinout/[id]`) — board logic level, electrical and
+  revision cautions, official documentation and the full-width pin map for
+  deep inspection, shareable/bookmarkable per board. Capability filters use
+  recorded alternate functions; the color key highlights primary roles only.
 - **Favorites** — localStorage-backed, star on every row + global filter.
 - **Mobile** — same DOM, single column: command bar stays sticky, filters
   collapse behind the toggle, detail panel stacks below results with a
-  "Back to results" escape hatch and smooth scroll-into-view on select.
+  "Back to results" escape hatch and reduced-motion-aware scroll on select.
+  Scroll clearance follows the measured sticky command bar, including wrapped
+  controls and active facets, so identity and return navigation stay visible.
 
 ## 3. Homepage Layout
 
@@ -77,25 +81,29 @@ The first screen **is** the catalog. No hero, no marketing copy.
   "pi" ranks Raspberry Pi above boards that merely list SPI. `Enter` selects
   the top result; `↑/↓` walk the selection without leaving the field;
   `Esc` clears.
-- **Result rows**: compact cards (~96px), left accent border for selection
-  state. Row anatomy: vendor logo · board name · category chip ·
-  green "Pin map" chip (in-app map exists) · orange shield chip with the
-  count of wiring cautions · right-aligned mono `vendor · logic level` ·
+- **Result rows**: compact cards, left accent border for selection
+  state. Row anatomy: vendor logo · board name · compact wiring-caution count ·
+  "No in-app map" only when a map is absent · mono `vendor · category · logic level` ·
   two-line description · up to 7 interface chips + overflow count · star.
   Warnings are therefore visible **at scan time**, before selection.
 - **Selected board panel**: identity block (vendor mark, name, family),
   4-row spec sheet (Processor / Logic / Power / Format), then the
   **Before you wire** panel — the board's cautions with, as its footer, a
   link to the highest-authority source (Pinout > Schematic > Datasheet >
-  Manual > Docs); lists longer than four fold after three — then the pin map
+  Manual > Docs); all recorded cautions stay visible — then the pin map
   tabs, highlights, and the source list with per-link provenance badges.
 - **Trust communication**: green = data present and vendor-official
-  (Pin map chip, Official badge); orange = caution (warning chips, the
+  (Official badge); orange = caution (warning counts, the
   "Before you wire" panel); neutral zinc = third-party or metadata. The footer repeats the disclaimer on every screen.
 
 ## 4. Visual Design System
 
-**Palette** (roles, not decoration — dark-only, `color-scheme: dark`):
+**Palette** (roles, not decoration — dark and light themes with a system default):
+
+The table gives the dark-theme foundations. Light mode uses opaque white and
+cool-gray surfaces, dark text, and the same semantic color families. Every
+interface tone, including neutral fallback labels such as CSI/PCIe, must have
+readable text against its actual surface in both themes.
 
 | Token | Value | Role |
 | --- | --- | --- |

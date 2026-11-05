@@ -27,7 +27,9 @@ export function PinRoleLegend({ counts, activeRole, onToggle }: PinRoleLegendPro
   const roles = roleOrder.filter((role) => (counts.get(role) ?? 0) > 0);
 
   return (
-    <div
+    <div>
+      <p className="mb-1.5 text-[10px] uppercase tracking-[0.16em] text-zinc-500">Highlight by primary role</p>
+      <div
       className="flex flex-wrap gap-1.5"
       role="group"
       aria-label="Highlight pins by role"
@@ -56,6 +58,7 @@ export function PinRoleLegend({ counts, activeRole, onToggle }: PinRoleLegendPro
           </button>
         );
       })}
+      </div>
     </div>
   );
 }

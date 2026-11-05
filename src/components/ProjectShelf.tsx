@@ -9,26 +9,43 @@ import { collectionSharePath } from "@/lib/collection-params";
 import {
   collectionLimit,
   removeCollection,
-  restoreCollection,
+  restoreCollectionWithOutcome,
   setBoardInCollection,
   usePersonalLibrary,
+  usePersonalLibraryDurability,
   type LocalBoardCollection,
 } from "@/lib/personal-library";
 
 type RemovedCollection = {
   collection: LocalBoardCollection;
   index: number;
+  /** False when the browser refused to store the deletion. */
+  stored: boolean;
 };
+
+const undoVisibleMs = 6000;
+
+function shareUrl(collection: LocalBoardCollection): string {
+  return `${location.origin}${collectionSharePath(collection)}`;
+}
 
 // Personal library as left-rail sections instead of a full-width strip: the
 // bench history and named sets sit with the other lookup-scoping controls,
 // always visible on desktop and one Filters tap away on compact layouts.
 export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
   const library = usePersonalLibrary();
+  const durable = usePersonalLibraryDurability();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  // A failed copy keeps its recovery link until the next share attempt.
+  const [shareFailedId, setShareFailedId] = useState<string | null>(null);
   const [removed, setRemoved] = useState<RemovedCollection | null>(null);
+  // Result of the latest rail action. The next action replaces it; no timer
+  // clears it before it can be read.
+  const [status, setStatus] = useState("");
   const undoTimer = useRef<number | null>(null);
   const copyTimer = useRef<number | null>(null);
+  const collectionsRef = useRef<HTMLElement>(null);
+  const restoredFocus = useRef(false);
   const boardsById = useMemo(
     () => new Map(catalog.map((board) => [board.id, board])),
     [catalog],
@@ -37,6 +54,12 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
     const board = boardsById.get(id);
     return board ? [board] : [];
   });
+  useEffect(() => {
+    if (restoredFocus.current) {
+      restoredFocus.current = false;
+      collectionsRef.current?.focus();
+    }
+  }, [library.collections]);
 
   useEffect(
     () => () => {
@@ -46,41 +69,70 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
     [],
   );
 
-  function deleteCollection(collection: LocalBoardCollection) {
+  function stopUndoTimer() {
     if (undoTimer.current) window.clearTimeout(undoTimer.current);
-    const index = library.collections.findIndex(
-      (item) => item.id === collection.id,
-    );
-    removeCollection(collection.id);
-    setRemoved({ collection, index: Math.max(index, 0) });
+    undoTimer.current = null;
+  }
+
+  // The Undo toast hides on its own, but not while it is hovered or focused,
+  // so keyboard and screen-reader users have time to act on it.
+  function startUndoTimer() {
+    stopUndoTimer();
     undoTimer.current = window.setTimeout(() => {
       setRemoved(null);
       undoTimer.current = null;
-    }, 6000);
+    }, undoVisibleMs);
+  }
+
+  function deleteCollection(collection: LocalBoardCollection) {
+    const index = library.collections.findIndex(
+      (item) => item.id === collection.id,
+    );
+    const outcome = removeCollection(collection.id);
+    if (outcome.status !== "stored" && outcome.status !== "session") return;
+    if (shareFailedId === collection.id) setShareFailedId(null);
+    setStatus("");
+    setRemoved({ collection, index: Math.max(index, 0), stored: outcome.status === "stored" });
+    startUndoTimer();
   }
 
   function undoDelete() {
     if (!removed) return;
-    if (!restoreCollection(removed.collection, removed.index)) return;
-    if (undoTimer.current) window.clearTimeout(undoTimer.current);
+    const outcome = restoreCollectionWithOutcome(removed.collection, removed.index);
+    if (outcome.status !== "stored" && outcome.status !== "session") return;
+    stopUndoTimer();
+    restoredFocus.current = true;
     setRemoved(null);
-    undoTimer.current = null;
+    setStatus(
+      outcome.status === "stored"
+        ? `Restored ${removed.collection.name}.`
+        : `Restored ${removed.collection.name} for this visit only.`,
+    );
   }
 
-  async function share(collectionId: string) {
-    const collection = library.collections.find(
-      (item) => item.id === collectionId,
-    );
-    if (!collection) return;
+  function removeBoard(collection: LocalBoardCollection, boardId: string, boardName: string) {
+    const outcome = setBoardInCollection(collection.id, boardId, false);
+    if (outcome.status === "stored") {
+      setStatus(`Removed ${boardName} from ${collection.name}.`);
+    } else if (outcome.status === "session") {
+      setStatus(`Removed ${boardName} from ${collection.name} for this visit only.`);
+    }
+  }
+
+  async function share(collection: LocalBoardCollection) {
+    if (copyTimer.current) window.clearTimeout(copyTimer.current);
+    setCopiedId(null);
+    setShareFailedId(null);
     try {
-      await navigator.clipboard.writeText(
-        `${location.origin}${collectionSharePath(collection)}`,
-      );
-      setCopiedId(collectionId);
-      if (copyTimer.current) window.clearTimeout(copyTimer.current);
+      await navigator.clipboard.writeText(shareUrl(collection));
+      setCopiedId(collection.id);
+      setStatus(`Copied share link for ${collection.name}.`);
       copyTimer.current = window.setTimeout(() => setCopiedId(null), 1600);
     } catch {
-      setCopiedId(null);
+      setShareFailedId(collection.id);
+      setStatus(
+        `Couldn’t copy the share link for ${collection.name}. Select the link shown under it, or open the shareable view.`,
+      );
     }
   }
 
@@ -115,7 +167,7 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
         )}
       </section>
 
-      <section className="surface-panel rounded-xl p-3" aria-labelledby="collections-heading">
+      <section ref={collectionsRef} tabIndex={-1} className="surface-panel rounded-xl p-3 focus-visible:outline-2 focus-visible:outline-cyan-300" aria-labelledby="collections-heading">
         <div className="mb-2 flex items-center gap-2 px-1">
           <span className="grid size-7 shrink-0 place-items-center rounded-md border border-white/10 bg-[#0a0c11]">
             <Folder className="size-3.5 text-amber-200" aria-hidden="true" />
@@ -129,6 +181,16 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
             </span>
           ) : null}
         </div>
+        {!durable ? (
+          <p className="mb-2 px-1 text-xs leading-5 text-zinc-300">
+            Kept for this visit only. This browser is not storing your collections or recent boards, so changes are
+            lost after a reload. Allow site storage to keep them.
+          </p>
+        ) : null}
+        {/* Always mounted so screen readers announce each new result. */}
+        <p role="status" aria-live="polite" className={status ? "mb-2 px-1 text-xs leading-5 text-zinc-400" : "sr-only"}>
+          {status}
+        </p>
         {library.collections.length ? (
           <div className="grid gap-2">
             {library.collections.map((collection) => (
@@ -139,7 +201,7 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
                     <p className="mt-0.5 font-mono text-[11px] tabular-nums text-zinc-500">{collection.boardIds.length} boards</p>
                   </div>
                   <div className="flex shrink-0">
-                    <button type="button" onClick={() => share(collection.id)} aria-label={`Copy share link for ${collection.name}`} className="grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-cyan-100">
+                    <button type="button" onClick={() => share(collection)} aria-label={`Copy share link for ${collection.name}`} className="grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-white/[0.06] hover:text-cyan-100">
                       {copiedId === collection.id ? <Check className="size-3.5 text-emerald-300" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
                     </button>
                     <button type="button" onClick={() => deleteCollection(collection)} aria-label={`Delete ${collection.name}`} className="grid size-11 place-items-center rounded-md text-zinc-500 transition hover:bg-red-400/10 hover:text-red-200">
@@ -155,7 +217,7 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
                       return (
                         <li key={id} className="flex items-center gap-1 rounded-md bg-white/[0.025] pl-2">
                           <Link href={`/boards/${id}`} className="min-w-0 flex-1 truncate py-1.5 text-xs text-zinc-300 hover:text-white">{board.name}</Link>
-                          <button type="button" onClick={() => setBoardInCollection(collection.id, id, false)} aria-label={`Remove ${board.name} from ${collection.name}`} className="grid size-11 place-items-center rounded text-zinc-600 hover:text-red-200">
+                          <button type="button" onClick={() => removeBoard(collection, id, board.name)} aria-label={`Remove ${board.name} from ${collection.name}`} className="grid size-11 place-items-center rounded text-zinc-600 hover:text-red-200">
                             <X className="size-3" aria-hidden="true" />
                           </button>
                         </li>
@@ -165,7 +227,18 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
                 ) : (
                   <p className="mt-1.5 text-xs text-zinc-500">Empty — add a board from its detail panel.</p>
                 )}
-                <Link href={collectionSharePath(collection)} className="mt-1.5 inline-flex text-xs font-medium text-cyan-200 hover:text-white">Open shareable view</Link>
+                {shareFailedId === collection.id ? (
+                  <label className="mt-1.5 grid gap-1 text-xs leading-5 text-zinc-400">
+                    Couldn’t copy. Select this link to copy it:
+                    <input
+                      readOnly
+                      value={shareUrl(collection)}
+                      onFocus={(event) => event.currentTarget.select()}
+                      className="h-11 w-full min-w-0 rounded-md border border-white/10 bg-[#0a0c11] px-2 font-mono text-xs text-zinc-200 outline-none focus:border-cyan-300/60"
+                    />
+                  </label>
+                ) : null}
+                <Link href={collectionSharePath(collection)} className="mt-1.5 inline-flex min-h-11 items-center text-xs font-medium text-cyan-200 hover:text-white">Open shareable view</Link>
               </article>
             ))}
           </div>
@@ -181,10 +254,23 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
             <div
               role="region"
               aria-label="Collection deletion"
+              onMouseEnter={stopUndoTimer}
+              onMouseLeave={startUndoTimer}
+              onFocus={stopUndoTimer}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) startUndoTimer();
+              }}
               className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-50 flex max-w-[calc(100vw-2rem)] items-center gap-4 rounded-xl border border-white/15 bg-[#1c2029] px-4 py-3 text-sm text-zinc-200 shadow-2xl"
             >
-              <span className="min-w-0 truncate" role="status" aria-live="polite">
-                Deleted <span className="font-semibold text-white">{removed.collection.name}</span>
+              <span className="min-w-0" role="status" aria-live="polite">
+                <span className="block truncate">
+                  Deleted <span className="font-semibold text-white">{removed.collection.name}</span>
+                </span>
+                {removed.stored ? null : (
+                  <span className="block text-xs leading-5 text-zinc-400">
+                    For this visit only. It returns after a reload.
+                  </span>
+                )}
               </span>
               <button
                 type="button"

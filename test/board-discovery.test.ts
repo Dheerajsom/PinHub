@@ -5,6 +5,7 @@ import {
   sharedDiscoveryReasons,
 } from "@/lib/board-discovery";
 import { summarizeBoard } from "@/lib/board-summary";
+import { fiveVoltCaution } from "@/lib/board-utilities";
 
 describe("board discovery profiles", () => {
   it("normalizes every catalog record into filterable factual facets", () => {
@@ -67,6 +68,20 @@ describe("board discovery profiles", () => {
         fiveVoltTolerance: "Mixed",
       });
     }
+  });
+
+  it("uses explicit warning and connector evidence for comparison tolerance without guessing", () => {
+    const byId = (id: string) => boards.find((item) => item.id === id)!;
+    for (const id of ["raspberry-pi-pico", "esp32-devkitc", "raspberry-pi-5"]) {
+      expect(getBoardDiscoveryProfile(byId(id)).fiveVoltTolerance, id).toBe("No");
+    }
+    for (const item of boards.filter((item) => fiveVoltCaution(item) === "Not 5 V tolerant")) {
+      expect(getBoardDiscoveryProfile(item).fiveVoltTolerance, item.id).toBe("No");
+    }
+    expect(getBoardDiscoveryProfile(byId("arduino-uno-rev3")).fiveVoltTolerance).toBe("Yes");
+    const undocumented = { ...byId("raspberry-pi-pico"), logicLevel: "3.3 V GPIO", warnings: [], pinout: undefined };
+    expect(getBoardDiscoveryProfile(undocumented).fiveVoltTolerance).toBe("Unknown");
+    expect(getBoardDiscoveryProfile({ ...undocumented, warnings: ["Use an external 5 V tolerant buffer."] }).fiveVoltTolerance).toBe("Unknown");
   });
 
   it("keeps pin arrays out of homepage summaries", () => {

@@ -49,6 +49,8 @@ describe("fiveVoltCaution", () => {
   it("repeats an explicit statement and defaults conservatively otherwise", () => {
     expect(caution("3.3 V GPIO", ["GPIO is 3.3 V only and is not 5 V tolerant."])).toBe("Not 5 V tolerant");
     expect(caution("3.3 V logic (not 5 V tolerant)")).toBe("Not 5 V tolerant");
+    expect(caution("3.3 V GPIO", ["GPIO uses 3.3 V logic; never apply 5 V to an IO pin."])).toBe("Not 5 V tolerant");
+    expect(caution("3.3 V GPIO", ["IO is not 5V-tolerant."])).toBe("Not 5 V tolerant");
     expect(caution("3.3 V GPIO")).toBe("Treat as not 5 V tolerant");
   });
 

@@ -8,6 +8,7 @@ import { PinoutDiagram } from "@/components/PinoutDiagram";
 import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutVisualization";
 import { RaspberryPiPinout } from "@/components/board-visual/RaspberryPiPinout";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
+import { PrintPinReference } from "@/components/board-visual/PrintPinReference";
 
 type PinoutTab = "static" | "dynamic";
 const storageKey = "pinhub.pinoutTab";
@@ -107,8 +108,12 @@ export function PinoutTabs({ board }: { board: Board }) {
       ?.focus();
   }
 
+  if (!board.pinout) return <PinoutDiagram board={board} />;
+
   return (
     <section>
+      <PrintPinReference board={board} />
+      <div className="pin-screen-reference">
       <div className="mb-2.5 flex items-center justify-between gap-3">
         <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
           Pin map
@@ -157,6 +162,7 @@ export function PinoutTabs({ board }: { board: Board }) {
         {tab === "dynamic" ? (
           isRaspberryPi ? <RaspberryPiPinout key={`${board.id}-dynamic`} board={board} /> : <BoardPinoutVisualization key={board.id} board={board} />
         ) : null}
+      </div>
       </div>
     </section>
   );
