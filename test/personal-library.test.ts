@@ -177,6 +177,36 @@ describe("personal project library", () => {
     setItem.mockRestore();
   });
 
+  it("reports membership, removal, and undo outcomes, including refused writes", async () => {
+    const library = await loadLibrary();
+    const created = library.saveCollection("Bench", ["pico"])!;
+    expect(library.getPersonalLibraryDurability()).toBe(true);
+    expect(library.setBoardInCollection(created.id, "pico", true)).toEqual({ status: "unchanged" });
+    expect(library.setBoardInCollection("missing", "pico", true)).toEqual({ status: "missing" });
+    expect(library.setBoardInCollection(created.id, "Not/Valid", true)).toEqual({ status: "invalid" });
+
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+    expect(library.setBoardInCollection(created.id, "uno", true)).toEqual({ status: "session" });
+    expect(library.getPersonalLibraryDurability()).toBe(false);
+    const collection = library.getPersonalLibrarySnapshot().collections[0];
+    expect(library.removeCollection(created.id)).toEqual({ status: "session" });
+    expect(library.removeCollection(created.id)).toEqual({ status: "missing" });
+    expect(library.restoreCollectionWithOutcome(collection, 0)).toEqual({ status: "session" });
+    setItem.mockRestore();
+
+    expect(library.setBoardInCollection(created.id, "uno", false)).toEqual({ status: "stored" });
+    expect(library.getPersonalLibraryDurability()).toBe(true);
+  });
+
+  it("reports a full collection instead of silently ignoring the add", async () => {
+    const library = await loadLibrary();
+    const ids = Array.from({ length: library.collectionBoardLimit }, (_, index) => `board-${index}`);
+    const { id } = library.saveCollection("Full", ids)!;
+    expect(library.setBoardInCollection(id, "overflow", true)).toEqual({ status: "full" });
+  });
+
   it("reports a stored collection as durable", async () => {
     const library = await loadLibrary();
     expect(library.saveCollection("Bench", ["pico"])).toMatchObject({ durable: true });

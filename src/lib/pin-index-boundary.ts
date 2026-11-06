@@ -14,7 +14,8 @@ export function parsePinIndex(value: unknown): PinIndexBoard[] {
         !Number.isSafeInteger(pin.position) || pin.position < 1 || pin.position > 10000 ||
         !text(pin.label, 128) || !pinRoles.includes(pin.role) ||
         [pin.note, pin.group, pin.net].some((item) => item !== undefined && !text(item)) ||
-        [pin.aliases, pin.flags].some((items) => items !== undefined && (!Array.isArray(items) || items.length > 64 || items.some((item: unknown) => !text(item, 256))))) throw new Error("Invalid pin record");
+        (pin.gpio !== undefined && typeof pin.gpio !== "boolean") ||
+        [pin.aliases, pin.flags, pin.signals, pin.defaultSignals].some((items) => items !== undefined && (!Array.isArray(items) || items.length > 64 || items.some((item: unknown) => !text(item, 256))))) throw new Error("Invalid pin record");
     }
   }
   return value as PinIndexBoard[];

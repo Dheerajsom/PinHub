@@ -88,8 +88,8 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await page.getByRole("button", { name: "Clear pin search", exact: true }).tap();
         await page.getByRole("group", { name: "Filter pins by category" }).getByRole("button", { name: "PWM", exact: true }).tap();
         await touchSize(page.getByRole("button", { name: "Clear filters", exact: true }));
-        await touchSize(page.getByRole("button", { name: "Clear pin filters", exact: true }));
-        await page.getByRole("button", { name: "Clear pin filters", exact: true }).tap();
+        await expect(page.getByText("Showing 26 of 40 pins", { exact: true })).toBeVisible();
+        await page.getByRole("button", { name: "Clear filters", exact: true }).tap();
         await noOverflow(page);
         await page.screenshot({ path: testInfo.outputPath("pinout-fit.png"), fullPage: true });
         await touchSize(page.getByRole("link", { name: "Privacy", exact: true }));
@@ -104,24 +104,19 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await page.getByRole("button", { name: "Show Raspberry Pi Pico details", exact: true }).tap();
         await noOverflow(page);
         await page.goto("/boards/raspberry-pi-pico");
-        const frame = page.locator(".pi-board-frame");
-        const scroll = page.getByRole("group", { name: "Scrollable board detail" });
-        await expect(scroll).toHaveAttribute("tabindex", "0");
-        await scroll.focus();
-        await expect(scroll).toBeFocused();
+        const connector = page.getByRole("group", { name: "Select a physical pin from the connector" });
+        const firstPin = connector.getByRole("button", { name: /^Pin 1,/ });
+        await touchSize(firstPin);
+        await firstPin.focus();
         await page.keyboard.press("ArrowRight");
-        if (await scroll.evaluate((node) => node.scrollWidth > node.clientWidth)) {
-          await expect.poll(() => scroll.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
-        } else {
-          expect(await scroll.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(0);
-        }
-        const workingWidth = (await frame.boundingBox())!.width;
-        await page.getByRole("button", { name: "Zoom board", exact: true }).tap();
-        await expect.poll(async () => (await frame.boundingBox())!.width).toBeGreaterThan(workingWidth);
-        await touchSize(frame.locator('.bv-pad > circle[fill="transparent"]').first());
-        await page.getByRole("button", { name: "Working size", exact: true }).tap();
-        await expect.poll(async () => (await frame.boundingBox())!.width).toBeCloseTo(workingWidth, 1);
-        await touchSize(frame.locator('.bv-pad > circle[fill="transparent"]').first());
+        const oppositePin = connector.getByRole("button", { name: /^Pin 40,/ });
+        await expect(oppositePin).toBeFocused();
+        await touchSize(oppositePin);
+        await page.keyboard.press("Enter");
+        await expect(page.getByRole("button", { name: /^Copy pin 40,/ })).toBeVisible();
+        expect(await connector.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(0);
+        await expect(page.getByRole("group", { name: /^Raspberry Pi Pico physical board/ })).toBeVisible();
+        expect((await page.locator(".pi-board-frame").boundingBox())!.width).toBeLessThanOrEqual(viewport.width);
         await noOverflow(page);
         await page.locator(".pi-schedule summary").tap();
         await touchSize(page.getByRole("button", { name: "Select pin 1, GP0", exact: true }));

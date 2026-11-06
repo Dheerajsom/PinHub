@@ -55,11 +55,31 @@
 .pi-role-bar button { min-height: 44px; }
 .pi-component-layout { display: grid; grid-template-columns: minmax(0, 1fr); }
 .pi-canvas { min-width: 0; background: radial-gradient(ellipse at 45% 35%, #1d2927, #0c1316 78%); color: #aebfbc; }
-.pi-canvas-scroll { overflow: auto; overscroll-behavior: contain; scrollbar-color: #4d6457 #101b16; }
-.pi-board-frame { width: 100%; padding: 15px; }
-.pi-canvas-pico .pi-board-frame { max-width: 265px; margin: auto; }
+/* The physical board is the Dynamic view's subject: fitted whole by default,
+   enlarged to touch size on request (the frame then pans inside its well). */
+.pi-board-orientation { padding: 10px 14px 0; font-size: 11px; line-height: 1.5; color: #aebfbc; }
+.pi-canvas-scroll { overflow: hidden; }
+.pi-canvas-scroll[data-zoomed] { overflow: auto; max-height: min(70svh, 560px); overscroll-behavior: contain; scrollbar-color: #4d6457 #101b16; }
+.pi-board-frame { width: 100%; max-width: 560px; padding: 10px; margin: auto; touch-action: manipulation; }
+.pi-canvas-pico .pi-board-frame[data-board-view="fit"] { max-width: 200px; }
+.pi-pin-list { border-top: 1px solid var(--pi-rule); }
+.pi-connector-heading { display: grid; gap: 9px; padding: 14px 14px 10px; color: var(--pi-muted); font-size: 12px; line-height: 1.5; background: var(--pi-well); }
+.pi-connector-orientation { font-size: 11px; }
+.pi-connector-scroll { max-height: clamp(176px, 25svh, 280px); overflow-y: auto; overflow-x: hidden; scrollbar-gutter: stable; scrollbar-color: var(--pi-muted) var(--pi-well); padding: 4px 10px 10px; background: var(--pi-well); }
+.pi-connector-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 8px; }
+.pi-connector-pin { display: flex; align-items: center; gap: 7px; min-width: 0; min-height: 48px; padding: 5px 7px; border: 1px solid var(--pi-rule); border-inline-start-width: 3px; border-radius: 5px; background: var(--pi-panel); text-align: left; }
+.pi-connector-pin:hover { box-shadow: inset 0 0 0 1px var(--pi-accent); }
+.pi-connector-pin[data-selected] { border-color: var(--pi-accent); box-shadow: inset 0 0 0 1px var(--pi-accent); }
+.pi-connector-pin[data-dimmed] { opacity: .45; }
+.pi-connector-number { min-width: 20px; font-family: var(--font-mono), monospace; font-size: 12px; color: var(--pi-muted); }
+.pi-connector-signal { min-width: 0; overflow-wrap: anywhere; }
+.pi-connector-signal strong { display: block; font-family: var(--font-mono), monospace; font-size: 12px; font-weight: 600; color: var(--pi-text); }
+.pi-connector-signal small { display: block; font-size: 10px; line-height: 1.3; color: var(--pi-muted); }
+.pi-role-disclosure { border-top: 1px solid var(--pi-rule); }
+.pi-role-disclosure > summary { min-height: 44px; padding: 12px 18px; cursor: pointer; font-size: 12px; font-weight: 600; }
 .pi-canvas-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 0 16px; min-height: 45px; border-top: 1px solid #26352e; font-size: 11px; }
-.pi-canvas-footer button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #bce9e3; }
+.pi-canvas-footer button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 4px; color: #bce9e3; }
+.pi-canvas-footer button[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 3px; }
 .pi-readout { display: grid; align-content: start; gap: 16px; min-width: 0; padding: 20px; background: var(--pi-well); border-top: 1px solid var(--pi-rule); }
 .pi-pin-picker { width: 100%; min-width: 0; min-height: 44px; padding: 7px 10px; border: 1px solid var(--pi-rule); border-radius: 6px; background: var(--pi-panel); color: var(--pi-text); font-size: 16px; }
 .pi-readout .pin-readout { background: var(--pi-panel); }
@@ -1342,6 +1362,11 @@ button {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
+:root[data-theme="light"] .ph-iface[data-tone="default"] {
+  color: #334155;
+  background-color: #e2e8f0;
+}
+
 /* Tinted washes (cyan/emerald/orange at 7–15% alpha) nearly vanish on paper.
    Light mode densifies them so active filters, match badges, and caution
    chips keep their meaning instead of looking like bare text. */
@@ -1483,6 +1508,35 @@ button {
      table, which is opened for the occasion. */
   .bv-stage-wrap {
     display: none !important;
+  }
+  button.print-reference-control {
+    display: block !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    color: #111827 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-align: left !important;
+  }
+  header.pin-reference-heading { display: block !important; }
+  .pin-screen-reference { display: none !important; }
+  .pin-print-reference {
+    display: block !important;
+    color: #111827 !important;
+  }
+  .pin-print-reference table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-block: 1rem; }
+  .pin-print-reference th, .pin-print-reference td { border: 1px solid #9ca3af; padding: 0.3rem; text-align: left; font-size: 10pt; }
+  .pin-print-reference tr { break-inside: avoid; }
+  .pin-print-reference { overflow-wrap: anywhere; }
+  .pin-print-reference tbody th { overflow-wrap: normal; }
+  .pin-print-reference thead { display: table-header-group; break-inside: avoid; break-after: avoid; }
+  .pin-print-reference tbody tr:first-child { break-before: avoid; }
+  [data-sticky-header], .ph-commandbar {
+    display: none !important;
+  }
+  .pin-reference-table, .pin-reference-table * {
+    max-height: none !important;
+    overflow: visible !important;
   }
   details > *:not(summary) {
     display: block !important;

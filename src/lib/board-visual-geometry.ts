@@ -10,6 +10,7 @@
 
 import type { Board, Pin } from "@/lib/boards";
 import { raspberryPiGeometry } from "@/lib/raspberry-pi-models";
+import { familyArtFor, type FamilyArt } from "@/lib/board-family-art";
 import {
   stackedFontSize,
   stackedLabelExtent,
@@ -66,6 +67,15 @@ export type SilkLine = {
 export type BoardGeometry = {
   /** Selects a model-specific decorative illustration without changing pin data. */
   artworkId?: string;
+  /** Family-level decorative features (module can, buttons, debugger section). */
+  familyArt?: FamilyArt;
+  /** The template's recorded USB edge, which orients the family features. */
+  usbEdge?: BoardVisual["usb"];
+  /**
+   * Set when the pads follow the catalog's signal order rather than the
+   * physical pin sequence printed on the board (shield-split headers).
+   */
+  orderNote?: string;
   kind: BoardVisual["headerKind"];
   vbw: number;
   vbh: number;
@@ -860,6 +870,11 @@ function corners(body: Rect, inset: number): Hole[] {
   ];
 }
 
+// Shield-split rows are laid out from the catalog's groups (D0 upward, then
+// analog and power), which is not the sequence printed along the real headers.
+export const SHIELD_ORDER_NOTE =
+  "Header pads are drawn in the catalog's signal order, not the physical sequence along the board's headers; match pins by name.";
+
 const builders: Record<
   BoardVisual["headerKind"],
   (board: Board, visual: BoardVisual) => Omit<BoardGeometry, "kind">
@@ -960,5 +975,12 @@ export function buildBoardGeometry(
     if (sheet) return { kind: "edge-dual", ...sheet };
     return { kind: visual.headerKind, ...builders[visual.headerKind](board, visual), plain: true };
   }
-  return raspberryPiGeometry(board, { kind: visual.headerKind, ...builders[visual.headerKind](board, visual) });
+  const familyArt = familyArtFor(board, visual) ?? undefined;
+  return raspberryPiGeometry(board, {
+    kind: visual.headerKind,
+    ...builders[visual.headerKind](board, visual),
+    familyArt,
+    usbEdge: visual.usb,
+    ...(visual.headerKind === "shield-split" ? { orderNote: SHIELD_ORDER_NOTE } : {}),
+  });
 }

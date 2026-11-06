@@ -65,7 +65,7 @@ describe("PinDetails readout", () => {
 
   it("keeps the empty state's prompt", () => {
     render(<PinDetails anchor={null} pinned={false} net={null} netSize={1} />);
-    expect(screen.getByText(/Hover, tap, or arrow to a pad/)).toBeTruthy();
+    expect(screen.getByText("Select a pin to inspect its details.")).toBeTruthy();
   });
 });
 

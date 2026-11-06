@@ -46,6 +46,7 @@ import { FavoriteLimitToast, useFavoriteToggle } from "@/components/catalog/useF
 import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
 import { CatalogHeader } from "@/components/catalog/CatalogHeader";
 import { PinLookupAnswer } from "@/components/catalog/PinLookupAnswer";
+import { isPinLikeQuery } from "@/lib/pin-match";
 import { SortMenu, sortOptionsFor } from "@/components/catalog/SortMenu";
 import {
   isDesktopCatalogLayout,
@@ -213,10 +214,22 @@ export function PinHubApp({
   const isDesktop = useDesktopCatalogLayout();
   const searchRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
+  const commandBarRef = useRef<HTMLDivElement>(null);
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const [detailLoader] = useState(() =>
     createBoardDetailLoader([initialBoard]),
   );
   useSlashToFocus(searchRef);
+  useEffect(() => {
+    const bar = commandBarRef.current;
+    if (!bar) return;
+    const measure = () => workspaceRef.current?.style.setProperty("--catalog-clearance", `${bar.getBoundingClientRect().height + 16}px`);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, []);
 
   const catalogIds = useMemo(
     () => new Set(catalog.map((board) => board.id)),
@@ -242,6 +255,8 @@ export function PinHubApp({
       form: uniqueValues(catalog.map((board) => board.discovery.formFactorProfile)),
       vendor: uniqueValues(catalog.map((board) => board.vendor), true),
       family: uniqueValues(catalog.map((board) => board.family), true),
+      platform: uniqueValues(catalog.map((board) => board.discovery.computeClass)),
+      connector: uniqueValues(catalog.flatMap((board) => board.discovery.connectorEcosystems)),
     }),
     [catalog],
   );
@@ -256,6 +271,8 @@ export function PinHubApp({
       logic: byKey("logic"),
       power: byKey("power"),
       form: byKey("form"),
+      platform: byKey("platform"),
+      connector: byKey("connector"),
       wireless: catalogCounts(catalog, Object.values(wirelessOptions), (item) => ({
         wirelessCapability: optionKey(wirelessOptions, item),
       })),
@@ -274,6 +291,7 @@ export function PinHubApp({
   );
 
   const results = useCatalogResults(boardSearchEntries, catalogState, favorites);
+  const lookupEntries = useMemo(() => boardSearchEntries.filter((entry) => matchesCatalogFilters(entry.board, catalogState, favorites)), [boardSearchEntries, catalogState, favorites]);
   const filteredBoards = useMemo(
     () => results.map((result) => result.board),
     [results],
@@ -530,7 +548,7 @@ export function PinHubApp({
         sourceCount={sourceCount}
       />
 
-      <div data-sticky-header className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
+      <div ref={commandBarRef} data-sticky-header className="ph-commandbar sticky top-0 z-40 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.55)]">
         <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6 lg:px-8">
           <SectionNav current="/" />
           <label className="ph-search-shell relative block w-full min-w-44 flex-1 rounded-xl shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] max-sm:order-first sm:w-auto">
@@ -648,7 +666,7 @@ export function PinHubApp({
             className="shrink-0"
           />
         </div>
-        {hasActiveFilters ? (
+        {activeFilterCount > 0 ? (
           <div className="border-t border-white/5">
             <div className="mx-auto flex max-w-[1560px] flex-wrap items-center gap-1.5 px-4 py-2 sm:px-6 lg:px-8">
               {chipOrder.flatMap((key) =>
@@ -700,7 +718,7 @@ export function PinHubApp({
         ) : null}
       </div>
 
-      <div id="catalog-workspace" className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:px-8 xl:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)]">
+      <div ref={workspaceRef} id="catalog-workspace" className="mx-auto grid max-w-[1560px] grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:px-8 xl:grid-cols-[15rem_minmax(0,1fr)_clamp(21rem,30vw,32rem)]">
         <aside
           id="mobile-filters"
           className={clsx(
@@ -710,14 +728,19 @@ export function PinHubApp({
             mobileFiltersOpen ? "block" : "hidden xl:block",
           )}
         >
-          <FilterPanel
-            title="Category"
-            icon={facetIcon(Layers3)}
-            items={facetItems.category}
-            active={catalogState.category[0] ?? all}
-            counts={facetCounts.category}
-            onChange={(value) => selectFacet("category", value)}
-          />
+          <FilterPanel title="Platform" icon={facetIcon(Cpu)} items={facetItems.platform} active={catalogState.platform[0] ?? all} counts={facetCounts.platform} onChange={(value) => selectFacet("platform", value)} />
+          <details className="surface-panel rounded-xl p-3" open={catalogState.category.length > 0 || undefined}>
+            <summary className="min-h-11 cursor-pointer text-sm font-semibold text-white">Catalog category</summary>
+            <p className="mb-2 text-xs leading-5 text-zinc-400">A narrower catalog grouping. Platform above groups boards by hardware type.</p>
+            <FilterPanel
+              title="Catalog category"
+              icon={facetIcon(Layers3)}
+              items={facetItems.category}
+              active={catalogState.category[0] ?? all}
+              counts={facetCounts.category}
+              onChange={(value) => selectFacet("category", value)}
+            />
+          </details>
           <FacetMenu
             title="Manufacturer"
             icon={facetIcon(Factory)}
@@ -777,17 +800,19 @@ export function PinHubApp({
               className="size-4 accent-cyan-300"
             />
           </label>
+          <FacetMenu title="Connector" icon={facetIcon(Plug)} items={facetItems.connector} active={catalogState.connector[0] ?? all} counts={facetCounts.connector} allLabel="All connectors" noun="connectors" onChange={(value) => selectFacet("connector", value)} />
           <LibraryRail catalog={catalog} />
         </aside>
 
         <section
           ref={resultsRef}
           id="board-results"
-          className="min-w-0 scroll-mt-32"
+          className="min-w-0 scroll-mt-[var(--catalog-clearance,20rem)]"
           aria-label="Board results"
         >
           <FavoriteLimitToast message={favoriteMessage} />
-          <PinLookupAnswer query={query} search={boardSearchEntries} />
+          <PinLookupAnswer query={query} search={lookupEntries} />
+          {isPinLikeQuery(query) ? <p className="mb-3 text-xs leading-5 text-zinc-400">Board results below use the board part of your query and active filters. Recorded signal matches appear above.</p> : null}
           {/* Announced, not shown: the list itself shows what matched. */}
           <span className="sr-only" role="status" aria-live="polite">
             Showing {visibleBoards.length} of {filteredBoards.length}{" "}
@@ -834,7 +859,7 @@ export function PinHubApp({
                     role="region"
                     aria-label={`${board.name} details`}
                     tabIndex={-1}
-                    className="min-w-0 scroll-mt-32 outline-none xl:hidden"
+                    className="min-w-0 scroll-mt-[var(--catalog-clearance,20rem)] outline-none xl:hidden"
                   >
                     <BoardDetailPanel
                       expectedBoard={board}

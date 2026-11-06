@@ -496,5 +496,12 @@ export function linkToText(link: BoardLink, a: Board, b: Board): string {
     });
   }
   lines.push(...link.notes);
+  const cautions = new Set<string>();
+  for (const wire of link.wires) {
+    for (const [boardName, endpoint] of [[a.name, wire.a], [b.name, wire.b]] as const) {
+      for (const caution of endpoint.cautions) cautions.add(`${endText(boardName, endpoint)}: ${caution.note}`);
+    }
+  }
+  lines.push(...cautions);
   return lines.join("\n");
 }

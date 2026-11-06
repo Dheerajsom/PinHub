@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { clsx } from "clsx";
-import { Expand, ExternalLink, X } from "lucide-react";
+import { Expand, ExternalLink, X, ZoomIn, ZoomOut } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import {
   buildBoardGeometry,
@@ -12,6 +12,7 @@ import {
 } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { illustrationCaption } from "@/components/board-visual/illustration-caption";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
@@ -30,6 +31,11 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const expandButtonRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [pannable, setPannable] = useState(false);
+  // Physical drawings open fitted so the whole board is visible in a narrow
+  // panel; touch size enlarges them until every pad's hit area is 44 px. The
+  // function-grouped schematic has no board to show whole, so it stays at
+  // touch size.
+  const [touchSize, setTouchSize] = useState(() => geometry?.kind === "group-strips");
   // Interaction state is reset across board switches by remounting via a
   // `key={board.id}` on this component (see PinHubApp), so no reset effect is
   // needed here.
@@ -44,7 +50,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
     );
     observer.observe(stage);
     return () => observer.disconnect();
-  }, [geometry]);
+  }, [geometry, touchSize]);
 
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
@@ -157,14 +163,19 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       <div
         ref={stageRef}
         className="bv-stage-wrap mt-3 w-full overflow-auto rounded-md"
-        style={tall ? { maxHeight: 460 } : undefined}
+        style={tall && touchSize ? { maxHeight: 460 } : undefined}
         {...(pannable ? { tabIndex: 0, role: "group", "aria-label": "Scrollable pin map" } : {})}
       >
         <div
-          className="w-full"
+          className="mx-auto w-full"
+          data-board-view={touchSize ? "touch" : "fit"}
           style={{
             aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-            minWidth: touchDrawingWidth(geometry),
+            ...(touchSize
+              ? { minWidth: touchDrawingWidth(geometry) }
+              : tall
+                ? { maxWidth: Math.round((460 * geometry.vbw) / geometry.vbh) }
+                : {}),
           }}
         >
           <BoardStage
@@ -184,6 +195,25 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           />
         </div>
       </div>
+
+      {geometry.kind !== "group-strips" ? (
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 text-[11px] leading-5 text-zinc-500">
+          <span>
+            {touchSize
+              ? "Touch size: every pad has a 44 px target."
+              : "Whole board: pads are small at this size."}
+          </span>
+          <button
+            type="button"
+            aria-pressed={touchSize}
+            onClick={() => setTouchSize(!touchSize)}
+            className="touch-target inline-flex items-center gap-1.5 rounded-md px-1.5 font-medium text-cyan-200 hover:text-cyan-100"
+          >
+            {touchSize ? <ZoomOut className="size-3.5" aria-hidden="true" /> : <ZoomIn className="size-3.5" aria-hidden="true" />}
+            {touchSize ? "Fit whole board" : "Zoom to touch size"}
+          </button>
+        </div>
+      ) : null}
 
       {isComplex ? (
         <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
@@ -208,9 +238,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       ) : null}
 
       <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-        {geometry.notToScale
-          ? "Simplified diagram, grouped by function — not to physical scale. Pin data is source-backed; verify against the linked documentation."
-          : "Simplified technical illustration. Pin data is source-backed; verify against the linked documentation before wiring."}
+        {illustrationCaption(geometry)}
       </p>
 
       <div className="mt-3">
@@ -220,6 +248,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
           net={probe.net}
           netSize={probe.keys.size}
           report={report}
+          flagNotes={board.pinFunctions?.flagNotes}
           onClear={() => {
             setSelectedKey(null);
             setActiveKey(null);
@@ -240,13 +269,14 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         ))}
       </ul>
 
-      <details className="mt-3 border-t border-white/10 pt-3">
+      <details className="pin-reference-table mt-3 border-t border-white/10 pt-3">
         <summary className="min-h-11 cursor-pointer text-sm font-medium text-zinc-300 transition hover:text-white">
           All {geometry.anchors.length} pins (table)
         </summary>
         <div className="mt-2 max-h-80 overflow-y-auto pr-1">
           <PinoutTable
             anchors={geometry.anchors}
+            flagNotes={board.pinFunctions?.flagNotes}
             activeKey={liveKey}
             selectedKey={selectedKey}
             activeRole={activeRole}

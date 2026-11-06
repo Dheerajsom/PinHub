@@ -51,7 +51,7 @@ export default async function ComparePage({
             <GitCompareArrows className="size-4" aria-hidden="true" /> Board comparison
           </div>
           <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">
-            Compare the facts, not the hype.
+            Compare boards
           </h1>
           <p className="mt-3 text-base leading-7 text-zinc-400">
             Differences are highlighted first. Pinout availability and wiring

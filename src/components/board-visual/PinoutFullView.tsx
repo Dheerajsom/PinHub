@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Search, X } from "lucide-react";
 import type { Board } from "@/lib/boards";
@@ -15,6 +15,12 @@ import { VendorLogo } from "@/components/VendorLogo";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PlanPinsLink } from "@/components/planner/PlanPinsLink";
+import { WiringCautions } from "@/components/WiringCautions";
+import { fiveVoltCaution } from "@/lib/board-utilities";
+import { verificationSourceFor, isOfficialVerificationSource } from "@/lib/source-trust";
+import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
+import { PrintPinReference } from "@/components/board-visual/PrintPinReference";
+import { PinCautions } from "@/components/board-visual/PinCautions";
 
 // Standalone, full-viewport pinout sheet served at /pinout/[id]. Built for the
 // dense expansion headers whose drawings are cramped inside the catalog's narrow
@@ -23,6 +29,7 @@ export function PinoutFullView({ board }: { board: Board }) {
   const geometry = useMemo(() => buildBoardGeometry(board), [board]);
   const { state, update } = usePinoutUrlState(geometry?.anchors ?? []);
   const selectedKey = state.pin;
+  const inspectorRef = useRef<HTMLDivElement>(null);
   const setSelectedKey = (pin: string | null) => update({ ...state, pin });
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const activeRole = state.role;
@@ -45,10 +52,15 @@ export function PinoutFullView({ board }: { board: Board }) {
       query,
       categories: activeCategories,
       connector: board.pinout?.connector ?? "",
+      functionData: board.pinFunctions,
     });
-  }, [activeCategories, board.pinout?.connector, geometry, query]);
+  }, [activeCategories, board.pinFunctions, board.pinout?.connector, geometry, query]);
 
   const liveAnchor = anchorsByKey.get(activeKey ?? selectedKey ?? "") ?? null;
+  const selectedAnchor = anchorsByKey.get(selectedKey ?? "") ?? null;
+  const verifySource = verificationSourceFor(board);
+  const officialSource = board.sourceLinks.find((source) => isOfficialVerificationSource(board, source));
+  const voltageCaution = fiveVoltCaution(board);
 
   return (
     <main
@@ -66,7 +78,7 @@ export function PinoutFullView({ board }: { board: Board }) {
       <CircuitBackground />
       <SiteHeader width="wide" />
       <div className="relative mx-auto max-w-[1560px] px-4 py-5 sm:px-6 lg:px-8">
-        <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-white/10 pb-4">
+        <header className="pin-reference-heading flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-white/10 pb-4">
           <div className="min-w-0">
             <Link
               href={`/boards/${board.id}`}
@@ -87,8 +99,28 @@ export function PinoutFullView({ board }: { board: Board }) {
           </p>
         </header>
 
+        <div className="mt-4 space-y-3">
+          <p className="text-sm text-zinc-200"><strong>Logic: {board.logicLevel}</strong>{voltageCaution ? <span className="ml-2 text-amber-200">{voltageCaution}</span> : null}</p>
+          {selectedAnchor ? <section aria-label="Selected pin" className="pin-screen-reference surface-panel rounded-lg border border-cyan-300/30 p-3">
+            <p className="text-xs font-medium text-cyan-200">Selected pin</p>
+            <h2 className="mt-1 break-words font-mono text-sm font-semibold text-white">{selectedAnchor.pin.label} · Physical pin {selectedAnchor.pin.position}</h2>
+            {selectedAnchor.group ? <p className="mt-1 text-xs text-zinc-400">{selectedAnchor.group}</p> : null}
+            {selectedAnchor.pin.aliases?.length ? <p className="mt-1 break-words font-mono text-xs text-zinc-300">{selectedAnchor.pin.aliases.join(" · ")}</p> : null}
+            <PinCautions pin={selectedAnchor.pin} flagNotes={board.pinFunctions?.flagNotes} />
+            <button type="button" className="mt-2 min-h-11 rounded-md border border-white/15 px-3 text-sm text-cyan-200 hover:border-cyan-300/60" onClick={() => {
+              const pad = inspectorRef.current?.querySelector<SVGGElement>(`[data-pin-key="${selectedAnchor.key}"]`);
+              pad?.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
+              pad?.focus({ preventScroll: true });
+            }}>Show selected pin on diagram</button>
+          </section> : null}
+          <WiringCautions warnings={board.warnings} verifySource={verifySource} verifySourceOfficial={isOfficialVerificationSource(board, verifySource)} reportUrl={pinReportUrl(pinReportContextFor(board))} />
+          {officialSource ? <a className="inline-flex min-h-11 items-center text-sm text-cyan-200 underline" href={officialSource.url} target="_blank" rel="noopener noreferrer">Official board documentation</a> : null}
+        </div>
+
         {geometry ? (
           <div className="mt-5">
+            <PrintPinReference board={board} />
+            <div className="pin-screen-reference">
             <label className="relative mb-4 block">
               <Search
                 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
@@ -146,7 +178,7 @@ export function PinoutFullView({ board }: { board: Board }) {
             </p>
             {/* Opaque panel: the workbench backdrop belongs in the page
                 gutters, not behind a diagram that has to be read. */}
-            <div className="surface-panel rounded-lg p-4">
+            <div ref={inspectorRef} className="surface-panel rounded-lg p-4">
               <InspectorBody
                 board={board}
                 geometry={geometry}
@@ -167,6 +199,7 @@ export function PinoutFullView({ board }: { board: Board }) {
               />
             </div>
             <PlanPinsLink boardId={board.id} className="mt-5" />
+            </div>
           </div>
         ) : (
           <p className="mt-8 rounded-lg border border-dashed border-white/15 bg-[#101319] p-6 text-sm text-zinc-400">

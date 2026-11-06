@@ -310,6 +310,7 @@ function Pad({
       role="button"
       tabIndex={tabIndex}
       aria-pressed={selected}
+      data-pin-key={anchor.key}
       aria-label={pinAccessibleLabel(anchor.pin)}
       className="bv-pad cursor-pointer outline-none"
       style={{ opacity }}

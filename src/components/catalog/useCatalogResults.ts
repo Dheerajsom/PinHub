@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { pinBoardQuery } from "@/lib/pin-match";
 import type { BoardSummary } from "@/lib/board-summary";
 import {
   matchBoardSearchEntry,
@@ -32,7 +33,7 @@ export function useCatalogResults(
   favorites: ReadonlySet<string>,
 ): CatalogResult[] {
   return useMemo(() => {
-    const tokens = tokenizeQuery(state.query);
+    const tokens = tokenizeQuery(pinBoardQuery(state.query));
     const scored: CatalogResult[] = [];
     for (const entry of entries) {
       if (!matchesCatalogFilters(entry.board, state, favorites)) continue;

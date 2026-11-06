@@ -148,15 +148,13 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
 
       <BoardPriceLink boardId={board.id} />
 
-      {/* Hazards and the document to check them against come before the
-          map. Long lists fold after three so the map stays near the top of
-          this narrow column. */}
+      {/* All recorded hazards stay visible before the map, including board
+          revisions whose critical warning appears late in the list. */}
       <WiringCautions
         warnings={board.warnings}
         verifySource={verifySource}
         verifySourceOfficial={verifySourceOfficial}
         reportUrl={pinReportUrl(pinReportContextFor(board))}
-        collapseAfter={3}
       />
 
       <section className="surface-panel rounded-xl p-4">
@@ -168,7 +166,7 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-[#0a0c11]">
             <Cable className="size-3.5 text-cyan-200" aria-hidden="true" />
           </span>
-          <span className="text-[13px] font-semibold tracking-tight text-white">Interfaces</span>
+          <h2 className="text-[13px] font-semibold tracking-tight text-white">Interfaces</h2>
         </div>
         <div className="flex flex-wrap gap-1.5">{board.interfaces.map((item) => <span key={item} className="surface-well rounded-md px-2 py-1 font-mono text-[11px] font-medium text-zinc-300">{item}</span>)}</div>
       </section>
@@ -200,9 +198,9 @@ function BoardDetail({ board, onBackToResults }: BoardDetailProps) {
           <span className="grid size-7 place-items-center rounded-md border border-white/10 bg-[#0a0c11]">
             <BookOpen className="size-3.5 text-cyan-200" aria-hidden="true" />
           </span>
-          <span className="text-[13px] font-semibold tracking-tight text-white">
+          <h2 className="text-[13px] font-semibold tracking-tight text-white">
             Source references
-          </span>
+          </h2>
         </div>
         <div className="grid gap-2">
           {board.sourceLinks.map((source) => {

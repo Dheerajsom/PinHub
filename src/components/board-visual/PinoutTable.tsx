@@ -1,11 +1,14 @@
 "use client";
 
+import { matchesPin } from "@/lib/pin-match";
+import { netForPin } from "@/lib/pin-nets";
 import { Fragment } from "react";
 import { clsx } from "clsx";
-import type { PinRole } from "@/lib/boards";
+import type { PinRole, PinFunctionData } from "@/lib/boards";
 import type { PinAnchor } from "@/lib/board-visual-geometry";
 import type { PinNet } from "@/lib/pin-nets";
 import { roleChipStyle, roleLabels } from "@/components/board-visual/roles";
+import { isReferenceGpio, referenceFunctions, pinCautionTexts, type PinFlagNotes } from "@/lib/pin-reference";
 
 /**
  * Categories people actually use when looking for a header signal. These are
@@ -34,34 +37,40 @@ const reservedPinText =
 export function pinMatchesCategory(
   pin: PinAnchor["pin"],
   category: PinoutFilterCategory,
+  functionData?: PinFunctionData,
 ): boolean {
   const searchable = [
     pin.label,
     ...(pin.aliases ?? []),
     pin.note ?? "",
   ].join(" ");
+  const functions = referenceFunctions(pin, functionData);
+  const has = (peripheral: string) => matchesPin({
+    ...pin, key: "", gpio: isReferenceGpio(pin), net: netForPin(pin)?.label,
+    signals: functions.flatMap((item) => [item.peripheral, item.signal, `${item.instance} ${item.signal}`]),
+  }, peripheral.toLowerCase());
 
   switch (category) {
     case "gpio":
-      return pin.role === "gpio";
+      return isReferenceGpio(pin);
     case "power":
       return pin.role === "power";
     case "ground":
       return pin.role === "ground";
     case "analog":
-      return pin.role === "adc" || pin.role === "dac";
+      return has("ADC") || has("DAC");
     case "pwm":
-      return pin.role === "pwm";
+      return has("PWM");
     case "uart":
-      return pin.role === "uart";
+      return has("UART");
     case "i2c":
-      return pin.role === "i2c";
+      return has("I2C");
     case "spi":
-      return pin.role === "spi";
+      return has("SPI");
     case "boot":
-      return bootPinText.test(searchable);
+      return Boolean(pin.flags?.some((flag) => flag === "boot" || flag === "strapping")) || bootPinText.test(searchable);
     case "reserved":
-      return pin.role === "reserved" || reservedPinText.test(searchable);
+      return pin.role === "reserved" || Boolean(pin.flags?.includes("module-memory")) || reservedPinText.test(searchable);
   }
 }
 
@@ -70,6 +79,7 @@ export function pinMatchesQuery(
   anchor: PinAnchor,
   query: string,
   connector = "",
+  functionData?: PinFunctionData,
 ): boolean {
   const needle = query.trim().toLowerCase();
   if (!needle) return true;
@@ -82,6 +92,8 @@ export function pinMatchesQuery(
     connector,
     ...(anchor.pin.aliases ?? []),
     anchor.pin.note ?? "",
+    ...(anchor.pin.flags ?? []),
+    ...referenceFunctions(anchor.pin, functionData).map((item) => `${item.peripheral} ${item.instance} ${item.signal}`),
   ]
     .join(" ")
     .toLowerCase()
@@ -94,17 +106,19 @@ export function filterPinAnchors(
     query = "",
     categories = [],
     connector = "",
+    functionData,
   }: {
     query?: string;
     categories?: readonly PinoutFilterCategory[];
     connector?: string;
+    functionData?: PinFunctionData;
   } = {},
 ): PinAnchor[] {
   return anchors.filter(
     (anchor) =>
-      pinMatchesQuery(anchor, query, connector) &&
+      pinMatchesQuery(anchor, query, connector, functionData) &&
       (!categories.length ||
-        categories.some((category) => pinMatchesCategory(anchor.pin, category))),
+        categories.some((category) => pinMatchesCategory(anchor.pin, category, functionData))),
   );
 }
 
@@ -121,6 +135,7 @@ export function PinoutTable({
   netByKey,
   onSelect,
   onActiveKey,
+  flagNotes,
 }: {
   anchors: PinAnchor[];
   activeKey: string | null;
@@ -130,6 +145,7 @@ export function PinoutTable({
   netByKey: Map<string, PinNet | null>;
   onSelect: (key: string | null) => void;
   onActiveKey: (key: string | null) => void;
+  flagNotes?: PinFlagNotes;
 }) {
   return (
     <table className="w-full table-fixed border-collapse text-left text-sm">
@@ -210,7 +226,7 @@ export function PinoutTable({
                       event.stopPropagation();
                       toggleSelection();
                     }}
-                    className="min-h-11 min-w-11 w-full truncate rounded text-left font-mono text-[13px] font-semibold text-white outline-none transition hover:text-cyan-200 focus-visible:ring-1 focus-visible:ring-cyan-300"
+                    className="print-reference-control min-h-11 min-w-11 w-full truncate rounded text-left font-mono text-[13px] font-semibold text-white outline-none transition hover:text-cyan-200 focus-visible:ring-1 focus-visible:ring-cyan-300"
                     aria-label={`${isSelected ? "Unselect" : "Select"} pin ${anchor.pin.position}, ${anchor.pin.label}`}
                     aria-pressed={isSelected}
                   >
@@ -239,8 +255,8 @@ export function PinoutTable({
                   {anchor.pin.aliases?.length
                     ? anchor.pin.aliases.join(" / ")
                     : ""}
-                  {anchor.pin.aliases?.length && anchor.pin.note ? " · " : ""}
-                  {anchor.pin.note ?? ""}
+                  {anchor.pin.aliases?.length && pinCautionTexts(anchor.pin, flagNotes).length ? " · " : ""}
+                  {pinCautionTexts(anchor.pin, flagNotes).join(" · ")}
                 </td>
               </tr>
             </Fragment>

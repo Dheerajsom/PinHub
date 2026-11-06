@@ -104,6 +104,7 @@ export function pinAccessibleLabel(pin: {
   role: PinRole;
   aliases?: string[];
   note?: string;
+  flags?: readonly string[];
 }): string {
   const parts = [
     `Pin ${pin.position}`,
@@ -116,5 +117,6 @@ export function pinAccessibleLabel(pin: {
   if (pin.note) {
     parts.push(pin.note);
   }
+  if (pin.flags?.length) parts.push(`Recorded restrictions: ${pin.flags.map((flag) => flag.replaceAll("-", " ")).join(", ")}`);
   return parts.join(", ");
 }

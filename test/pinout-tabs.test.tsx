@@ -56,6 +56,10 @@ afterEach(() => {
 });
 
 describe("PinoutTabs", () => {
+  it("does not offer empty presentation switches when no map is recorded", () => {
+    render(<PinoutTabs board={{ ...board, pinout: undefined }} />);
+    expect(screen.queryByRole("tablist")).toBeNull();
+  });
   it("uses the original pin-only Static view for Raspberry Pi boards", () => {
     render(<PinoutTabs board={{ ...board, id: "raspberry-pi-4-model-b" }} />);
     fireEvent.click(screen.getByRole("tab", { name: "Dynamic" }));

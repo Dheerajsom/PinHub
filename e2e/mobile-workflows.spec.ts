@@ -145,6 +145,8 @@ for (const viewport of viewports) {
 
     test("comparison and price search remain usable", async ({ page }, testInfo) => {
       await page.goto("/compare?boards=raspberry-pi-pico,arduino-uno-rev3");
+      await expect(page.getByRole("heading", { name: "Pin-conflict analysis" })).toBeHidden();
+      await page.getByText(/^Shared signals and capability overlaps/).tap();
       await expect(page.getByRole("heading", { name: "Pin-conflict analysis" })).toBeVisible();
       await expectPageFits(page);
       await page.getByRole("button", { name: "Show identical", exact: true }).tap();
@@ -154,6 +156,7 @@ for (const viewport of viewports) {
       // Regression: a long board name sized the stacked "Comparing" list's
       // grid column to its content, pushing the page 25px wide at 360.
       await page.goto("/compare?boards=raspberry-pi-5,nvidia-jetson-agx-orin-devkit");
+      await page.getByText(/^Shared signals and capability overlaps/).tap();
       await expect(page.getByRole("heading", { name: "Pin-conflict analysis" })).toBeVisible();
       await expectPageFits(page);
       // The list's Overview links and remove buttons were 16px and 40px tall.
@@ -247,6 +250,7 @@ test.describe("favorite capacity feedback", () => {
     await expectPageFits(page);
 
     await page.goto("/compare");
+    await page.getByRole("textbox", { name: "Search boards" }).fill("Adafruit ESP32-S3 Feather");
     await page.getByRole("button", { name: "Add Adafruit ESP32-S3 Feather to favorites" }).tap();
     await expect(page.getByRole("status").filter({ hasText: "Favorite limit reached (256)" })).toBeVisible();
     await expectPageFits(page);

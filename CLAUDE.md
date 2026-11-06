@@ -72,12 +72,25 @@ user-facing feature, update the route table in `README.md` in the same commit.
      motion respects `prefers-reduced-motion`.
 6. **Verify on desktop.** Run `npm run lint`, `npm run typecheck`,
    `npm test`, `npm run build` (the build is also the board-visual and
-   source-link validation gate), and `npm run test:e2e`. For CLI or shared
-   board-data changes, also run the `cli/` checks listed in `AGENTS.md`. Look
-   at the changed pages in the browser in both themes.
+   source-link validation gate), and then the browser suite against that
+   production build: `CI=1 npx playwright test --retries=0`. Plain
+   `npm run test:e2e` uses `next dev` locally, whose first-request compiles
+   time out the parallel mobile release-gate tests; `CI=1` serves
+   `next start` like CI does (stop anything already on port 3100 first),
+   and `--retries=0` keeps CI's two retries from hiding flaky tests. Also
+   run the `cli/` checks listed in `AGENTS.md`, after
+   `npm --prefix cli run generate:boards`, whenever a change touches
+   `src/lib/boards.ts` or the pin index: `cli/src/pin-match.ts` is generated
+   from `src/lib/pin-match.ts`, and `cli/src/boards/pin-index.ts` from
+   `createPinIndex` (`src/lib/server/pin-index.ts` and what it imports, such
+   as `pin-reference.ts` and `board-visual-geometry.ts`). CLI CI does not
+   trigger on those `src/lib` paths, so a stale copy is only caught by
+   running `check:boards` yourself. Look at the changed pages in the browser
+   in both themes.
 7. **Mobile gate (mandatory for any UI or UX change).** Before committing and
-   pushing, spawn the `mobile-mojo` subagent. Have it read the `mobile-mojo`
-   skill and test the final build at 360 × 800, 390 × 844, and 412 × 915,
+   pushing, spawn the `mobile-mojo` subagent. Its skill is not loaded
+   automatically: tell it to read `~/.codex/skills/mobile-mojo/SKILL.md`
+   first. Have it test the final build at 360 × 800, 390 × 844, and 412 × 915,
    plus 844 × 390 landscape for pin maps and other dense views. It must
    exercise every affected journey and check overflow, touch targets, focus,
    navigation, and console errors from real screenshots. Fix what it
@@ -128,3 +141,5 @@ without being asked again:
   a slow store cannot hold every request open.
 - Board ids are lowercase kebab-case everywhere (`isBoardId`). Input that
   fails that shape is dropped at the boundary.
+- `next-env.d.ts` flips between `.next/types` (after `next build`) and
+  `.next/dev/types` (after `next dev`). Leave that churn out of commits.
