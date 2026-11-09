@@ -31,22 +31,14 @@ describe("WiringCautions", () => {
     expect(within(panel).getByText("Official")).toBeTruthy();
   });
 
-  it("folds long lists and discloses the rest on request", () => {
-    render(<WiringCautions warnings={warnings} verifySource={source} collapseAfter={3} />);
+  it("never folds a long list: every caution is listed with no disclosure button", () => {
+    const long = [...warnings, "VIN accepts 6-24 V; the 5 V pin is an output.", "Do not drive GPIO above VDD."];
+    render(<WiringCautions warnings={long} verifySource={source} />);
     const panel = screen.getByRole("region", { name: "Before you wire" });
-    expect(within(panel).getAllByRole("listitem")).toHaveLength(3);
-    const more = within(panel).getByRole("button", { name: "Show 2 more cautions" });
-    expect(more.getAttribute("aria-expanded")).toBe("false");
-    fireEvent.click(more);
-    expect(within(panel).getAllByRole("listitem")).toHaveLength(5);
-    expect(within(panel).getByRole("button", { name: "Show fewer cautions" }).getAttribute("aria-expanded")).toBe("true");
+    const items = within(panel).getAllByRole("listitem");
+    expect(items.map((item) => item.textContent)).toEqual(long);
+    expect(within(panel).queryByRole("button")).toBeNull();
     expect(within(panel).getByText("3rd-party")).toBeTruthy();
-  });
-
-  it("never hides a single leftover caution behind a button", () => {
-    render(<WiringCautions warnings={warnings.slice(0, 4)} collapseAfter={3} />);
-    expect(screen.getAllByRole("listitem")).toHaveLength(4);
-    expect(screen.queryByRole("button")).toBeNull();
   });
 });
 

@@ -341,7 +341,7 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
       </header>
 
       <div className="mt-4">
-        <WiringCautions warnings={board.warnings} verifySource={verifySource} verifySourceOfficial={isOfficialVerificationSource(board, verifySource)} collapseAfter={3} />
+        <WiringCautions warnings={board.warnings} verifySource={verifySource} verifySourceOfficial={isOfficialVerificationSource(board, verifySource)} />
       </div>
 
       <div className="mt-4 grid gap-4 @3xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] @3xl:items-start">

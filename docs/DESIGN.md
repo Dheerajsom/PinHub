@@ -529,7 +529,8 @@ embedding it.
 - **Cautions** for a claimed pin come only from the record (the pin's flags
   with the board's notes, and the reserved role), in the same orange rows as
   auto-assigned pins. Board-level cautions appear before the planner drawing;
-  a single-source map's unverified disclosure stays first in a folded list.
+  every caution is listed, none folded behind a button, and a single-source
+  map's unverified disclosure stays first in that list.
 - **Section nav** holds four links on one row down to 360 px: below 400 px
   the icons give way to the labels. Links are 44 px tall at every width.
 

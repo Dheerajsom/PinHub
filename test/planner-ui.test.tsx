@@ -97,6 +97,20 @@ describe("PlannerWorkspace", () => {
     expect(screen.getByText(/Zephyr v4.2.0/)).toBeTruthy();
   });
 
+  it("lists every board caution before wiring, with nothing folded away", async () => {
+    // arduino-nano-r4 has 9 cautions; the planner used to show three and fold
+    // the rest, which hid voltage and boot-strap text behind a button.
+    const nano = board("arduino-nano-r4");
+    expect(nano.warnings.length).toBeGreaterThan(4);
+    render(<PlannerWorkspace board={nano} onChangeBoard={() => {}} />);
+    await settle();
+    const panel = screen.getByRole("region", { name: "Before you wire" });
+    const items = within(panel).getAllByRole("listitem");
+    expect(items).toHaveLength(nano.warnings.length);
+    expect(items.map((item) => item.textContent)).toEqual([...nano.warnings]);
+    expect(within(panel).queryByRole("button", { name: /more caution/ })).toBeNull();
+  });
+
   it("Escape closes the pin editor and restores focus to its pad", async () => {
     render(<PlannerWorkspace board={board("raspberry-pi-pico")} onChangeBoard={() => {}} />);
     await settle();

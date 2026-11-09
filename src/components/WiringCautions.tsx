@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId } from "react";
 import { ArrowUpRight, BadgeCheck, Flag, ShieldAlert } from "lucide-react";
 import { clsx } from "clsx";
 import type { SourceLink } from "@/lib/boards";
@@ -12,12 +12,6 @@ type WiringCautionsProps = {
   verifySourceOfficial?: boolean;
   /** Pre-filled GitHub issue for reporting a data error on this board. */
   reportUrl?: string | null;
-  /**
-   * Show only this many warnings until expanded. Omit to always list every
-   * warning (the standalone board page has the room; the catalog's side panel
-   * keeps its pin map near the top).
-   */
-  collapseAfter?: number;
   className?: string;
 };
 
@@ -26,23 +20,17 @@ type WiringCautionsProps = {
  * them against, as one unit. They used to be two separate cards — an orange
  * verify link above the pin map and a warning list far below it — although
  * both answer the same question an engineer asks before connecting anything.
+ * Every warning is always listed: a fold could hide a late voltage or
+ * boot-strap caution.
  */
 export function WiringCautions({
   warnings,
   verifySource,
   verifySourceOfficial = false,
   reportUrl,
-  collapseAfter,
   className,
 }: WiringCautionsProps) {
-  const [expanded, setExpanded] = useState(false);
   const headingId = useId();
-  const listId = useId();
-  const limit =
-    collapseAfter !== undefined && !expanded && warnings.length > collapseAfter + 1
-      ? collapseAfter
-      : warnings.length;
-  const hidden = warnings.length - limit;
 
   if (!warnings.length && !verifySource && !reportUrl) return null;
 
@@ -67,11 +55,8 @@ export function WiringCautions({
       </div>
 
       {warnings.length ? (
-        <ul
-          id={listId}
-          className="ph-cautions-text space-y-2.5 px-4 pt-3 text-sm leading-6"
-        >
-          {warnings.slice(0, limit).map((warning) => (
+        <ul className="ph-cautions-text space-y-2.5 px-4 pt-3 text-sm leading-6">
+          {warnings.map((warning) => (
             <li key={warning} className="flex gap-2.5">
               <span className="ph-cautions-mark shrink-0" aria-hidden="true" />
               <span className="min-w-0">{warning}</span>
@@ -80,23 +65,7 @@ export function WiringCautions({
         </ul>
       ) : null}
 
-      {hidden > 0 || expanded ? (
-        <div className="px-4">
-          <button
-            type="button"
-            onClick={() => setExpanded((value) => !value)}
-            aria-expanded={expanded}
-            aria-controls={listId}
-            className="ph-cautions-more mt-1 inline-flex min-h-11 items-center text-xs font-medium underline-offset-4 transition hover:underline"
-          >
-            {expanded
-              ? "Show fewer cautions"
-              : `Show ${hidden} more ${hidden === 1 ? "caution" : "cautions"}`}
-          </button>
-        </div>
-      ) : (
-        <div className="h-3.5" aria-hidden="true" />
-      )}
+      <div className="h-3.5" aria-hidden="true" />
 
       {verifySource ? (
         <a

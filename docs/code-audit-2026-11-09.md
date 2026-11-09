@@ -48,7 +48,7 @@ Ranked hardware-safety, security, correctness, UX, cleanup.
 | --- | --- | --- | --- | --- |
 | 1 | Correctness | Planner | The Auto-assign panel advertised a "max N" that could not be planned on 17 boards | Yes |
 | 2 | Security (low) | API | `/api/prices` accepted any query string and answered other methods without the shared rules | Yes |
-| 3 | Hardware-safety (design call) | Planner | The planner folds board cautions after three; on 8 boards the folded part is electrical or boot text | No, needs a decision |
+| 3 | Hardware-safety (design call) | Planner | The planner folded board cautions after three; on 8 boards the folded part was electrical or boot text | Yes |
 | 4 | Dependencies (moderate, dev only) | Tooling | `minimatch` advisory GHSA-g3hv-75wg-m249 under ESLint's toolchain | No |
 | 5 | Performance | Catalog | The catalog reached the size at which `docs/DESIGN.md` plans virtualization | No |
 | 6 | UX (low) | Catalog | The "Catalog category" disclosure closes itself when its last filter is cleared | No |
@@ -121,22 +121,45 @@ Fix: `src/app/api/prices/route.ts` uses `rejectQuery`, `methodNotAllowed`, and
 query. `README.md` now says every API route rejects query strings.
 Regression: `test/price-store.test.ts:96` (failed before the fix with 200).
 
-### 3. Planner folds board cautions (not fixed, needs a decision)
+### 3. Planner folded board cautions (fixed)
 
 #54 removed `collapseAfter={3}` from the catalog detail panel because a late
 voltage or strap warning could sit behind "Show more". The same commit added
 the cautions panel to the planner with `collapseAfter={3}`
-(`PlannerWorkspace.tsx:344`), and it is now the fold's only user. 12 of the
-126 planner boards have more than four cautions; on 8 the folded part includes
-voltage, current, boot, or strap text (ESP32 DevKit V1, ESP32-DevKitC,
-ESP32-C3-DevKitC-02, ESP32-S2-DevKitM-1, ESP32-C5-DevKitC-1,
+(`PlannerWorkspace.tsx:344`), which left the planner as the fold's only user.
+12 of the 126 planner boards have more than four cautions; on 8 the folded
+part included voltage, current, boot, or strap text (ESP32 DevKit V1,
+ESP32-DevKitC, ESP32-C3-DevKitC-02, ESP32-S2-DevKitM-1, ESP32-C5-DevKitC-1,
 ESP32-P4-Function-EV-Board, NUCLEO-H753ZI, Arduino Nano R4). The one board
-with an "Unverified pinout" caution (Orange Pi Zero 2W) has it first, so it is
-never folded, and it is not a planner board.
+with an "Unverified pinout" caution (Orange Pi Zero 2W) has it first, so it
+was never folded, and it is not a planner board.
 
-Left as is because it was a deliberate, recent layout choice: showing nine
-cautions pushes the connector sheet well down a phone screen. Removing the
-fold is a one-prop change plus a test if wanted.
+Decision: the owner chose to show every caution in the planner, always,
+accepting that a long list pushes the connector sheet further down a phone
+screen.
+
+Fix:
+
+- `src/components/planner/PlannerWorkspace.tsx`: `collapseAfter={3}` removed.
+- `src/components/WiringCautions.tsx`: with no caller left, the fold is gone
+  (the `collapseAfter` prop, the expanded state, and the "Show N more
+  cautions" / "Show fewer cautions" button). The list renders every warning;
+  the spacer that stood in for the button keeps the panel's spacing.
+- `src/app/globals.css`: the unused `.ph-cautions-more` rules and its
+  light-theme selectors removed.
+- `docs/DESIGN.md` section 18 no longer describes the planner list as folded.
+
+Regression tests:
+
+- `test/planner-ui.test.tsx`, "lists every board caution before wiring, with
+  nothing folded away": renders the planner for Arduino Nano R4 and expects
+  all 9 cautions as list items and no "more cautions" button. Before the fix
+  it failed with "expected [ …(3) ] to have a length of 9 but got 3".
+- `test/wiring-cautions.test.tsx`, "never folds a long list": seven cautions
+  all listed in order, no button in the panel, and the "3rd-party" badge. It
+  replaces the two tests that pinned the fold. It passes on the old component
+  too, because the fold was opt-in; it holds the component's contract, and the
+  planner test is the one that caught the bug.
 
 ### 4 to 8. Flagged, not fixed
 
@@ -231,13 +254,15 @@ fold is a one-prop change plus a test if wanted.
 
 ## Verification
 
-Run after the last code change, on the committed tree:
+Run after the last code change, on the tree after the finding 3 fix (the
+CLI rows are from the earlier run; finding 3 changed no board data or pin
+index):
 
 | Command | Result |
 | --- | --- |
 | `npm run lint` | exit 0 |
 | `npm run typecheck` | exit 0 |
-| `npm test` | 77 files, 1,756 tests passed (5 new) |
+| `npm test` | 77 files, 1,756 tests passed (finding 3 replaced two fold tests with two new ones) |
 | `npm run build` | exit 0 (board-visual and source-link gate) |
 | `npm --prefix cli run generate:boards` | exit 0, no content change |
 | `npm --prefix cli run check:boards` | Verified 191 generated boards |
@@ -246,8 +271,8 @@ Run after the last code change, on the committed tree:
 | `npm --prefix cli run build` | exit 0 |
 | `CI=1 npx playwright test --retries=0` | 132 passed against the production build |
 
-Both new regressions were run before their fixes and failed for the stated
-reason.
+Each regression marked above as failing before its fix was run before that
+fix and failed for the stated reason.
 
 ## Mobile gate
 
@@ -280,6 +305,12 @@ Not covered: the header theme toggle was not tapped (themes were set
 directly), no physical phone, no virtual keyboard, and only these four
 boards. On the Pi 4, 4× UART with 4× SPI together does not fit and the planner
 says so; each maximum is a promise for that peripheral alone, as before.
+
+The caution change in finding 3 came after this run. It adds text to the
+planner's "Before you wire" panel on the 12 boards with more than four
+cautions (up to nine on Arduino Nano R4 and ESP32-C5-DevKitC-1). The mobile
+gate was not run for it; the owner waived it explicitly on 2026-11-09. The
+phone layout of the longer caution list is therefore unverified.
 
 ## Limits of this audit
 
