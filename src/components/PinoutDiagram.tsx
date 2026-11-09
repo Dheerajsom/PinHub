@@ -6,11 +6,14 @@ import {
 } from "@/components/board-visual/roles";
 import { CopyPinTable, type PinExportBoard } from "@/components/CopyPinTable";
 import { CopyPinButton } from "@/components/CopyPinButton";
+import { PinCautions } from "@/components/board-visual/PinCautions";
+import type { PinFlagNotes } from "@/lib/pin-reference";
+import type { Board } from "@/lib/boards";
 
 type PinoutDiagramProps = {
   pinout?: Pinout;
   /** Board the map belongs to, so exports name their board and source. */
-  board?: PinExportBoard;
+  board?: PinExportBoard & Partial<Pick<Board, "pinFunctions">>;
 };
 
 export function PinoutDiagram({ pinout, board }: PinoutDiagramProps) {
@@ -65,8 +68,8 @@ export function PinoutDiagram({ pinout, board }: PinoutDiagramProps) {
         </div>
       </div>
 
-      {pinout.pins ? <DualRowPins pins={pinout.pins} /> : null}
-      {pinout.groups ? <GroupedPins groups={pinout.groups} /> : null}
+      {pinout.pins ? <DualRowPins pins={pinout.pins} flagNotes={board?.pinFunctions?.flagNotes} /> : null}
+      {pinout.groups ? <GroupedPins groups={pinout.groups} flagNotes={board?.pinFunctions?.flagNotes} /> : null}
 
       <ul className="mt-5 space-y-1.5 border-t border-white/10 pt-4 text-sm leading-6 text-zinc-400">
         {pinout.notes.map((note) => (
@@ -85,12 +88,13 @@ export function PinoutDiagram({ pinout, board }: PinoutDiagramProps) {
 
 type DualRowPinsProps = {
   pins: NonNullable<Pinout["pins"]>;
+  flagNotes?: PinFlagNotes;
 };
 
 // Two physical columns of pads with their signal labels flanking them, so the
 // layout reads like a real dual-row header. Labels hug the central pads and any
 // overflow is pushed to the outer edges, keeping each label tied to its pad.
-function DualRowPins({ pins }: DualRowPinsProps) {
+function DualRowPins({ pins, flagNotes }: DualRowPinsProps) {
   return (
     <div className="mt-5 grid gap-y-2">
       {pins.left.map((leftPin, index) => {
@@ -101,11 +105,11 @@ function DualRowPins({ pins }: DualRowPinsProps) {
             key={`${leftPin.position}-${rightPin?.position ?? "empty"}`}
             className="grid grid-cols-[minmax(0,1fr)_2.25rem_2.25rem_minmax(0,1fr)] items-center gap-x-1.5 @sm:grid-cols-[minmax(0,1fr)_3rem_3rem_minmax(0,1fr)] @sm:gap-x-2"
           >
-            <DualRowLabel pin={leftPin} side="left" />
+            <DualRowLabel pin={leftPin} side="left" flagNotes={flagNotes} />
             <PinPad pin={leftPin} />
             {rightPin ? <PinPad pin={rightPin} /> : <div />}
             {rightPin ? (
-              <DualRowLabel pin={rightPin} side="right" />
+              <DualRowLabel pin={rightPin} side="right" flagNotes={flagNotes} />
             ) : (
               <div />
             )}
@@ -119,9 +123,10 @@ function DualRowPins({ pins }: DualRowPinsProps) {
 type DualRowLabelProps = {
   pin: Pin;
   side: "left" | "right";
+  flagNotes?: PinFlagNotes;
 };
 
-function DualRowLabel({ pin, side }: DualRowLabelProps) {
+function DualRowLabel({ pin, side, flagNotes }: DualRowLabelProps) {
   // The left column sits to the left of the central pads, so its text is
   // right-aligned to meet the pad; the right column mirrors it.
   const towardCenter = side === "left";
@@ -146,7 +151,7 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
       >
         {towardCenter ? (
           <>
-            <CopyPinButton pin={pin} />
+            <CopyPinButton pin={pin} flagNotes={flagNotes} />
             {role}
             {label}
           </>
@@ -154,7 +159,7 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
           <>
             {label}
             {role}
-            <CopyPinButton pin={pin} />
+            <CopyPinButton pin={pin} flagNotes={flagNotes} />
           </>
         )}
       </div>
@@ -163,19 +168,21 @@ function DualRowLabel({ pin, side }: DualRowLabelProps) {
           {pin.aliases.join(" / ")}
         </div>
       ) : null}
+      <PinCautions pin={pin} flagNotes={flagNotes} />
     </div>
   );
 }
 
 type GroupedPinsProps = {
   groups: PinoutGroup[];
+  flagNotes?: PinFlagNotes;
 };
 
 // Connectors without a clean two-column geometry are shown as labelled groups.
 // The grid uses auto-fill with a fixed minimum so the column count follows the
 // detail panel's real width rather than the viewport — preventing the cramped
 // cells (and overlapping text) that viewport breakpoints caused here.
-function GroupedPins({ groups }: GroupedPinsProps) {
+function GroupedPins({ groups, flagNotes }: GroupedPinsProps) {
   return (
     <div className="mt-5 space-y-5">
       {groups.map((group) => (
@@ -188,6 +195,7 @@ function GroupedPins({ groups }: GroupedPinsProps) {
               <GroupedPin
                 key={`${group.label}-${pin.position}-${pin.label}`}
                 pin={pin}
+                flagNotes={flagNotes}
               />
             ))}
           </div>
@@ -199,9 +207,10 @@ function GroupedPins({ groups }: GroupedPinsProps) {
 
 type GroupedPinProps = {
   pin: Pin;
+  flagNotes?: PinFlagNotes;
 };
 
-function GroupedPin({ pin }: GroupedPinProps) {
+function GroupedPin({ pin, flagNotes }: GroupedPinProps) {
   return (
     <div className="surface-well group flex min-w-0 items-center gap-2 rounded-md px-2 py-1.5">
       <PinPad pin={pin} compact />
@@ -217,8 +226,9 @@ function GroupedPin({ pin }: GroupedPinProps) {
             <span className="text-zinc-500"> · {pin.aliases.join(" / ")}</span>
           ) : null}
         </div>
+        <PinCautions pin={pin} flagNotes={flagNotes} />
       </div>
-      <CopyPinButton pin={pin} />
+      <CopyPinButton pin={pin} flagNotes={flagNotes} />
     </div>
   );
 }

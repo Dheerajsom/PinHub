@@ -44,6 +44,7 @@ export function VendorLogo({ vendor, size = 18 }: VendorLogoProps) {
       alt=""
       width={size}
       height={size}
+      style={{ width: size, height: size, objectFit: "contain" }}
       decoding="async"
       referrerPolicy="no-referrer"
       className="shrink-0 rounded-sm"

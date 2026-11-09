@@ -9,7 +9,7 @@ orders the work. Phase 1 items are implemented in this repository.
 
 ## 1. Product Direction
 
-PinHub should feel like a bench instrument, not a website: a dark, dense,
+PinHub should feel like a bench instrument, not a website: a dense,
 always-ready lookup surface where an engineer lands mid-task ("which pin is
 SDA on the Pico?"), gets the answer in under ten seconds, and trusts it enough
 to wire against. The redesign keeps the catalog as the first screen and makes
@@ -55,12 +55,16 @@ encodes a real electrical or provenance fact.
   independently) — identity, specs, "Before you wire" cautions with the
   verify link, pin map tabs, highlights, sources. Container-query driven: it adapts to its own width, never the
   viewport.
-- **Full pinout page** (`/pinout/[id]`) — the pin map at full width for
-  deep inspection, shareable/bookmarkable per board.
+- **Full pinout page** (`/pinout/[id]`) — board logic level, electrical and
+  revision cautions, official documentation and the full-width pin map for
+  deep inspection, shareable/bookmarkable per board. Capability filters use
+  recorded alternate functions; the color key highlights primary roles only.
 - **Favorites** — localStorage-backed, star on every row + global filter.
 - **Mobile** — same DOM, single column: command bar stays sticky, filters
   collapse behind the toggle, detail panel stacks below results with a
-  "Back to results" escape hatch and smooth scroll-into-view on select.
+  "Back to results" escape hatch and reduced-motion-aware scroll on select.
+  Scroll clearance follows the measured sticky command bar, including wrapped
+  controls and active facets, so identity and return navigation stay visible.
 
 ## 3. Homepage Layout
 
@@ -77,25 +81,29 @@ The first screen **is** the catalog. No hero, no marketing copy.
   "pi" ranks Raspberry Pi above boards that merely list SPI. `Enter` selects
   the top result; `↑/↓` walk the selection without leaving the field;
   `Esc` clears.
-- **Result rows**: compact cards (~96px), left accent border for selection
-  state. Row anatomy: vendor logo · board name · category chip ·
-  green "Pin map" chip (in-app map exists) · orange shield chip with the
-  count of wiring cautions · right-aligned mono `vendor · logic level` ·
+- **Result rows**: compact cards, left accent border for selection
+  state. Row anatomy: vendor logo · board name · compact wiring-caution count ·
+  "No in-app map" only when a map is absent · mono `vendor · category · logic level` ·
   two-line description · up to 7 interface chips + overflow count · star.
   Warnings are therefore visible **at scan time**, before selection.
 - **Selected board panel**: identity block (vendor mark, name, family),
   4-row spec sheet (Processor / Logic / Power / Format), then the
   **Before you wire** panel — the board's cautions with, as its footer, a
   link to the highest-authority source (Pinout > Schematic > Datasheet >
-  Manual > Docs); lists longer than four fold after three — then the pin map
+  Manual > Docs); all recorded cautions stay visible — then the pin map
   tabs, highlights, and the source list with per-link provenance badges.
 - **Trust communication**: green = data present and vendor-official
-  (Pin map chip, Official badge); orange = caution (warning chips, the
+  (Official badge); orange = caution (warning counts, the
   "Before you wire" panel); neutral zinc = third-party or metadata. The footer repeats the disclaimer on every screen.
 
 ## 4. Visual Design System
 
-**Palette** (roles, not decoration — dark-only, `color-scheme: dark`):
+**Palette** (roles, not decoration — dark and light themes with a system default):
+
+The table gives the dark-theme foundations. Light mode uses opaque white and
+cool-gray surfaces, dark text, and the same semantic color families. Every
+interface tone, including neutral fallback labels such as CSI/PCIe, must have
+readable text against its actual surface in both themes.
 
 | Token | Value | Role |
 | --- | --- | --- |
@@ -160,6 +168,34 @@ Two presentations of one dataset, behind a persisted segmented control:
   draws a leader line, and shows the label; click/Enter pins the selection
   and fills the inspector with role, aliases, and note. Pads are real
   buttons: `Tab`/arrow navigable with visible focus rings.
+- **Embedded Raspberry Pi maps** — the physical board is the primary view.
+  It opens fitted whole inside the panel (334 px catalog column, 360 px
+  phones), with its orientation line above and pin 1 marked, and its pads stay
+  interactive: tap, click, or `Tab`/arrows then Enter. At fit size the pads are
+  small and the footer says so; **Zoom to touch size** enlarges the board until
+  every pad's hit region is at least 44 px and lets it pan, and **Fit whole
+  board** returns. The readout and cautions sit directly after the board, or
+  beside it in a wide container. A named pin list (44 px+ buttons in the
+  source's physical pairs, GPIO 1/2 and Pico 1/40) and a physical-pin picker
+  follow as the secondary selector; the board, list, picker and readout share
+  one selection. Never hide the board in a collapsed or inert disclosure, and
+  never describe fit-size pads as touch-sized. **Inspect** and **Full view**
+  keep the large interactive drawing.
+- **Board renders** — every Dynamic drawing is one of five tiers, computed by
+  `renderTier` in `src/lib/board-render-coverage.ts` from the same geometry
+  the renderer uses (a unit test pins the counts):
+  dedicated model artwork (Raspberry Pi), family illustration, generic
+  outline, function-grouped schematic, or no map yet. Family illustrations
+  (`src/lib/board-family-art.ts`) add only features the family is known for
+  and the record can back — a shielded module and antenna only when the board
+  records a radio, Espressif EN/BOOT beside the USB, the Nucleo ST-LINK
+  section with USER/RESET, the micro:bit LED matrix and A/B buttons, an SBC's
+  SoC and memory, a Jetson heatsink. They are placed only in the clear field
+  between connectors, never over a pad, and the caption calls them
+  representative, not the model's layout. Shield-footprint boards (UNO, Mega,
+  Nucleo-64, Nordic DK, LaunchPad) draw their header pads in the catalog's
+  signal order, and the caption says so. Never copy Raspberry Pi artwork onto
+  another board, and never draw a feature the catalog cannot back.
 - **Distinguishing roles**: color + on-pad number + text role label +
   legend — never color alone. Reserved and strap pins additionally carry
   notes explaining *why* they're risky.
@@ -470,7 +506,11 @@ embedding it.
 - **Touch scale before fit.** Interactive pads have at least a 44 × 44 CSS px
   hit region. Hit regions stay within the connector pitch; diagrams grow and
   scroll within their panel instead of overlapping neighboring pins. This
-  applies to planner/link sheets, full inspectors, and compact artwork.
+  applies to planner/link sheets and full inspectors. Embedded Dynamic maps
+  of physical boards open fitted whole and offer **Zoom to touch size** for
+  this scale; their named pin list (Raspberry Pi) or pin table carries the
+  touch-sized selection meanwhile. Function-grouped schematics stay at touch
+  scale.
   The inspector offers **Zoom labels** and **Working size** rather than a
   fit-to-width action that would shrink labels and controls below usable size.
   Scroll instructions and keyboard access accompany the drawing.

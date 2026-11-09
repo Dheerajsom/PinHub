@@ -8,6 +8,7 @@ import { roleLabels } from "@/components/board-visual/roles";
 import { siteUrl } from "@/lib/site";
 import { classifySource } from "@/lib/source-trust";
 import { csvCell } from "@/lib/csv";
+import { pinCautionTexts, type PinFlagNotes } from "@/lib/pin-reference";
 
 /**
  * The board an exported table belongs to. Connector maps are shared between
@@ -15,7 +16,7 @@ import { csvCell } from "@/lib/csv";
  * ambiguous once it leaves PinHub: the table no longer says which board or
  * which source it was transcribed from.
  */
-export type PinExportBoard = Pick<Board, "id" | "name" | "vendor" | "sourceLinks">;
+export type PinExportBoard = Pick<Board, "id" | "name" | "vendor" | "sourceLinks"> & Partial<Pick<Board, "logicLevel" | "warnings" | "pinFunctions">>;
 
 // The reference an exported table cites: an official pinout first, then any
 // official document, then whatever the record lists first.
@@ -66,13 +67,13 @@ function markdownCell(value: string): string {
     .replace(/\r\n?|\n/g, "<br>");
 }
 
-function pinRow(pin: Pin): string {
+function pinRow(pin: Pin, flagNotes?: PinFlagNotes): string {
   const cells = [
     String(pin.position),
     pin.label,
     roleLabels[pin.role],
     pin.aliases?.join(" / ") ?? "",
-    pin.note ?? "",
+    pinCautionTexts(pin, flagNotes).join(" · "),
   ].map(markdownCell);
   return `| ${cells.join(" | ")} |`;
 }
@@ -93,12 +94,12 @@ export function pinoutToMarkdown(pinout: Pinout, board?: PinExportBoard): string
     rows.push(
       ...[...pinout.pins.left, ...pinout.pins.right]
         .sort((a, b) => a.position - b.position)
-        .map(pinRow),
+        .map((pin) => pinRow(pin, board?.pinFunctions?.flagNotes)),
     );
   }
   for (const group of pinout.groups ?? []) {
     rows.push(`| — | **${markdownCell(group.label)}** | | | |`);
-    rows.push(...group.pins.map(pinRow));
+    rows.push(...group.pins.map((pin) => pinRow(pin, board?.pinFunctions?.flagNotes)));
   }
 
   const notes = pinout.notes.length
@@ -120,7 +121,11 @@ export function pinoutToMarkdown(pinout: Pinout, board?: PinExportBoard): string
       ]
     : [];
 
-  return [...header, ...rows, ...notes, ...provenance].join("\n");
+  const electrical = [
+    ...(board?.logicLevel ? [`> Logic: ${markdownCell(board.logicLevel)}`] : []),
+    ...(board?.warnings ?? []).map((warning) => `> ${markdownCell(warning)}`),
+  ];
+  return [...header, ...rows, ...notes, ...electrical, ...provenance].join("\n");
 }
 
 export function pinoutToCsv(pinout: Pinout, board?: PinExportBoard): string {
@@ -136,7 +141,7 @@ export function pinoutToCsv(pinout: Pinout, board?: PinExportBoard): string {
         pin.label,
         roleLabels[pin.role],
         pin.aliases?.join(" / ") ?? "",
-        pin.note ?? "",
+        pinCautionTexts(pin, board?.pinFunctions?.flagNotes).join(" · "),
       ]);
     }
   }
@@ -149,7 +154,7 @@ export function pinoutToCsv(pinout: Pinout, board?: PinExportBoard): string {
         pin.label,
         roleLabels[pin.role],
         pin.aliases?.join(" / ") ?? "",
-        pin.note ?? "",
+        pinCautionTexts(pin, board?.pinFunctions?.flagNotes).join(" · "),
       ]);
     }
   }
@@ -165,6 +170,9 @@ export function pinoutToCsv(pinout: Pinout, board?: PinExportBoard): string {
     ]);
   }
   if (board) {
+    for (const note of [...(board.logicLevel ? [`Logic: ${board.logicLevel}`] : []), ...(board.warnings ?? [])]) {
+      rows.push([pinout.connector, "", "", "", "", "", note]);
+    }
     const source = primaryExportSource(board);
     rows.push([
       pinout.connector,

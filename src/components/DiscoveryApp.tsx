@@ -59,9 +59,12 @@ import { useCatalogResults } from "@/components/catalog/useCatalogResults";
 import { FavoriteLimitToast, useFavoriteToggle } from "@/components/catalog/useFavoriteToggle";
 import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
 import { SortMenu, sortOptionsFor } from "@/components/catalog/SortMenu";
+import { PinLookupAnswer } from "@/components/catalog/PinLookupAnswer";
+import { matchesCatalogFilters } from "@/lib/catalog-state";
+import { isPinLikeQuery } from "@/lib/pin-match";
 
-const discoveryDefaultState = { ...defaultCatalogState, sort: "name" as const };
-const discoverySorts: CatalogSort[] = ["relevance", "name", "vendor", "recentlyAdded", "interfaceCount"];
+const discoveryDefaultState = defaultCatalogState;
+const discoverySorts: CatalogSort[] = ["relevance", "catalog", "name", "vendor", "recentlyAdded", "interfaceCount"];
 
 export function DiscoveryApp({
   catalog,
@@ -128,6 +131,7 @@ export function DiscoveryApp({
   );
   const searchIndex = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
   const filtered = useCatalogResults(searchIndex, state, favorites);
+  const lookupEntries = useMemo(() => searchIndex.filter((entry) => matchesCatalogFilters(entry.board, state, favorites)), [searchIndex, state, favorites]);
   // Favorites-only with nothing starred is its own state, not a failed filter.
   const favoritesEmpty = state.favoritesOnly && favorites.size === 0;
   const activeCount = activeCatalogFilterCount(state);
@@ -141,10 +145,10 @@ export function DiscoveryApp({
         query: boundedQuery,
         page: 1,
         sort:
-          boundedQuery.trim() && current.sort === "name"
+          boundedQuery.trim() && current.sort === "catalog"
             ? "relevance"
             : !boundedQuery.trim() && current.sort === "relevance"
-              ? "name"
+              ? "catalog"
               : current.sort,
       }),
       "replace",
@@ -180,7 +184,7 @@ export function DiscoveryApp({
               alt=""
               width={52}
               height={52}
-              priority
+              loading="eager"
               className="transition duration-500 group-hover:rotate-6 group-hover:scale-110"
             />
             <div className="min-w-0">
@@ -220,7 +224,7 @@ export function DiscoveryApp({
                   event.currentTarget.blur();
                 }
               }}
-              placeholder="Search processor, interface, connector, or warning…"
+              placeholder="Search boards, vendors, interfaces, warnings…"
               aria-label="Search boards"
               className="h-11 w-full rounded-lg border border-white/10 bg-[#090b10] pl-10 pr-12 text-sm text-white outline-none transition focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/30"
             />
@@ -254,7 +258,7 @@ export function DiscoveryApp({
             {activeCount ? <button type="button" onClick={() => setState(discoveryDefaultState)} className="min-h-11 min-w-11 text-xs text-cyan-200 hover:text-white">Clear all</button> : null}
           </div>
           <Facet title="Platform" icon={<Cpu className="size-4" />} filterKey="platform" values={options.platform} selected={state.platform} onToggle={toggleFilter} />
-          <Facet title="Category" icon={<Layers3 className="size-4" />} filterKey="category" values={options.category} selected={state.category} onToggle={toggleFilter} />
+          <Facet title="Catalog category" description="A narrower catalog grouping. Platform groups boards by hardware type." icon={<Layers3 className="size-4" />} filterKey="category" values={options.category} selected={state.category} onToggle={toggleFilter} collapsed />
           <Facet title="Manufacturer" icon={<Factory className="size-4" />} filterKey="vendor" values={options.vendor} selected={state.vendor} onToggle={toggleFilter} collapsed />
           <Facet title="Processor family" icon={<Cpu className="size-4" />} filterKey="family" values={options.family} selected={state.family} onToggle={toggleFilter} collapsed />
           <Facet title="Logic level" icon={<Zap className="size-4" />} filterKey="logic" values={options.logic} selected={state.logic} onToggle={toggleFilter} />
@@ -283,6 +287,8 @@ export function DiscoveryApp({
 
         <section id="board-results" aria-label="Board results" className="min-w-0">
           <FavoriteLimitToast message={favoriteMessage} />
+          <PinLookupAnswer query={state.query} search={lookupEntries} collapsed />
+          {isPinLikeQuery(state.query) ? <p className="mb-3 text-xs leading-5 text-zinc-400">Board results use the board part of your query and active filters. Open pin lookup above for recorded signal matches.</p> : null}
           <div className="grid gap-3 xl:grid-cols-2">
             {filtered.slice(0, visible).map(({ board, matchedBy }, index) => (
               <BoardCard key={board.id} board={board} matchedBy={shownMatchReason(matchedBy)} favorite={favorites.has(board.id)} comparing={compareIds.includes(board.id)} compareFull={compareIds.length === maxComparedBoards} onFavorite={onToggleFavorite} onCompare={toggleCompare} index={index} />
@@ -319,7 +325,7 @@ export function DiscoveryApp({
                 <Star className="mx-auto size-8 text-amber-300/80" aria-hidden="true" />
                 <h2 className="mt-4 text-lg font-semibold text-white">No saved boards yet</h2>
                 <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-400">
-                  Tap the star on any board to keep it here. Favorites stay on this device, so your shortlist survives a reload.
+                  Tap the star on any board to keep it here. Favorites are stored on this device when browser storage is available.
                 </p>
                 <button type="button" onClick={() => setState((current) => ({ ...current, favoritesOnly: false }))} className="mt-4 min-h-11 rounded-lg border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm text-amber-50 transition hover:bg-amber-300/20">
                   Browse the catalog
@@ -369,6 +375,7 @@ function Facet({
   selected,
   onToggle,
   collapsed = false,
+  description,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -377,8 +384,9 @@ function Facet({
   selected: string[];
   onToggle: (key: CatalogFilterKey, value: string) => void;
   collapsed?: boolean;
+  description?: string;
 }) {
-  const content = <div className="mt-2 grid gap-1">{values.map((value) => {
+  const content = <div className="mt-2 grid gap-1">{description ? <p className="mb-1 text-xs leading-5 text-zinc-400">{description}</p> : null}{values.map((value) => {
     const active = selected.includes(value);
     return <button key={value} type="button" onClick={() => onToggle(filterKey, value)} aria-pressed={active} className={clsx("flex min-h-11 items-center gap-2 rounded-md border px-2.5 text-left text-sm transition", active ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50" : "border-transparent text-zinc-400 hover:bg-white/[0.05] hover:text-white")}>{active ? <Check className="size-3.5 text-cyan-200" /> : <span className="size-3.5 rounded border border-white/15" />}{value}</button>;
   })}</div>;

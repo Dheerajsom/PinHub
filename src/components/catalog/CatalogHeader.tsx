@@ -24,7 +24,7 @@ export function CatalogHeader({
               fill
               sizes="(min-width: 640px) 56px, 48px"
               className="object-contain p-1"
-              priority
+              loading="eager"
               aria-hidden="true"
             />
           </div>

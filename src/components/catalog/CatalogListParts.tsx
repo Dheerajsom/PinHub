@@ -168,7 +168,7 @@ export const BoardResult = memo(function BoardResult({
     <article
       id={`board-result-${board.id}`}
       className={clsx(
-        "ph-row ph-card-in group relative rounded-xl border [contain-intrinsic-block-size:9rem] [content-visibility:auto]",
+        "ph-row ph-card-in group relative scroll-mt-[var(--catalog-clearance,20rem)] rounded-xl border [contain-intrinsic-block-size:9rem] [content-visibility:auto]",
         selected
           ? "ph-row-selected border-cyan-300/40 shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
           : "border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.4),0_12px_30px_-20px_rgba(0,0,0,0.85)] hover:border-cyan-300/25",
@@ -225,6 +225,8 @@ export const BoardResult = memo(function BoardResult({
             <div className="min-w-0">
               <div className="flex min-w-0 flex-wrap items-center gap-1.5">
                 <h2 className="truncate text-[15px] font-semibold tracking-tight text-white">{board.name}</h2>
+                {!board.hasPinout ? <span className="text-[10px] text-zinc-400">No in-app map</span> : null}
+                {board.warningCount ? <span className="text-[11px] text-orange-200">{board.warningCount}<span className="sr-only"> wiring</span> {board.warningCount === 1 ? "caution" : "cautions"}</span> : null}
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="font-mono text-[11px] text-zinc-500">

@@ -32,9 +32,9 @@ export function boardPinSnippet(board: Board): string | null {
   ].join("\n");
 }
 
-const statedNotTolerant = /\bnot\s+5\s?V\s+tolerant\b/i;
+const statedNotTolerant = /\b(?:not\s+5\s?V[-\s]+tolerant|never\s+apply\s+5\s?V\s+to\s+(?:an?\s+)?(?:IO|I\/O|GPIO)(?:\s+pin)?)\b/i;
 const statedNotTolerantAll = new RegExp(statedNotTolerant.source, "gi");
-const mentionsTolerance = /\b5\s?V\s+toleran(?:t|ce)\b/i;
+const mentionsTolerance = /\b5\s?V[-\s]+toleran(?:t|ce)\b/i;
 
 /**
  * The short caution shown under a board's logic level. It repeats what the

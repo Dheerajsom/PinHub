@@ -32,7 +32,7 @@ export default async function PricesPage({ searchParams }: {
       <header className="border-b border-white/10 bg-[#0a0d12] pt-[env(safe-area-inset-top)]">
         <div className="mx-auto flex max-w-[1560px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-3" aria-label="PinHub home">
-            <Image src="/pinhub-logo.png" alt="" width={48} height={48} priority />
+            <Image src="/pinhub-logo.png" alt="" width={48} height={48} loading="eager" />
             <div className="min-w-0">
               <span className="brand-title text-2xl text-white sm:text-3xl">PinHub</span>
               <p className="mt-0.5 text-xs text-zinc-400">Source-backed pinouts for dev boards, SBCs, and microcontrollers</p>

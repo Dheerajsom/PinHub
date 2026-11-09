@@ -35,6 +35,17 @@ const emptySnapshot: PersonalLibrarySnapshot = {
 };
 const listeners = new Set<() => void>();
 let snapshot: PersonalLibrarySnapshot | null = null;
+// False once a write is refused, until a later write or a cross-tab re-read
+// brings memory and storage back in line.
+let durable = true;
+
+/**
+ * The result of a library edit. `stored` reached the browser's storage;
+ * `session` applies for this visit only. Rejections change nothing.
+ */
+export type LibraryMutationOutcome =
+  | { status: "stored" | "session" }
+  | { status: "unchanged" | "missing" | "full" | "invalid" | "limit" };
 
 function uniqueIds(value: unknown, limit: number): string[] {
   if (!Array.isArray(value)) return [];
@@ -109,19 +120,25 @@ function notify() {
  */
 function persist(next: PersonalLibrarySnapshot): boolean {
   snapshot = next;
-  let durable = true;
+  let stored = true;
   try {
     window.localStorage.setItem(personalLibraryStorageKey, JSON.stringify(next));
   } catch {
-    durable = false;
+    stored = false;
   }
+  durable = stored;
   notify();
-  return durable;
+  return stored;
+}
+
+function written(stored: boolean): LibraryMutationOutcome {
+  return { status: stored ? "stored" : "session" };
 }
 
 function onStorage(event: StorageEvent) {
   if (event.key !== null && event.key !== personalLibraryStorageKey) return;
   snapshot = null;
+  durable = true;
   notify();
 }
 
@@ -141,6 +158,23 @@ export function getPersonalLibrarySnapshot(): PersonalLibrarySnapshot {
 
 export function getServerPersonalLibrarySnapshot(): PersonalLibrarySnapshot {
   return emptySnapshot;
+}
+
+/** False while the library in memory differs from storage (lost on reload). */
+export function getPersonalLibraryDurability(): boolean {
+  return durable;
+}
+
+function getServerPersonalLibraryDurability(): boolean {
+  return true;
+}
+
+export function usePersonalLibraryDurability(): boolean {
+  return useSyncExternalStore(
+    subscribeToPersonalLibrary,
+    getPersonalLibraryDurability,
+    getServerPersonalLibraryDurability,
+  );
 }
 
 export function recordRecentBoard(id: string): void {
@@ -193,13 +227,15 @@ export function setBoardInCollection(
   collectionId: string,
   boardId: string,
   included: boolean,
-): void {
+): LibraryMutationOutcome {
   const current = getPersonalLibrarySnapshot();
   const target = current.collections.find((collection) => collection.id === collectionId);
-  if (!target || target.boardIds.includes(boardId) === included) return;
-  if (included && (!isBoardId(boardId) || target.boardIds.length >= collectionBoardLimit)) return;
+  if (!target) return { status: "missing" };
+  if (target.boardIds.includes(boardId) === included) return { status: "unchanged" };
+  if (included && !isBoardId(boardId)) return { status: "invalid" };
+  if (included && target.boardIds.length >= collectionBoardLimit) return { status: "full" };
   const now = new Date().toISOString();
-  persist({
+  return written(persist({
     ...current,
     collections: current.collections.map((collection) =>
       collection.id !== collectionId
@@ -212,35 +248,44 @@ export function setBoardInCollection(
             updatedAt: now,
           },
     ),
-  });
+  }));
 }
 
-export function removeCollection(collectionId: string): void {
+export function removeCollection(collectionId: string): LibraryMutationOutcome {
   const current = getPersonalLibrarySnapshot();
-  if (!current.collections.some((collection) => collection.id === collectionId)) return;
-  persist({
+  if (!current.collections.some((collection) => collection.id === collectionId)) {
+    return { status: "missing" };
+  }
+  return written(persist({
     ...current,
     collections: current.collections.filter((item) => item.id !== collectionId),
-  });
+  }));
 }
 
 export function restoreCollection(
   collection: LocalBoardCollection,
   originalIndex: number,
 ): boolean {
+  return restoreCollectionWithOutcome(collection, originalIndex).status !== "limit";
+}
+
+/** Undo for a deleted collection, reporting whether the restore was stored. */
+export function restoreCollectionWithOutcome(
+  collection: LocalBoardCollection,
+  originalIndex: number,
+): LibraryMutationOutcome {
   const current = getPersonalLibrarySnapshot();
   const collections = current.collections.filter(
     (item) => item.id !== collection.id,
   );
   // Undo must never evict a different collection created in the meantime.
-  if (collections.length >= collectionLimit) return false;
+  if (collections.length >= collectionLimit) return { status: "limit" };
   const index = Math.min(Math.max(originalIndex, 0), collections.length);
   collections.splice(index, 0, collection);
-  persist({
+  return written(persist({
     ...current,
     collections,
-  });
-  return true;
+  }));
 }
 
 export function usePersonalLibrary(): PersonalLibrarySnapshot {
