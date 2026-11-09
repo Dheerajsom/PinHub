@@ -28,8 +28,8 @@ PinHub identifies changes kept for this visit only. Nothing requires an account.
 
 ## JSON API
 
-Read-only, no key required. The board and pin routes reject query strings
-(`400`) and mutating methods (`405`).
+Read-only, no key required. Every route rejects query strings (`400`) and
+mutating methods (`405`).
 
 ```bash
 curl https://pinhub-mauve.vercel.app/api/boards                 # index

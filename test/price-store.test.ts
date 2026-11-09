@@ -3,7 +3,9 @@ import { get, put } from "@vercel/blob";
 import { boardPrices } from "@/lib/board-prices";
 import { getLivePrices, readStoredPrices, resetLivePriceCache, writeStoredPrices } from "@/lib/server/price-store";
 import { maxPriceSnapshotBytes, mergePriceObservations, parsePriceSnapshot, readPriceSnapshot } from "@/lib/price-snapshot";
-import { GET } from "@/app/api/prices/route";
+import { DELETE, GET as getPrices, OPTIONS, PATCH, POST, PUT } from "@/app/api/prices/route";
+
+const GET = (search = "") => getPrices(new Request(`https://pinhub.test/api/prices${search}`));
 
 vi.mock("@vercel/blob", () => ({ get: vi.fn(), put: vi.fn() }));
 const time = "2026-09-10T02:00:00.000Z";
@@ -86,6 +88,24 @@ describe("shared price boundaries", () => {
     resetLivePriceCache();
     vi.mocked(get).mockResolvedValue({ ...stored(), stream: new Response('{"bad":true}').body! } as Awaited<ReturnType<typeof get>>);
     expect((await getLivePrices()).source).toBe("fallback");
+  });
+
+  // A shared response is cached at the CDN for 30 s. Each query variant would
+  // be its own cache key and its own function invocation, so they are refused
+  // like the catalog routes refuse them.
+  it("rejects query variants and writes without reading storage", async () => {
+    const response = await GET("?cachebust=1");
+    expect(response.status).toBe(400);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(await response.json()).toEqual({ error: "Query parameters are not supported" });
+    expect(get).not.toHaveBeenCalled();
+    for (const handler of [POST, PUT, PATCH, DELETE]) {
+      const refused = handler();
+      expect(refused.status).toBe(405);
+      expect(refused.headers.get("allow")).toBe("GET, HEAD, OPTIONS");
+      expect(refused.headers.get("cache-control")).toBe("no-store");
+    }
+    expect(OPTIONS().status).toBe(204);
   });
 
   it("reads storage once per reuse window, including while storage is failing", async () => {
