@@ -1,6 +1,6 @@
 # Automatic board prices
 
-PinHub checks 11 curated Adafruit/Arduino offers on an hourly target schedule. Successful observations are stored in the public Vercel Blob object `prices/latest-v1.json`; they do not require a Git commit or deployment. Hardware and listing identities remain in the repository. `src/lib/board-prices.json` is the dated fallback when shared storage is unavailable.
+PinHub checks 31 curated Adafruit/Arduino offers, one per board, on an hourly target schedule. They cover the most-used SBCs and microcontrollers those two stores sell: Raspberry Pi 5, 4, 3 B+, 400, Zero W and Zero 2 W; the Pico family; the UNO, Nano, Mega, Leonardo, Micro and Nano 33 boards; micro:bit v2; Espressif DevKits; and Adafruit's own Feather and QT Py boards. Boards sold only by other stores (Teensy, STM32 Nucleo, Seeed XIAO) need a parser for that store first. Successful observations are stored in the public Vercel Blob object `prices/latest-v1.json`; they do not require a Git commit or deployment. Hardware and listing identities remain in the repository. `src/lib/board-prices.json` is the dated fallback when shared storage is unavailable.
 
 ## Data flow
 
