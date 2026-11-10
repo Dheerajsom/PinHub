@@ -989,14 +989,6 @@ button {
   background-color: #fb923c;
 }
 
-.ph-cautions-more {
-  color: #fdba74;
-}
-
-.ph-cautions-more:hover {
-  color: #ffedd5;
-}
-
 .ph-cautions-verify {
   border-color: rgba(255, 255, 255, 0.08);
   background-color: #111318;
@@ -1021,12 +1013,8 @@ button {
   border-bottom-color: rgba(194, 65, 12, 0.16);
 }
 
-:root[data-theme="light"] :is(.ph-cautions-icon, .ph-cautions-eyebrow, .ph-cautions-more) {
+:root[data-theme="light"] :is(.ph-cautions-icon, .ph-cautions-eyebrow) {
   color: #b43d0b;
-}
-
-:root[data-theme="light"] .ph-cautions-more:hover {
-  color: #7c2d12;
 }
 
 :root[data-theme="light"] .ph-cautions-count {

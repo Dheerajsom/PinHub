@@ -744,17 +744,62 @@ function sortAssignments(assignments: PlanAssignment[]): PlanAssignment[] {
     .map(({ assignment }) => assignment);
 }
 
-/** Peripherals this board can plan, with the most units of each it can supply. */
+/**
+ * Peripherals this board can plan, with the most units of each it can supply.
+ *
+ * `capacity()` counts instances and channels one at a time, which is only an
+ * upper bound: instances can share pins (UART0 and UART1 are both on GPIO14/15
+ * of a Raspberry Pi), so the top of that range may never fit. The planner shows
+ * this number as "max N" and stops its stepper there, so each maximum is
+ * lowered to the largest count `planPins` can place with nothing else
+ * requested. A count the search cannot settle within `capabilityStepBudget`
+ * is not offered either: the user would only be told the search gave up.
+ */
 export function planCapabilities(
   board: Board,
   exclude?: ReadonlySet<Pin>,
 ): { peripheral: PlanPeripheral; max: number }[] {
   if (!board.pinFunctions || !board.pinout) return [];
+  let whole = wholeBoardLimits.get(board);
+  if (!whole) {
+    whole = provenLimits(board, undefined, undefined);
+    wholeBoardLimits.set(board, whole);
+  }
+  // Claiming pins by hand can only take room away, so the whole-board limits
+  // bound this search and its costly failures are paid once per board.
+  const limits = exclude?.size ? provenLimits(board, exclude, whole) : whole;
+  return planPeripherals.flatMap((peripheral) => {
+    const max = limits.get(peripheral) ?? 0;
+    return max > 0 ? [{ peripheral, max }] : [];
+  });
+}
+
+/**
+ * Steps allowed when proving one maximum. The costliest maximum in the catalog
+ * that does fit settles in under 3,000 steps (test/pin-planner.test.ts holds
+ * every one under half this budget), so this leaves room without letting an
+ * unprovable count stall the page for the full planning budget.
+ */
+export const capabilityStepBudget = 10_000;
+
+const wholeBoardLimits = new WeakMap<Board, ReadonlyMap<PlanPeripheral, number>>();
+
+function provenLimits(
+  board: Board,
+  exclude: ReadonlySet<Pin> | undefined,
+  ceiling: ReadonlyMap<PlanPeripheral, number> | undefined,
+): ReadonlyMap<PlanPeripheral, number> {
   const capacity = new PinPlanModel(board, exclude).capacity();
-  return planPeripherals
-    .filter((peripheral) => capacity[peripheral] > 0)
-    .map((peripheral) => ({
-      peripheral,
-      max: Math.min(maxPlanCount, capacity[peripheral]),
-    }));
+  const limits = new Map<PlanPeripheral, number>();
+  for (const peripheral of planPeripherals) {
+    let max = Math.min(maxPlanCount, capacity[peripheral], ceiling?.get(peripheral) ?? maxPlanCount);
+    while (
+      max > 0 &&
+      planPins(board, { [peripheral]: max }, capabilityStepBudget, exclude).status !== "ok"
+    ) {
+      max -= 1;
+    }
+    limits.set(peripheral, max);
+  }
+  return limits;
 }

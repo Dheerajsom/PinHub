@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { boards, type Board, type Pin } from "@/lib/boards";
 import {
+  capabilityStepBudget,
   normalizePlanRequirements,
   planCapabilities,
   planPins,
@@ -295,6 +296,66 @@ describe("determinism, bounds, and support", () => {
     expect(planCapabilities(board("arduino-uno-rev3")).map((item) => item.peripheral)).toEqual([
       "I2C", "SPI", "UART", "PWM", "ADC", "GPIO",
     ]);
+  });
+
+  // The stepper prints each maximum ("max 2") and stops there, so the number
+  // must be one the planner can deliver. Counting instances is not enough:
+  // UART0 and UART1 share GPIO14/15 on a Raspberry Pi, so two never fit.
+  it("never advertises a maximum it cannot plan on its own", () => {
+    const unreachable: string[] = [];
+    let costliest = 0;
+    for (const item of boards.filter((entry) => entry.pinFunctions && entry.pinout)) {
+      for (const { peripheral, max } of planCapabilities(item)) {
+        const result = planPins(item, { [peripheral]: max });
+        if (result.status !== "ok") unreachable.push(`${item.id} ${max}× ${peripheral}`);
+        else costliest = Math.max(costliest, result.steps);
+      }
+    }
+    expect(unreachable).toEqual([]);
+    // Headroom: if a new board's real maximum nears the proving budget, it
+    // would be under-reported. Raise `capabilityStepBudget` before that.
+    expect(costliest).toBeLessThan(capabilityStepBudget / 2);
+  });
+
+  it("does not report fewer units than the full planning budget can place", () => {
+    // NUCLEO-H753ZI 8× UART is the one count in the catalog the search cannot
+    // settle either way; everything it can settle must match the full budget.
+    for (const id of ["stm32-nucleo-h503rb", "stm32-nucleo-l053r8", "raspberry-pi-4-model-b", "esp32-s3-devkitc-1"]) {
+      for (const { peripheral, max } of planCapabilities(board(id))) {
+        if (max === 8) continue;
+        expect(planPins(board(id), { [peripheral]: max + 1 }).status, `${id} ${peripheral}`).toBe("unsatisfiable");
+      }
+    }
+  });
+
+  it("limits shared-pin buses to what fits at once", () => {
+    const limits = (id: string) =>
+      Object.fromEntries(planCapabilities(board(id)).map((item) => [item.peripheral, item.max]));
+    // UART0 and UART1 are both on GPIO14/15.
+    expect(limits("raspberry-pi-zero-2-w").UART).toBe(1);
+    expect(limits("raspberry-pi-3-model-b").UART).toBe(1);
+    // BCM2711 adds UART2-5 and SPI3-6, but GPIO0/1 are reserved for the HAT ID
+    // EEPROM and several instances overlap on the 40-pin header.
+    expect(limits("raspberry-pi-4-model-b").UART).toBeLessThan(5);
+    expect(limits("raspberry-pi-4-model-b").SPI).toBeLessThan(5);
+    // A maximum is still a real maximum: one more must not fit.
+    const pi4 = board("raspberry-pi-4-model-b");
+    for (const peripheral of ["UART", "SPI"] as const) {
+      expect(planPins(pi4, { [peripheral]: limits(pi4.id)[peripheral] + 1 }).status).toBe("unsatisfiable");
+    }
+  });
+
+  it("keeps a peripheral's maximum when hand-claimed pins leave room for fewer", () => {
+    const pico = board("raspberry-pi-pico");
+    const all = planCapabilities(pico);
+    const claimed = new Set<Pin>(
+      [...(pico.pinout?.pins?.left ?? []), ...(pico.pinout?.pins?.right ?? [])].filter((pin) => pin.role === "adc"),
+    );
+    const left = planCapabilities(pico, claimed);
+    for (const { peripheral, max } of left) {
+      expect(max).toBeLessThanOrEqual(all.find((item) => item.peripheral === peripheral)!.max);
+      expect(planPins(pico, { [peripheral]: max }, undefined, claimed).status).toBe("ok");
+    }
   });
 });
 

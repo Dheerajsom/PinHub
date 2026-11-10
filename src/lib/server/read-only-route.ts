@@ -1,6 +1,7 @@
-// Shared response rules for the read-only catalog API (`/api/boards` and
-// `/api/boards/[id]`). Keeping them in one place stops the two routes from
-// drifting apart on caching, method handling, or query rejection.
+// Shared response rules for the read-only API (`/api/boards`,
+// `/api/boards/[id]`, `/api/pins`, and `/api/prices`). Keeping them in one
+// place stops the routes from drifting apart on caching, method handling, or
+// query rejection. `/api/prices` sets its own shorter cache lifetime.
 
 const readOnlyAllow = "GET, HEAD, OPTIONS";
 export const noStoreHeaders = { "Cache-Control": "no-store" } as const;
