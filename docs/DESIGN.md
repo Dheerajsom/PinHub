@@ -561,3 +561,38 @@ padding tightens below 400 px.
   the full row so its labels stay readable.
 - **Scope.** UART and I2C only. SPI is named as absent, with the reason, next
   to the bus switch.
+
+## 20. Pin check (2026-11-10)
+
+`/check`, in the header nav between Planner and Link. Code and a board in; each
+pin the code uses, checked against the record, out. Six sections now share the
+nav row: below 560 px the icons give way to the labels, and the padding
+tightens below 440 px and again below 380 px (measured to fit from 360 px).
+
+- **The editor is the signature.** A plain textarea over a mirrored `<pre>`:
+  the textarea keeps caret, selection, IME and undo with its text made
+  transparent; the mirror draws the same text with each pin reference
+  underlined in its status color and, after each line, a hint naming the pins
+  it touches (`IO34 · pin 5 · Input-only pin`). Lines never wrap, so the two
+  layers share geometry and only scroll is synced. Comments are dimmed;
+  nothing else is syntax-colored. The gutter carries an orange rule on lines
+  with a finding. Touch screens get a 16 px code face so iOS does not zoom.
+- **Status colors.** Filled orange = fix, outlined orange = check, emerald =
+  clear, a grey wavy underline = not on this board's map. Cyan is selection
+  only: the selected pin's marks, card, strip pad and sheet probe.
+- **The summary is a header.** A one-line verdict (`2 pins to fix`), the
+  tally, and the code's pins as pads on a rail in report order. Each pad is a
+  44 px button that selects its pin.
+- **Cards, worst first.** Pad in the pin's role colors with its position,
+  silkscreen name, SDK name, place on the connector, the code's uses, and
+  line links that scroll the editor without focusing it (no keyboard on a
+  phone). Findings quote the source note under a quiet rule.
+- **Nothing inferred.** Findings come from the pin's flags with the board's
+  notes, its role, and the presence of a recorded function. Values the
+  scanner cannot follow are listed for a hand check rather than guessed, and
+  how bare numbers were matched (Arduino numbers, GPIO numbers, or physical
+  pins) is stated under the report.
+- **Layout.** One column (board, editor, report, sheet) below a 60 rem
+  container; above it, the editor and sheet on the left and the board and
+  report on the right.
+
