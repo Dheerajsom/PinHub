@@ -99,10 +99,10 @@ describe("Arduino on an UNO", () => {
     expect(pin.status).toBe("clear");
   });
 
-  it("reports a pin number the board does not have", () => {
+  it("says a pin number is missing from the record, not from the board", () => {
     const report = check("arduino-uno-rev3", "void setup(){ pinMode(40, OUTPUT); }");
     expect(report.pins).toEqual([]);
-    expect(report.missing[0].reason).toMatch(/No pin is numbered 40/);
+    expect(report.missing[0].reason).toBe("PinHub's record has no Arduino number 40 for this board, so this use can't be checked.");
   });
 
   it("lists values it cannot follow instead of guessing", () => {
@@ -176,11 +176,13 @@ describe("ESP32 DevKitC", () => {
     expect(pinNamed(report, "GPIO22").usages[0].label).toBe("I2C SCL");
   });
 
-  it("flags pins wired to the module's flash", () => {
+  it("flags a header pin the record marks reserved for the module's flash", () => {
+    // A reserved role is a fix on its own record; the module-memory flag alone is a check.
     const report = check("esp32-devkitc", "from machine import Pin\nPin(6, Pin.OUT)", "micropython");
-    const flash = report.pins[0] ?? null;
-    if (flash) expect(flash.status).toBe("fix");
-    else expect(report.missing[0].reason).toMatch(/GPIO6/);
+    const flash = report.pins[0];
+    expect(flash).toBeDefined();
+    expect(flash.status).toBe("fix");
+    expect(flash.findings).toEqual([{ severity: "fix", title: "Reserved pin", detail: "Connected to module flash" }]);
   });
 });
 

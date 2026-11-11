@@ -10,7 +10,7 @@ import { CheckApp } from "@/components/check/CheckApp";
 export const metadata: Metadata = {
   title: "Pin check",
   description:
-    "Paste Arduino, MicroPython, CircuitPython, Raspberry Pi, Pico SDK, or ESP-IDF code and check every pin it uses against the board's source-backed pin record: strapping pins, input-only pins, flash pins, and missing ADC or PWM.",
+    "Paste Arduino, MicroPython, CircuitPython, Raspberry Pi, Pico SDK, or ESP-IDF code and check the pin references PinHub recognizes against the board's source-backed pin record: strapping pins, input-only pins, flash pins, and missing ADC or PWM. Values it cannot follow are listed for a hand check.",
   alternates: { canonical: "/check" },
 };
 

@@ -1,16 +1,43 @@
 import { describe, expect, it } from "vitest";
 import { boards } from "@/lib/boards";
 import { boardPrices } from "@/lib/board-prices";
+import snapshots from "@/lib/board-prices.json";
 
 // The curated listings cover the most-used SBCs and microcontrollers that the
 // price checker can read (Adafruit and the Arduino US store).
+//
+// The count is stated in docs/pin-check-2026-11-10.md ("Prices: 31 boards").
+// Change it here only together with that write-up, so the documented number
+// cannot drift.
+const documentedPricedBoards = 31;
+
+type RawListing = { boardId?: unknown; primary?: unknown; url?: unknown };
+const raw = snapshots as RawListing[];
+
 describe("curated price coverage", () => {
-  it("prices each listed board exactly once as its primary offer, and only catalog boards", () => {
-    const ids = new Set(boards.map((board) => board.id));
-    expect(boardPrices.filter((price) => !ids.has(price.boardId))).toEqual([]);
-    const primaries = boardPrices.filter((price) => price.primary).map((price) => price.boardId);
-    expect(new Set(primaries).size).toBe(primaries.length);
-    expect(new Set(boardPrices.map((price) => price.boardId)).size).toBeGreaterThanOrEqual(25);
+  it("prices exactly the documented number of boards, read straight from the listing file", () => {
+    const ids = new Set(raw.map((listing) => listing.boardId));
+    expect(ids.size).toBe(documentedPricedBoards);
+    // The parsed list drops nothing the file holds.
+    expect(new Set(boardPrices.map((price) => price.boardId))).toEqual(ids);
+    expect(boardPrices).toHaveLength(raw.length);
+  });
+
+  it("prices only catalog boards, each with exactly one primary listing", () => {
+    const catalog = new Set(boards.map((board) => board.id));
+    const ids = [...new Set(raw.map((listing) => String(listing.boardId)))];
+    expect(ids.filter((id) => !catalog.has(id))).toEqual([]);
+    for (const id of ids) {
+      const primaries = raw.filter((listing) => listing.boardId === id && listing.primary === true);
+      expect(primaries, id).toHaveLength(1);
+    }
+  });
+
+  it("links every listing over HTTPS", () => {
+    for (const listing of raw) {
+      expect(typeof listing.url).toBe("string");
+      expect(new URL(String(listing.url)).protocol, String(listing.url)).toBe("https:");
+    }
   });
 
   it.each([

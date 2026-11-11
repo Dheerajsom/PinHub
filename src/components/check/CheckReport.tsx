@@ -4,19 +4,14 @@ import { CircleHelp, Info, OctagonAlert, TriangleAlert, type LucideIcon } from "
 import { displayName, type CheckReport as Report, type CheckedPin, type Finding } from "@/lib/code-check/check";
 import { placeText } from "@/lib/code-check/report-text";
 import { roleColors, roleLabels } from "@/components/board-visual/roles";
+import { statusGlyph, statusText } from "@/components/check/status";
+import { headline, plural, tally } from "@/components/check/verdict";
 
-const statusText: Record<CheckedPin["status"], string> = { fix: "Fix", check: "Check", clear: "Clear" };
 const findingIcon: Record<Finding["severity"], LucideIcon> = { fix: OctagonAlert, check: TriangleAlert, note: Info };
 
-function plural(count: number, word: string): string {
-  return `${count} ${word}${count === 1 ? "" : "s"}`;
-}
-
-export function headline(report: Report): string {
-  const total = report.pins.length;
-  if (report.counts.fix) return `${plural(report.counts.fix, "pin")} to fix`;
-  if (report.counts.check) return `${plural(report.counts.check, "pin")} to check`;
-  return total === 1 ? "The pin matches the record" : `All ${total} pins match the record`;
+/** A list key that stays unique when two findings or uses share a title. */
+export function findingKey(item: Pick<Finding, "severity" | "title">, index: number): string {
+  return `${item.severity}:${index}:${item.title}`;
 }
 
 function uniqueLines(pin: CheckedPin): number[] {
@@ -76,24 +71,25 @@ function PinCard({
           <span className="ph-check-pin-sub block">{placeText(pin)}</span>
         </span>
         <span className="ph-check-status" data-status={pin.status}>
+          <span className="ph-check-status-glyph" aria-hidden="true">{statusGlyph[pin.status]}</span>
           {statusText[pin.status]}
         </span>
       </button>
       <div className="ph-check-card-body">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <span className="flex flex-wrap gap-1">
-            {pin.usages.map((use) => (
-              <span key={use.label} className="ph-check-use">{use.label}</span>
+            {pin.usages.map((use, index) => (
+              <span key={`${index}:${use.label}`} className="ph-check-use">{use.label}</span>
             ))}
           </span>
           <LineButtons lines={uniqueLines(pin)} onLine={onLine} />
         </div>
         {findings.length ? (
           <ul className="mt-3 grid gap-2.5">
-            {findings.map((item) => {
+            {findings.map((item, index) => {
               const Icon = findingIcon[item.severity];
               return (
-                <li key={item.title} className="ph-check-finding" data-severity={item.severity}>
+                <li key={findingKey(item, index)} className="ph-check-finding" data-severity={item.severity}>
                   <Icon className="ph-check-finding-icon" aria-hidden="true" />
                   <div className="min-w-0">
                     <p className="ph-check-finding-title">{item.title}</p>
@@ -116,25 +112,32 @@ export function CheckReport({
   selectedPin,
   onSelect,
   onLine,
+  truncated = false,
 }: {
   report: Report;
   dialect: string;
   selectedPin: string | null;
   onSelect: (id: string) => void;
   onLine: (line: number) => void;
+  /** Part of the input was cut before the scan; the verdict cannot read as clear. */
+  truncated?: boolean;
 }) {
-  const { counts } = report;
+  const verdict = headline(report, { truncated });
   return (
-    <div className="grid gap-3">
-      <section aria-labelledby="ph-check-summary" className="ph-check-summary" data-tone={counts.fix ? "fix" : counts.check ? "check" : "clear"}>
-        <p className="ph-check-kicker">{plural(report.pins.length, "pin")} in {dialect} code</p>
-        <h2 id="ph-check-summary" className="ph-check-headline" aria-live="polite">
-          {headline(report)}
+    <div className="grid gap-3" role="region" aria-label="Check report">
+      <section aria-labelledby="ph-check-summary" className="ph-check-summary" data-tone={verdict.tone}>
+        <p className="ph-check-kicker">
+          {report.pins.length ? `${plural(report.pins.length, "pin")} in ${dialect} code` : `${dialect} code`}
+        </p>
+        <h2 id="ph-check-summary" className="ph-check-headline">
+          {verdict.text}
         </h2>
         <p className="ph-check-tally">
-          <span data-status="fix">{counts.fix} to fix</span>
-          <span data-status="check">{counts.check} to check</span>
-          <span data-status="clear">{counts.clear} clear</span>
+          {tally(report).map((item) => (
+            <span key={item.status} data-status={item.status}>
+              {item.text}
+            </span>
+          ))}
         </p>
         {/* The pins in the order the report lists them: a header of the code's pins. */}
         <ol className="ph-check-strip" aria-label="Pins your code uses">
@@ -149,7 +152,7 @@ export function CheckReport({
                 title={`${displayName(pin.pin)} · ${statusText[pin.status]}`}
                 onClick={() => onSelect(pin.id)}
               >
-                <span aria-hidden="true" />
+                <span aria-hidden="true">{statusGlyph[pin.status]}</span>
               </button>
             </li>
           ))}
@@ -172,11 +175,11 @@ export function CheckReport({
         <section aria-labelledby="ph-check-missing" className="ph-check-aside">
           <h3 id="ph-check-missing" className="ph-check-aside-title">
             <CircleHelp className="size-4" aria-hidden="true" />
-            Not on this board&apos;s map
+            Not matched to this board&apos;s record
           </h3>
           <ul className="mt-2 grid gap-2">
-            {report.missing.map((item) => (
-              <li key={`${item.ref.start}:${item.ref.usage.label}`} className="ph-check-aside-row">
+            {report.missing.map((item, index) => (
+              <li key={`${item.ref.start}:${item.ref.usage.label}:${index}`} className="ph-check-aside-row">
                 <button type="button" className="ph-check-line-chip" onClick={() => onLine(item.ref.line)} aria-label={`Show line ${item.ref.line} in the editor`}>
                   L{item.ref.line}
                 </button>
@@ -200,8 +203,8 @@ export function CheckReport({
             These are worked out while the program runs, so check them by hand.
           </p>
           <ul className="mt-2 grid gap-2">
-            {report.unfollowed.map((item) => (
-              <li key={item.start} className="ph-check-aside-row">
+            {report.unfollowed.map((item, index) => (
+              <li key={`${item.start}:${index}`} className="ph-check-aside-row">
                 <button type="button" className="ph-check-line-chip" onClick={() => onLine(item.line)} aria-label={`Show line ${item.line} in the editor`}>
                   L{item.line}
                 </button>
@@ -212,6 +215,9 @@ export function CheckReport({
               </li>
             ))}
           </ul>
+          {report.unfollowedDropped > 0 ? (
+            <p className="ph-check-aside-text mt-2">and {report.unfollowedDropped.toLocaleString("en-US")} more not listed</p>
+          ) : null}
         </section>
       ) : null}
     </div>

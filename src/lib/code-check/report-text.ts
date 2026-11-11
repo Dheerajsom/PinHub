@@ -3,7 +3,7 @@ import { searchWithPlanner, boardParam } from "@/lib/plan-params";
 import { cleanClaimName, maxClaims, type PinClaim } from "@/lib/planner-claims";
 import { verificationSourceFor } from "@/lib/source-trust";
 import { displayName, type CheckReport, type CheckedPin } from "./check";
-import { dialectLabels, type Dialect } from "./scan";
+import { dialectLabels, maxRefs, maxSourceLength, type Dialect } from "./scan";
 
 // Text forms of a pin check: a Markdown report to paste into an issue or a
 // forum post, and a planner link that claims the pins the code uses.
@@ -29,7 +29,17 @@ function lineList(pin: CheckedPin): string {
   return [...new Set(pin.refs.map((ref) => ref.line))].join(", ");
 }
 
-export function reportMarkdown(board: Board, report: CheckReport, dialect: Dialect | null): string {
+export type ReportMarkdownOptions = {
+  /** The pasted code was longer than `maxSourceLength`, so only its start was checked. */
+  truncated?: boolean;
+};
+
+export function reportMarkdown(
+  board: Board,
+  report: CheckReport,
+  dialect: Dialect | null,
+  { truncated = false }: ReportMarkdownOptions = {},
+): string {
   const source = verificationSourceFor(board);
   const lines = [
     `## PinHub pin check: ${cell(board.name)}`,
@@ -37,6 +47,13 @@ export function reportMarkdown(board: Board, report: CheckReport, dialect: Diale
     `${dialect ? `${dialectLabels[dialect]} code. ` : ""}${report.counts.fix} to fix, ${report.counts.check} to check, ${report.counts.clear} clear.`,
     "",
   ];
+  if (truncated) {
+    lines.push(`Only the first ${maxSourceLength.toLocaleString("en-US")} characters of the code were checked.`, "");
+  }
+  if (report.refsCapped) {
+    lines.push(`Only the first ${maxRefs.toLocaleString("en-US")} pin references were checked. The rest of the code was not.`, "");
+  }
+  if (report.numbering) lines.push(cell(report.numbering), "");
   if (report.pins.length) {
     lines.push("| Status | Pin | Where | Used as | Lines |", "| --- | --- | --- | --- | --- |");
     for (const pin of report.pins) {
@@ -56,13 +73,14 @@ export function reportMarkdown(board: Board, report: CheckReport, dialect: Diale
     lines.push("");
   }
   if (report.missing.length) {
-    lines.push("**Not on this board's map**");
+    lines.push("**Not matched to this board's record**");
     for (const item of report.missing) lines.push(`- Line ${item.ref.line}, ${cell(item.ref.text)}: ${cell(item.reason)}`);
     lines.push("");
   }
   if (report.unfollowed.length) {
-    lines.push("**Not followed**");
-    for (const item of report.unfollowed) lines.push(`- Line ${item.line}, ${cell(item.text)}`);
+    lines.push("**Not followed (check by hand)**");
+    for (const item of report.unfollowed) lines.push(`- Line ${item.line}, ${cell(item.text)} (${cell(item.usage.label)})`);
+    if (report.unfollowedDropped > 0) lines.push(`- …and ${report.unfollowedDropped} more not listed`);
     lines.push("");
   }
   lines.push(

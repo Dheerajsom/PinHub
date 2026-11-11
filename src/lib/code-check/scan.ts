@@ -1,9 +1,14 @@
 // Finds the pins a piece of firmware uses, without knowing the board. The
-// scanner is a small, deliberately conservative reader: it masks comments and
-// string contents, follows simple constants (`#define LED 13`,
-// `const int led = 13;`, `LED = 25`), and recognises the calls each toolchain
-// uses to take a pin. Anything it cannot follow is reported as such rather
-// than guessed. Resolving a reference to a physical pin is `check.ts`'s job.
+// scanner is a small, deliberately conservative reader: it masks comments,
+// string contents and `#if 0` blocks, follows simple constants (`#define LED
+// 13`, `const int led = 13;`, an enum, `LED = 25` at module level), and
+// recognises the calls each toolchain uses to take a pin. A name that is also
+// a loop variable, a function parameter, or assigned more than once is not a
+// constant. Anything it cannot follow is reported as such rather than
+// guessed. Resolving a reference to a physical pin is `check.ts`'s job.
+//
+// Every pass is linear (or bounded per item) in the input, so a pathological
+// paste cannot stall the page.
 
 export type Dialect =
   | "arduino"
@@ -78,16 +83,74 @@ export type Unfollowed = { text: string; usage: Usage; line: number; start: numb
 export type ScanResult = {
   dialect: Dialect | null;
   refs: PinRef[];
+  /** At most `maxUnfollowed` values the scanner could not follow, in source order. */
   unfollowed: Unfollowed[];
+  /** How many more unfollowed values there were past `maxUnfollowed` (0 when none). */
+  unfollowedDropped: number;
   /** The code also brings up Wi-Fi (for the ADC2 caution). */
   usesWifi: boolean;
   /** Input was cut to `maxSourceLength`. */
   truncated: boolean;
+  /**
+   * The scan reached `maxRefs` pin references and then met a further
+   * reference or not-followed value it did not record, so the rest of the
+   * code was not checked.
+   */
+  refsCapped: boolean;
 };
 
 export const maxSourceLength = 100_000;
-const maxRefs = 400;
+export const maxUnfollowed = 100;
+/** The scanner records at most this many pin references. */
+export const maxRefs = 400;
 const maxConstantDepth = 8;
+/** A list constant with more pins than this is not followed. */
+const maxListItems = 64;
+/** A pin value longer than this is not an expression the scanner follows. */
+const maxValueLength = 512;
+
+// ---------------------------------------------------------------------------
+// Characters
+
+function isIdentStart(code: number): boolean {
+  return (code >= 65 && code <= 90) || (code >= 97 && code <= 122) || code === 95;
+}
+
+function isIdentChar(code: number): boolean {
+  return isIdentStart(code) || (code >= 48 && code <= 57);
+}
+
+function isDigit(code: number): boolean {
+  return code >= 48 && code <= 57;
+}
+
+function isSpace(code: number): boolean {
+  return code === 32 || code === 9 || code === 10 || code === 13 || code === 11 || code === 12;
+}
+
+function isLineBreak(char: string | undefined): boolean {
+  return char === "\n" || char === "\r";
+}
+
+function isOpener(char: string): boolean {
+  return char === "(" || char === "[" || char === "{";
+}
+
+function isCloser(char: string): boolean {
+  return char === ")" || char === "]" || char === "}";
+}
+
+/** Offset of the line break that ends the line holding `from` (LF, CRLF or CR), or the length. */
+function lineEndOf(text: string, from: number): number {
+  for (let i = from; i < text.length; i += 1) if (isLineBreak(text[i])) return i;
+  return text.length;
+}
+
+/** Offset just past the line break at `end`. */
+function nextLineStart(text: string, end: number): number {
+  if (end >= text.length) return text.length;
+  return text[end] === "\r" && text[end + 1] === "\n" ? end + 2 : end + 1;
+}
 
 // ---------------------------------------------------------------------------
 // Masking
@@ -96,42 +159,104 @@ export type Family = "c" | "python";
 
 export type SourceRange = { start: number; end: number; kind: "comment" | "string" };
 
-/** Comments and string literals (quotes included), in order. */
+/** C++14 `1'000`: a quote inside a number literal, not a character literal. */
+function isDigitSeparator(source: string, at: number): boolean {
+  if (!isIdentChar(source.charCodeAt(at + 1))) return false;
+  let k = at - 1;
+  const limit = Math.max(0, at - 64);
+  while (k >= limit && (isIdentChar(source.charCodeAt(k)) || source[k] === "'" || source[k] === ".")) k -= 1;
+  return k + 1 < at && isDigit(source.charCodeAt(k + 1));
+}
+
+/** `R"delim( … )delim"`, optionally prefixed u8R, uR, UR or LR: returns the range end, or -1. */
+function rawStringEnd(source: string, at: number): number {
+  if (source[at - 1] !== "R") return -1;
+  let k = at - 2;
+  if (source[k] === "8" && source[k - 1] === "u") k -= 2;
+  else if (source[k] === "u" || source[k] === "U" || source[k] === "L") k -= 1;
+  if (k >= 0 && isIdentChar(source.charCodeAt(k))) return -1;
+  let j = at + 1;
+  while (j < source.length && j - at <= 17 && source[j] !== "(") {
+    if (/[\s()\\"]/.test(source[j])) return -1;
+    j += 1;
+  }
+  if (source[j] !== "(") return -1;
+  const close = `)${source.slice(at + 1, j)}"`;
+  const end = source.indexOf(close, j + 1);
+  return end === -1 ? source.length : end + close.length;
+}
+
+const ifZeroPattern = /^#[ \t]*if[ \t]+0[ \t]*(?:\/\/.*|\/\*.*)?$/;
+const conditionalPattern = /^[ \t]*#[ \t]*(if|ifdef|ifndef|elif|else|endif)\b/;
+
+/** End of the code an `#if 0` at `from` switches off: its `#endif` line, or its `#else`/`#elif`. */
+function ifZeroEnd(source: string, from: number): number {
+  let depth = 0;
+  let pos = nextLineStart(source, lineEndOf(source, from));
+  while (pos < source.length) {
+    const end = lineEndOf(source, pos);
+    const directive = conditionalPattern.exec(source.slice(pos, Math.min(end, pos + 64)));
+    if (directive) {
+      const word = directive[1];
+      if (word.startsWith("if")) depth += 1;
+      else if (word === "endif") {
+        if (depth === 0) return end;
+        depth -= 1;
+      } else if (depth === 0) return pos;
+    }
+    pos = nextLineStart(source, end);
+  }
+  return source.length;
+}
+
+/** Comments, `#if 0` blocks (as comments) and string literals (quotes included), in order. */
 export function sourceRanges(source: string, family: Family): SourceRange[] {
   const ranges: SourceRange[] = [];
-  let i = 0;
   const n = source.length;
-  const lineEnd = (from: number) => {
-    const end = source.indexOf("\n", from);
-    return end === -1 ? n : end;
-  };
+  let i = 0;
+  let lineStart = true;
   while (i < n) {
     const c = source[i];
+    if (isLineBreak(c)) {
+      lineStart = true;
+      i += 1;
+      continue;
+    }
     const next = source[i + 1];
+    const raw = family === "c" && c === '"' ? rawStringEnd(source, i) : -1;
     let stop = -1;
     let kind: SourceRange["kind"] = "comment";
     if (family === "c" && c === "/" && next === "/") {
-      stop = lineEnd(i);
+      stop = lineEndOf(source, i);
+      // A backslash at the end of a // comment continues it onto the next line.
+      while (stop < n && source[stop - 1] === "\\") stop = lineEndOf(source, nextLineStart(source, stop));
     } else if (family === "c" && c === "/" && next === "*") {
       const end = source.indexOf("*/", i + 2);
       stop = end === -1 ? n : end + 2;
+    } else if (family === "c" && c === "#" && lineStart && ifZeroPattern.test(source.slice(i, lineEndOf(source, i)).trimEnd())) {
+      stop = ifZeroEnd(source, i);
     } else if (family === "python" && c === "#") {
-      stop = lineEnd(i);
+      stop = lineEndOf(source, i);
     } else if (family === "python" && (source.startsWith('"""', i) || source.startsWith("'''", i))) {
       // Docstrings read as comments: nothing in them configures a pin.
       const end = source.indexOf(source.slice(i, i + 3), i + 3);
       stop = end === -1 ? n : end + 3;
-    } else if (c === '"' || c === "'") {
+    } else if (raw !== -1) {
+      stop = raw;
+      kind = "string";
+    } else if (c === '"' || (c === "'" && !(family === "c" && isDigitSeparator(source, i)))) {
       let j = i + 1;
-      while (j < n && source[j] !== c && source[j] !== "\n") j += source[j] === "\\" ? 2 : 1;
-      stop = Math.min(j + 1, n);
+      while (j < n && source[j] !== c && !isLineBreak(source[j])) j += source[j] === "\\" ? 2 : 1;
+      stop = j < n && source[j] === c ? j + 1 : Math.min(j, n);
       kind = "string";
     }
     if (stop === -1) {
+      if (c !== " " && c !== "\t") lineStart = false;
       i += 1;
       continue;
     }
     ranges.push({ start: i, end: stop, kind });
+    lineStart = isLineBreak(source[stop - 1]);
     i = stop;
   }
   return ranges;
@@ -139,15 +264,15 @@ export function sourceRanges(source: string, family: Family): SourceRange[] {
 
 /**
  * Replaces comments with spaces and string *contents* with spaces, keeping
- * every offset and newline, so structure can be read from the mask and values
- * from the original text at the same offsets.
+ * every offset and line break, so structure can be read from the mask and
+ * values from the original text at the same offsets.
  */
 export function maskSource(source: string, family: Family): string {
   const out = source.split("");
   for (const range of sourceRanges(source, family)) {
     const from = range.kind === "string" ? range.start + 1 : range.start;
     const to = range.kind === "string" && source[range.end - 1] === source[range.start] && range.end - range.start > 1 ? range.end - 1 : range.end;
-    for (let i = from; i < to; i += 1) if (out[i] !== "\n") out[i] = " ";
+    for (let i = from; i < to; i += 1) if (!isLineBreak(out[i])) out[i] = " ";
   }
   return out.join("");
 }
@@ -156,18 +281,18 @@ export function maskSource(source: string, family: Family): string {
 // Dialect detection
 
 const dialectSignals: Array<{ dialect: Dialect; pattern: RegExp; weight: number }> = [
-  { dialect: "circuitpython", pattern: /^\s*import\s+(?:board|digitalio|busio|analogio|pwmio)\b/m, weight: 4 },
+  { dialect: "circuitpython", pattern: /^[ \t]*import[ \t]+(?:board|digitalio|busio|analogio|pwmio)\b/m, weight: 4 },
   { dialect: "circuitpython", pattern: /\bboard\.[A-Z][A-Z0-9_]*\b/, weight: 2 },
   { dialect: "rpi-python", pattern: /\b(?:RPi\.GPIO|gpiozero|lgpio)\b/, weight: 5 },
-  { dialect: "micropython", pattern: /^\s*(?:from\s+machine\s+import|import\s+machine\b)/m, weight: 5 },
-  { dialect: "micropython", pattern: /\b(?:Pin\.(?:OUT|IN)|SoftI2C|neopixel\.NeoPixel\(\s*Pin)\b/, weight: 2 },
-  { dialect: "pico-sdk", pattern: /#include\s*[<"](?:pico\/|hardware\/)/, weight: 5 },
-  { dialect: "pico-sdk", pattern: /\b(?:gpio_init|gpio_put|gpio_set_dir|gpio_set_function|adc_gpio_init)\s*\(/, weight: 3 },
-  { dialect: "esp-idf", pattern: /#include\s*[<"](?:driver\/|freertos\/|esp_)/, weight: 4 },
+  { dialect: "micropython", pattern: /^[ \t]*(?:from[ \t]+machine[ \t]+import|import[ \t]+machine\b)/m, weight: 5 },
+  { dialect: "micropython", pattern: /\b(?:Pin\.(?:OUT|IN)|SoftI2C|neopixel\.NeoPixel\([ \t]*Pin)\b/, weight: 2 },
+  { dialect: "pico-sdk", pattern: /#include[ \t]*[<"](?:pico\/|hardware\/)/, weight: 5 },
+  { dialect: "pico-sdk", pattern: /\b(?:gpio_init|gpio_put|gpio_set_dir|gpio_set_function|adc_gpio_init)[ \t]*\(/, weight: 3 },
+  { dialect: "esp-idf", pattern: /#include[ \t]*[<"](?:driver\/|freertos\/|esp_)/, weight: 4 },
   { dialect: "esp-idf", pattern: /\b(?:GPIO_NUM_\d+|gpio_set_direction|gpio_set_level|gpio_config|app_main)\b/, weight: 3 },
-  { dialect: "arduino", pattern: /\b(?:pinMode|digitalWrite|digitalRead|analogRead|analogWrite)\s*\(/, weight: 4 },
-  { dialect: "arduino", pattern: /\bvoid\s+(?:setup|loop)\s*\(/, weight: 4 },
-  { dialect: "arduino", pattern: /#include\s*[<"](?:Arduino|Wire|SPI|Servo|Adafruit_)/, weight: 3 },
+  { dialect: "arduino", pattern: /\b(?:pinMode|digitalWrite|digitalRead|analogRead|analogWrite)[ \t]*\(/, weight: 4 },
+  { dialect: "arduino", pattern: /\bvoid[ \t]+(?:setup|loop)[ \t]*\(/, weight: 4 },
+  { dialect: "arduino", pattern: /#include[ \t]*[<"](?:Arduino|Wire|SPI|Servo|Adafruit_)/, weight: 3 },
 ];
 
 export function detectDialect(source: string): Dialect | null {
@@ -193,78 +318,144 @@ export function dialectFamily(dialect: Dialect): Family {
 }
 
 // ---------------------------------------------------------------------------
+// Brackets
+
+/** For each opening bracket in the masked text, the offset of its closer (-1 when unclosed). */
+function bracketPairs(masked: string): Int32Array {
+  const close = new Int32Array(masked.length).fill(-1);
+  const stack: number[] = [];
+  for (let i = 0; i < masked.length; i += 1) {
+    const c = masked[i];
+    if (isOpener(c)) stack.push(i);
+    else if (isCloser(c)) {
+      const open = stack.pop();
+      if (open !== undefined) close[open] = i;
+    }
+  }
+  return close;
+}
+
+/** Bracket depth at each offset (the depth before that character). */
+function bracketDepths(masked: string): Int32Array {
+  const depth = new Int32Array(masked.length + 1);
+  let current = 0;
+  for (let i = 0; i < masked.length; i += 1) {
+    depth[i] = current;
+    if (isOpener(masked[i])) current += 1;
+    else if (isCloser(masked[i]) && current > 0) current -= 1;
+  }
+  depth[masked.length] = current;
+  return depth;
+}
+
+/** Splits masked[from, to) at top-level commas, skipping nested brackets. */
+function topLevelParts(masked: string, pairs: Int32Array, from: number, to: number): Array<[number, number]> {
+  const parts: Array<[number, number]> = [];
+  let start = from;
+  let i = from;
+  while (i < to) {
+    const c = masked[i];
+    if (isOpener(c)) {
+      const end = pairs[i];
+      i = end === -1 || end >= to ? to : end + 1;
+      continue;
+    }
+    if (c === ",") {
+      parts.push([start, i]);
+      start = i + 1;
+    }
+    i += 1;
+  }
+  parts.push([start, to]);
+  return parts;
+}
+
+// ---------------------------------------------------------------------------
 // Calls
 
 type Arg = { text: string; start: number; end: number; keyword?: string };
 export type Call = { callee: string; args: Arg[]; start: number; /** Constructor declared as `Type name(args)`. */ declared?: boolean };
 
-const calleePattern = /([A-Za-z_][\w]*(?:\s*(?:\.|::|->)\s*[A-Za-z_]\w*)*)\s*\(/g;
-const declarationPattern = /\b([A-Z][A-Za-z0-9_]*)[ \t]+[A-Za-z_]\w*[ \t]*\(/g;
-
-/** Finds the `)` matching the `(` at `open`, in the masked text. */
-function closingParen(masked: string, open: number): number {
-  let depth = 0;
-  for (let i = open; i < masked.length; i += 1) {
-    const c = masked[i];
-    if (c === "(" || c === "[" || c === "{") depth += 1;
-    else if (c === ")" || c === "]" || c === "}") {
-      depth -= 1;
-      if (depth === 0) return i;
-    }
-  }
-  return -1;
-}
-
-function splitArgs(source: string, masked: string, open: number, close: number): Arg[] {
+function splitArgs(source: string, masked: string, pairs: Int32Array, open: number, close: number): Arg[] {
   const args: Arg[] = [];
-  let depth = 0;
-  let from = open + 1;
-  const push = (to: number) => {
+  for (const [from, to] of topLevelParts(masked, pairs, open + 1, close)) {
     let start = from;
     let end = to;
-    while (start < end && /\s/.test(masked[start])) start += 1;
-    while (end > start && /\s/.test(masked[end - 1])) end -= 1;
-    if (start === end) return;
-    let text = source.slice(start, end);
+    while (start < end && isSpace(masked.charCodeAt(start))) start += 1;
+    while (end > start && isSpace(masked.charCodeAt(end - 1))) end -= 1;
+    if (start === end) continue;
     let keyword: string | undefined;
-    const kw = /^([A-Za-z_]\w*)\s*=(?!=)\s*/.exec(masked.slice(start, end));
-    if (kw) {
+    const kw = /^([A-Za-z_]\w*)\s*=(?!=)\s*/.exec(masked.slice(start, Math.min(end, start + 128)));
+    if (kw && start + kw[0].length < end) {
       keyword = kw[1];
       start += kw[0].length;
-      text = source.slice(start, end);
     }
-    args.push({ text, start, end, keyword });
-  };
-  for (let i = open + 1; i < close; i += 1) {
-    const c = masked[i];
-    if (c === "(" || c === "[" || c === "{") depth += 1;
-    else if (c === ")" || c === "]" || c === "}") depth -= 1;
-    else if (c === "," && depth === 0) {
-      push(i);
-      from = i + 1;
-    }
+    args.push({ text: source.slice(start, end), start, end, keyword });
   }
-  push(close);
   return args;
 }
 
-export function findCalls(source: string, masked: string, family: Family = "c"): Call[] {
+function readIdent(masked: string, from: number): number {
+  let i = from;
+  while (i < masked.length && isIdentChar(masked.charCodeAt(i))) i += 1;
+  return i;
+}
+
+function skipSpace(masked: string, from: number, lineOnly = false): number {
+  let i = from;
+  while (i < masked.length) {
+    const code = masked.charCodeAt(i);
+    if (lineOnly ? code !== 32 && code !== 9 : !isSpace(code)) break;
+    i += 1;
+  }
+  return i;
+}
+
+function findCallsIn(source: string, masked: string, pairs: Int32Array, family: Family): Call[] {
   const calls: Call[] = [];
   const add = (callee: string, start: number, open: number, declared: boolean) => {
-    const close = closingParen(masked, open);
+    const close = pairs[open];
     if (close === -1) return;
-    calls.push({ callee: callee.replace(/\s+/g, ""), args: splitArgs(source, masked, open, close), start, declared });
+    calls.push({ callee: callee.replace(/\s+/g, ""), args: splitArgs(source, masked, pairs, open, close), start, declared });
   };
-  for (const match of masked.matchAll(calleePattern)) {
-    const open = (match.index ?? 0) + match[0].length - 1;
-    add(match[1], match.index ?? 0, open, false);
-  }
-  // `Type name(args)` declares an object in C++ only.
-  for (const match of family === "c" ? masked.matchAll(declarationPattern) : []) {
-    const open = (match.index ?? 0) + match[0].length - 1;
-    add(match[1], match.index ?? 0, open, true);
+  const n = masked.length;
+  let i = 0;
+  while (i < n) {
+    const code = masked.charCodeAt(i);
+    if (!isIdentStart(code)) {
+      // A number (or a name glued to one) is not a callee.
+      i = isDigit(code) ? readIdent(masked, i) : i + 1;
+      continue;
+    }
+    const start = i;
+    const firstEnd = readIdent(masked, i);
+    let chainEnd = firstEnd;
+    // a.b, a::b, a->b
+    for (;;) {
+      let k = skipSpace(masked, chainEnd);
+      const sep = masked[k] === "." ? 1 : (masked[k] === ":" && masked[k + 1] === ":") || (masked[k] === "-" && masked[k + 1] === ">") ? 2 : 0;
+      if (!sep) break;
+      k = skipSpace(masked, k + sep);
+      if (k >= n || !isIdentStart(masked.charCodeAt(k))) break;
+      chainEnd = readIdent(masked, k);
+    }
+    const after = skipSpace(masked, chainEnd);
+    if (masked[after] === "(") add(masked.slice(start, chainEnd), start, after, false);
+    else if (family === "c" && chainEnd === firstEnd && code >= 65 && code <= 90) {
+      // `Type name(args)` declares an object in C++.
+      const nameStart = skipSpace(masked, firstEnd, true);
+      if (nameStart > firstEnd && isIdentStart(masked.charCodeAt(nameStart))) {
+        const open = skipSpace(masked, readIdent(masked, nameStart), true);
+        if (masked[open] === "(") add(masked.slice(start, firstEnd), start, open, true);
+      }
+    }
+    i = chainEnd;
   }
   return calls.sort((a, b) => a.start - b.start);
+}
+
+export function findCalls(source: string, masked: string, family: Family = "c"): Call[] {
+  return findCallsIn(source, masked, bracketPairs(masked), family);
 }
 
 // ---------------------------------------------------------------------------
@@ -272,24 +463,372 @@ export function findCalls(source: string, masked: string, family: Family = "c"):
 
 type Constant = { text: string; start: number };
 
-const cConstantPatterns = [
-  /^[ \t]*#define[ \t]+([A-Za-z_]\w*)[ \t]+([^\n]+?)[ \t]*$/gm,
-  /\b(?:(?:static|const|constexpr|volatile|unsigned|signed|uint8_t|uint16_t|uint32_t|int8_t|int16_t|int32_t|int|byte|short|long|gpio_num_t|uint|pin_size_t|PinName)\s+)+([A-Za-z_]\w*)\s*=\s*([^;,\n]+?)\s*[;,]/g,
-];
-const pythonConstantPattern = /^[ \t]*([A-Za-z_]\w*)\s*=(?!=)\s*([^\n]+?)\s*$/gm;
+/** A `#define` or `#undef`, in source order. */
+type MacroEvent = { at: number; constant?: Constant; conflicted?: boolean };
 
-function collectConstants(source: string, masked: string, family: Family): Map<string, Constant> {
-  const constants = new Map<string, Constant>();
-  const patterns = family === "c" ? cConstantPatterns : [pythonConstantPattern];
-  for (const pattern of patterns) {
-    for (const match of masked.matchAll(pattern)) {
-      const valueStart = (match.index ?? 0) + match[0].lastIndexOf(match[2]);
-      const text = source.slice(valueStart, valueStart + match[2].length).trim();
-      // The first definition wins; a later reassignment is a variable, not a pin constant.
-      if (!constants.has(match[1])) constants.set(match[1], { text, start: valueStart });
+type Constants = {
+  /** File-scope (or unique local `const`) values, and Python module-level names. */
+  values: Map<string, Constant>;
+  macros: Map<string, MacroEvent[]>;
+  /** Names that look like constants but cannot be followed. */
+  unfollowed: Set<string>;
+};
+
+/** What a name resolves to at a point in the code. */
+function lookupConstant(constants: Constants, name: string, at: number): Constant | "unfollowed" | undefined {
+  if (constants.unfollowed.has(name)) return "unfollowed";
+  const events = constants.macros.get(name);
+  if (events) {
+    // The last #define or #undef before `at` (events are in source order).
+    let lo = 0;
+    let hi = events.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (events[mid].at <= at) lo = mid + 1;
+      else hi = mid;
+    }
+    const last: MacroEvent | undefined = events[lo - 1];
+    if (last?.constant) return last.conflicted ? "unfollowed" : last.constant;
+    if (last) return undefined; // #undef
+  }
+  return constants.values.get(name);
+}
+
+const cTypeWords =
+  "static|const|constexpr|volatile|unsigned|signed|inline|auto|uint8_t|uint16_t|uint32_t|uint64_t|int8_t|int16_t|int32_t|int64_t|int|byte|short|long|size_t|gpio_num_t|uint|pin_size_t|PinName";
+const cDeclarationPattern = new RegExp(`^\\s*((?:(?:${cTypeWords})\\s+)+)([A-Za-z_][\\s\\S]*)$`);
+const maxStatementLength = 4000;
+
+type Tally = {
+  /** Assignments, increments and initialisers per name. */
+  writes: Map<string, number>;
+  /** Names declared as a parameter, a loop variable, or an alias. */
+  declared: Set<string>;
+};
+
+function addWrite(tally: Tally, name: string) {
+  tally.writes.set(name, (tally.writes.get(name) ?? 0) + 1);
+}
+
+/** Identifiers a for-header or Python `for` target declares or writes. */
+function markLoopNames(text: string, tally: Tally) {
+  for (const match of text.matchAll(/([A-Za-z_]\w*)\s*(?:[-+*/%&|^]|<<|>>)?(?:=(?!=)|:(?!:)|\+\+|--)|(?:\+\+|--)\s*([A-Za-z_]\w*)/g)) {
+    tally.declared.add(match[1] ?? match[2]);
+  }
+}
+
+/** The name a parameter declares: `int led`, `const int& led = 3`, `uint8_t *p` (C); `led`, `*args`, `led: int = 3` (Python). */
+function parameterName(text: string, family: Family): string | null {
+  if (family === "python") {
+    const name = /^\s*\**\s*([A-Za-z_]\w*)/.exec(text);
+    return name ? name[1] : null;
+  }
+  const head = text.split("=")[0].replace(/\[[^\]]*\]\s*$/, "").trim();
+  const words = head.match(/[A-Za-z_]\w*/g) ?? [];
+  if (words.length >= 2 || (words.length === 1 && /[*&]\s*[A-Za-z_]\w*$/.test(head))) return words[words.length - 1];
+  return null;
+}
+
+const notFunctions = new Set(["if", "for", "while", "switch", "return", "sizeof", "else", "do", "case", "catch"]);
+
+function markParameters(masked: string, pairs: Int32Array, open: number, family: Family, tally: Tally) {
+  const close = pairs[open];
+  if (close === -1 || close - open > 1000) return;
+  for (const [from, to] of topLevelParts(masked, pairs, open + 1, close)) {
+    const name = parameterName(masked.slice(from, to), family);
+    if (name) tally.declared.add(name);
+  }
+}
+
+/** Name ending just before `end` (skipping spaces), or null. */
+function identBefore(masked: string, end: number): string | null {
+  let k = end - 1;
+  const limit = Math.max(0, end - 100);
+  while (k >= limit && (masked[k] === " " || masked[k] === "\t")) k -= 1;
+  const last = k;
+  while (k >= limit && isIdentChar(masked.charCodeAt(k))) k -= 1;
+  return last > k ? masked.slice(k + 1, last + 1) : null;
+}
+
+/** Writes, parameters and loop variables in C-family code. */
+function cTally(masked: string, pairs: Int32Array): Tally {
+  const tally: Tally = { writes: new Map(), declared: new Set() };
+  for (const match of masked.matchAll(/(?<![\w.>:])([A-Za-z_]\w*)\s*(?:(?:[-+*/%&|^]|<<|>>)?=(?!=)|\+\+|--)|(?<![\w+-])(?:\+\+|--)\s*([A-Za-z_]\w*)/g)) {
+    addWrite(tally, match[1] ?? match[2]);
+  }
+  for (let open = masked.indexOf("("); open !== -1; open = masked.indexOf("(", open + 1)) {
+    const close = pairs[open];
+    if (close === -1) continue;
+    const before = identBefore(masked, open);
+    if (before === "for") {
+      markLoopNames(masked.slice(open + 1, Math.min(close, open + 500)), tally);
+      continue;
+    }
+    if (!(before && !notFunctions.has(before)) && masked[skipSpaceBack(masked, open)] !== "]") continue;
+    // A parameter list is followed by the body (or a constructor's initialiser list).
+    let k = skipSpace(masked, close + 1);
+    for (let guard = 0; guard < 4; guard += 1) {
+      const word = /^(?:const|override|final|noexcept|mutable)\b/.exec(masked.slice(k, k + 10));
+      if (!word) break;
+      k = skipSpace(masked, k + word[0].length);
+    }
+    if (masked[k] === "{" || (masked[k] === ":" && masked[k + 1] !== ":")) markParameters(masked, pairs, open, "c", tally);
+  }
+  return tally;
+}
+
+function skipSpaceBack(masked: string, end: number): number {
+  let k = end - 1;
+  while (k >= 0 && end - k < 100 && isSpace(masked.charCodeAt(k))) k -= 1;
+  return k;
+}
+
+function addConstant(target: Map<string, Constant>, conflicts: Set<string>, name: string, constant: Constant) {
+  const existing = target.get(name);
+  if (existing && existing.text !== constant.text) conflicts.add(name);
+  else if (!existing) target.set(name, constant);
+}
+
+function valueOf(source: string, masked: string, from: number, to: number): Constant | null {
+  let start = from;
+  let end = to;
+  while (start < end && isSpace(masked.charCodeAt(start))) start += 1;
+  while (end > start && isSpace(masked.charCodeAt(end - 1))) end -= 1;
+  return start < end ? { text: source.slice(start, end), start } : null;
+}
+
+function collectMacros(source: string, masked: string, constants: Constants) {
+  const pattern = /^[ \t]*#[ \t]*(define|undef)[ \t]+([A-Za-z_]\w*)([^\r\n]*)/gm;
+  for (const match of masked.matchAll(pattern)) {
+    const [, directive, name, rest] = match;
+    const at = match.index ?? 0;
+    const events = constants.macros.get(name) ?? [];
+    constants.macros.set(name, events);
+    if (directive === "undef") {
+      events.push({ at });
+      continue;
+    }
+    // Object-like macros only: `#define PIN(x)` takes arguments.
+    if (rest && !/^[ \t]/.test(rest)) continue;
+    const from = at + match[0].length - rest.length;
+    let to = at + match[0].length;
+    // `\` at the end of a line continues the definition.
+    while (masked[to - 1] === "\\" && to < masked.length) to = lineEndOf(masked, nextLineStart(masked, to));
+    const value = valueOf(source, masked, from, to);
+    if (!value) {
+      events.push({ at });
+      continue;
+    }
+    events.push({ at, constant: { text: value.text.replace(/\\(?:\r\n|\r|\n)/g, " "), start: value.start } });
+  }
+  // Two different definitions with no #undef between them are alternatives
+  // (an #ifdef choosing one), so neither is followed.
+  for (const events of constants.macros.values()) {
+    let segment: MacroEvent[] = [];
+    const close = () => {
+      const texts = new Set(segment.map((event) => event.constant?.text));
+      if (texts.size > 1) for (const event of segment) event.conflicted = true;
+      segment = [];
+    };
+    for (const event of events) {
+      if (event.constant) segment.push(event);
+      else close();
+    }
+    close();
+  }
+}
+
+type CDefinition = { name: string; constant: Constant; writes: number; local: boolean; isConst: boolean };
+
+function collectCDeclarations(source: string, masked: string, pairs: Int32Array): CDefinition[] {
+  const found: CDefinition[] = [];
+  type Scope = { kind: "scope" | "type" | "enum" | "block"; open: number };
+  const stack: Scope[] = [];
+  let blocks = 0;
+  let types = 0;
+  let statementStart = 0;
+  const n = masked.length;
+  let lineStart = true;
+
+  const statement = (from: number, to: number) => {
+    if (types > 0 || to - from > maxStatementLength) return;
+    const text = masked.slice(from, to);
+    const declaration = cDeclarationPattern.exec(text);
+    if (!declaration) return;
+    const isConst = /\b(?:const|constexpr)\b/.test(declaration[1]);
+    const local = blocks > 0;
+    // Inside a function only a `const` declaration is a constant.
+    if (local && !isConst) return;
+    const restStart = from + text.length - declaration[2].length;
+    for (const [partFrom, partTo] of topLevelParts(masked, pairs, restStart, to)) {
+      const head = /^\s*([A-Za-z_]\w*)\s*=(?!=)/.exec(masked.slice(partFrom, Math.min(partTo, partFrom + 200)));
+      if (!head) continue;
+      const constant = valueOf(source, masked, partFrom + head[0].length, partTo);
+      if (constant) found.push({ name: head[1], constant, writes: 1, local, isConst });
+    }
+  };
+
+  const enumBody = (from: number, to: number) => {
+    let next: number | null = 0;
+    for (const [partFrom, partTo] of topLevelParts(masked, pairs, from, to)) {
+      const entry = /^\s*([A-Za-z_]\w*)\s*(=(?!=))?/.exec(masked.slice(partFrom, Math.min(partTo, partFrom + 200)));
+      if (!entry) continue;
+      if (entry[2]) {
+        const constant = valueOf(source, masked, partFrom + entry[0].length, partTo);
+        if (!constant) continue;
+        found.push({ name: entry[1], constant, writes: 1, local: false, isConst: true });
+        const literal = parseNumber(constant.text, "c");
+        next = literal === null ? null : literal + 1;
+      } else if (next !== null) {
+        found.push({ name: entry[1], constant: { text: String(next), start: partFrom }, writes: 0, local: false, isConst: true });
+        next += 1;
+      }
+    }
+  };
+
+  for (let i = 0; i < n; i += 1) {
+    const c = masked[i];
+    if (isLineBreak(c)) {
+      lineStart = true;
+      continue;
+    }
+    if (c === "#" && lineStart) {
+      // Preprocessor lines (and their continuations) are not statements.
+      let end = lineEndOf(masked, i);
+      while (masked[end - 1] === "\\" && end < n) end = lineEndOf(masked, nextLineStart(masked, end));
+      i = end - 1;
+      statementStart = end;
+      continue;
+    }
+    if (c !== " " && c !== "\t") lineStart = false;
+    if (c === "{") {
+      const prefix = masked.slice(Math.max(statementStart, i - 200), i);
+      let kind: Scope["kind"] = "block";
+      if (types === 0 && blocks === 0 && (/\bnamespace\b[\w\s:]*$/.test(prefix) || /\bextern\s*"\s*"\s*$/.test(prefix))) kind = "scope";
+      else if (/\benum\b(?:\s+(?:class|struct))?[\w\s:]*$/.test(prefix)) kind = "enum";
+      else if (/\b(?:struct|class|union)\b[^;{}()=]*$/.test(prefix)) kind = "type";
+      stack.push({ kind, open: i });
+      if (kind === "block") blocks += 1;
+      else if (kind !== "scope") types += 1;
+      if (kind === "scope" || kind === "block") statementStart = i + 1;
+      continue;
+    }
+    if (c === "}") {
+      const scope = stack.pop();
+      if (!scope) continue;
+      if (scope.kind === "block") blocks -= 1;
+      else if (scope.kind !== "scope") types -= 1;
+      if (scope.kind === "enum" && types === 0) enumBody(scope.open + 1, i);
+      if (scope.kind === "scope" || scope.kind === "block") statementStart = i + 1;
+      continue;
+    }
+    if (c === ";") {
+      // `for (int i = 0; …)` is not a declaration statement.
+      statement(statementStart, i);
+      statementStart = i + 1;
+    }
+  }
+  return found;
+}
+
+function collectCConstants(source: string, masked: string, pairs: Int32Array): Constants {
+  const constants: Constants = { values: new Map(), macros: new Map(), unfollowed: new Set() };
+  collectMacros(source, masked, constants);
+  const tally = cTally(masked, pairs);
+  const definitions = collectCDeclarations(source, masked, pairs);
+  const expected = new Map<string, number>();
+  for (const definition of definitions) {
+    expected.set(definition.name, (expected.get(definition.name) ?? 0) + definition.writes);
+    addConstant(constants.values, constants.unfollowed, definition.name, definition.constant);
+  }
+  const names = new Set([...constants.values.keys(), ...constants.macros.keys()]);
+  for (const name of names) {
+    const writes = tally.writes.get(name) ?? 0;
+    // One initialiser is the definition; any other write makes it a variable.
+    if (tally.declared.has(name) || writes > Math.min(expected.get(name) ?? 0, 1) || (expected.get(name) ?? 0) > 1) {
+      constants.unfollowed.add(name);
     }
   }
   return constants;
+}
+
+function collectPythonConstants(source: string, masked: string, pairs: Int32Array): Constants {
+  const constants: Constants = { values: new Map(), macros: new Map(), unfollowed: new Set() };
+  const depth = bracketDepths(masked);
+  const tally: Tally = { writes: new Map(), declared: new Set() };
+
+  // Statements (and walrus) at bracket depth 0 write a name; `f(x=1)` does not.
+  for (const match of masked.matchAll(/(?<![\w.])([A-Za-z_]\w*)[ \t]*(?:(?:\*\*|\/\/|>>|<<|[-+*/%&|^@])?=(?!=)|:=)/g)) {
+    const at = match.index ?? 0;
+    if (depth[at] === 0 || match[0].endsWith(":=")) addWrite(tally, match[1]);
+  }
+  // `a, b = 1, 2` writes both names.
+  for (const match of masked.matchAll(/^[ \t]*([A-Za-z_]\w*(?:[ \t]*,[ \t]*[A-Za-z_]\w*)+)[ \t]*,?[ \t]*=(?!=)/gm)) {
+    for (const name of match[1].split(",")) addWrite(tally, name.trim());
+  }
+  for (const match of masked.matchAll(/\bfor\b/g)) {
+    const at = (match.index ?? 0) + 3;
+    const segment = masked.slice(at, at + 300).split(/[\r\n]/, 1)[0];
+    const target = /^([\s\S]*?)\bin\b/.exec(segment);
+    if (target) for (const name of target[1].match(/[A-Za-z_]\w*/g) ?? []) tally.declared.add(name);
+  }
+  for (const match of masked.matchAll(/\bdef[ \t]+[A-Za-z_]\w*[ \t]*\(/g)) {
+    markParameters(masked, pairs, (match.index ?? 0) + match[0].length - 1, "python", tally);
+  }
+  for (const match of masked.matchAll(/\blambda\b([^:\r\n]{0,200}):/g)) {
+    for (const part of match[1].split(",")) {
+      const name = parameterName(part, "python");
+      if (name) tally.declared.add(name);
+    }
+  }
+  for (const match of masked.matchAll(/\b(?:as|global|nonlocal)[ \t]+([A-Za-z_]\w*)/g)) tally.declared.add(match[1]);
+
+  // Module-level `NAME = value`, the value running on through open brackets.
+  for (const match of masked.matchAll(/^([A-Za-z_]\w*)[ \t]*=(?!=)/gm)) {
+    const at = match.index ?? 0;
+    if (depth[at] !== 0) continue;
+    const from = at + match[0].length;
+    let to = from;
+    while (to < masked.length && !isLineBreak(masked[to])) {
+      const close = isOpener(masked[to]) ? pairs[to] : -1;
+      to = close > to ? close + 1 : to + 1;
+    }
+    const constant = valueOf(source, masked, from, to);
+    if (constant) addConstant(constants.values, constants.unfollowed, match[1], constant);
+  }
+  for (const name of constants.values.keys()) {
+    if (tally.declared.has(name) || (tally.writes.get(name) ?? 0) > 1) constants.unfollowed.add(name);
+  }
+  return constants;
+}
+
+/** `from machine import Pin as P`, `import machine as m`: alias → the name it stands for. */
+function pythonAliases(masked: string): Map<string, string> {
+  const aliases = new Map<string, string>();
+  const add = (original: string, alias: string) => {
+    const name = original.split(".").pop() ?? original;
+    if (alias !== name && aliases.size < 64) aliases.set(alias, name);
+  };
+  for (const match of masked.matchAll(/^[ \t]*from[ \t]+[\w.]+[ \t]+import[ \t]+([^\r\n]+)/gm)) {
+    for (const part of match[1].replace(/[()]/g, "").split(",")) {
+      const alias = /^\s*([\w.]+)\s+as\s+([A-Za-z_]\w*)\s*$/.exec(part);
+      if (alias) add(alias[1], alias[2]);
+    }
+  }
+  for (const match of masked.matchAll(/^[ \t]*import[ \t]+([^\r\n]+)/gm)) {
+    for (const part of match[1].split(",")) {
+      const alias = /^\s*([\w.]+)\s+as\s+([A-Za-z_]\w*)\s*$/.exec(part);
+      if (alias) add(alias[1], alias[2]);
+    }
+  }
+  return aliases;
+}
+
+function unalias(text: string, aliases: ReadonlyMap<string, string>): string {
+  if (!aliases.size) return text;
+  const head = /^[A-Za-z_]\w*/.exec(text)?.[0];
+  const original = head ? aliases.get(head) : undefined;
+  return head && original ? original + text.slice(head.length) : text;
 }
 
 // ---------------------------------------------------------------------------
@@ -297,32 +836,85 @@ function collectConstants(source: string, masked: string, family: Family): Map<s
 
 type Value =
   | { kind: "spec"; spec: PinSpec; via?: string; physical?: boolean }
-  | { kind: "list"; items: Value[] }
-  | { kind: "unfollowed" };
+  | { kind: "list"; items: Value[]; size: number }
+  /** `cycle`: a constant that refers back to itself, which spoils any list holding it. */
+  | { kind: "unfollowed"; cycle?: boolean };
 
+const unfollowedValue: Value = { kind: "unfollowed" };
+const cycleValue: Value = { kind: "unfollowed", cycle: true };
 const quoted = /^(?:[rbuRBUfF]{0,2})(["'])([\s\S]*)\1$/;
 const onboardLedNames = new Set(["LED_BUILTIN", "PICO_DEFAULT_LED_PIN", "BUILTIN_LED"]);
 // Names a pin can go by on its own. A lower-case identifier is a variable.
 const pinNamePattern = /^(?:A\d{1,2}|D\d{1,3}|P[A-K]\d{1,2}|GP\d{1,2}|GPIO\d{1,2}|IO\d{1,2}|P\d_\d{1,2}|PIN_[A-Z0-9_]+)$/;
 
 type Context = {
-  source: string;
-  masked: string;
   dialect: Dialect;
-  constants: Map<string, Constant>;
-  rpiBoardNumbering: boolean;
+  family: Family;
+  constants: Constants;
+  aliases: ReadonlyMap<string, string>;
+  /** Values already worked out for a definition, by definition and options. */
+  memo: Map<Constant, Map<string, Value | "visiting">>;
 };
 
-function stripWrapping(text: string): string {
+/** Where the value is read (for `#define` order) and whether bare numbers are header positions. */
+type ReadAt = { at: number; physical: boolean };
+
+/** Parses an integer literal: C hex/binary/octal/decimal with suffixes; Python hex/octal/binary/decimal. */
+function parseNumber(text: string, family: Family): number | null {
+  if (family === "python") {
+    const literal = /^(?:0[xX][0-9a-fA-F]+|0[oO][0-7]+|0[bB][01]+|0+|[1-9]\d*)$/.exec(text);
+    if (!literal) return null;
+    return /^0+$/.test(text) ? 0 : Number(text);
+  }
+  const literal = /^(0[xX][0-9a-fA-F]+|0[bB][01]+|0[0-7]*|[1-9]\d*)[uUlL]*$/.exec(text);
+  if (!literal) return null;
+  const digits = literal[1];
+  if (/^0[0-7]+$/.test(digits)) return parseInt(digits, 8);
+  return Number(digits);
+}
+
+/** True when the text has a comma outside any brackets. */
+function hasTopLevelComma(text: string): boolean {
+  let depth = 0;
+  for (let i = 0; i < text.length; i += 1) {
+    const c = text[i];
+    if (isOpener(c)) depth += 1;
+    else if (isCloser(c)) depth -= 1;
+    else if (c === "," && depth === 0) return true;
+  }
+  return false;
+}
+
+function splitTopLevel(text: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let from = 0;
+  for (let i = 0; i < text.length; i += 1) {
+    const c = text[i];
+    if (isOpener(c)) depth += 1;
+    else if (isCloser(c)) depth -= 1;
+    else if (c === "," && depth === 0) {
+      parts.push(text.slice(from, i));
+      from = i + 1;
+    }
+  }
+  parts.push(text.slice(from));
+  return parts.map((part) => part.trim()).filter(Boolean);
+}
+
+function stripWrapping(text: string, family: Family): string {
   let value = text.trim();
   for (;;) {
     const before = value;
     value = value
-      .replace(/^\((?:const\s+)?[A-Za-z_][\w\s]*\*?\)\s*/, "") // C cast
+      .replace(/^\((?:const\s+)?[A-Za-z_][\w\s]*\*?\)\s*(?=\S)/, "") // C cast
       .replace(/^static_cast<[^>]+>\(([\s\S]*)\)$/, "$1")
       .replace(/^(?:uint8_t|int|gpio_num_t|pin_size_t)\(([\s\S]*)\)$/, "$1")
       .trim();
-    if (/^\([\s\S]*\)$/.test(value) && closingBalanced(value)) value = value.slice(1, -1).trim();
+    // MicroPython `const(15)`.
+    if (family === "python") value = value.replace(/^(?:micropython\.)?const\(([\s\S]*)\)$/, "$1").trim();
+    // Not a tuple (Python) or a comma expression (C).
+    if (/^\([\s\S]*\)$/.test(value) && closingBalanced(value) && !hasTopLevelComma(value.slice(1, -1))) value = value.slice(1, -1).trim();
     if (value === before) return value;
   }
 }
@@ -339,80 +931,120 @@ function closingBalanced(value: string): boolean {
   return depth === 0;
 }
 
-function evaluate(text: string, ctx: Context, depth = 0, via?: string): Value {
-  const value = stripWrapping(text);
-  if (!value || depth > maxConstantDepth) return { kind: "unfollowed" };
+function withVia(value: Value, via: string | undefined): Value {
+  if (!via) return value;
+  if (value.kind === "spec") return value.via ? value : { ...value, via };
+  if (value.kind === "list") return { ...value, items: value.items.map((item) => withVia(item, via)) };
+  return value;
+}
 
-  if (/^\[[\s\S]*\]$/.test(value) || /^\([\s\S]*,[\s\S]*\)$/.test(value)) {
-    const inner = value.slice(1, -1);
-    const items = inner.split(",").map((item) => item.trim()).filter(Boolean);
-    return { kind: "list", items: items.map((item) => evaluate(item, ctx, depth + 1, via)) };
+function sizeOf(value: Value): number {
+  return value.kind === "list" ? value.size : 1;
+}
+
+function list(texts: string[], ctx: Context, read: ReadAt, depth: number): Value {
+  if (texts.length > maxListItems) return unfollowedValue;
+  const items: Value[] = [];
+  let size = 0;
+  for (const text of texts) {
+    const item = evaluate(text, ctx, read, depth + 1);
+    if (item.kind === "unfollowed" && item.cycle) return cycleValue;
+    size += sizeOf(item);
+    if (size > maxListItems) return unfollowedValue;
+    items.push(item);
+  }
+  return { kind: "list", items, size };
+}
+
+function constantValue(name: string, ctx: Context, read: ReadAt, depth: number): Value | undefined {
+  const found = lookupConstant(ctx.constants, name, read.at);
+  if (found === undefined) return undefined;
+  if (found === "unfollowed") return unfollowedValue;
+  let memo = ctx.memo.get(found);
+  if (!memo) {
+    memo = new Map();
+    ctx.memo.set(found, memo);
+  }
+  const key = `${read.at}:${read.physical}`;
+  const known = memo.get(key);
+  // A constant that refers back to itself, directly or through others.
+  if (known === "visiting") return cycleValue;
+  if (known) return withVia(known, name);
+  memo.set(key, "visiting");
+  const value = evaluate(found.text, ctx, read, depth + 1);
+  memo.set(key, value);
+  return withVia(value, name);
+}
+
+function evaluate(text: string, ctx: Context, read: ReadAt, depth = 0): Value {
+  if (text.length > maxValueLength || depth > maxConstantDepth) return unfollowedValue;
+  let value = stripWrapping(text, ctx.family);
+  if (!value) return unfollowedValue;
+  if (ctx.family === "python") value = unalias(value, ctx.aliases);
+
+  if (ctx.family === "python") {
+    if (/^\[[\s\S]*\]$/.test(value) && closingBalanced(value.replace(/[[\]]/g, (c) => (c === "[" ? "(" : ")")))) {
+      return list(splitTopLevel(value.slice(1, -1)), ctx, read, depth);
+    }
+    if (/^\([\s\S]*\)$/.test(value) && closingBalanced(value) && hasTopLevelComma(value.slice(1, -1))) {
+      return list(splitTopLevel(value.slice(1, -1)), ctx, read, depth);
+    }
+    if (hasTopLevelComma(value)) return list(splitTopLevel(value), ctx, read, depth);
   }
 
-  const number = /^(0x[0-9a-f]+|\d+)[uUlL]*$/i.exec(value);
-  if (number) {
-    const parsed = Number(number[1]);
-    return { kind: "spec", spec: { kind: "number", value: parsed }, via, physical: ctx.rpiBoardNumbering || undefined };
+  const number = parseNumber(value, ctx.family);
+  if (number !== null) {
+    return { kind: "spec", spec: { kind: "number", value: number }, physical: read.physical || undefined };
   }
 
   const idfNum = /^GPIO_NUM_(\d+)$/.exec(value);
-  if (idfNum) return { kind: "spec", spec: { kind: "number", value: Number(idfNum[1]) }, via };
+  if (idfNum) return { kind: "spec", spec: { kind: "number", value: Number(idfNum[1]) } };
 
   const string = quoted.exec(value);
-  if (string) return stringSpec(string[2], ctx, via);
+  if (string) return stringSpec(string[2], ctx);
 
   // MicroPython Pin(...) / machine.Pin(...): the pin is its first argument.
   const pinCall = /^(?:machine\.)?Pin\s*\(([\s\S]*)\)$/.exec(value);
   if (pinCall && ctx.dialect === "micropython") {
-    const first = topLevelFirst(pinCall[1]);
-    return first ? evaluate(first, ctx, depth + 1, via) : { kind: "unfollowed" };
+    const first = splitTopLevel(pinCall[1])[0];
+    return first && !/^[A-Za-z_]\w*\s*=/.test(first) ? evaluate(first, ctx, read, depth + 1) : unfollowedValue;
   }
 
   // MicroPython named pins: Pin.cpu.A5 is PA5; Pin.board.X1 is the board's name.
   const cpu = /^(?:machine\.)?Pin\.cpu\.([A-K])(\d{1,2})$/.exec(value);
-  if (cpu) return { kind: "spec", spec: { kind: "name", value: `P${cpu[1]}${cpu[2]}` }, via };
+  if (cpu) return { kind: "spec", spec: { kind: "name", value: `P${cpu[1]}${cpu[2]}` } };
   const boardPin = /^(?:machine\.)?Pin\.board\.([A-Za-z_]\w*)$/.exec(value);
-  if (boardPin) return nameSpec(boardPin[1], via);
+  if (boardPin) return nameSpec(boardPin[1]);
 
   // CircuitPython board.D13 / board.LED / board.GP15.
   const cpBoard = /^board\.([A-Za-z_]\w*)$/.exec(value);
-  if (cpBoard) return nameSpec(cpBoard[1], via);
+  if (cpBoard) return nameSpec(cpBoard[1]);
 
   if (/^[A-Za-z_]\w*$/.test(value)) {
-    if (onboardLedNames.has(value)) return { kind: "spec", spec: { kind: "onboard-led" }, via };
-    const constant = ctx.constants.get(value);
-    if (constant) return evaluate(constant.text, ctx, depth + 1, via ?? value);
-    if (pinNamePattern.test(value)) return { kind: "spec", spec: { kind: "name", value }, via };
+    // The code's own definition wins over a toolchain name (`#define LED_BUILTIN 2`).
+    const constant = constantValue(value, ctx, read, depth);
+    if (constant) return constant;
+    if (onboardLedNames.has(value)) return { kind: "spec", spec: { kind: "onboard-led" } };
+    if (pinNamePattern.test(value)) return { kind: "spec", spec: { kind: "name", value } };
   }
-  return { kind: "unfollowed" };
+  return unfollowedValue;
 }
 
-function nameSpec(name: string, via?: string): Value {
-  if (name === "LED" || onboardLedNames.has(name)) return { kind: "spec", spec: { kind: "onboard-led" }, via };
-  return { kind: "spec", spec: { kind: "name", value: name }, via };
+function nameSpec(name: string): Value {
+  if (name === "LED" || onboardLedNames.has(name)) return { kind: "spec", spec: { kind: "onboard-led" } };
+  return { kind: "spec", spec: { kind: "name", value: name } };
 }
 
-function stringSpec(text: string, ctx: Context, via?: string): Value {
+function stringSpec(text: string, ctx: Context): Value {
   const value = text.trim();
-  if (!value || value.length > 24) return { kind: "unfollowed" };
+  if (!value || value.length > 24) return unfollowedValue;
   if (ctx.dialect === "rpi-python") {
     const board = /^(?:BOARD|J8:)(\d{1,2})$/i.exec(value);
-    if (board) return { kind: "spec", spec: { kind: "number", value: Number(board[1]) }, via, physical: true };
+    if (board) return { kind: "spec", spec: { kind: "number", value: Number(board[1]) }, physical: true };
     const bcm = /^(?:BCM|GPIO)(\d{1,2})$/i.exec(value);
-    if (bcm) return { kind: "spec", spec: { kind: "number", value: Number(bcm[1]) }, via };
+    if (bcm) return { kind: "spec", spec: { kind: "number", value: Number(bcm[1]) } };
   }
-  return nameSpec(value, via);
-}
-
-function topLevelFirst(text: string): string | null {
-  let depth = 0;
-  for (let i = 0; i < text.length; i += 1) {
-    const c = text[i];
-    if (c === "(" || c === "[" || c === "{") depth += 1;
-    else if (c === ")" || c === "]" || c === "}") depth -= 1;
-    else if (c === "," && depth === 0) return text.slice(0, i).trim();
-  }
-  return text.trim() || null;
+  return nameSpec(value);
 }
 
 // ---------------------------------------------------------------------------
@@ -443,7 +1075,15 @@ function busIdOf(call: Call): number | undefined {
   return id && /^\d$/.test(id.text.trim()) ? Number(id.text.trim()) : undefined;
 }
 
-type Pick = { arg: Arg; usage: Usage; analogChannel?: boolean };
+type Pick = {
+  arg: Arg;
+  usage: Usage;
+  analogChannel?: boolean;
+  /** `I2C(0)` with no pins: the port's default pin for `usage.signal`. */
+  busDefault?: { peripheral: BusPeripheral; id: number };
+  /** An RPi.GPIO call, numbered by `GPIO.setmode`. */
+  rpiGpio?: boolean;
+};
 
 function modeUsage(text: string | undefined): Usage {
   if (!text) return usage.gpio;
@@ -528,7 +1168,9 @@ function arduinoRules(call: Call, servos: ReadonlySet<string>): Pick[] {
       return receiver(call.callee, /servo/i) || servos.has(call.callee.split(/\.|->/)[0]) ? picks([a(0), usage.servo]) : [];
     case "begin":
       if (receiver(call.callee, /^Wire\d?$/) && call.args.length >= 2) {
-        return picks([a(0), bus("I2C", "SDA")], [a(1), bus("I2C", "SCL")]);
+        // ESP32 `Wire.begin(address, sda, scl, frequency)` starts an I2C target.
+        const first = call.args.length >= 4 ? 1 : 0;
+        return picks([a(first), bus("I2C", "SDA")], [a(first + 1), bus("I2C", "SCL")]);
       }
       if (receiver(call.callee, /^(?:SPI|hspi|vspi|spi)\d?$/i) && call.args.length >= 3) {
         return picks([a(0), bus("SPI", "SCK")], [a(1), bus("SPI", "MISO")], [a(2), bus("SPI", "MOSI")], [a(3), bus("SPI", "CS")]);
@@ -684,14 +1326,17 @@ function micropythonRules(call: Call): Pick[] {
   }
 }
 
-/** `I2C(0)` with no pins: the bus id stands for the port's default pins. */
+/**
+ * `I2C(0)`, `I2C(0, freq=400000)`, `UART(1, 9600)`: a bus opened by id with
+ * no pins named uses the port's default pins.
+ */
 function busDefaults(call: Call, peripheral: BusPeripheral, signals: string[]): Pick[] {
-  const id = positional(call, 0) ?? keyword(call, "id");
-  if (!id || !/^\d$/.test(id.text.trim()) || call.args.length !== 1) return [];
-  return signals.map((signal) => ({
-    arg: { ...id, text: `${peripheral}(${id.text.trim()}) ${signal}` },
-    usage: bus(peripheral, signal),
-  }));
+  const idArg = positional(call, 0) ?? keyword(call, "id");
+  if (!idArg || !/^\d$/.test(idArg.text.trim())) return [];
+  // Pins passed by position are not the defaults (and are not read here).
+  if (call.args.some((arg) => arg !== idArg && !arg.keyword && /\bPin\s*\(|^board\./.test(arg.text))) return [];
+  const id = Number(idArg.text.trim());
+  return signals.map((signal) => ({ arg: idArg, usage: bus(peripheral, signal), busDefault: { peripheral, id } }));
 }
 
 function circuitpythonRules(call: Call): Pick[] {
@@ -728,26 +1373,30 @@ const gpiozeroPwm = new Set(["PWMLED", "PWMOutputDevice"]);
 const gpiozeroServo = new Set(["Servo", "AngularServo"]);
 const gpiozeroInputs = new Set(["Button", "MotionSensor", "LineSensor", "LightSensor", "InputDevice", "DigitalInputDevice"]);
 
+function rpiGpioRules(call: Call): Pick[] {
+  const a = (i: number) => positional(call, i);
+  switch (tail(call.callee)) {
+    case "setup":
+      return picks([a(0), modeUsage(a(1)?.text)]);
+    case "output":
+      return picks([a(0), usage.output]);
+    case "input":
+    case "add_event_detect":
+    case "wait_for_edge":
+    case "event_detected":
+      return picks([a(0), usage.input]);
+    case "PWM":
+      return picks([a(0), usage.pwm]);
+    default:
+      return [];
+  }
+}
+
 function rpiRules(call: Call): Pick[] {
   const name = tail(call.callee);
   const a = (i: number) => positional(call, i);
-  if (/^GPIO\./.test(call.callee)) {
-    switch (name) {
-      case "setup":
-        return picks([a(0), modeUsage(a(1)?.text)]);
-      case "output":
-        return picks([a(0), usage.output]);
-      case "input":
-      case "add_event_detect":
-      case "wait_for_edge":
-      case "event_detected":
-        return picks([a(0), usage.input]);
-      case "PWM":
-        return picks([a(0), usage.pwm]);
-      default:
-        return [];
-    }
-  }
+  // Only RPi.GPIO follows GPIO.setmode; gpiozero and lgpio always take BCM numbers.
+  if (/^GPIO\./.test(call.callee)) return rpiGpioRules(call).map((pick) => ({ ...pick, rpiGpio: true }));
   if (/^lgpio\./.test(call.callee)) {
     switch (name) {
       case "gpio_claim_output":
@@ -800,9 +1449,13 @@ function rulesFor(dialect: Dialect, call: Call, servos: ReadonlySet<string>): Pi
 // ---------------------------------------------------------------------------
 // Scan
 
+/** Offsets where each line starts, for LF, CRLF and CR line endings. */
 function lineStarts(source: string): number[] {
   const starts = [0];
-  for (let i = 0; i < source.length; i += 1) if (source[i] === "\n") starts.push(i + 1);
+  for (let i = 0; i < source.length; i += 1) {
+    const c = source[i];
+    if (c === "\n" || (c === "\r" && source[i + 1] !== "\n")) starts.push(i + 1);
+  }
   return starts;
 }
 
@@ -823,84 +1476,108 @@ export function scanCode(input: string, chosen?: Dialect | null): ScanResult {
   const truncated = input.length > maxSourceLength;
   const source = truncated ? input.slice(0, maxSourceLength) : input;
   const dialect = chosen ?? detectDialect(source);
-  if (!dialect) return { dialect: null, refs: [], unfollowed: [], usesWifi: false, truncated };
+  if (!dialect) return { dialect: null, refs: [], unfollowed: [], unfollowedDropped: 0, usesWifi: false, truncated, refsCapped: false };
 
   const family = dialectFamily(dialect);
   const masked = maskSource(source, family);
-  const constants = collectConstants(source, masked, family);
+  const pairs = bracketPairs(masked);
+  const constants = family === "c" ? collectCConstants(source, masked, pairs) : collectPythonConstants(source, masked, pairs);
+  const aliases = family === "python" ? pythonAliases(masked) : new Map<string, string>();
   const rpiBoardNumbering = dialect === "rpi-python" && /GPIO\.setmode\s*\(\s*GPIO\.BOARD\s*\)/.test(masked);
-  const ctx: Context = { source, masked, dialect, constants, rpiBoardNumbering };
+  const ctx: Context = { dialect, family, constants, aliases, memo: new Map() };
   const starts = lineStarts(source);
 
   const refs: PinRef[] = [];
   const unfollowed: Unfollowed[] = [];
+  const unfollowedStarts = new Set<number>();
   const seen = new Set<string>();
+  let refsCapped = false;
 
-  const record = (arg: Arg, use: Usage, analogChannel = false) => {
-    if (refs.length >= maxRefs) return;
+  const record = (pick: Pick) => {
+    const { arg, usage: use } = pick;
+    // Once the cap has cost a value, nothing after it is recorded.
+    if (refsCapped) return;
+    // At the cap nothing more is recorded, but the pick is still read far
+    // enough to tell whether it would have added something.
+    const full = refs.length >= maxRefs;
     const key = `${arg.start}:${use.label}`;
     if (seen.has(key)) return;
     seen.add(key);
     const line = lineOf(starts, arg.start);
-    if (arg.text.includes(") ") && use.kind === "bus" && /^(I2C|SPI|UART)\(\d\) /.test(arg.text)) {
-      const [, peripheral, id] = /^(I2C|SPI|UART)\((\d)\)/.exec(arg.text) ?? [];
+    if (pick.busDefault && use.kind === "bus") {
+      if (full) {
+        refsCapped = true;
+        return;
+      }
+      const { peripheral, id } = pick.busDefault;
       refs.push({
-        spec: { kind: "bus-default", peripheral: peripheral as BusPeripheral, id: Number(id), signal: use.signal },
+        spec: { kind: "bus-default", peripheral, id, signal: use.signal },
         usage: use,
-        text: arg.text,
+        text: `${peripheral}(${id}) ${use.signal}`,
         start: arg.start,
         end: arg.end,
         line,
       });
       return;
     }
-    const value = evaluate(arg.text, ctx);
+    const text = arg.text.trim().slice(0, 48);
+    const value = evaluate(arg.text, ctx, { at: arg.start, physical: Boolean(pick.rpiGpio && rpiBoardNumbering) });
     const emit = (item: Value) => {
       if (item.kind === "list") {
         for (const entry of item.items) emit(entry);
         return;
       }
       if (item.kind === "unfollowed") {
-        if (!unfollowed.some((entry) => entry.start === arg.start)) {
-          unfollowed.push({ text: arg.text.trim().slice(0, 48), usage: use, line, start: arg.start, end: arg.end });
+        if (unfollowedStarts.has(arg.start)) return;
+        if (full) {
+          refsCapped = true;
+          return;
         }
+        unfollowedStarts.add(arg.start);
+        if (unfollowed.length < maxUnfollowed) unfollowed.push({ text, usage: use, line, start: arg.start, end: arg.end });
+        return;
+      }
+      if (refs.length >= maxRefs) {
+        refsCapped = true;
         return;
       }
       refs.push({
         spec: item.spec,
         usage: use,
-        text: arg.text.trim().slice(0, 48),
+        text,
         start: arg.start,
         end: arg.end,
         line,
         via: item.via,
         physical: item.physical,
-        analogChannel: analogChannel && item.spec.kind === "number" ? true : undefined,
+        analogChannel: pick.analogChannel && item.spec.kind === "number" ? true : undefined,
       });
     };
     emit(value);
   };
 
   const servos = new Set<string>();
-  for (const match of masked.matchAll(/\bServo[ \t]+([A-Za-z_]\w*(?:[ \t]*\[[^\]]*\])?(?:[ \t]*,[ \t]*[A-Za-z_]\w*)*)/g)) {
+  for (const match of masked.matchAll(/\bServo[ \t]+([A-Za-z_]\w*(?:[ \t]*\[[^\]\r\n]{0,32}\])?(?:[ \t]*,[ \t]*[A-Za-z_]\w*)*)/g)) {
     for (const name of match[1].split(",")) servos.add(name.replace(/\[.*$/, "").trim());
   }
-  for (const call of findCalls(source, masked, family)) {
-    for (const pick of rulesFor(dialect, call, servos)) record(pick.arg, pick.usage, pick.analogChannel);
+  for (const found of findCallsIn(source, masked, pairs, family)) {
+    const call = family === "python" ? { ...found, callee: unalias(found.callee, aliases) } : found;
+    for (const pick of rulesFor(dialect, call, servos)) record(pick);
   }
 
   if (dialect === "esp-idf") {
-    for (const match of masked.matchAll(/\.([a-z_]+)\s*=\s*([^,;}\n]+)/g)) {
+    for (const match of masked.matchAll(/\.([a-z_]+)[ \t]*=[ \t]*([^,;}\r\n]+)/g)) {
       const use = idfFields[match[1]];
       if (!use) continue;
-      const start = (match.index ?? 0) + match[0].lastIndexOf(match[2]);
-      record({ text: source.slice(start, start + match[2].length).trim(), start, end: start + match[2].trimEnd().length }, use);
+      const start = (match.index ?? 0) + match[0].length - match[2].length;
+      const text = source.slice(start, start + match[2].length).trimEnd();
+      record({ arg: { text, start, end: start + text.length }, usage: use });
     }
-    for (const match of masked.matchAll(/\.pin_bit_mask\s*=\s*([^;}\n]+)/g)) {
-      const base = (match.index ?? 0) + match[0].lastIndexOf(match[1]);
+    for (const match of masked.matchAll(/\.pin_bit_mask[ \t]*=[ \t]*([^;}\r\n]+)/g)) {
+      const base = (match.index ?? 0) + match[0].length - match[1].length;
       for (const bit of match[1].matchAll(/(?:1ULL\s*<<\s*|BIT64\s*\(\s*)([A-Za-z_0-9]+)/g)) {
-        const start = base + (bit.index ?? 0) + bit[0].lastIndexOf(bit[1]);
-        record({ text: bit[1], start, end: start + bit[1].length }, usage.gpio);
+        const start = base + (bit.index ?? 0) + bit[0].length - bit[1].length;
+        record({ arg: { text: bit[1], start, end: start + bit[1].length }, usage: usage.gpio });
       }
     }
   }
@@ -908,12 +1585,12 @@ export function scanCode(input: string, chosen?: Dialect | null): ScanResult {
   if (dialect === "circuitpython") {
     // `led.direction = digitalio.Direction.OUTPUT` sets the mode of a DigitalInOut.
     const directions = new Map<string, Usage>();
-    for (const match of masked.matchAll(/^[ \t]*([A-Za-z_]\w*)\.(?:direction\s*=\s*[\w.]*Direction\.(OUTPUT|INPUT)|switch_to_(output|input)\s*\()/gm)) {
+    for (const match of masked.matchAll(/^[ \t]*([A-Za-z_]\w*)\.(?:direction[ \t]*=[ \t]*[\w.]*Direction\.(OUTPUT|INPUT)|switch_to_(output|input)[ \t]*\()/gm)) {
       const which = (match[2] ?? match[3]).toUpperCase();
       directions.set(match[1], which === "OUTPUT" ? usage.output : usage.input);
     }
     for (const [name, use] of directions) {
-      const constant = constants.get(name);
+      const constant = constants.values.get(name);
       if (!constant || !/DigitalInOut\s*\(/.test(constant.text)) continue;
       const ref = refs.find((item) => item.start >= constant.start && item.start < constant.start + constant.text.length);
       if (ref && ref.usage.kind === "gpio") ref.usage = use;
@@ -924,9 +1601,15 @@ export function scanCode(input: string, chosen?: Dialect | null): ScanResult {
   const kept = refs.filter(
     (ref) => ref.usage.kind !== "gpio" || !refs.some((outer) => outer !== ref && outer.start <= ref.start && outer.end >= ref.end && outer.end - outer.start > ref.end - ref.start),
   );
-  refs.length = 0;
-  refs.push(...kept);
-  refs.sort((a, b) => a.start - b.start);
+  kept.sort((a, b) => a.start - b.start);
   unfollowed.sort((a, b) => a.start - b.start);
-  return { dialect, refs, unfollowed, usesWifi: wifiPattern.test(masked), truncated };
+  return {
+    dialect,
+    refs: kept,
+    unfollowed,
+    unfollowedDropped: unfollowedStarts.size - unfollowed.length,
+    usesWifi: wifiPattern.test(masked),
+    truncated,
+    refsCapped,
+  };
 }

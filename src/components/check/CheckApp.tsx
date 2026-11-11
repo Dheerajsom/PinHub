@@ -10,18 +10,11 @@ import { createBoardDetailLoader, type BoardDetailLoader } from "@/lib/board-det
 import { createBoardSearchIndex, matchBoardSearchEntry, tokenizeQuery } from "@/lib/board-search";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { boardFromSearch, boardParam } from "@/lib/plan-params";
+import { maxClaims } from "@/lib/planner-claims";
 import { checkCode, displayName, type CheckReport as Report } from "@/lib/code-check/check";
 import { codeExamples, type CodeExample } from "@/lib/code-check/examples";
 import { placeText, plannerHref, reportMarkdown } from "@/lib/code-check/report-text";
-import {
-  dialectFamily,
-  dialectLabels,
-  dialects,
-  maxSourceLength,
-  scanCode,
-  sourceRanges,
-  type Dialect,
-} from "@/lib/code-check/scan";
+import { dialectFamily, dialectLabels, dialects, maxRefs, maxSourceLength, scanCode, sourceRanges } from "@/lib/code-check/scan";
 import { isOfficialVerificationSource, verificationSourceFor } from "@/lib/source-trust";
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
@@ -29,6 +22,9 @@ import { ChoiceMenu, type ChoiceOption } from "@/components/catalog/SortMenu";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CodeEditor, type CodeEditorHandle, type EditorHint, type EditorMark } from "@/components/check/CodeEditor";
 import { CheckReport } from "@/components/check/CheckReport";
+import { readDraft, writeDraft, type DialectChoice } from "@/components/check/draft";
+import { diffEdit, shiftLines, shiftSpans } from "@/components/check/stale-marks";
+import { headline, plural } from "@/components/check/verdict";
 
 type Detail =
   | { status: "idle" }
@@ -36,37 +32,17 @@ type Detail =
   | { status: "ready"; board: Board }
   | { status: "error"; id: string };
 
-type DialectChoice = Dialect | "auto";
-
-const draftKey = "pinhub.check.draft";
 const maxHintsPerLine = 2;
+const draftDelayMs = 300;
 const noNet = new Set<string>();
+const limitText = maxSourceLength.toLocaleString("en-US");
+const refsText = maxRefs.toLocaleString("en-US");
 
-/** The draft survives a reload in this tab only; it is never sent anywhere. */
-function readDraft(): { code: string; dialect: DialectChoice } | null {
-  try {
-    const raw = window.sessionStorage.getItem(draftKey);
-    if (!raw || raw.length > maxSourceLength + 256) return null;
-    const parsed = JSON.parse(raw) as unknown;
-    if (!parsed || typeof parsed !== "object") return null;
-    const { code, dialect } = parsed as { code?: unknown; dialect?: unknown };
-    if (typeof code !== "string" || code.length > maxSourceLength) return null;
-    const choice = typeof dialect === "string" && (dialect === "auto" || (dialects as readonly string[]).includes(dialect))
-      ? (dialect as DialectChoice)
-      : "auto";
-    return { code, dialect: choice };
-  } catch {
-    return null;
-  }
-}
-
-function writeDraft(code: string, dialect: DialectChoice) {
-  try {
-    if (!code) window.sessionStorage.removeItem(draftKey);
-    else if (code.length <= maxSourceLength) window.sessionStorage.setItem(draftKey, JSON.stringify({ code, dialect }));
-  } catch {
-    // A refused write only loses the reload convenience.
-  }
+function countLines(text: string): number {
+  if (!text) return 0;
+  let count = 1;
+  for (let index = text.indexOf("\n"); index !== -1; index = text.indexOf("\n", index + 1)) count += 1;
+  return count;
 }
 
 export function CheckApp({
@@ -85,6 +61,12 @@ export function CheckApp({
   const [selectedPin, setSelectedPin] = useState<string | null>(null);
   const [hoverKey, setHoverKey] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  /** The last paste or edit ran past the code limit and its tail was dropped. */
+  const [cut, setCut] = useState(false);
+  /** A board id from the URL that this page cannot check. */
+  const [unsupported, setUnsupported] = useState<string | null>(null);
+  const copyTimer = useRef<number | undefined>(undefined);
+  const pendingDraft = useRef<{ code: string; dialect: DialectChoice } | null>(null);
   const editorRef = useRef<CodeEditorHandle>(null);
   const editorSectionRef = useRef<HTMLElement>(null);
   const sheetWrapRef = useRef<HTMLDivElement>(null);
@@ -97,6 +79,7 @@ export function CheckApp({
     (id: string | null) => {
       const mine = ++ticket.current;
       setSelectedPin(null);
+      setHoverKey(null);
       if (!id || !byId.has(id)) {
         setDetail({ status: "idle" });
         return;
@@ -121,7 +104,20 @@ export function CheckApp({
 
   // The page is static: the board and the draft are only known in the browser.
   useEffect(() => {
-    const sync = () => open(boardFromSearch(location.search));
+    const sync = () => {
+      const id = boardFromSearch(location.search);
+      if (id && !byId.has(id)) {
+        // A well-formed id this page cannot check: say so once and drop it from the URL.
+        setUnsupported(id);
+        const params = new URLSearchParams(location.search);
+        params.delete(boardParam);
+        const search = params.toString();
+        history.replaceState(history.state, "", `${location.pathname}${search ? `?${search}` : ""}${location.hash}`);
+        open(null);
+        return;
+      }
+      open(id);
+    };
     const frame = requestAnimationFrame(() => {
       if (!restored.current) {
         restored.current = true;
@@ -138,14 +134,47 @@ export function CheckApp({
       cancelAnimationFrame(frame);
       window.removeEventListener("popstate", sync);
     };
-  }, [open]);
+  }, [open, byId]);
 
-  // Written on every change: a debounced write is lost to a quick reload.
+  // The draft is written a beat after typing stops, and at once when the page
+  // is hidden or this view unmounts, so a quick reload still keeps it.
+  const flushDraft = useCallback(() => {
+    const draft = pendingDraft.current;
+    if (!draft) return;
+    pendingDraft.current = null;
+    writeDraft(draft.code, draft.dialect);
+  }, []);
+
   useEffect(() => {
-    if (restored.current) writeDraft(code, dialectChoice);
-  }, [code, dialectChoice]);
+    if (!restored.current) return;
+    pendingDraft.current = { code, dialect: dialectChoice };
+    const timer = window.setTimeout(flushDraft, draftDelayMs);
+    return () => window.clearTimeout(timer);
+  }, [code, dialectChoice, flushDraft]);
+
+  useEffect(() => {
+    window.addEventListener("pagehide", flushDraft);
+    return () => {
+      window.removeEventListener("pagehide", flushDraft);
+      flushDraft();
+    };
+  }, [flushDraft]);
+
+  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+
+  const onCodeChange = useCallback((value: string) => {
+    if (value.length > maxSourceLength) {
+      setCode(value.slice(0, maxSourceLength));
+      setCut(true);
+    } else {
+      setCode(value);
+      if (value.length < maxSourceLength) setCut(false);
+    }
+    setCopyState("idle");
+  }, []);
 
   function pickBoard(id: string) {
+    setUnsupported(null);
     history.pushState(null, "", `${location.pathname}?${boardParam}=${encodeURIComponent(id)}`);
     open(id);
   }
@@ -157,6 +186,7 @@ export function CheckApp({
 
   function loadExample(example: CodeExample) {
     setCode(example.code);
+    setCut(false);
     setDialectChoice("auto");
     setSelectedPin(null);
     setCopyState("idle");
@@ -164,25 +194,27 @@ export function CheckApp({
     editorRef.current?.revealLine(1);
   }
 
-  // Scanning follows typing a beat behind on very long input; marks are only
-  // drawn while the scan matches the text on screen.
+  // Scanning follows typing a beat behind on very long input. Until the scan
+  // of the newest text lands, the last scan's marks stay drawn, moved past
+  // the edit, so underlines and hints never blink out while typing.
   const deferredCode = useDeferredValue(code);
   const scan = useMemo(
     () => scanCode(deferredCode, dialectChoice === "auto" ? null : dialectChoice),
     [deferredCode, dialectChoice],
   );
-  const current = deferredCode === code;
   const board = detail.status === "ready" ? detail.board : null;
   const report: Report | null = useMemo(() => (board && scan.dialect ? checkCode(board, scan) : null), [board, scan]);
-  const ranges = useMemo(
-    () => (scan.dialect && current ? sourceRanges(deferredCode, dialectFamily(scan.dialect)) : []),
-    [scan.dialect, deferredCode, current],
+  /** Only the first `maxSourceLength` characters were checked. */
+  const truncated = cut || scan.truncated;
+  const scannedRanges = useMemo(
+    () => (scan.dialect ? sourceRanges(deferredCode, dialectFamily(scan.dialect)) : []),
+    [scan.dialect, deferredCode],
   );
 
-  const { marks, hints } = useMemo(() => {
+  const scanned = useMemo(() => {
     const marks: EditorMark[] = [];
     const hints = new Map<number, EditorHint[]>();
-    if (!current || !scan.dialect) return { marks, hints };
+    if (!scan.dialect) return { marks, hints };
     const pinByRef = new Map<number, Report["pins"][number]>();
     for (const pin of report?.pins ?? []) for (const ref of pin.refs) pinByRef.set(ref.start, pin);
     const missingStarts = new Set(report?.missing.map((item) => item.ref.start) ?? []);
@@ -197,7 +229,7 @@ export function CheckApp({
       const pin = pinByRef.get(ref.start);
       const status: EditorMark["status"] = pin ? pin.status : report && missingStarts.has(ref.start) ? "missing" : "clear";
       const span = `${ref.start}:${ref.end}`;
-      if (!seenSpans.has(span) && ref.end > ref.start && ref.end <= code.length) {
+      if (!seenSpans.has(span) && ref.end > ref.start && ref.end <= deferredCode.length) {
         seenSpans.add(span);
         marks.push({ start: ref.start, end: ref.end, status, pinId: pin?.id ?? null });
       }
@@ -210,7 +242,7 @@ export function CheckApp({
           pinId: pin.id,
         });
       } else if (missingStarts.has(ref.start)) {
-        addHint(ref.line, `missing:${ref.text}`, { text: `${ref.text} · not on this board`, status: "missing", pinId: null });
+        addHint(ref.line, `missing:${ref.text}`, { text: `${ref.text} · not matched to the record`, status: "missing", pinId: null });
       }
     }
     for (const [line, forLine] of lineHints) {
@@ -223,7 +255,12 @@ export function CheckApp({
     }
     marks.sort((a, b) => a.start - b.start);
     return { marks, hints };
-  }, [current, scan, report, code.length]);
+  }, [scan, report, deferredCode.length]);
+
+  const edit = useMemo(() => diffEdit(deferredCode, code), [deferredCode, code]);
+  const marks = useMemo(() => shiftSpans(scanned.marks, edit), [scanned.marks, edit]);
+  const ranges = useMemo(() => shiftSpans(scannedRanges, edit), [scannedRanges, edit]);
+  const hints = useMemo(() => shiftLines(scanned.hints, edit), [scanned.hints, edit]);
 
   const selected = report?.pins.find((pin) => pin.id === selectedPin) ?? null;
 
@@ -231,7 +268,7 @@ export function CheckApp({
     (id: string, reveal = true) => {
       setSelectedPin(id);
       const pin = report?.pins.find((item) => item.id === id);
-      if (reveal && pin) editorRef.current?.revealLine(pin.refs[0].line);
+      if (reveal && pin) editorRef.current?.revealOffset(pin.refs[0].start);
     },
     [report],
   );
@@ -279,13 +316,14 @@ export function CheckApp({
 
   async function copyReport() {
     if (!board || !report) return;
+    window.clearTimeout(copyTimer.current);
     try {
-      await navigator.clipboard.writeText(reportMarkdown(board, report, scan.dialect));
+      await navigator.clipboard.writeText(reportMarkdown(board, report, scan.dialect, { truncated }));
       setCopyState("copied");
     } catch {
       setCopyState("failed");
     }
-    window.setTimeout(() => setCopyState("idle"), 2400);
+    copyTimer.current = window.setTimeout(() => setCopyState("idle"), 2400);
   }
 
   const dialectOptions: ChoiceOption<DialectChoice>[] = [
@@ -294,21 +332,42 @@ export function CheckApp({
   ];
 
   const source = board ? verificationSourceFor(board) : undefined;
-  const lineCount = code ? code.split("\n").length : 0;
+  const lineCount = useMemo(() => countLines(code), [code]);
+  const showReport = Boolean(
+    board && scan.dialect && code.trim() && report && (report.pins.length || report.missing.length || report.unfollowed.length),
+  );
+  // Planner links carry at most `maxClaims` pins; power and ground are never claimed.
+  const plannerPins = useMemo(
+    () =>
+      new Set(
+        report?.pins.filter((pin) => !["power", "ground"].includes(pin.pin.role)).flatMap((pin) => pin.places[0]?.key ?? []),
+      ).size,
+    [report],
+  );
+  // One persistent live region follows the deferred scan, not each keystroke.
+  const announcement =
+    !code.trim() || !scan.dialect || !board || !report
+      ? ""
+      : showReport
+        ? headline(report, { truncated }).text
+        : "No pin calls found";
 
   return (
     <div className="ph-check @container">
       <header className="mb-5 max-w-3xl">
         <h1 className="ph-check-title">Pin check</h1>
         <p className="mt-2 text-[15px] leading-7 text-zinc-300">
-          Paste a sketch or script and pick the board it runs on. PinHub finds every pin the code uses and checks
-          each one against that board&apos;s source-backed pin record.
+          Paste a sketch or script and pick the board it runs on. PinHub checks each pin reference it recognizes
+          against that board&apos;s source-backed pin record and lists the values it could not follow.
         </p>
         <p className="mt-2 inline-flex items-center gap-1.5 text-[12px] text-zinc-400">
           <Lock className="size-3.5" aria-hidden="true" />
           Checked in your browser. Your code is never uploaded.
         </p>
       </header>
+      <p className="sr-only" role="status">
+        {announcement}
+      </p>
 
       <div className="ph-check-grid">
         <section ref={editorSectionRef} aria-labelledby={labelId} className="ph-check-editor surface-panel scroll-mt-4" style={{ gridArea: "editor" }}>
@@ -324,6 +383,7 @@ export function CheckApp({
                 onChange={setDialectChoice}
                 label="Code language"
                 heading="Language"
+                align="end"
                 className="w-[11.5rem] max-[420px]:w-[9.5rem]"
               />
               {code ? (
@@ -331,9 +391,10 @@ export function CheckApp({
                   type="button"
                   className="ph-check-icon-button"
                   onClick={() => {
-                    setCode("");
+                    // Cleared through the browser's editing, so Ctrl+Z brings the code back.
+                    editorRef.current?.clear();
                     setSelectedPin(null);
-                    editorRef.current?.focus();
+                    setCopyState("idle");
                   }}
                   aria-label="Clear the code"
                   title="Clear the code"
@@ -346,10 +407,7 @@ export function CheckApp({
           <CodeEditor
             ref={editorRef}
             value={code}
-            onChange={(value) => {
-              setCode(value.slice(0, maxSourceLength));
-              setCopyState("idle");
-            }}
+            onChange={onCodeChange}
             marks={marks}
             ranges={ranges}
             hints={hints}
@@ -360,16 +418,36 @@ export function CheckApp({
             labelId={labelId}
             describedBy={helpId}
           />
+          <p role="status" className={truncated ? "ph-check-cut" : "sr-only"}>
+            {truncated ? `The pasted code was cut at ${limitText} characters. The rest was not checked.` : ""}
+          </p>
+          <p role="status" className={scan.refsCapped ? "ph-check-cut" : "sr-only"}>
+            {scan.refsCapped ? `Only the first ${refsText} pin references were checked. The rest of the code was not.` : ""}
+          </p>
           <p id={helpId} className="ph-check-foot">
-            <span>
-              {lineCount ? `${lineCount} ${lineCount === 1 ? "line" : "lines"}` : "Empty"}
-              {scan.truncated ? " · only the first 100,000 characters are checked" : ""}
-            </span>
-            <span className="max-sm:hidden">Tab indents. Press Esc, then Tab, to move on.</span>
+            <span>{lineCount ? plural(lineCount, "line") : "Empty"}</span>
+            <span className="max-sm:sr-only">Tab indents, Shift+Tab outdents. Press Esc, then Tab, to move on.</span>
           </p>
         </section>
 
-        <div style={{ gridArea: "board" }} className="min-w-0">
+        <div style={{ gridArea: "board" }} className="grid min-w-0 content-start gap-3">
+          {unsupported ? (
+            <div className="ph-check-notice surface-panel" role="status">
+              <p className="min-w-0 flex-1">
+                <code className="ph-check-code-inline">{unsupported}</code> can&apos;t be checked yet. Pin check covers
+                the {catalog.length} boards whose pin records name chip pins.
+              </p>
+              <button
+                type="button"
+                className="ph-check-icon-button"
+                onClick={() => setUnsupported(null)}
+                aria-label="Dismiss"
+                title="Dismiss"
+              >
+                <X className="size-4" aria-hidden="true" />
+              </button>
+            </div>
+          ) : null}
           <BoardSlot
             catalog={catalog}
             detail={detail}
@@ -390,14 +468,32 @@ export function CheckApp({
           ) : !board ? (
             detail.status === "loading" ? (
               <EmptyState title="Loading the pin record…" />
+            ) : detail.status === "error" ? (
+              <EmptyState
+                title="The pin record didn't load"
+                action={
+                  <button type="button" className="ph-check-action mt-3" onClick={() => open(detail.id)}>
+                    Retry
+                  </button>
+                }
+              >
+                Check your connection, then retry. Nothing is checked until the record loads.
+              </EmptyState>
             ) : (
               <EmptyState title={`${scan.refs.length ? plural(scan.refs.length, "pin reference") : "No pin calls yet"} in ${dialectLabels[scan.dialect]} code`}>
                 Pick the board this code runs on to check each pin.
               </EmptyState>
             )
-          ) : report && (report.pins.length || report.missing.length || report.unfollowed.length) ? (
+          ) : showReport && report ? (
             <>
-              <CheckReport report={report} dialect={dialectLabels[scan.dialect]} selectedPin={selectedPin} onSelect={(id) => selectPin(id)} onLine={showLine} />
+              <CheckReport
+                report={report}
+                dialect={dialectLabels[scan.dialect]}
+                selectedPin={selectedPin}
+                onSelect={(id) => selectPin(id)}
+                onLine={showLine}
+                truncated={truncated}
+              />
               <div className="mt-3 flex flex-wrap gap-2">
                 <button type="button" className="ph-check-action" onClick={copyReport}>
                   <ClipboardCopy className="size-4" aria-hidden="true" />
@@ -408,6 +504,9 @@ export function CheckApp({
                     <Route className="size-4" aria-hidden="true" />
                     Open in planner
                   </Link>
+                ) : null}
+                {plannerPins > maxClaims ? (
+                  <span className="ph-check-fine self-center">The planner opens with the first {maxClaims} pins.</span>
                 ) : null}
                 <span className="sr-only" role="status" aria-live="polite">
                   {copyState === "copied" ? "Report copied" : copyState === "failed" ? "The report could not be copied" : ""}
@@ -434,7 +533,7 @@ export function CheckApp({
 
         {board && geometry && report?.pins.length ? (
           <section aria-label={`${board.name} connector sheet`} className="ph-check-sheet surface-panel" style={{ gridArea: "sheet" }}>
-            <p className="ph-check-readout" aria-live="polite">
+            <p className="ph-check-readout">
               {liveAnchor
                 ? `${liveAnchor.group ? `${liveAnchor.group} ` : "Pin "}${liveAnchor.pin.position} · ${liveAnchor.pin.label}${
                     livePin ? ` · ${livePin.usages.map((use) => use.label).join(", ")}` : " · not used by this code"
@@ -476,24 +575,21 @@ export function CheckApp({
   );
 }
 
-function plural(count: number, word: string): string {
-  return `${count} ${word}${count === 1 ? "" : "s"}`;
-}
-
-function EmptyState({ title, children }: { title: string; children?: React.ReactNode }) {
+function EmptyState({ title, children, action }: { title: string; children?: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <section className="ph-check-empty surface-panel" aria-live="polite">
+    <section className="ph-check-empty surface-panel">
       <h2 className="text-[15px] font-semibold text-white">{title}</h2>
       {children ? <p className="mt-1.5 text-[13px] leading-6 text-zinc-400">{children}</p> : null}
+      {action}
     </section>
   );
 }
 
 const exampleTeasers: Record<string, string> = {
-  "esp32-weather": "A relay on an input-only pin, and an analog read that Wi-Fi blocks",
+  "esp32-weather": "A relay on an input-only pin, and an ADC2 read with Wi-Fi on",
   "pico-plants": "A tank sensor on a pin with no analog input",
   "pi-doorbell": "A buzzer on the HAT EEPROM pin",
-  "uno-dimmer": "A dimmer on a pin without PWM",
+  "uno-dimmer": "A dimmer on a pin with no PWM recorded",
 };
 
 function Examples({ onPick }: { onPick: (example: CodeExample) => void }) {
@@ -533,6 +629,10 @@ function BoardSlot({
   onRetry: () => void;
 }) {
   const listId = useId();
+  const changeRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  /** Where focus goes once the slot swaps views, so it never falls to the page. */
+  const focusNext = useRef<"change" | "search" | null>(null);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const index = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
@@ -552,6 +652,21 @@ function BoardSlot({
   const id = detail.status === "idle" ? null : detail.status === "ready" ? detail.board.id : detail.id;
   const summary = id ? byId.get(id) : undefined;
 
+  useEffect(() => {
+    if (focusNext.current === "change" && changeRef.current) {
+      focusNext.current = null;
+      changeRef.current.focus();
+    } else if (focusNext.current === "search" && inputRef.current) {
+      focusNext.current = null;
+      inputRef.current.focus();
+    }
+  });
+
+  const pick = (boardId: string) => {
+    focusNext.current = "change";
+    onPick(boardId);
+  };
+
   if (summary) {
     return (
       <div className="ph-check-board surface-panel">
@@ -569,7 +684,14 @@ function BoardSlot({
               </p>
             ) : null}
           </div>
-          <button type="button" onClick={onChange} className="ph-check-ghost" aria-label={`Change board, ${summary.name}`}>
+          <button
+            ref={changeRef}
+            type="button"
+            onClick={() => {
+              focusNext.current = "search";
+              onChange();
+            }}
+            className="ph-check-ghost" aria-label={`Change board, ${summary.name}`}>
             Change
           </button>
         </div>
@@ -585,6 +707,7 @@ function BoardSlot({
       <div className="relative mt-2">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
         <input
+          ref={inputRef}
           id={`${listId}-input`}
           role="combobox"
           aria-expanded={results.length > 0}
@@ -608,7 +731,7 @@ function BoardSlot({
               setActive((value) => (Math.min(value, results.length - 1) + delta + results.length) % results.length);
             } else if (event.key === "Enter" && current) {
               event.preventDefault();
-              onPick(current.id);
+              pick(current.id);
             } else if (event.key === "Escape" && query) {
               event.preventDefault();
               setQuery("");
@@ -625,7 +748,7 @@ function BoardSlot({
             role="option"
             aria-selected={item === current}
             onMouseDown={(event) => event.preventDefault()}
-            onClick={() => onPick(item.id)}
+            onClick={() => pick(item.id)}
             className="ph-plan-option flex min-h-11 cursor-pointer items-center gap-3 rounded px-2 py-1.5"
           >
             <VendorLogo vendor={item.vendor} />

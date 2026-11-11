@@ -44,6 +44,13 @@ type ChoiceMenuProps<T extends string> = {
   heading: string;
   icon?: LucideIcon;
   className?: string;
+  /**
+   * Which trigger edge the list lines up with. "auto" (the default) starts at
+   * the left edge and flips to the right one when the list would run past the
+   * viewport; "end" always lines up with the right edge, for a trigger that
+   * sits flush right in a narrower container.
+   */
+  align?: "auto" | "end";
 };
 
 /**
@@ -61,6 +68,7 @@ export function ChoiceMenu<T extends string>({
   heading,
   icon: Icon,
   className,
+  align = "auto",
 }: ChoiceMenuProps<T>) {
   const id = useId();
   const listId = `${id}-list`;
@@ -85,9 +93,9 @@ export function ChoiceMenu<T extends string>({
     if (!trigger) return;
     const rect = trigger.getBoundingClientRect();
     const menuWidth = Math.max(rect.width, 224);
-    setAlignEnd(rect.left + menuWidth > window.innerWidth - 8);
+    setAlignEnd(align === "end" || rect.left + menuWidth > window.innerWidth - 8);
     setMaxHeight(Math.max(152, window.innerHeight - rect.bottom - 14));
-  }, [open]);
+  }, [open, align]);
 
   useEffect(() => {
     if (!open) return;

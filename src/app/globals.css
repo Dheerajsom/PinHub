@@ -1965,6 +1965,8 @@ button {
   --check-clear-ink: #6ee7b7;
   --check-clear-wash: rgba(52, 211, 153, 0.1);
   --check-missing: #a1a1aa;
+  --check-on-fix: #1a0d05;
+  --check-on-clear: #04130d;
   --check-code-bg: #0b0d12;
   --check-input: #0a0c11;
   --check-line: 22px;
@@ -1987,6 +1989,8 @@ button {
   --check-clear-ink: #047857;
   --check-clear-wash: rgba(4, 120, 87, 0.09);
   --check-missing: #52525b;
+  --check-on-fix: #ffffff;
+  --check-on-clear: #ffffff;
   --check-code-bg: #fbfcfd;
   --check-input: #ffffff;
 }
@@ -2009,17 +2013,19 @@ button {
 }
 
 /* Editor */
-.ph-check-editor { min-width: 0; overflow: hidden; border-radius: 14px; }
+/* The code area clips its layers; the toolbar does not, so the language menu can open past the panel. */
+.ph-check-editor { min-width: 0; border-radius: 14px; }
 .ph-check-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 8px 8px 16px; border-bottom: 1px solid var(--panel-border); }
 .ph-check-icon-button {
   display: inline-grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0;
   border: 1px solid var(--panel-border); border-radius: 8px; color: var(--check-muted); transition: color 150ms, border-color 150ms;
 }
 .ph-check-icon-button:hover { color: var(--check-text); border-color: var(--check-accent); }
-.ph-check-code { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); height: clamp(320px, 62vh, 560px); background: var(--check-code-bg); }
+.ph-check-code { position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr); height: clamp(320px, 62vh, 560px); background: var(--check-code-bg); }
 .ph-check-gutter { overflow: hidden; border-right: 1px solid var(--panel-border); user-select: none; }
 .ph-check-gutter-inner { padding: 14px 0; will-change: transform; }
 .ph-check-gutter-line {
+  height: var(--check-line);
   display: block; min-width: 3.25rem; padding: 0 12px 0 10px; text-align: right;
   font-family: var(--font-mono), monospace; font-size: 11px; line-height: var(--check-line); color: var(--check-faint);
   font-variant-numeric: tabular-nums;
@@ -2033,6 +2039,8 @@ button {
   font-variant-ligatures: none; tab-size: 4; white-space: pre; overflow-wrap: normal; word-break: normal; letter-spacing: 0;
 }
 .ph-check-mirror { overflow: hidden; color: var(--check-text); pointer-events: none; }
+/* Every mirror line is exactly one textarea line tall, whatever its hints, so mirror, gutter and textarea never drift. */
+.ph-check-line { display: block; height: var(--check-line); }
 .ph-check-input {
   width: 100%; height: 100%; resize: none; overflow: auto; background: transparent; outline: none;
   color: transparent; -webkit-text-fill-color: transparent; caret-color: var(--check-accent);
@@ -2050,16 +2058,26 @@ button {
 .ph-check-mark[data-status="clear"] { box-shadow: inset 0 -2px var(--check-clear); }
 .ph-check-mark[data-status="missing"] { text-decoration: underline wavy var(--check-missing); text-decoration-thickness: 1px; text-underline-offset: 4px; }
 .ph-check-mark[data-selected] { background: var(--check-accent-wash); box-shadow: inset 0 -2px var(--check-accent); }
-.ph-check-hints { margin-left: 2.5ch; }
+.ph-check-hints { margin-left: 2.5ch; vertical-align: top; line-height: inherit; }
+/* Hints carry pin names an engineer transcribes, so they use the mono face; top-aligned so they never grow the line. */
 .ph-check-hint {
-  margin-right: 6px; padding: 2px 7px 2px 5px; border-radius: 5px; border: 1px solid var(--panel-border);
-  font-family: var(--font-sans); font-size: 11px; font-weight: 500; color: var(--check-muted); background: var(--panel);
+  display: inline-block; vertical-align: top; margin-top: 3px; margin-right: 6px; padding: 0 7px 0 5px;
+  height: calc(var(--check-line) - 6px); line-height: calc(var(--check-line) - 8px);
+  border-radius: 5px; border: 1px solid var(--panel-border);
+  font-family: var(--font-mono), monospace; font-size: 11px; font-weight: 500; color: var(--check-muted); background: var(--panel);
 }
 .ph-check-hint[data-status="fix"] { color: var(--check-fix-ink); border-color: var(--check-fix-rule); background: var(--check-fix-wash); }
 .ph-check-hint[data-status="check"] { color: var(--check-check); border-color: var(--check-check-rule); }
 .ph-check-hint[data-status="clear"] { color: var(--check-clear-ink); }
 .ph-check-hint[data-selected] { border-color: var(--check-accent); }
-.ph-check-hint-glyph { display: inline-block; width: 1.4ch; margin-right: 3px; text-align: center; font-weight: 700; }
+.ph-check-hint-glyph { display: inline-block; width: 1.4ch; margin-right: 4px; text-align: center; font-weight: 700; }
+.ph-check-hint[data-status="fix"] .ph-check-hint-glyph { font-weight: 800; }
+.ph-check-cut {
+  padding: 8px 16px; border-top: 1px solid var(--check-check-rule); background: var(--check-check-wash);
+  font-size: 12px; line-height: 1.5; color: var(--check-text);
+}
+.ph-check-cut::before { content: "!"; display: inline-grid; place-items: center; width: 16px; height: 16px; margin-right: 8px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--check-check); color: var(--check-check); font-size: 11px; font-weight: 700; vertical-align: -3px; }
+.ph-check-notice { display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.55; color: var(--check-text); }
 .ph-check-foot {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; padding: 8px 16px;
   border-top: 1px solid var(--panel-border); font-size: 11px; color: var(--check-faint);
@@ -2088,10 +2106,16 @@ button {
 .ph-check-summary[data-tone="clear"] .ph-check-headline { color: var(--check-clear-ink); }
 .ph-check-tally { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 12px; color: var(--check-muted); font-variant-numeric: tabular-nums; }
 .ph-check-tally span { display: inline-flex; align-items: center; gap: 6px; }
-.ph-check-tally span::before { content: ""; width: 8px; height: 8px; border-radius: 999px; }
-.ph-check-tally [data-status="fix"]::before { background: var(--check-fix); }
-.ph-check-tally [data-status="check"]::before { box-shadow: inset 0 0 0 2px var(--check-check); }
-.ph-check-tally [data-status="clear"]::before { background: var(--check-clear); }
+/* Status shapes, the same everywhere: fix = filled square with a cross, check = ring with "!", clear = check mark, not on the board = "?". */
+.ph-check-tally span::before {
+  display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 999px;
+  font-family: var(--font-mono), monospace; font-size: 9px; font-weight: 800; line-height: 1;
+}
+.ph-check-tally [data-status="fix"]::before { content: "✕"; border-radius: 3px; background: var(--check-fix); color: var(--check-on-fix); }
+.ph-check-tally [data-status="check"]::before { content: "!"; box-shadow: inset 0 0 0 1.5px var(--check-check); color: var(--check-check); }
+.ph-check-tally [data-status="clear"]::before { content: "✓"; color: var(--check-clear-ink); font-size: 11px; }
+.ph-check-tally [data-status="missing"]::before { content: "?"; box-shadow: inset 0 0 0 1px var(--check-missing); color: var(--check-missing); }
+.ph-check-tally [data-status="unfollowed"]::before { content: "?"; box-shadow: inset 0 0 0 1px var(--check-missing); color: var(--check-missing); border-radius: 3px; }
 /* A header of the code's pins: pads on a rail, in report order. */
 .ph-check-strip {
   display: flex; flex-wrap: wrap; margin: 8px -6px 0;
@@ -2099,15 +2123,16 @@ button {
 }
 .ph-check-strip-pad { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; }
 .ph-check-strip-pad span {
-  width: 18px; height: 18px; border-radius: 999px; background: var(--panel);
+  display: grid; place-items: center; width: 18px; height: 18px; border-radius: 999px; background: var(--panel);
+  font-family: var(--font-mono), monospace; font-size: 11px; font-weight: 800; line-height: 1;
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
-.ph-check-strip-pad[data-status="fix"] span { background: var(--check-fix); }
-.ph-check-strip-pad[data-status="check"] span { box-shadow: inset 0 0 0 3px var(--check-check); }
-.ph-check-strip-pad[data-status="clear"] span { background: var(--check-clear); opacity: 0.85; }
+.ph-check-strip-pad[data-status="fix"] span { border-radius: 4px; background: var(--check-fix); color: var(--check-on-fix); }
+.ph-check-strip-pad[data-status="check"] span { box-shadow: inset 0 0 0 2px var(--check-check); color: var(--check-check); }
+.ph-check-strip-pad[data-status="clear"] span { background: var(--check-clear); color: var(--check-on-clear); font-size: 12px; }
 .ph-check-strip-pad:hover span { transform: scale(1.12); }
 .ph-check-strip-pad[aria-pressed="true"] span { box-shadow: 0 0 0 3px var(--panel), 0 0 0 5px var(--check-accent); }
-.ph-check-strip-pad[data-status="check"][aria-pressed="true"] span { box-shadow: inset 0 0 0 3px var(--check-check), 0 0 0 3px var(--panel), 0 0 0 5px var(--check-accent); }
+.ph-check-strip-pad[data-status="check"][aria-pressed="true"] span { box-shadow: inset 0 0 0 2px var(--check-check), 0 0 0 3px var(--panel), 0 0 0 5px var(--check-accent); }
 
 /* Pin cards */
 .ph-check-card { min-width: 0; border-radius: 12px; border: 1px solid var(--panel-border); background: var(--panel); transition: border-color 160ms; }
@@ -2120,11 +2145,11 @@ button {
 }
 .ph-check-pin-name { font-family: var(--font-mono), monospace; font-size: 15px; font-weight: 600; color: var(--check-text); overflow-wrap: anywhere; }
 .ph-check-pin-sub { font-family: var(--font-mono), monospace; font-size: 11px; line-height: 1.5; color: var(--check-muted); overflow-wrap: anywhere; }
-.ph-check-status { flex-shrink: 0; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid transparent; }
-.ph-check-status[data-status="fix"] { background: var(--check-fix); color: #1a0d05; }
+.ph-check-status { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid transparent; }
+.ph-check-status-glyph { font-family: var(--font-mono), monospace; font-weight: 800; }
+.ph-check-status[data-status="fix"] { border-radius: 5px; background: var(--check-fix); color: var(--check-on-fix); }
 .ph-check-status[data-status="check"] { border-color: var(--check-check-rule); color: var(--check-check); }
 .ph-check-status[data-status="clear"] { color: var(--check-clear-ink); background: var(--check-clear-wash); }
-:root[data-theme="light"] .ph-check-status[data-status="fix"] { color: #ffffff; }
 .ph-check-card-body { padding: 0 14px 12px 58px; }
 @container (max-width: 26rem) { .ph-check-card-body { padding-left: 14px; } }
 .ph-check-use {
