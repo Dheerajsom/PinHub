@@ -19,8 +19,9 @@ links to official documentation, and most carry an interactive pin map.
 | `/pinout/[id]/opengraph-image`, `/boards/[id]/opengraph-image` | 1200×630 link-preview image of the board's pins, colored by role |
 | `/compare` | Discover boards with labeled filters, then compare up to four side by side; differences first; shareable URL |
 | `/planner` | Review board cautions, mark the pins you use, and fit I2C, SPI, UART, PWM, and ADC into what's left |
+| `/check` | Paste Arduino, MicroPython, CircuitPython, Raspberry Pi Python, Pico SDK, or ESP-IDF code, pick its board, and see each pin reference it recognises checked against the record (input-only, reserved, strapping, flash/PSRAM and USB pins, missing ADC/DAC/PWM/bus functions, the wrong MicroPython bus id), plus the values it could not follow. Runs in the browser; hands the pins to the planner |
 | `/link` | Wire two boards over UART or I2C, with board cautions and logic-level mismatch warnings |
-| `/prices` | Dated USD prices and stock for curated listings, refreshed hourly |
+| `/prices` | Dated USD prices and stock for 31 curated listings (Adafruit and the Arduino store), refreshed hourly |
 | `/collections` | Shareable board sets from your local library, with explicit four-board comparison subsets |
 
 Favorites and collections use local storage; if the browser refuses a write,

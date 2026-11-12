@@ -5,8 +5,12 @@ import { publishPrices } from "../scripts/lib/price-publish";
 
 vi.mock("@/lib/server/price-store", () => ({ priceStoreConfigured: () => true, readStoredPrices: vi.fn(), writeStoredPrices: vi.fn() }));
 afterEach(() => vi.resetAllMocks());
-const now = Date.parse("2026-09-10T02:00:00Z");
-const previous = boardPrices.map((price) => ({ ...price, checkedAt: "2026-09-10T01:00:00Z" }));
+// Clocks run just after the newest bundled check, so adding a freshly checked
+// listing to the catalog cannot make these observations look like the past.
+const latestCheck = Math.max(...boardPrices.map((price) => Date.parse(price.checkedAt)));
+const now = latestCheck + 2 * 60 * 60 * 1000;
+const previousTime = new Date(latestCheck + 60 * 60 * 1000).toISOString();
+const previous = boardPrices.map((price) => ({ ...price, checkedAt: previousTime }));
 const fetcher = (failed: string[] = []) => vi.fn(async (url: string | URL | Request) => {
   const price = boardPrices.find((item) => item.url === String(url))!;
   if (failed.includes(price.id)) return new Response("unavailable", { status: 404 });
@@ -16,9 +20,9 @@ const fetcher = (failed: string[] = []) => vi.fn(async (url: string | URL | Requ
 });
 
 it("publishes partial success while preserving the latest failed observation, and reports failure", async () => {
-  vi.mocked(readStoredPrices).mockResolvedValue({ snapshot: { schemaVersion: 1, generatedAt: "2026-09-10T01:00:00.000Z", prices: previous }, etag: "origin-version" });
+  vi.mocked(readStoredPrices).mockResolvedValue({ snapshot: { schemaVersion: 1, generatedAt: previousTime, prices: previous }, etag: "origin-version" });
   const result = await publishPrices({ fetcher: fetcher([previous[0].id]), now: () => now });
-  expect(result).toMatchObject({ published: true, failed: 1, checked: 10 });
+  expect(result).toMatchObject({ published: true, failed: 1, checked: boardPrices.length - 1 });
   const [snapshot, etag] = vi.mocked(writeStoredPrices).mock.calls[0];
   expect(etag).toBe("origin-version");
   expect(snapshot.prices[0]).toEqual(previous[0]);
@@ -49,7 +53,7 @@ it("recovers when the stored snapshot predates a curated listing correction", as
   // blob was reset by hand. The stale observation is now skipped and the
   // listing is re-observed under its curated identity.
   const stale = previous.map((price, index) => index === 0 ? { ...price, variant: `${price.variant} (old)`, amount: 1 } : price);
-  vi.mocked(readStoredPrices).mockResolvedValue({ snapshot: { schemaVersion: 1, generatedAt: "2026-09-10T01:00:00.000Z", prices: stale }, etag: "origin-version" });
+  vi.mocked(readStoredPrices).mockResolvedValue({ snapshot: { schemaVersion: 1, generatedAt: previousTime, prices: stale }, etag: "origin-version" });
   const result = await publishPrices({ fetcher: fetcher(), now: () => now });
   expect(result).toMatchObject({ published: true, failed: 0 });
   const [snapshot] = vi.mocked(writeStoredPrices).mock.calls[0];

@@ -8,7 +8,10 @@ import { DELETE, GET as getPrices, OPTIONS, PATCH, POST, PUT } from "@/app/api/p
 const GET = (search = "") => getPrices(new Request(`https://pinhub.test/api/prices${search}`));
 
 vi.mock("@vercel/blob", () => ({ get: vi.fn(), put: vi.fn() }));
-const time = "2026-09-10T02:00:00.000Z";
+// Just after the newest bundled check, so the bundle is never "in the future".
+const latestCheck = Math.max(...boardPrices.map((price) => Date.parse(price.checkedAt)));
+const time = new Date(latestCheck + 2 * 60 * 60 * 1000).toISOString();
+const nextDay = new Date(Date.parse(time) + 24 * 60 * 60 * 1000).toISOString();
 const snapshot = () => ({ schemaVersion: 1 as const, generatedAt: time, prices: boardPrices.map((price) => ({ ...price, checkedAt: time })) });
 const stored = () => ({ statusCode: 200, stream: new Response(JSON.stringify(snapshot())).body!, blob: { etag: "version-1" } });
 
@@ -18,8 +21,8 @@ afterEach(() => { vi.useRealTimers(); vi.unstubAllEnvs(); vi.restoreAllMocks(); 
 describe("shared price boundaries", () => {
   it("rejects malformed, future and oversized observations", async () => {
     expect(() => parsePriceSnapshot({ ...snapshot(), schemaVersion: 2 })).toThrow();
-    expect(() => parsePriceSnapshot({ ...snapshot(), generatedAt: "2026-09-11T02:00:00.000Z" })).toThrow();
-    expect(() => parsePriceSnapshot({ ...snapshot(), prices: [{ ...boardPrices[0], checkedAt: "2026-09-11T02:00:00Z" }] })).toThrow();
+    expect(() => parsePriceSnapshot({ ...snapshot(), generatedAt: nextDay })).toThrow();
+    expect(() => parsePriceSnapshot({ ...snapshot(), prices: [{ ...boardPrices[0], checkedAt: nextDay }] })).toThrow();
     expect(() => parsePriceSnapshot({ ...snapshot(), prices: Array(501).fill(boardPrices[0]) })).toThrow();
     await expect(readPriceSnapshot(new Response(" ".repeat(maxPriceSnapshotBytes + 1)).body!)).rejects.toThrow("size limit");
     await expect(writeStoredPrices({ ...snapshot(), prices: [{ ...boardPrices[0], variant: "x".repeat(2001) }] })).rejects.toThrow();

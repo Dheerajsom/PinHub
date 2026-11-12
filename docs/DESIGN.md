@@ -561,3 +561,62 @@ padding tightens below 400 px.
   the full row so its labels stay readable.
 - **Scope.** UART and I2C only. SPI is named as absent, with the reason, next
   to the bus switch.
+
+## 20. Pin check (2026-11-10)
+
+`/check`, in the header nav between Planner and Link. Code and a board in; each
+pin the code uses, checked against the record, out. Six sections now share the
+nav row: below 560 px the icons give way to the labels, and the padding
+tightens below 440 px and again below 380 px (measured to fit from 360 px).
+
+- **The editor is the signature.** A plain textarea over a mirrored `<pre>`:
+  the textarea keeps caret, selection, IME and undo with its text made
+  transparent; the mirror draws the same text with each pin reference
+  underlined in its status color and, after each line, a hint naming the pins
+  it touches (`IO34 · pin 5 · Input-only pin`). Hints are set in Geist Mono
+  (they carry pin names an engineer transcribes) and top-aligned inside a
+  mirror line that is exactly one `--check-line` tall, so hints can never
+  push the mirror or gutter out of step with the textarea. Lines never wrap,
+  so the layers share geometry and only scroll is synced. Comments are
+  dimmed and strings tinted (`.ph-check-tok-comment`, `.ph-check-tok-string`);
+  nothing else is syntax-colored. The gutter carries an orange rule on lines
+  with a finding. Touch screens get a 16 px code face so iOS does not zoom.
+  While a scan of new text is pending, the last scan's marks stay drawn,
+  moved past the edit, so underlines never blink out while typing.
+- **Editing keeps undo.** Tab indents every line the selection touches (two
+  spaces at a bare caret), Shift+Tab outdents, and Clear empties the editor;
+  all three go through the browser's own editing command, so Ctrl+Z undoes
+  them. Escape, then Tab, moves focus out of the editor; the footer says so.
+  A paste past 100,000 characters keeps the first 100,000, says so under the
+  editor, and the verdict cannot read as clear while that notice shows. Code
+  with more than 400 pin references gets the same treatment: a notice in the
+  same style ("Only the first 400 pin references were checked. The rest of
+  the code was not.") and a verdict that cannot read as clear.
+- **Status shapes.** Each status has its own shape and glyph, used alike in
+  the summary strip, the tally, the editor hints and the card badges, so none
+  is told by color alone (the light theme draws fix and check in the same
+  orange): fix = a filled orange square with `✕`, check = an orange ring with
+  `!`, clear = emerald with `✓`, not matched to the board's record = a grey
+  `?` (and a grey wavy underline in the editor). Cyan is interaction and selection: the
+  caret, focus ring, hover borders, links, line chips, and the selected pin's
+  marks, card, strip pad and sheet probe.
+- **The summary is a header.** A one-line verdict (`2 pins to fix`), the
+  tally, and the code's pins as pads on a rail in report order. The verdict
+  reads as all clear only when every reference was matched to a clear pin and
+  the whole input was checked; references not matched to the board's record
+  and values the scanner could not follow (including any past the 100 it
+  lists) count in the tally and keep the verdict at "check". Each pad is a
+  44 px button that selects its pin.
+- **Cards, worst first.** Pad in the pin's role colors with its position,
+  silkscreen name, SDK name, place on the connector, the code's uses, and
+  line links that scroll the editor without focusing it (no keyboard on a
+  phone). Findings quote the source note under a quiet rule.
+- **Nothing inferred.** Findings come from the pin's flags with the board's
+  notes, its role, and the presence of a recorded function. Values the
+  scanner cannot follow are listed for a hand check rather than guessed, and
+  how bare numbers were matched (Arduino numbers, GPIO numbers, or physical
+  pins) is stated under the report.
+- **Layout.** One column (board, editor, report, sheet) below a 60 rem
+  container; above it, the editor and sheet on the left and the board and
+  report on the right.
+

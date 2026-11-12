@@ -232,12 +232,12 @@ test.describe("planner page", () => {
     }
   });
 
-  test("five sections fit one row at 360 px without overflow", async ({ page }) => {
+  test("six sections fit one row at 360 px without overflow", async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
-    for (const path of ["/", "/planner", "/link", "/compare", "/prices", "/boards/raspberry-pi-pico"]) {
+    for (const path of ["/", "/planner", "/check", "/link", "/compare", "/prices", "/boards/raspberry-pi-pico"]) {
       await page.goto(path);
       const links = page.getByRole("navigation", { name: "PinHub sections" }).first().getByRole("link");
-      await expect(links).toHaveCount(5);
+      await expect(links).toHaveCount(6);
       const boxes = await links.evaluateAll((nodes) =>
         nodes.map((node) => {
           const box = node.getBoundingClientRect();

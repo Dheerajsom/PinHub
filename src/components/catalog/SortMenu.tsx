@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { clsx } from "clsx";
-import { ArrowDownUp, Check, ChevronDown } from "lucide-react";
+import { ArrowDownUp, Check, ChevronDown, type LucideIcon } from "lucide-react";
 import type { CatalogSort } from "@/lib/catalog-state";
 
 export type SortOption = { value: CatalogSort; label: string };
@@ -30,20 +30,46 @@ export function sortOptionsFor(
     .map((value) => ({ value, label: sortOptionLabels[value] }));
 }
 
-type SortMenuProps = {
-  value: CatalogSort;
-  options: SortOption[];
-  onChange: (value: CatalogSort) => void;
+export type ChoiceOption<T extends string> = { value: T; label: string };
+
+type ChoiceMenuProps<T extends string> = {
+  value: T;
+  options: readonly ChoiceOption<T>[];
+  onChange: (value: T) => void;
+  /** Accessible name for the trigger and the list. */
+  label: string;
+  /** Trigger text when `value` is not among `options`; defaults to the matching option. */
+  valueLabel?: string;
+  /** Small heading over the options. */
+  heading: string;
+  icon?: LucideIcon;
   className?: string;
+  /**
+   * Which trigger edge the list lines up with. "auto" (the default) starts at
+   * the left edge and flips to the right one when the list would run past the
+   * viewport; "end" always lines up with the right edge, for a trigger that
+   * sits flush right in a narrower container.
+   */
+  align?: "auto" | "end";
 };
 
 /**
- * A select-only combobox (WAI-ARIA APG pattern) for the board sort. It
- * replaces a native <select> whose OS-drawn list ignored the theme and whose
- * mouse focus ring floated a gap away from the control. Focus stays on the
- * trigger; the highlighted option is tracked with aria-activedescendant.
+ * A select-only combobox (WAI-ARIA APG pattern). It replaces a native
+ * <select> whose OS-drawn list ignored the theme and whose mouse focus ring
+ * floated a gap away from the control. Focus stays on the trigger; the
+ * highlighted option is tracked with aria-activedescendant.
  */
-export function SortMenu({ value, options, onChange, className }: SortMenuProps) {
+export function ChoiceMenu<T extends string>({
+  value,
+  options,
+  onChange,
+  label,
+  valueLabel,
+  heading,
+  icon: Icon,
+  className,
+  align = "auto",
+}: ChoiceMenuProps<T>) {
   const id = useId();
   const listId = `${id}-list`;
   const rootRef = useRef<HTMLDivElement>(null);
@@ -67,9 +93,9 @@ export function SortMenu({ value, options, onChange, className }: SortMenuProps)
     if (!trigger) return;
     const rect = trigger.getBoundingClientRect();
     const menuWidth = Math.max(rect.width, 224);
-    setAlignEnd(rect.left + menuWidth > window.innerWidth - 8);
+    setAlignEnd(align === "end" || rect.left + menuWidth > window.innerWidth - 8);
     setMaxHeight(Math.max(152, window.innerHeight - rect.bottom - 14));
-  }, [open]);
+  }, [open, align]);
 
   useEffect(() => {
     if (!open) return;
@@ -157,7 +183,7 @@ export function SortMenu({ value, options, onChange, className }: SortMenuProps)
         ref={triggerRef}
         type="button"
         role="combobox"
-        aria-label="Sort boards"
+        aria-label={label}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
@@ -171,8 +197,8 @@ export function SortMenu({ value, options, onChange, className }: SortMenuProps)
             : "border-white/10 text-zinc-300 hover:border-white/25 hover:text-white",
         )}
       >
-        <ArrowDownUp className="size-3.5 shrink-0 opacity-70 max-sm:hidden" aria-hidden="true" />
-        <span className="min-w-0 flex-1 truncate text-left">{sortOptionLabels[value]}</span>
+        {Icon ? <Icon className="size-3.5 shrink-0 opacity-70 max-sm:hidden" aria-hidden="true" /> : null}
+        <span className="min-w-0 flex-1 truncate text-left">{valueLabel ?? options.find((option) => option.value === value)?.label ?? value}</span>
         <ChevronDown
           className={clsx(
             "size-3.5 shrink-0 opacity-60 transition-transform motion-reduce:transition-none",
@@ -184,7 +210,7 @@ export function SortMenu({ value, options, onChange, className }: SortMenuProps)
       <div
         id={listId}
         role="listbox"
-        aria-label="Sort boards"
+        aria-label={label}
         hidden={!open}
         style={{ maxHeight }}
         className={clsx(
@@ -193,7 +219,7 @@ export function SortMenu({ value, options, onChange, className }: SortMenuProps)
         )}
       >
         <p className="px-2.5 pb-1 pt-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500" aria-hidden="true">
-          Sort by
+          {heading}
         </p>
         {options.map((option, index) => {
           const selected = option.value === value;
@@ -219,5 +245,28 @@ export function SortMenu({ value, options, onChange, className }: SortMenuProps)
         })}
       </div>
     </div>
+  );
+}
+
+type SortMenuProps = {
+  value: CatalogSort;
+  options: SortOption[];
+  onChange: (value: CatalogSort) => void;
+  className?: string;
+};
+
+/** The board sort for the catalog and discovery toolbars. */
+export function SortMenu({ value, options, onChange, className }: SortMenuProps) {
+  return (
+    <ChoiceMenu
+      value={value}
+      options={options}
+      onChange={onChange}
+      label="Sort boards"
+      valueLabel={sortOptionLabels[value]}
+      heading="Sort by"
+      icon={ArrowDownUp}
+      className={className}
+    />
   );
 }
