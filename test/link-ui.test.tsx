@@ -68,6 +68,37 @@ describe("LinkApp", () => {
     expect(screen.getByText("Pick the other board to see the wires.")).toBeTruthy();
   });
 
+  it("frames a large sheet on the linked connector and opens it out on request", async () => {
+    // Reported: the Nucleo-H753ZI sheet drew all four Zio connectors, so the
+    // linked CN7 pins were a long sideways scroll away.
+    await open("?a=raspberry-pi-4-model-b&b=stm32-nucleo-h753zi&bus=uart");
+    const sheet = screen.getByRole("region", { name: "STM32 Nucleo-H753ZI connector sheet" });
+    const viewBox = () => sheet.querySelector("svg")!.getAttribute("viewBox")!;
+    expect(viewBox().startsWith("0 0 ")).toBe(false);
+    expect(screen.getByText(/^CN7 Zio/, { selector: ".ph-link-frame span" })).toBeTruthy();
+
+    const toggle = screen.getByRole("button", { name: "Whole board" });
+    expect(toggle.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-pressed")).toBe("true");
+    expect(viewBox().startsWith("0 0 ")).toBe(true);
+
+    // The Pi's 2 × 20 header is already compact, so it is never framed.
+    const pi = screen.getByRole("region", { name: "Raspberry Pi 4 Model B connector sheet" });
+    expect(pi.querySelector("svg")!.getAttribute("viewBox")!.startsWith("0 0 ")).toBe(true);
+    expect(screen.getAllByRole("button", { name: "Whole board" })).toHaveLength(1);
+  });
+
+  it("condenses the notes to the ones that bear on the link", async () => {
+    await open("?a=raspberry-pi-4-model-b&b=stm32-nucleo-h753zi&bus=uart");
+    const notes = screen.getByRole("list", { name: "Board notes for this link" });
+    expect(notes.textContent).toMatch(/UART overlays/);
+    expect(notes.textContent).not.toMatch(/current-limited/);
+    const more = screen.getByText(/^\d+ more board notes$/);
+    expect(more.closest("details")!.open).toBe(false);
+    expect(more.closest("details")!.textContent).toMatch(/current-limited/);
+  });
+
   it("chooses another bus instance from the select", async () => {
     await open("?a=raspberry-pi-pico&b=raspberry-pi-pico&bus=uart");
     const [select] = screen.getAllByRole("combobox").filter((item) => item.tagName === "SELECT");

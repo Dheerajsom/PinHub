@@ -3,7 +3,7 @@
 import { useId, useRef, useState } from "react";
 import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
-import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
+import type { BoardGeometry, PinAnchor, Rect } from "@/lib/board-visual-geometry";
 import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
 import { padHitRadius } from "@/components/board-visual/touch-sizing";
 import {
@@ -52,6 +52,12 @@ type BoardStageProps = {
    * ink: distinct from the planner's dashed role-hue ring and from the probe.
    */
   claimed?: ReadonlySet<string>;
+  /**
+   * Draw only this part of the sheet. The board link frames each sheet on the
+   * connectors its wires use; pass only the anchors inside the frame, so
+   * keyboard focus never lands on a pad that is cropped out.
+   */
+  view?: Rect;
 };
 
 export function BoardStage({
@@ -69,6 +75,7 @@ export function BoardStage({
   compact = false,
   planned,
   claimed,
+  view,
 }: BoardStageProps) {
   const padRefs = useRef<Array<SVGGElement | null>>([]);
   const [focusIndex, setFocusIndex] = useState(0);
@@ -101,7 +108,9 @@ export function BoardStage({
     <svg
       viewBox={compact
         ? `${geometry.body.x - 24} ${geometry.body.y - 24} ${geometry.body.w + 48} ${geometry.body.h + 55}`
-        : `0 0 ${vbw} ${vbh}`}
+        : view
+          ? `${view.x} ${view.y} ${view.w} ${view.h}`
+          : `0 0 ${vbw} ${vbh}`}
       role="group"
       aria-label={title}
       className={clsx("bv-stage h-full w-full", className)}

@@ -23,6 +23,32 @@ test("picks two boards, lists the wires, and rings the selected wire on both boa
   await expect(page).toHaveURL(/\/link\?a=raspberry-pi-5&bus=uart$/);
 });
 
+test("frames a Nucleo-144 on the linked connector beside the Pi header", async ({ page }) => {
+  await page.setViewportSize({ width: 1160, height: 900 });
+  await page.goto("/link?a=raspberry-pi-4-model-b&b=stm32-nucleo-h753zi&bus=uart");
+  const nucleo = page.getByRole("region", { name: "STM32 Nucleo-H753ZI connector sheet" });
+  await expect(nucleo.locator(".bv-planned-ring")).toHaveCount(3);
+  // Reported: the sheet was ~1650 px wide in a ~440 px panel, with the linked
+  // CN7 pins a sideways scroll away. It now fits, every linked pad in view.
+  expect(await nucleo.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
+  await expect(page.getByText("CN7 Zio (upper right)", { exact: true })).toBeVisible();
+
+  // The two sheets sit side by side, so both ends of each wire are on one screen.
+  const pi = await page.getByRole("region", { name: "Raspberry Pi 4 Model B connector sheet" }).boundingBox();
+  const st = await nucleo.boundingBox();
+  expect(Math.abs(pi!.y - st!.y)).toBeLessThan(80);
+
+  await page.getByRole("button", { name: "Whole board" }).click();
+  await expect(nucleo.locator(".bv-planned-ring")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: "Whole board" })).toHaveAttribute("aria-pressed", "true");
+
+  // The cautions lead with what bears on this link; the rest is one click away.
+  await expect(page.getByRole("list", { name: "Board notes for this link" })).toContainText("UART overlays");
+  await expect(page.getByText("current-limited")).toBeHidden();
+  await page.getByText(/^\d+ more board notes$/).click();
+  await expect(page.getByText(/current-limited/)).toBeVisible();
+});
+
 test.describe("board link on a phone", () => {
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 360, height: 800 } });
   test("shows long board names in full", async ({ page }) => {
@@ -55,11 +81,40 @@ test.describe("board link on a phone", () => {
     expect(pad!.width).toBeGreaterThanOrEqual(16);
     expect(await mega.evaluate((node) => node.scrollWidth > node.clientWidth)).toBe(true);
     await expect(page.getByText("Scroll sideways for the rest of the connector.").first()).toBeVisible();
+    // It opens scrolled to the linked pins rather than at the board's left end:
+    // every linked pad's centre is on screen without a sideways hunt. (Their
+    // span is a little wider than a 360 px phone at 44 px touch size, so the
+    // outermost rings may be clipped by a few pixels.)
+    await expect.poll(() => mega.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
+    const megaBox = (await mega.boundingBox())!;
+    for (const ring of await mega.locator(".bv-planned-ring").all()) {
+      const box = (await ring.boundingBox())!;
+      const centre = box.x + box.width / 2;
+      expect(centre).toBeGreaterThan(megaBox.x);
+      expect(centre).toBeLessThan(megaBox.x + megaBox.width);
+    }
     await page.getByRole("button", { name: /^Wire 3/ }).tap();
     await expect.poll(() => mega.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
     const after = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(after).toBeLessThanOrEqual(0);
+  });
+
+  test("opens a sheet whose linked pins span the board on as many as fit", async ({ page }) => {
+    // Mobile gate: the Grand Central's I2C pads sit at both ends of a strip.
+    // Centring on their midpoint opened the sheet with none of them on screen.
+    await page.goto("/link?a=raspberry-pi-pico&b=adafruit-grand-central-m4-express&bus=i2c");
+    const sheet = page.getByRole("region", { name: "Adafruit Grand Central M4 Express connector sheet" });
+    await expect(sheet.locator(".bv-planned-ring")).toHaveCount(3);
+    await expect(page.getByText(/linked pins span more than the screen/)).toBeVisible();
+    const box = (await sheet.boundingBox())!;
+    let visible = 0;
+    for (const ring of await sheet.locator(".bv-planned-ring").all()) {
+      const r = (await ring.boundingBox())!;
+      const centre = r.x + r.width / 2;
+      if (centre > box.x && centre < box.x + box.width) visible += 1;
+    }
+    expect(visible).toBeGreaterThanOrEqual(2);
   });
 });

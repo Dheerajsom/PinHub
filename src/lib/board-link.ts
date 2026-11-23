@@ -315,7 +315,7 @@ function levelCheck(a: Board, b: Board, bus: LinkBus): LevelCheck {
       title: "Check the logic levels",
       detail: `${unique
         .map(([board]) => `${board.name} records “${board.logicLevel}”`)
-        .join(" and ")}, which does not settle one logic level for these pins. Confirm both levels in the datasheets before wiring directly.`,
+        .join(" and ")}. Confirm both boards’ logic levels in their datasheets before wiring directly.`,
     };
   }
 
