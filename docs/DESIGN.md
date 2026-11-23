@@ -514,6 +514,15 @@ embedding it.
   The inspector offers **Zoom labels** and **Working size** rather than a
   fit-to-width action that would shrink labels and controls below usable size.
   Scroll instructions and keyboard access accompany the drawing.
+- **Link sheets show the linked connector.** On `/link` each sheet is framed
+  on the connectors (pin groups) its wires use, whole, with their labels, and
+  a **Whole board** toggle opens it out. A two-row header is one connector and
+  is never cut in half. A sheet still wider than its panel opens scrolled to
+  the linked pins. With only a precise pointer (`(hover: hover) and (pointer:
+  fine)`, and no `any-pointer: coarse`) a link sheet may shrink to its legible
+  minimum (0.7 px per unit) instead of touch scale, and when a sheet cannot
+  legibly fit half the row the pair stacks so both ends of each wire stay on
+  screen. Touch devices keep the 44 px rule above.
 - **Three marks, never alike.** Solid neutral ring = claimed by hand. Dashed
   ring in the role's `ink` = auto-assigned. Solid cyan = the probe, and
   nothing else. Free pads recede to half strength once a plan exists; they

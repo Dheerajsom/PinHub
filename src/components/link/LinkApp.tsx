@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeftRight, Ban, CircleCheck, TriangleAlert } from "lucide-react";
+import { ArrowLeftRight, Ban, ChevronDown, CircleCheck, TriangleAlert } from "lucide-react";
 import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import { createBoardDetailLoader, type BoardDetailLoader } from "@/lib/board-detail-loader";
 import { buildBoardLink, busNames, linkBuses, type BoardLink, type LinkBus, type LinkPort } from "@/lib/board-link";
+import { linkChecklist } from "@/lib/link-checklist";
 import { linkSearch, linkStateFromSearch, type LinkState } from "@/lib/link-params";
 import { LinkBoardSlot, useLinkSearchIndex } from "@/components/link/LinkBoardSlot";
 import { LinkHarness } from "@/components/link/LinkHarness";
@@ -201,7 +202,6 @@ function LinkResult({
   onActivate: (index: number | null) => void;
   onPort: (side: "a" | "b", id: string) => void;
 }) {
-  const busName = busNames[link.bus];
   return (
     <>
       <Verdict link={link} />
@@ -217,26 +217,67 @@ function LinkResult({
         </>
       ) : null}
 
-      <section aria-labelledby="link-notes" className="surface-panel rounded-xl px-4 py-3">
-        <h2 id="link-notes" className="text-sm font-semibold tracking-tight text-white">
-          Before you connect the {busName} link
-        </h2>
-        <ul className="mt-2 grid gap-1.5 text-[13px] leading-6 text-zinc-400">
-          {link.notes.map((note) => (
-            <li key={note} className="ph-link-note">{note}</li>
+      <LinkNotes link={link} a={a} b={b} />
+    </>
+  );
+}
+
+/**
+ * What to check before wiring, short enough to be read: the bus's essentials,
+ * then the board warnings that bear on this link. Every other warning is one
+ * click away, and the copied wire list carries them all.
+ */
+function LinkNotes({ link, a, b }: { link: BoardLink; a: Board; b: Board }) {
+  const { essentials, relevant, more } = useMemo(() => linkChecklist(link, a, b), [link, a, b]);
+  const boardsShown = [a, b].filter((board, i, list) => list.findIndex((item) => item.id === board.id) === i);
+  return (
+    <section aria-labelledby="link-notes" className="surface-panel rounded-xl px-4 py-3">
+      <h2 id="link-notes" className="text-[15px] font-semibold tracking-tight text-white">
+        Before you connect the {busNames[link.bus]} link
+      </h2>
+      <ul className="ph-link-checks mt-2">
+        {essentials.map((check) => (
+          <li key={check.title} className="ph-link-check">
+            <strong>{check.title}</strong>
+            <span>{check.detail}</span>
+          </li>
+        ))}
+      </ul>
+      {relevant.length ? (
+        <ul className="mt-3 grid gap-2" aria-label="Board notes for this link">
+          {relevant.map((note) => (
+            <li key={`${note.board}|${note.text}`} className="ph-link-board-note">
+              <TriangleAlert className="ph-link-board-note-icon size-3.5 shrink-0" aria-hidden="true" />
+              <span className="min-w-0">
+                <span className="ph-link-board-note-name">{note.board}</span> {note.text}
+              </span>
+            </li>
           ))}
         </ul>
-        <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
-          {[a, b]
-            .filter((board, i, list) => list.findIndex((item) => item.id === board.id) === i)
-            .map((board) => (
-              <Link key={board.id} href={`/boards/${board.id}`} className="ph-link-text-button inline-flex min-h-11 items-center">
-                Check {board.name}’s sources
-              </Link>
+      ) : null}
+      {more.length ? (
+        <details className="ph-link-more mt-2">
+          <summary>
+            <ChevronDown className="ph-link-more-chevron size-4" aria-hidden="true" />
+            {more.length} more board {more.length === 1 ? "note" : "notes"}
+          </summary>
+          <ul className="grid gap-1.5 pb-1 pt-1 text-[13px] leading-6 text-zinc-400">
+            {more.map((note) => (
+              <li key={`${note.board}|${note.text}`} className="ph-link-note">
+                <span className="text-zinc-300">{note.board}:</span> {note.text}
+              </li>
             ))}
-        </p>
-      </section>
-    </>
+          </ul>
+        </details>
+      ) : null}
+      <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
+        {boardsShown.map((board) => (
+          <Link key={board.id} href={`/boards/${board.id}`} className="ph-link-text-button inline-flex min-h-11 items-center">
+            Check {board.name}’s sources
+          </Link>
+        ))}
+      </p>
+    </section>
   );
 }
 

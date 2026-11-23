@@ -1840,6 +1840,20 @@ button {
   font-size: 12px; font-weight: 500; color: var(--link-text); transition: border-color 150ms;
 }
 .ph-link-ghost:hover { border-color: var(--link-accent); }
+/* Link sheets keep 44 px pad hit areas wherever a finger may tap them; with
+   only a precise pointer they shrink to their legible minimum instead, so a
+   large board fits its panel rather than scrolling sideways. */
+.ph-link-sheet-art { min-width: var(--sheet-touch-width, 0); }
+@media (hover: hover) and (pointer: fine) {
+  .ph-link-sheet-art { min-width: 0; }
+}
+@media (any-pointer: coarse) {
+  .ph-link-sheet-art { min-width: var(--sheet-touch-width, 0); }
+}
+.ph-link-frame {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px;
+  padding: 0 4px 8px;
+}
 .ph-link-text-button { color: var(--link-accent); text-decoration: underline; text-underline-offset: 3px; }
 
 .ph-link-buses { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
@@ -1936,6 +1950,29 @@ button {
 .ph-link-cautions li { display: flex; gap: 7px; font-size: 12px; line-height: 1.55; color: var(--link-muted); }
 .ph-link-cautions svg { color: var(--link-caution); }
 .ph-link-cautions strong { font-family: var(--font-mono), monospace; font-weight: 600; color: var(--link-text); }
+/* Before you connect: the bus's essentials as short cards, then the board
+   notes that bear on this link, then everything else behind a disclosure. */
+.ph-link-checks { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.ph-link-check {
+  display: grid; gap: 2px; padding: 10px 12px; border-radius: 8px;
+  background: var(--well); border: 1px solid var(--panel-border);
+}
+.ph-link-check strong { font-size: 13px; font-weight: 600; color: var(--link-text); }
+.ph-link-check span { font-size: 14px; line-height: 1.45; color: var(--link-muted); }
+.ph-link-board-note { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; line-height: 1.5; color: var(--link-text); }
+.ph-link-board-note-icon { margin-top: 3px; color: var(--link-caution); }
+.ph-link-board-note-name {
+  font-family: var(--font-mono), monospace; font-size: 12px; font-weight: 600; color: var(--link-muted);
+}
+.ph-link-more summary {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--link-accent); list-style: none;
+}
+.ph-link-more summary::-webkit-details-marker { display: none; }
+.ph-link-more summary:focus-visible { outline: 2px solid var(--link-accent); outline-offset: 2px; border-radius: 4px; }
+.ph-link-more-chevron { transition: transform 150ms; }
+.ph-link-more[open] .ph-link-more-chevron { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .ph-link-more-chevron { transition: none; } }
 .ph-link-note { position: relative; padding-left: 14px; }
 .ph-link-note::before { content: ""; position: absolute; left: 2px; top: 0.75em; width: 5px; height: 2px; background: var(--link-muted); }
 

@@ -128,7 +128,10 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
     await expect.poll(async () => {
       const bar = await page.locator("[data-sticky-header]").boundingBox();
       const back = await detail.getByRole("button", { name: "Back to results" }).boundingBox();
-      return back!.y - (bar!.y + bar!.height);
+      // A box is null for a frame while the panel lays out; poll again rather
+      // than throw, which ends the poll as a failure.
+      if (!bar || !back) return Number.NEGATIVE_INFINITY;
+      return back.y - (bar.y + bar.height);
     }).toBeGreaterThanOrEqual(8);
     await expect(detail.getByRole("heading", { name: /DOIT ESP32 DevKit V1/, level: 2 })).toBeInViewport();
   });
