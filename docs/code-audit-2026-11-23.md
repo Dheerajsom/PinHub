@@ -1,10 +1,10 @@
-# Simpler PinHub, Board finder, and the video script (2026-11-23)
+# Simpler PinHub and the Board finder (2026-11-23)
 
 Branch `feature/simpler-pinhub`. Goal: make PinHub easier for people who are
 not already PinHub users, add one new feature that answers a question the
-site could not answer before, and prepare a fact-checked walkthrough video
-script. Done in three parts, each audited with a full code review before the
-next began.
+site could not answer before. Done in two parts, each audited with a full
+code review before the next began. (A third part, a walkthrough video script
+and its `npm run facts` helper, was later removed from the repository.)
 
 ## Part A: simplify
 
@@ -100,16 +100,6 @@ they now have their own "Couldn't settle" list and the zero-fit heading
 softens. The planner-clamp risk above became a test. In-text links used a
 44 px `inline-flex` box that broke the paragraph's line height; they now
 widen their tap area with vertical padding instead.
-
-## Part C: video
-
-`docs/video-script.md`: a 9-minute shot list with exact URLs and plain
-narration, a "how it works" segment, and a fact sheet. Every claim was
-checked against the code (for example, the Code check example really drives
-a relay from input-only GPIO34 and reads ADC2 GPIO25 with Wi-Fi on; the
-hand-off button is "Open in planner"). `npm run facts`
-(`scripts/catalog-facts.ts`, typechecked with the other scripts) prints every
-number the script quotes from the live catalog.
 
 ## Verification
 

@@ -16,8 +16,7 @@
     "test:e2e": "playwright test",
     "audit:ci": "tsx scripts/audit.ts",
     "refresh-prices": "tsx scripts/refresh-prices.ts",
-    "publish-prices": "tsx scripts/publish-prices.ts",
-    "facts": "tsx scripts/catalog-facts.ts"
+    "publish-prices": "tsx scripts/publish-prices.ts"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",

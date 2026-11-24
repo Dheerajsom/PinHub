@@ -72,7 +72,6 @@ locally: without Blob credentials the app uses the bundled dated snapshot (see
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) — adding boards, reporting pinout errors
 - [docs/DESIGN.md](docs/DESIGN.md) — design language and UI reference
-- [docs/video-script.md](docs/video-script.md) — walkthrough script and shot list; `npm run facts` re-checks its numbers
 - [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — rules for automated contributors
 
 ## Accuracy and license
