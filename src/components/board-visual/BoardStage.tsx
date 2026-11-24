@@ -58,6 +58,11 @@ type BoardStageProps = {
    * keyboard focus never lands on a pad that is cropped out.
    */
   view?: Rect;
+  /**
+   * Pads a capability filter matched. When set, every other pad recedes the
+   * way a role highlight dims what it excludes; null or absent means no filter.
+   */
+  highlight?: ReadonlySet<string> | null;
 };
 
 export function BoardStage({
@@ -76,6 +81,7 @@ export function BoardStage({
   planned,
   claimed,
   view,
+  highlight = null,
 }: BoardStageProps) {
   const padRefs = useRef<Array<SVGGElement | null>>([]);
   const [focusIndex, setFocusIndex] = useState(0);
@@ -97,6 +103,11 @@ export function BoardStage({
   // The invisible hit area reaches as far into the gap as it can without a tap
   // landing on two pins at once; the shared sizing helper sets that limit.
   const hitR = padHitRadius(geometry);
+  // A pad is filtered out when a role highlight or a capability filter
+  // excludes it. Both quiet the pad the same way, so the drawing reads one rule.
+  const filteredOut = (anchor: (typeof anchors)[number]) =>
+    (activeRole !== null && anchor.pin.role !== activeRole) ||
+    (highlight !== null && !highlight.has(anchor.key));
 
   function focusPad(index: number) {
     const next = (index + anchors.length) % anchors.length;
@@ -164,7 +175,7 @@ export function BoardStage({
               anchor={anchor}
               active={active}
               onNet={netKeys.has(anchor.key)}
-              dimmed={activeRole !== null && anchor.pin.role !== activeRole}
+              dimmed={filteredOut(anchor)}
               showLeader={labelled && !active}
               stacked={stacked}
               stackedFont={stackedFont}
@@ -225,7 +236,7 @@ export function BoardStage({
             // A role filter hides what it excludes; a plan only quiets the
             // free pads, which still have to be read to be claimed.
             opacity={
-              activeRole !== null && anchor.pin.role !== activeRole
+              filteredOut(anchor)
                 ? 0.28
                 : Boolean(planned?.size || claimed?.size) &&
                     !planned?.has(anchor.key) &&

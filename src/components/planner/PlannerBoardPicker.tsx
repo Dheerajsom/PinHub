@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { clsx } from "clsx";
 import { Search } from "lucide-react";
 import type { BoardSummary } from "@/lib/board-summary";
@@ -94,7 +95,14 @@ export function PlannerBoardPicker({
       </h1>
       <p className="mt-2 max-w-2xl text-[15px] leading-7 text-zinc-400">
         Pick your board, then mark the pins your circuit uses. On boards with source-backed pin
-        functions PinHub can also assign buses for you.
+        functions PinHub can also assign buses for you.{" "}
+        <span className="text-zinc-500">
+          Haven&apos;t picked one yet?{" "}
+          <Link href="/find" className="py-3 text-cyan-200 underline underline-offset-4 hover:text-white">
+            Board finder
+          </Link>{" "}
+          lists the boards that fit your buses.
+        </span>
       </p>
       {notice ? (
         <p role="status" className="surface-well mt-4 max-w-2xl rounded-md px-3 py-2 text-[13px] leading-6 text-zinc-300">

@@ -709,7 +709,7 @@ export function PinHubApp({
               <button
                 type="button"
                 onClick={resetFilters}
-                className="shrink-0 rounded-md px-2 py-1 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
+                className="min-h-11 min-w-11 shrink-0 rounded-md px-2 text-xs text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
               >
                 Reset
               </button>

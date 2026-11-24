@@ -30,7 +30,7 @@ for (const viewport of [
 
     test("comparison links and actions are at least 44 px tall", async ({ page }) => {
       await page.goto("/compare?boards=raspberry-pi-5,nvidia-jetson-agx-orin-devkit");
-      for (const name of ["Overview", "Pinout", "Show identical", "Share", "Clear comparison"]) {
+      for (const name of ["Pin map", "Show identical", "Share", "Clear comparison"]) {
         const control = page.getByRole("link", { name }).or(page.getByRole("button", { name }));
         await expectTouchSize(control.filter({ visible: true }).first(), name);
         const box = await control.filter({ visible: true }).first().boundingBox();
@@ -43,8 +43,8 @@ for (const viewport of [
     });
 
     test("pinout filter chips are at least 44 px tall", async ({ page }) => {
-      await page.goto("/pinout/raspberry-pi-pico");
-      const group = page.getByRole("group", { name: "Filter pins by category" }).first();
+      await page.goto("/boards/raspberry-pi-pico");
+      const group = page.getByRole("group", { name: "Show pins", exact: true }).first();
       await expect(group).toBeVisible();
       const chips = group.getByRole("button");
       const count = await chips.count();

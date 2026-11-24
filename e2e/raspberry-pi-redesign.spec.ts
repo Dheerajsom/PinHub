@@ -21,6 +21,16 @@ const otherModels = [
   "raspberry-pi-pico-w", "raspberry-pi-pico-2", "raspberry-pi-400",
 ];
 
+// The Raspberry Pi workbench (Static and Dynamic tabs) is the catalog
+// panel's pin map; the board page carries the full pin workbench instead.
+async function openInCatalog(page: Page, id: string) {
+  const name = boards.find((board) => board.id === id)!.name;
+  await page.goto(`/?${new URLSearchParams({ q: name })}`);
+  const show = page.getByRole("button", { name: `Show ${name} details`, exact: true });
+  if ((page.viewportSize()?.width ?? 1280) < 1024) await show.click();
+  else await expect(page.getByRole("heading", { name, exact: true, level: 2 })).toBeVisible();
+}
+
 async function fitsViewport(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
 }
@@ -69,7 +79,7 @@ for (const viewport of viewports) {
       test(`${model.name} reference and interactive workflows`, async ({ page }, testInfo) => {
         const errors: string[] = [];
         page.on("pageerror", (error) => errors.push(error.message));
-        await page.goto(`/boards/${model.id}`);
+        await openInCatalog(page, model.id);
         await selectStatic(page);
         const reference = await expectStaticPinMap(page, model.id);
         await fitsViewport(page);
@@ -140,7 +150,7 @@ test.describe("Raspberry Pi workbench in landscape", () => {
   // under the finger, so the click landed on another element and the pad never
   // pinned. The pad's page position must not depend on what the readout shows.
   test("pads stay put while the readout changes", async ({ page }) => {
-    await page.goto("/boards/raspberry-pi-5");
+    await openInCatalog(page, "raspberry-pi-5");
     const tab = page.getByRole("tab", { name: "Dynamic", exact: true });
     await expect(async () => {
       await tab.tap();
@@ -204,7 +214,7 @@ test.describe("remaining Raspberry Pi models", () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, userAgent: devices["Pixel 5"].userAgent });
   for (const id of otherModels) {
     test(`${id} has source-derived static and dynamic pins`, async ({ page }) => {
-      await page.goto(`/boards/${id}`);
+      await openInCatalog(page, id);
       await selectStatic(page);
       await expectStaticPinMap(page, id);
       await fitsViewport(page);
@@ -219,7 +229,7 @@ test.describe("remaining Raspberry Pi models", () => {
 
 test("compact non-Pi physical pin map keeps signal names readable", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto("/boards/esp32-devkit-v1");
+  await openInCatalog(page, "esp32-devkit-v1");
   await page.getByRole("tab", { name: "Static", exact: true }).click();
   await expectStaticPinMap(page, "esp32-devkit-v1");
   await fitsViewport(page);
@@ -236,16 +246,16 @@ test("catalog inline Pi pinout and full inspector share the artwork", async ({ p
   await expect(page.getByRole("combobox", { name: "Select physical pin" })).toBeVisible();
   await fitsViewport(page);
   await page.getByRole("link", { name: "Open the Raspberry Pi 5 full pinout", exact: true }).click();
-  await expect(page).toHaveURL(/\/pinout\/raspberry-pi-5/);
+  await expect(page).toHaveURL(/\/boards\/raspberry-pi-5#pins$/);
   await expect(page.getByRole("button", { name: /^Pin 1,/ })).toBeVisible();
   await expect(page.locator(".bv-stage-wrap").getByText("BCM2712", { exact: true })).toBeVisible();
   await fitsViewport(page);
   await page.screenshot({ path: testInfo.outputPath("full-inspector.png"), scale: "css", animations: "disabled" });
 });
 
-test("desktop dynamic readout sits beside the physical board in both themes with keyboard pin selection", async ({ page }, testInfo) => {
+test("desktop catalog Pi workbench takes keyboard pin selection in both themes", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/boards/raspberry-pi-4-model-b");
+  await openInCatalog(page, "raspberry-pi-4-model-b");
   await page.getByRole("tab", { name: "Dynamic", exact: true }).click();
   // Keyboard selection on the physical board's own pads.
   const pin = page.getByRole("group", { name: /physical board/ }).getByRole("button", { name: /^Pin 1,/ });
@@ -255,9 +265,9 @@ test("desktop dynamic readout sits beside the physical board in both themes with
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: "Clear selection" })).toBeVisible();
-  const canvas = await page.locator(".pi-component-layout > .pi-canvas").boundingBox();
-  const readout = await page.locator(".pi-readout").boundingBox();
-  expect(readout!.x).toBeGreaterThan(canvas!.x);
+  // The catalog panel is ~27-32rem wide even on a large screen, so the
+  // readout stacks under the board there, as the redesign specifies for
+  // narrow panels.
   await page.locator(".pi-workbench").scrollIntoViewIfNeeded();
   await page.screenshot({ path: testInfo.outputPath("desktop-light.png"), scale: "css", animations: "disabled" });
   await page.getByRole("button", { name: "Use dark theme", exact: true }).click();

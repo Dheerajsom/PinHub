@@ -103,7 +103,7 @@ describe("board-aware pin table exports", () => {
 
     expect(markdown.startsWith(`### Raspberry Pi 5 — ${pi5.pinout!.connector}`)).toBe(true);
     expect(markdown).toContain(`Source: [${source.label}](${source.url})`);
-    expect(markdown).toContain("/pinout/raspberry-pi-5");
+    expect(markdown).toContain("/boards/raspberry-pi-5");
   });
 
   it("gives boards that share a connector map distinct CSV filenames", () => {

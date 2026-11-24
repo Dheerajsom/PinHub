@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -39,8 +38,7 @@ import {
 import { useFavorites } from "@/lib/favorites";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { VendorLogo } from "@/components/VendorLogo";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { SectionNav } from "@/components/SectionNav";
+import { SiteHeader } from "@/components/SiteHeader";
 import {
   activeCatalogFilterCount,
   boundCatalogQuery,
@@ -176,29 +174,14 @@ export function DiscoveryApp({
   return (
     <main className="relative isolate min-h-screen pb-28">
       <CircuitBackground />
-      <header className="relative border-b border-white/10 bg-[#0a0d12] pt-[env(safe-area-inset-top)]">
-        <div className="mx-auto flex max-w-[1560px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex min-w-0 items-center gap-3">
-            <Image
-              src="/pinhub-logo.png"
-              alt=""
-              width={52}
-              height={52}
-              loading="eager"
-              className="transition duration-500 group-hover:rotate-6 group-hover:scale-110"
-            />
-            <div className="min-w-0">
-              <h1 className="brand-title text-2xl leading-none text-white sm:text-3xl">
-                PinHub
-              </h1>
-              <p className="mt-1 truncate text-xs text-zinc-400 sm:text-sm">
-                Source-backed pinouts for dev boards, SBCs, and microcontrollers
-              </p>
-            </div>
-          </Link>
-          <ThemeToggle />
-        </div>
-      </header>
+      <SiteHeader current="/compare" width="wide" />
+      <div className="relative mx-auto max-w-[1560px] px-4 pb-3 pt-5 sm:px-6 lg:px-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-white">Compare boards</h1>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
+          Narrow the catalog with filters, then add two to four boards to see their
+          differences side by side.
+        </p>
+      </div>
 
       <div className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.95)]">
         {/* Below sm the controls wrap into full-width rows, like the catalog
@@ -237,7 +220,6 @@ export function DiscoveryApp({
             )}
           </label>
           <div className="flex min-w-0 flex-wrap items-center gap-2 sm:contents">
-            <SectionNav current="/compare" className="max-sm:w-full max-sm:justify-between sm:order-1" />
             <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-[#15181f] px-3 text-sm text-zinc-200 sm:order-3 sm:shrink lg:hidden">
               <SlidersHorizontal className="size-4 text-cyan-200" /> Filters
               {activeCount ? <span className="rounded bg-cyan-300/15 px-1.5 font-mono text-xs text-cyan-100">{activeCount}</span> : null}
@@ -254,7 +236,7 @@ export function DiscoveryApp({
       <div className="relative mx-auto grid max-w-[1560px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:px-8">
         <aside className={clsx("space-y-3 lg:sticky lg:top-[5.25rem] lg:block lg:max-h-[calc(100vh-6.25rem)] lg:overflow-y-auto lg:pr-1", filtersOpen ? "block" : "hidden")}>
           <div className="flex items-center justify-between px-1">
-            <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">Discovery facets</span>
+            <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">Filters</span>
             {activeCount ? <button type="button" onClick={() => setState(discoveryDefaultState)} className="min-h-11 min-w-11 text-xs text-cyan-200 hover:text-white">Clear all</button> : null}
           </div>
           <Facet title="Platform" icon={<Cpu className="size-4" />} filterKey="platform" values={options.platform} selected={state.platform} onToggle={toggleFilter} />

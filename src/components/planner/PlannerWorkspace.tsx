@@ -303,7 +303,7 @@ export function PlannerWorkspace({ board, onChangeBoard }: { board: Board; onCha
               Board overview
             </Link>
             <Link
-              href={`/pinout/${board.id}`}
+              href={`/boards/${board.id}#pins`}
               className="inline-flex min-h-11 items-center text-zinc-400 underline-offset-4 transition hover:text-white hover:underline"
             >
               Full pin map

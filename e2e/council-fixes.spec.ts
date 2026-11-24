@@ -21,8 +21,8 @@ test("pin lookup keeps board results and known alternate signals coherent", asyn
 });
 
 test("banked GPIO and alias-only PWM stay discoverable on Orange Pi", async ({ page }) => {
-  await page.goto("/pinout/orange-pi-5");
-  const filters = page.getByRole("group", { name: "Filter pins by category" });
+  await page.goto("/boards/orange-pi-5");
+  const filters = page.getByRole("group", { name: "Show pins", exact: true });
   await filters.getByRole("button", { name: "GPIO", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Showing 17 of 26 pins" })).toBeVisible();
   await filters.getByRole("button", { name: "GPIO", exact: true }).click();
@@ -44,12 +44,12 @@ test("exact display names with decimal and plus tokens produce pin answers", asy
 
 test("numbered secondary bus pads stay in their family filters", async ({ page }) => {
   for (const [id, category, expected] of [["teensy-32", "I2C", 4], ["teensy-lc", "UART", 8]] as const) {
-    await page.goto(`/pinout/${id}`);
-    await page.getByRole("group", { name: "Filter pins by category" }).getByRole("button", { name: category, exact: true }).click();
+    await page.goto(`/boards/${id}`);
+    await page.getByRole("group", { name: "Show pins", exact: true }).getByRole("button", { name: category, exact: true }).click();
     await expect(page.getByRole("heading", { name: new RegExp(`^Showing ${expected} of`) })).toBeVisible();
   }
-  await page.goto("/pinout/libre-computer-tritium-h5");
-  await page.getByRole("group", { name: "Filter pins by category" }).getByRole("button", { name: "I2C", exact: true }).click();
+  await page.goto("/boards/libre-computer-tritium-h5");
+  await page.getByRole("group", { name: "Show pins", exact: true }).getByRole("button", { name: "I2C", exact: true }).click();
   for (const alias of ["TWI1_SDA", "TWI1_SCK"]) await expect(page.getByRole("row").filter({ hasText: alias })).toBeVisible();
 });
 
@@ -103,7 +103,7 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 
     const index = await (await request.get("/api/pins")).json();
     const pin = index.find((board: { id: string }) => board.id === "esp32-c3-devkitm-1").pins.find((pin: { label: string }) => pin.label === "IO8");
     expect(pin).toBeTruthy();
-    await page.goto(`/pinout/esp32-c3-devkitm-1?pin=${encodeURIComponent(pin.key)}`);
+    await page.goto(`/boards/esp32-c3-devkitm-1?pin=${encodeURIComponent(pin.key)}`);
     const summary = page.getByRole("region", { name: "Selected pin", exact: true });
     await expect(summary).toBeInViewport();
     await expect(summary.getByRole("heading")).toContainText(`IO8 · Physical pin ${pin.position}`);
@@ -138,9 +138,9 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
 }
 
 test("bench print retains pin signal names and wire endpoints", async ({ page }) => {
-  await page.goto("/pinout/esp32-devkit-v1");
+  await page.goto("/boards/esp32-devkit-v1");
   await expect(page.getByRole("region", { name: "Before you wire" })).toContainText("never apply 5 V");
-  await page.getByRole("group", { name: "Filter pins by category" }).getByRole("button", { name: "PWM", exact: true }).click();
+  await page.getByRole("group", { name: "Show pins", exact: true }).getByRole("button", { name: "PWM", exact: true }).click();
   await page.emulateMedia({ media: "print" });
   await expect(page.getByRole("cell", { name: "D12", exact: true })).toBeVisible();
   const table = page.getByRole("table");

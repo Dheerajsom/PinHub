@@ -13,6 +13,18 @@ files cannot drift apart. Everything below adds to them; nothing overrides them.
 - Work in this checkout. When work needs isolation, create a new **branch**
   here (`git switch -c <branch>` from an up-to-date `main`) and work on it.
 
+## Never commit or push to `main` (strict)
+
+- **Never commit to `main` and never push to `main`** unless the user, in the
+  current conversation, explicitly says to. This includes "small" fixes, docs,
+  and config changes.
+- Every new feature, fix, or refactor goes on a **new branch** created from an
+  up-to-date `main`, and only that branch is pushed
+  (`git push -u origin <branch>`). Do not let a feature branch track
+  `origin/main`; a bare `git push` must never be able to reach `main`.
+- Code reaches `main` only through a pull request merge that the user asked
+  for (see "Shipping a branch to `main`" below).
+
 ## Change workflow
 
 Follow these steps, in order, for any refactor, bug fix, security fix, or UI/UX

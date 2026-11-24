@@ -355,7 +355,7 @@ export function CheckApp({
   return (
     <div className="ph-check @container">
       <header className="mb-5 max-w-3xl">
-        <h1 className="ph-check-title">Pin check</h1>
+        <h1 className="ph-check-title">Code check</h1>
         <p className="mt-2 text-[15px] leading-7 text-zinc-300">
           Paste a sketch or script and pick the board it runs on. PinHub checks each pin reference it recognizes
           against that board&apos;s source-backed pin record and lists the values it could not follow.
@@ -434,7 +434,7 @@ export function CheckApp({
           {unsupported ? (
             <div className="ph-check-notice surface-panel" role="status">
               <p className="min-w-0 flex-1">
-                <code className="ph-check-code-inline">{unsupported}</code> can&apos;t be checked yet. Pin check covers
+                <code className="ph-check-code-inline">{unsupported}</code> can&apos;t be checked yet. Code check covers
                 the {catalog.length} boards whose pin records name chip pins.
               </p>
               <button

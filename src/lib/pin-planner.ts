@@ -64,7 +64,13 @@ export type PlanResult =
       muxNote: string;
       steps: number;
     }
-  | { status: "unsatisfiable"; reason: string; steps: number };
+  | {
+      status: "unsatisfiable";
+      reason: string;
+      steps: number;
+      /** The search ran out of steps: it neither found a plan nor ruled one out. */
+      exhausted?: true;
+    };
 
 type BusPeripheral = "I2C" | "SPI" | "UART" | "CAN";
 const busSignals: Record<BusPeripheral, readonly string[]> = {
@@ -727,6 +733,7 @@ export function planPins(
       status: "unsatisfiable",
       reason: `PinHub stopped after checking ${budget.toLocaleString("en-US")} combinations without finding a plan. Remove a requirement and try again.`,
       steps: budget,
+      exhausted: true,
     };
   }
 }

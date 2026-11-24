@@ -13,5 +13,14 @@ it("drops unknown, duplicate, hostile and oversized values on read and write", (
   }
   expect(serializePinoutState({ role: "spi", pin: "x".repeat(1000) }, keys, roles)).toBe("");
   expect(pinLookupHref("../bad", "g0:0")).toBe("/");
-  expect(pinLookupHref("pico", "g1:0")).toBe("/pinout/pico?pin=g1%3A0");
+  expect(pinLookupHref("pico", "g1:0")).toBe("/boards/pico?pin=g1%3A0#pins");
+});
+
+it("round-trips the Show pins filters in display order and drops unknown ones", () => {
+  expect(parsePinoutState("?show=spi,i2c", keys, roles)).toEqual({ role: null, pin: null, show: ["i2c", "spi"] });
+  expect(serializePinoutState({ role: null, pin: null, show: ["spi", "i2c", "spi"] }, keys, roles)).toBe("show=i2c%2Cspi");
+  expect(parsePinoutState("?show=i2c,evil", keys, roles)).toEqual({ role: null, pin: null, show: ["i2c"] });
+  expect(parsePinoutState("?show=i2c&show=spi", keys, roles)).toEqual({ role: null, pin: null });
+  expect(parsePinoutState(`?show=${Array(11).fill("i2c").join(",")}`, keys, roles)).toEqual({ role: null, pin: null });
+  expect(serializePinoutState({ role: null, pin: null, show: [] }, keys, roles)).toBe("");
 });

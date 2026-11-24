@@ -32,7 +32,7 @@ export function primaryExportSource(board: PinExportBoard): SourceLink | undefin
 }
 
 export function pinoutPageUrl(boardId: string): string {
-  return new URL(`/pinout/${encodeURIComponent(boardId)}`, siteUrl).toString();
+  return new URL(`/boards/${encodeURIComponent(boardId)}`, siteUrl).toString();
 }
 
 function markdownLinkLabel(value: string): string {

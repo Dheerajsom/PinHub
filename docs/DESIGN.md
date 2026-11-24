@@ -55,10 +55,14 @@ encodes a real electrical or provenance fact.
   independently) — identity, specs, "Before you wire" cautions with the
   verify link, pin map tabs, highlights, sources. Container-query driven: it adapts to its own width, never the
   viewport.
-- **Full pinout page** (`/pinout/[id]`) — board logic level, electrical and
-  revision cautions, official documentation and the full-width pin map for
-  deep inspection, shareable/bookmarkable per board. Capability filters use
-  recorded alternate functions; the color key highlights primary roles only.
+- **Board page** (`/boards/[id]`) — one page per board: identity and specs,
+  "Before you wire" cautions (always before the map), price and revision
+  notes, then the full-width pin workbench for deep inspection, then why it
+  matters, sources, and similar boards. The workbench has one filter row,
+  **Show pins** (recorded functions, alternates included), which narrows the
+  table and dims the drawing's other pads together; the role colours appear
+  as a passive key under the drawing. `/pinout/[id]` permanently redirects
+  here (see section 21).
 - **Favorites** — localStorage-backed, star on every row + global filter.
 - **Mobile** — same DOM, single column: command bar stays sticky, filters
   collapse behind the toggle, detail panel stacks below results with a
@@ -313,8 +317,8 @@ Pinout data can destroy hardware; provenance is a first-class UI concern.
   usable because both presentations are **container-query** driven: pads
   shrink (`size-9`→`size-11` by container), grouped grids re-flow by
   auto-fill, and the dual-row map keeps labels adjacent to pads at any
-  panel width. The full `/pinout/[id]` page is the escape hatch for deep
-  inspection on small screens.
+  panel width. The board page's pin workbench (`/boards/[id]#pins`) is the
+  escape hatch for deep inspection on small screens.
 - Planned refinement: bottom-sheet detail on phones (drag to expand map).
 
 ## 10. Interaction Details
@@ -364,7 +368,7 @@ extend rather than replace:
 
 ```
 src/app/page.tsx                 → renders <PinHubApp/> (client)
-src/app/pinout/[id]/page.tsx     → SSG full-page pin map
+src/app/boards/[id]/page.tsx     → SSG board page with the pin workbench
 src/components/PinHubApp.tsx     → shell: header, command bar, 3 columns
 src/components/PinoutTabs.tsx    → static/dynamic segmented control
 src/components/PinoutDiagram.tsx → static map (dual-row + grouped)
@@ -628,4 +632,82 @@ tightens below 440 px and again below 380 px (measured to fit from 360 px).
 - **Layout.** One column (board, editor, report, sheet) below a 60 rem
   container; above it, the editor and sheet on the left and the board and
   report on the right.
+
+## 21. One board page, one filter row, a Tools menu (2026-11-23)
+
+PinHub had grown three views of a board (the catalog panel, `/boards/[id]`,
+and `/pinout/[id]`) and, on the pin map, two near-identical rows of chips
+("Show pins by capability" and "Highlight by primary role") with different
+meanings. The header held six equal links whose names ("Check", "Link") did
+not say what they did. This pass makes PinHub easier to read for someone who
+is not already a PinHub user, without dropping any hardware fact.
+
+- **One board page.** `/boards/[id]` carries the full workbench that used to
+  live on `/pinout/[id]`. `next.config.ts` redirects `/pinout/:id` (and its
+  preview image) with a 308, and the query string passes through, so a
+  shared `?pin=` still selects its pin. The catalog panel stays the quick
+  look; its "Full view" link opens `/boards/[id]#pins`.
+- **One filter row.** "Show pins" chips filter the table *and* dim the pads
+  the table leaves out, through `BoardStage`'s `highlight` set; the same
+  0.28 opacity a role highlight uses, so the drawing reads one rule. The
+  active chips live in `?show=` (validated, at most one per category, in
+  display order). An old `?role=` seeds the matching chip; a role with no
+  chip (debug, system, alternate) stays a highlight with a "Stop
+  highlighting" control. The role legend becomes `PinColorKey`, a passive
+  key: colour is read, not pressed. The alternate-function caveat shows only
+  while a chip is on, which is when it applies.
+- **Tools menu.** The nav is Pin Maps · Compare · Prices · Tools. Tools is a
+  disclosure (button + links, not an ARIA menu) listing Pin planner, Code
+  check, and Connect two boards, each with one sentence on what it does.
+  It sits last so the list opens leftward from the row's end and fits a
+  360 px screen. Each tool keeps one name in the menu, its page heading, and
+  its `<title>`.
+- **One header.** Compare and Prices now wear `SiteHeader` like every other
+  secondary page; only the catalog keeps its larger brand header with the
+  catalog readout.
+- **Button text sizes.** An unlayered `button, input { font: inherit }` reset
+  in `globals.css` outranked every layered Tailwind text utility, so an
+  11 px chip rendered at 16 px and a mono label in the UI font. Tailwind's
+  preflight already applies the reset inside its base layer, so the copy was
+  removed; `test/global-css.test.ts` keeps it out.
+- **Light theme.** Nav and Tools hover fills are `.ph-nav-link` and
+  `.ph-tools-item` rules with light counterparts, not `hover:bg-white/…`
+  utilities, which the light theme's `bg-white/` substring rule paints at
+  rest.
+
+## 22. Board finder (2026-11-23)
+
+`/find`, first in the Tools menu. The question it answers is the one people
+ask before they own a board: "which boards can take everything my project
+needs, at once?" A catalog filter that lists "has I2C, has SPI" cannot answer
+it, because buses compete for the same pins; the pin planner can.
+
+- **Same engine, same budget.** `findBoards` (`src/lib/board-finder.ts`) runs
+  `planPins` with the planner's `defaultPlanStepBudget` on every board with
+  source-backed pin functions, so a board listed as a fit opens in the
+  planner (`/planner?board=…&plan=…`) as exactly that plan. A search that runs
+  out of steps returns `exhausted: true` and is listed as undecided, never as
+  a fit or a miss. Boards without pin-function data are counted and named as
+  unchecked; nothing is inferred from labels.
+- **Server-side.** The page plans on the server from `searchParams`, so full
+  pin maps stay out of the browser. The worst catalog-wide request measured
+  ~200 ms. `FindControls` writes every change to the URL with
+  `router.replace` inside a transition; counts update optimistically and the
+  results dim (`aria-busy`) until the new plan arrives.
+- **URL boundary.** `?plan=` reuses `parsePlanParam` (64 characters, counts
+  0–8). `platform`, `logic`, and `wireless` accept only their listed values,
+  a repeated key is ignored, and a query over 256 characters is read as
+  empty rather than cut down into a different request.
+- **Filters** come from the discovery profile: platform (`computeClass`),
+  logic level (`logicProfile`, never inferred tolerance), and wireless.
+- **Results.** Clean fits first, then fits that need pins with recorded
+  cautions (orange note: read them in the plan), each group in catalog order;
+  no ranking beyond that. Each card shows up to four assignment lines in
+  Geist Mono ("I2C0 · SDA GP4 · SCL GP5"), the board's caution count, an
+  "Open this plan" primary action (`.ph-find-open`, solid cyan with a light
+  counterpart), and a Pin map link. The first 24 fits show; the rest sit in a
+  disclosure. Misses list the planner's own reason and open by default when
+  nothing fits.
+- **Examples** are named by what they connect ("SPI display + I2C sensor"),
+  never by a product, and disappear once anything is asked for.
 

@@ -55,8 +55,8 @@ describe("board share card", () => {
     }
   });
 
-  it("gives both board routes a prerendered large preview image", () => {
-    for (const segment of ["pinout", "boards"]) {
+  it("gives the board page a prerendered large preview image", () => {
+    for (const segment of ["boards"]) {
       const file = join(process.cwd(), "src", "app", segment, "[id]", "opengraph-image.tsx");
       expect(existsSync(file), file).toBe(true);
       const source = readFileSync(file, "utf8");

@@ -8,7 +8,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { LinkApp } from "@/components/link/LinkApp";
 
 export const metadata: Metadata = {
-  title: "Board link",
+  title: "Connect two boards",
   description:
     "Wire two development boards together over UART or I2C. PinHub lists the wires from each board's source-backed pin map and flags logic-level mismatches before you connect anything.",
   alternates: { canonical: "/link" },

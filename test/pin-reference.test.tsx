@@ -8,7 +8,8 @@ import { isReferenceGpio, pinCautionTexts, referenceFunctions } from "@/lib/pin-
 import { PrintPinReference } from "@/components/board-visual/PrintPinReference";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinoutDiagram } from "@/components/PinoutDiagram";
-import { PinoutFullView } from "@/components/board-visual/PinoutFullView";
+import { BoardWorkbench } from "@/components/board-visual/BoardWorkbench";
+import BoardPage from "@/app/boards/[id]/page";
 import { filterPinAnchors } from "@/components/board-visual/PinoutTable";
 import { pinAccessibleLabel } from "@/components/board-visual/roles";
 import { pinoutToMarkdown, pinoutToCsv } from "@/components/CopyPinTable";
@@ -18,8 +19,13 @@ const navigation = vi.hoisted(() => ({ search: "" }));
 vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(navigation.search) }));
 vi.mock("@/components/CircuitBackground", () => ({ CircuitBackground: () => null }));
 vi.mock("@/components/SiteHeader", () => ({ SiteHeader: () => null }));
-beforeAll(() => vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} }));
-afterEach(() => { cleanup(); navigation.search = ""; });
+const scrollIntoView = vi.fn();
+beforeAll(() => {
+  vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
+  // jsdom has no scrolling; record the calls instead.
+  Element.prototype.scrollIntoView = scrollIntoView;
+});
+afterEach(() => { cleanup(); navigation.search = ""; scrollIntoView.mockClear(); });
 const board = (id: string) => boards.find((item) => item.id === id)!;
 
 describe("recorded reference safety", () => {
@@ -27,16 +33,25 @@ describe("recorded reference safety", () => {
     const esp = board("esp32-devkit-v1");
     const anchor = buildBoardGeometry(esp)!.anchors.find(({ pin }) => pin.label === "D12")!;
     navigation.search = `pin=${encodeURIComponent(anchor.key)}`;
-    render(<PinoutFullView board={esp} />);
+    render(<BoardWorkbench board={esp} />);
     const summary = screen.getByRole("region", { name: "Selected pin" });
     expect(within(summary).getByRole("heading").textContent).toContain(`D12 · Physical pin ${anchor.pin.position}`);
     expect(summary.textContent).toContain("Boot strap: must be low at reset");
     expect(within(summary).getByRole("button", { name: "Show selected pin on diagram" })).toBeTruthy();
+    // The board page puts specs and cautions first, so a pin link scrolls its
+    // summary into view on arrival.
+    expect(scrollIntoView.mock.contexts).toContain(summary);
+  });
+
+  it("does not scroll on arrival without a pin, or when a pin is picked on the page", () => {
+    const esp = board("esp32-devkit-v1");
+    render(<BoardWorkbench board={esp} />);
+    expect(scrollIntoView).not.toHaveBeenCalled();
   });
 
   it("does not fabricate a selected-pin summary for an invalid URL key", () => {
     navigation.search = "pin=not-a-pin";
-    render(<PinoutFullView board={board("esp32-devkit-v1")} />);
+    render(<BoardWorkbench board={board("esp32-devkit-v1")} />);
     expect(screen.queryByRole("region", { name: "Selected pin" })).toBeNull();
   });
   it("keeps ESP32 reset restrictions visible in the static map", () => {
@@ -55,13 +70,16 @@ describe("recorded reference safety", () => {
     expect(pinAccessibleLabel(anchor.pin)).toContain("strapping");
   });
 
-  it("renders every board caution and logic level on direct standalone arrival", () => {
+  it("renders every board caution, the logic level, and an official source on the board page", async () => {
     const esp = board("esp32-devkit-v1");
-    render(<PinoutFullView board={esp} />);
+    render(await BoardPage({ params: Promise.resolve({ id: esp.id }) }));
     const cautions = screen.getByRole("region", { name: "Before you wire" });
     for (const warning of esp.warnings) expect(within(cautions).getByText(warning)).toBeTruthy();
-    expect(screen.getByText(`Logic: ${esp.logicLevel}`)).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Official board documentation" }).getAttribute("href")).toMatch(/^https:/);
+    expect(screen.getAllByText(esp.logicLevel).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("link", { name: /\(official source\)/ })[0].getAttribute("href")).toMatch(/^https:/);
+    // Cautions are read before the pin map they apply to.
+    const map = screen.getByRole("region", { name: "Pin map" });
+    expect(cautions.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("does not invent a flag explanation or duplicate a recorded note", () => {

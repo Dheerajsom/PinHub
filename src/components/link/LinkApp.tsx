@@ -110,7 +110,7 @@ export function LinkApp({
   return (
     <div className="ph-link grid gap-4">
       <header className="max-w-3xl">
-        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-cyan-200">Board link</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-cyan-200">Connect two boards</p>
         <h1 className="mt-2 text-[1.75rem] font-semibold leading-tight tracking-tight text-white sm:text-3xl">
           Wire two boards together
         </h1>

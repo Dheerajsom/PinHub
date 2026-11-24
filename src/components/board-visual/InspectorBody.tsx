@@ -12,14 +12,14 @@ import {
   PinDetails,
   type PinoutSource,
 } from "@/components/board-visual/PinDetails";
-import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
+import { PinColorKey } from "@/components/board-visual/PinRoleLegend";
 import {
   filterPinAnchors,
   pinoutFilterOptions,
   PinoutTable,
   type PinoutFilterCategory,
 } from "@/components/board-visual/PinoutTable";
-import { countRoles } from "@/components/board-visual/roles";
+import { countRoles, roleLabels } from "@/components/board-visual/roles";
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { pinReportContextFor } from "@/lib/pin-report";
@@ -80,6 +80,13 @@ export function InspectorBody({
       }),
     [board.pinFunctions, connector, explorerCategories, explorerQuery, geometry.anchors],
   );
+  // The drawing highlights exactly what the table lists, so "Show pins" is one
+  // control with one meaning on both halves of the workbench.
+  const filtering = explorerCategories.length > 0 || explorerQuery.trim() !== "";
+  const highlight = useMemo(
+    () => (filtering ? new Set(filteredAnchors.map((anchor) => anchor.key)) : null),
+    [filtering, filteredAnchors],
+  );
   // The same document "Before you wire" says to verify against, so the pin
   // readout, the board panel, and a filed report all cite one source.
   const source = useMemo<PinoutSource | undefined>(() => {
@@ -110,7 +117,9 @@ export function InspectorBody({
     () => countRoles(geometry.anchors.map((anchor) => anchor.pin)),
     [geometry.anchors],
   );
-  const hintId = `${useId()}-sheet-hint`;
+  const baseId = useId();
+  const hintId = `${baseId}-sheet-hint`;
+  const showPinsId = `${baseId}-show-pins`;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [zoomLabels, setZoomLabels] = useState(false);
   const [scroll, setScroll] = useState({
@@ -195,23 +204,26 @@ export function InspectorBody({
 
         <div className={clsx("space-y-2", query === undefined ? "mt-3" : "mt-0")}>
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] uppercase tracking-[0.16em] text-zinc-500">
-              Show pins by capability
+            <span id={showPinsId} className="text-[10px] uppercase tracking-[0.16em] text-zinc-500">
+              Show pins
             </span>
-            {explorerCategories.length || explorerQuery ? (
+            {filtering ? (
               <button
                 type="button"
                 onClick={clearExplorerFilters}
                 className="min-h-11 min-w-11 text-[11px] text-cyan-200 underline-offset-4 transition hover:text-white hover:underline"
               >
-                Clear filters
+                Show all pins
               </button>
             ) : null}
           </div>
           <div
-            className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            // The padding gives a focused chip's ring room inside the scroller,
+            // which would otherwise clip it; the negative margin keeps the
+            // chips aligned with the text above.
+            className="-mx-1 -mt-1 flex gap-1.5 overflow-x-auto px-1 pb-1 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             role="group"
-            aria-label="Filter pins by category"
+            aria-labelledby={showPinsId}
           >
             {pinoutFilterOptions.map((option) => {
               const active = explorerCategories.includes(option.id);
@@ -222,7 +234,7 @@ export function InspectorBody({
                   onClick={() => toggleCategory(option.id)}
                   aria-pressed={active}
                   className={clsx(
-                    "min-h-11 shrink-0 rounded-md border px-2.5 text-[11px] font-medium transition",
+                    "min-h-11 min-w-11 shrink-0 rounded-md border px-2.5 text-[11px] font-medium transition",
                     active
                       ? "border-cyan-300/65 bg-cyan-300/12 text-cyan-50"
                       : "border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/25 hover:text-white",
@@ -233,18 +245,32 @@ export function InspectorBody({
               );
             })}
           </div>
-          <p className="text-[11px] text-zinc-500" role="status" aria-live="polite">
-            Showing {filteredAnchors.length} of {geometry.anchors.length} pins
-            {filterStatus ? ` · ${filterStatus}` : ""}
+          {/* Always present so the live region announces a filter change; only
+              visible while filtering, since the table heading says "All N pins". */}
+          <p className={filtering ? "text-[11px] text-zinc-500" : "sr-only"} role="status" aria-live="polite">
+            {filtering
+              ? `Showing ${filteredAnchors.length} of ${geometry.anchors.length} pins${filterStatus ? ` · ${filterStatus}` : ""}`
+              : `All ${geometry.anchors.length} pins`}
           </p>
-          <p className="text-[11px] leading-5 text-zinc-500">Recorded capabilities, including alternate functions. No match does not prove absence; verify mux settings and restrictions.</p>
+          {explorerCategories.length ? (
+            <p className="text-[11px] leading-5 text-zinc-500">
+              Matches recorded functions, alternates included. A pin left out may
+              still have the function; check the datasheet for mux limits.
+            </p>
+          ) : null}
+          {activeRole ? (
+            <p className="flex flex-wrap items-center gap-x-2 text-[11px] text-zinc-400">
+              Highlighting {roleLabels[activeRole]} pins
+              <button
+                type="button"
+                onClick={() => onToggleRole(null)}
+                className="min-h-11 min-w-11 text-cyan-200 underline-offset-4 transition hover:text-white hover:underline"
+              >
+                Stop highlighting
+              </button>
+            </p>
+          ) : null}
         </div>
-
-        <PinRoleLegend
-          counts={roleCounts}
-          activeRole={activeRole}
-          onToggle={onToggleRole}
-        />
 
         <div className="mt-3">
           {/* Keep every pin tappable at working size; zoom can enlarge labels
@@ -305,6 +331,7 @@ export function InspectorBody({
                   activeRole={activeRole}
                   showAllLabels
                   netKeys={probe.keys}
+                  highlight={highlight}
                   onSelect={onSelect}
                   onActiveKey={onActiveKey}
                 />
@@ -330,6 +357,9 @@ export function InspectorBody({
                 />
               </>
             ) : null}
+          </div>
+          <div className="mt-2">
+            <PinColorKey counts={roleCounts} />
           </div>
           <p className="mt-2 text-[11px] leading-5 text-zinc-500">
             {illustrationCaption(geometry)}

@@ -104,9 +104,9 @@ describe("InspectorBody sheet", () => {
   it("keeps the full pin table available whichever mode is on", () => {
     renderSheet();
 
-    expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /All \d+ pins/ })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Zoom labels" }));
-    expect(screen.getByText(/All \d+ pins/)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /All \d+ pins/ })).toBeTruthy();
   });
 
   it("filters the real table and reports the active search/category", () => {
@@ -125,7 +125,7 @@ describe("InspectorBody sheet", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "I2C" }));
     expect(status()?.textContent).toContain("in I2C");
-    expect(screen.getByRole("button", { name: "Clear filters" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Show all pins" })).toBeTruthy();
   });
 
   it("exposes the catalog source and its provenance in the inspector", () => {

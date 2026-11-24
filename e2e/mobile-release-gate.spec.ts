@@ -74,7 +74,7 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await noOverflow(page);
         await page.screenshot({ path: testInfo.outputPath("link.png"), fullPage: true });
 
-        await page.goto("/pinout/raspberry-pi-pico");
+        await page.goto("/boards/raspberry-pi-pico");
         const selectPin = page.getByRole("button", { name: /^(Unselect|Select) pin 6, GP4$/ });
         await touchSize(selectPin);
         await touchSize(page.locator('.bv-pad > circle[fill="transparent"]').first());
@@ -86,10 +86,10 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await touchSize(page.getByRole("button", { name: "Clear pin search", exact: true }));
         await touchSize(page.getByRole("button", { name: "6 · GP4", exact: true }));
         await page.getByRole("button", { name: "Clear pin search", exact: true }).tap();
-        await page.getByRole("group", { name: "Filter pins by category" }).getByRole("button", { name: "PWM", exact: true }).tap();
-        await touchSize(page.getByRole("button", { name: "Clear filters", exact: true }));
+        await page.getByRole("group", { name: "Show pins", exact: true }).getByRole("button", { name: "PWM", exact: true }).tap();
+        await touchSize(page.getByRole("button", { name: "Show all pins", exact: true }));
         await expect(page.getByText("Showing 26 of 40 pins", { exact: true })).toBeVisible();
-        await page.getByRole("button", { name: "Clear filters", exact: true }).tap();
+        await page.getByRole("button", { name: "Show all pins", exact: true }).tap();
         await noOverflow(page);
         await page.screenshot({ path: testInfo.outputPath("pinout-fit.png"), fullPage: true });
         await touchSize(page.getByRole("link", { name: "Privacy", exact: true }));
@@ -103,7 +103,8 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await page.getByRole("button", { name: "Clear search", exact: true }).tap();
         await page.getByRole("button", { name: "Show Raspberry Pi Pico details", exact: true }).tap();
         await noOverflow(page);
-        await page.goto("/boards/raspberry-pi-pico");
+        // The Raspberry Pi connector workbench is the catalog panel's pin map;
+        // the board page carries the full workbench, checked above.
         const connector = page.getByRole("group", { name: "Select a physical pin from the connector" });
         const firstPin = connector.getByRole("button", { name: /^Pin 1,/ });
         await touchSize(firstPin);

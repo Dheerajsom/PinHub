@@ -14,15 +14,19 @@ links to official documentation, and most carry an interactive pin map.
 | Route | What it does |
 |---|---|
 | `/` | Catalog: search boards and pins (`pico sda`, `rpi5 spi`, `esp32 gpio27`), filter, favorite, and open board detail |
-| `/pinout/[id]` | Logic and wiring cautions, selected-pin summary and diagram jump, interactive pin map, recorded capability filters, primary-role highlighting, net probing, complete print schedule, and Markdown/CSV export |
-| `/boards/[id]` | Specs, wiring warnings, sources, Static pin map, and a fitted physical-board Dynamic view with touch-size zoom and Inspect (grouped maps remain connector schematics) |
-| `/pinout/[id]/opengraph-image`, `/boards/[id]/opengraph-image` | 1200×630 link-preview image of the board's pins, colored by role |
+| `/boards/[id]` | The board page: specs, wiring cautions (always before the map), price, sources, and the pin workbench — pin search, one **Show pins** filter that narrows the table and highlights the drawing together (`?show=`, shareable), selected-pin summary and diagram jump (`?pin=`), net probing, a colour key, complete print schedule, and Markdown/CSV export |
+| `/pinout/[id]` | Permanent redirect to `/boards/[id]`, keeping the query string; an old `?role=` link opens with the matching Show pins filter on |
+| `/boards/[id]/opengraph-image` | 1200×630 link-preview image of the board's pins, colored by role |
 | `/compare` | Discover boards with labeled filters, then compare up to four side by side; differences first; shareable URL |
-| `/planner` | Review board cautions, mark the pins you use, and fit I2C, SPI, UART, PWM, and ADC into what's left |
-| `/check` | Paste Arduino, MicroPython, CircuitPython, Raspberry Pi Python, Pico SDK, or ESP-IDF code, pick its board, and see each pin reference it recognises checked against the record (input-only, reserved, strapping, flash/PSRAM and USB pins, missing ADC/DAC/PWM/bus functions, the wrong MicroPython bus id), plus the values it could not follow. Runs in the browser; hands the pins to the planner |
-| `/link` | Wire two boards over UART or I2C, with board cautions and logic-level mismatch warnings |
+| `/find` | **Board finder.** Count the I2C, SPI, UART, CAN, PWM, ADC, DAC, and GPIO your project needs (optionally narrowed by platform, logic level, and wireless) and see every board where all of it fits at once, with the pins it would use. Runs the pin planner's own search on the server for each board with source-backed pin functions; each fit opens in the planner as the same plan, each miss says why, and boards without pin-function data are counted, not guessed. Shareable URL (`?plan=i2c1.adc2&logic=3v3`) |
+| `/planner` | **Pin planner.** Review board cautions, mark the pins you use, and fit I2C, SPI, UART, PWM, and ADC into what's left |
+| `/check` | **Code check.** Paste Arduino, MicroPython, CircuitPython, Raspberry Pi Python, Pico SDK, or ESP-IDF code, pick its board, and see each pin reference it recognises checked against the record (input-only, reserved, strapping, flash/PSRAM and USB pins, missing ADC/DAC/PWM/bus functions, the wrong MicroPython bus id), plus the values it could not follow. Runs in the browser; hands the pins to the planner |
+| `/link` | **Connect two boards.** Wire two boards over UART or I2C, with board cautions and logic-level mismatch warnings |
 | `/prices` | Dated USD prices and stock for 31 curated listings (Adafruit and the Arduino store), refreshed hourly |
 | `/collections` | Shareable board sets from your local library, with explicit four-board comparison subsets |
+
+The header links to Pin Maps, Compare, and Prices; the **Tools** menu lists
+Board finder, Pin planner, Code check, and Connect two boards, each with a one-line summary.
 
 Favorites and collections use local storage; if the browser refuses a write,
 PinHub identifies changes kept for this visit only. Nothing requires an account.
@@ -68,6 +72,7 @@ locally: without Blob credentials the app uses the bundled dated snapshot (see
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) — adding boards, reporting pinout errors
 - [docs/DESIGN.md](docs/DESIGN.md) — design language and UI reference
+- [docs/video-script.md](docs/video-script.md) — walkthrough script and shot list; `npm run facts` re-checks its numbers
 - [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — rules for automated contributors
 
 ## Accuracy and license

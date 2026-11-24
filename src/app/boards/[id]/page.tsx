@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -19,7 +20,13 @@ import { boardVisuals } from "@/lib/board-visuals";
 import { revisionNotesFor } from "@/lib/board-utilities";
 import { pinReportContextFor, pinReportUrl } from "@/lib/pin-report";
 import { CircuitBackground } from "@/components/CircuitBackground";
-import { PinoutTabs } from "@/components/PinoutTabs";
+import { PinoutDiagram } from "@/components/PinoutDiagram";
+import { PrintPinReference } from "@/components/board-visual/PrintPinReference";
+import {
+  BoardWorkbench,
+  BoardWorkbenchFallback,
+} from "@/components/board-visual/BoardWorkbench";
+import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { VendorLogo } from "@/components/VendorLogo";
 import { BoardActions } from "@/components/BoardActions";
 import { BoardPriceLink } from "@/components/BoardPriceLink";
@@ -40,7 +47,7 @@ export async function generateMetadata({
   const { id } = await params;
   const board = boards.find((item) => item.id === id);
   if (!board) return { title: "Board not found" };
-  const title = `${board.name} overview and pinout`;
+  const title = `${board.name} pinout and specs`;
   return {
     title,
     description: board.description,
@@ -92,6 +99,7 @@ export default async function BoardPage({
     ).values(),
   ].join(" · ");
   const verifySource = verificationSourceFor(board);
+  const hasDrawing = buildBoardGeometry(board) !== null;
   const related = similarBoards(board);
   const revisionNotes = [
     ...revisionNotesFor(board),
@@ -103,9 +111,9 @@ export default async function BoardPage({
   return (
     <main className="relative isolate min-h-screen pb-10">
       <CircuitBackground />
-      <SiteHeader />
+      <SiteHeader width="wide" />
 
-      <div className="relative mx-auto max-w-[1280px] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+      <div className="relative mx-auto max-w-[1560px] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
         {/* Title block: identity and the four characteristics people check
             first, laid out as a ruled key/value table like a datasheet's
             front page rather than as four floating tiles. */}
@@ -145,28 +153,48 @@ export default async function BoardPage({
           </div>
         </section>
 
-        {/* Pin map leads the page; the wiring cautions sit beside it on wide
-            screens and before it on phones (DOM order), so a hazard is always
-            read before the map it applies to. */}
+        {/* Cautions come before the map in reading order on every screen, so
+            a hazard is read before the pins it applies to. Price and revision
+            notes sit beside the cautions on wide screens and after the map on
+            phones, where they would otherwise push the map off the first
+            screens. */}
         <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
           <WiringCautions
             warnings={board.warnings}
             verifySource={verifySource}
             verifySourceOfficial={isOfficialVerificationSource(board, verifySource)}
             reportUrl={pinReportUrl(pinReportContextFor(board))}
-            className="lg:col-start-2 lg:row-start-1"
+            className="lg:col-start-1 lg:row-start-1"
           />
 
-          {/* The pin map widget carries its own "Pin map" label, view tabs,
-              and a Full view link, so it needs no second header here. */}
           <section
-            aria-label="Pin map"
-            className="surface-panel min-w-0 rounded-xl p-4 sm:p-5 lg:col-start-1 lg:row-span-3 lg:row-start-1"
+            id="pins"
+            aria-labelledby="pins-heading"
+            className="surface-panel min-w-0 scroll-mt-4 rounded-xl p-4 sm:p-5 lg:col-span-2 lg:row-start-2"
           >
-            <PinoutTabs board={board} />
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h2 id="pins-heading" className="text-lg font-semibold tracking-tight text-white">
+                Pin map
+              </h2>
+              {/* The static map titles its own connector; only the workbench
+                  needs the name here. */}
+              {board.pinout && hasDrawing ? (
+                <p className="font-mono text-xs text-zinc-500">{board.pinout.connector}</p>
+              ) : null}
+            </div>
+            <PrintPinReference board={board} />
+            {hasDrawing ? (
+              <Suspense fallback={<BoardWorkbenchFallback board={board} />}>
+                <BoardWorkbench board={board} />
+              </Suspense>
+            ) : (
+              <div className="pin-screen-reference">
+                <PinoutDiagram pinout={board.pinout} board={board} />
+              </div>
+            )}
           </section>
 
-          <div className="min-w-0 space-y-5 lg:col-start-2 lg:row-start-2">
+          <div className="min-w-0 space-y-5 lg:col-start-2 lg:row-start-1">
             <BoardPriceLink boardId={board.id} />
 
             {revisionNotes.length ? (
@@ -179,8 +207,21 @@ export default async function BoardPage({
                 </ul>
               </section>
             ) : null}
+          </div>
 
-            <section className="surface-panel rounded-xl p-4">
+          <div className={`grid min-w-0 gap-5 lg:col-span-2 lg:row-start-3 ${board.highlights.length ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]" : ""}`}>
+            {board.highlights.length ? (
+              <section className="surface-panel min-w-0 rounded-xl p-4 sm:p-5">
+                <h2 className="flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
+                  <Sparkles className="size-4 text-emerald-200" aria-hidden="true" /> Why it matters
+                </h2>
+                <ul className="mt-3 grid gap-2 text-sm leading-6 text-zinc-400">
+                  {board.highlights.map((item) => <li key={item} className="surface-well rounded-lg p-3">{item}</li>)}
+                </ul>
+              </section>
+            ) : null}
+
+            <section className="surface-panel min-w-0 rounded-xl p-4 sm:p-5">
               <h2 className="mb-3 flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
                 <BookOpen className="size-4 text-cyan-200" aria-hidden="true" /> Source references
               </h2>
@@ -211,17 +252,6 @@ export default async function BoardPage({
               </div>
             </section>
           </div>
-
-          {board.highlights.length ? (
-            <section className="surface-panel min-w-0 rounded-xl p-4 sm:p-5 lg:col-start-1">
-              <h2 className="flex items-center gap-2 text-[13px] font-semibold tracking-tight text-white">
-                <Sparkles className="size-4 text-emerald-200" aria-hidden="true" /> Why it matters
-              </h2>
-              <ul className="mt-3 grid gap-2 text-sm leading-6 text-zinc-400 sm:grid-cols-2">
-                {board.highlights.map((item) => <li key={item} className="surface-well rounded-lg p-3">{item}</li>)}
-              </ul>
-            </section>
-          ) : null}
         </div>
 
         {related.length ? (

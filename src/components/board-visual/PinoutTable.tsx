@@ -9,13 +9,14 @@ import type { PinAnchor } from "@/lib/board-visual-geometry";
 import type { PinNet } from "@/lib/pin-nets";
 import { roleChipStyle, roleLabels } from "@/components/board-visual/roles";
 import { isReferenceGpio, referenceFunctions, pinCautionTexts, type PinFlagNotes } from "@/lib/pin-reference";
+import type { PinoutCategory } from "@/lib/pinout-state";
 
 /**
  * Categories people actually use when looking for a header signal. These are
  * intentionally broader than PinRole: ADC and DAC are both analog, and boot
  * pins are commonly represented as `system` or `special` with a caution note.
  */
-export const pinoutFilterOptions = [
+export const pinoutFilterOptions: ReadonlyArray<{ id: PinoutCategory; label: string }> = [
   { id: "gpio", label: "GPIO" },
   { id: "power", label: "Power" },
   { id: "ground", label: "Ground" },
@@ -26,9 +27,33 @@ export const pinoutFilterOptions = [
   { id: "spi", label: "SPI" },
   { id: "boot", label: "Boot / strap" },
   { id: "reserved", label: "Reserved" },
-] as const;
+];
 
-export type PinoutFilterCategory = (typeof pinoutFilterOptions)[number]["id"];
+export type PinoutFilterCategory = PinoutCategory;
+
+/**
+ * The "Show pins" chip that stands for a primary pin role, so a shared
+ * `?role=` link opens with the matching filter on. Roles with no chip of their
+ * own (debug, system, alternate) return null and stay a plain highlight.
+ */
+export function categoryForRole(role: string): PinoutFilterCategory | null {
+  switch (role) {
+    case "gpio":
+    case "power":
+    case "ground":
+    case "pwm":
+    case "uart":
+    case "i2c":
+    case "spi":
+    case "reserved":
+      return role;
+    case "adc":
+    case "dac":
+      return "analog";
+    default:
+      return null;
+  }
+}
 
 const bootPinText = /\b(?:boot|strap|strapping|download mode|flash mode)\b/i;
 const reservedPinText =

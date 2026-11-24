@@ -10,6 +10,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: new URL("/find", siteUrl).toString(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: new URL("/planner", siteUrl).toString(),
       changeFrequency: "monthly",
       priority: 0.7,
@@ -39,10 +44,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.7,
     },
-    ...boards.map((board) => ({
-      url: new URL(`/pinout/${board.id}`, siteUrl).toString(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    })),
   ];
 }

@@ -262,6 +262,8 @@ describe("determinism, bounds, and support", () => {
       reason:
         "PinHub stopped after checking 5 combinations without finding a plan. Remove a requirement and try again.",
       steps: 5,
+      // The board finder reports this as undecided, never as a miss.
+      exhausted: true,
     });
   });
 
