@@ -80,12 +80,26 @@ person can match to the board in front of them.
   `npm run build`: pass.
 - `npm --prefix cli run generate:boards` and `check:boards`: pass, with no
   content change.
-- `CI=1 npx playwright test --retries=0`: 172 passed, 1 failed in two full
-  runs. The failure is `board-finder.spec.ts` "the Tools menu reaches the
-  finder…": after "Add one SPI" the URL stays at `plan=i2c1.adc2`. It passes
-  when run alone (7/7). Neither this branch nor this review touches the finder,
-  so it is a load-sensitive failure that predates this work. It is flagged
-  here and not fixed.
+- `CI=1 npx playwright test --retries=0`: 173/173 in two consecutive full
+  runs, after the finder test fix below.
+
+## Follow-up: Board finder browser test
+
+Before the fix, `board-finder.spec.ts` "the Tools menu reaches the finder…"
+failed in every full parallel run and passed alone. The failing check moved
+between the example-plan step and the "Add one SPI" step. A failure trace
+showed the cause. A finder change replaces the URL only once the server's
+new plan arrives. Under a 12-worker run, the first `/find?plan=…` RSC
+response took 4,817 ms, so the URL changed just after Playwright's default
+5 s wait. The app was not wrong: `findBoards` takes about 10 ms for these
+plans, and alone the request returns in about 0.2 s. The counts update at
+once because they are optimistic.
+
+The URL and result-status assertions in that test now use a 15 s
+server-round-trip timeout. The test also asserts that the optimistic count
+("SPI, 1 needed") appears straight away, which is what a user sees. Not
+changed: each finder step returns about 335 KB of RSC. That is a possible
+payload optimisation, not a defect.
 - Mobile gate (mobile-mojo, Playwright with touch emulation and system
   Chrome): 88 runs, all passing. The Feather RP2040, ESP32-S3 Feather,
   BeagleBone Black and Orange Pi 5 Plus ran at 360 × 800, 390 × 844, 412 × 915
