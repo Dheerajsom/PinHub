@@ -121,7 +121,9 @@ describe("handing a fit to the planner", () => {
         }
       }
     }
-  });
+    // A full catalog sweep, 24 times over: ~1.5 s alone, but it outran the
+    // 5 s default beside 95 other files on a CI runner.
+  }, 30_000);
 
   it("opens the planner on that board with the same requirements", () => {
     const href = plannerHref("raspberry-pi-pico", { I2C: 1, ADC: 2 });
