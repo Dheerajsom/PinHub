@@ -10,6 +10,8 @@ import { familyArtFor, freeField, layoutFamilyArt, overlaps } from "@/lib/board-
 import { renderCoverage, renderTier } from "@/lib/board-render-coverage";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
+import { BoardDrawingViewport } from "@/components/board-visual/BoardDrawingViewport";
+import { PinoutDiagram } from "@/components/PinoutDiagram";
 import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutVisualization";
 import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
@@ -81,7 +83,6 @@ describe("family board artwork", () => {
     expect(kinds("stm32-nucleo-f401re")).toEqual(["debug-section", "button", "button"]);
     expect(kinds("jetson-orin-nano-dev-kit")).toEqual(["heatsink"]);
     expect(kinds("arduino-uno-rev3")).toEqual(["button"]);
-    expect(kinds("orange-pi-5")).toEqual(["soc"]);
     // The micro:bit's processor is on the back, so no generic IC is drawn.
     const microbit = renderToStaticMarkup(<svg><BoardArtwork geometry={buildBoardGeometry(byId("bbc-microbit-v2"))!} /></svg>);
     expect(microbit).not.toContain("url(#silicon-");
@@ -100,6 +101,18 @@ describe("family board artwork", () => {
 });
 
 describe("render coverage inventory", () => {
+  it.each(boards)("renders $id's complete artwork and preserves its mapped pins in fit view", (board) => {
+    const idle = { selectedKey: null, activeKey: null, activeRole: null, netKeys: new Set<string>(), onSelect() {}, onActiveKey() {} };
+    const geometry = buildBoardGeometry(board);
+    const markup = renderToStaticMarkup(geometry
+      ? <BoardDrawingViewport board={board} geometry={geometry} {...idle} />
+      : <PinoutDiagram board={board} />);
+    expect(markup).toContain(`data-${geometry?.artworkId ? "pi" : "product"}-artwork="${board.id}"`);
+    if (!geometry?.artworkId) expect(markup.match(/data-landmark=/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(markup.match(/data-pin-key=/g)?.length ?? 0).toBe(geometry?.anchors.length ?? 0);
+    if (geometry) expect(markup).toContain('data-board-view="fit"');
+  });
+
   it("distinguishes the Freedom board's touch slider from the micro:bit edge contacts", () => {
     const freedom = boardPortrait("nxp-frdm-kl25z")!.parts.map(([kind]) => kind);
     expect(freedom).toContain("touch-slider");
@@ -107,10 +120,21 @@ describe("render coverage inventory", () => {
     expect(boardPortrait("bbc-microbit-v2")!.parts.some(([kind]) => kind === "contacts")).toBe(true);
   });
 
+  it("keeps model-specific controls and connectors on boards with a shared footprint", () => {
+    const parts = (id: string) => boardPortrait(id)!.parts.map(([kind]) => kind);
+    expect(parts("seeed-xiao-samd21")).toContain("test-pads");
+    expect(parts("seeed-xiao-samd21")).not.toContain("button");
+    expect(parts("seeed-xiao-esp32c3")).toContain("rf-socket");
+    expect(parts("seeed-xiao-esp32s3-sense")).toContain("camera");
+    expect(parts("sparkfun-pro-micro")).toContain("crystal");
+    expect(parts("sparkfun-pro-micro")).not.toContain("jst-sh");
+    expect(parts("sparkfun-pro-micro-rp2040")).toEqual(expect.arrayContaining(["usb-c", "jst-sh", "memory", "button"]));
+  });
+
   it("accounts for every catalog board in exactly one tier", () => {
     const coverage = renderCoverage(boards);
     const counts = Object.fromEntries(Object.entries(coverage).map(([tier, ids]) => [tier, ids.length]));
-    expect(counts).toEqual({ pi: 18, module: 69, separate: 103, portraitOnly: 6, missing: 0 });
+    expect(counts).toEqual({ pi: 18, module: 69, header: 4, separate: 99, portraitOnly: 6, missing: 0 });
     expect(Object.values(coverage).flat().sort()).toEqual(boards.map((board) => board.id).sort());
     expect(coverage.separate).toContain("digilent-nexys-a7-100t");
     expect(coverage.portraitOnly).toContain("digilent-basys-3");
@@ -118,20 +142,22 @@ describe("render coverage inventory", () => {
 });
 
 describe("embedded product pin map", () => {
-  it("opens with labelled, touch-sized pins and offers the whole board on request", () => {
+  it("opens on the complete product and enlarges the pins on request", () => {
     const board = byId("esp32-devkitc");
     const { container } = render(<BoardPinoutVisualization board={board} />);
     const frame = container.querySelector<HTMLElement>("[data-board-view]")!;
+    expect(frame.dataset.boardView).toBe("fit");
+    expect(frame.style.minWidth).toBe("");
+    expect(frame.closest("details:not([open])")).toBeNull();
+    expect(frame.querySelector(".bv-label")).toBeNull();
+    expect(frame.querySelector('[data-product-artwork="esp32-devkitc"]')).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     expect(frame.dataset.boardView).toBe("touch");
     expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!));
-    expect(frame.closest("details:not([open])")).toBeNull();
     expect(frame.querySelector(".bv-label")).toBeTruthy();
-    expect(frame.querySelector('[data-product-artwork="esp32-devkitc"]')).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
     expect(frame.dataset.boardView).toBe("fit");
     expect(frame.style.minWidth).toBe("");
-    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
-    expect(frame.dataset.boardView).toBe("touch");
   });
 
   it("shows the Feather short row opposite the last twelve pads in the long row", () => {
@@ -156,10 +182,36 @@ describe("embedded product pin map", () => {
     }
   });
 
-  it("keeps function-grouped schematics at touch size with no physical zoom toggle", () => {
+  it("shows the whole product before the grouped signal diagram", () => {
     const board = byId("beaglebone-black");
     const { container } = render(<BoardPinoutVisualization board={board} />);
-    expect(container.querySelector<HTMLElement>("[data-board-view]")!.dataset.boardView).toBe("touch");
-    expect(screen.queryByRole("button", { name: "Zoom to touch size" })).toBeNull();
+    const portrait = screen.getByRole("img", { name: `Simplified illustration of ${board.name}` });
+    const frame = container.querySelector<HTMLElement>("[data-board-view]")!;
+    expect(portrait.compareDocumentPosition(frame) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(frame.dataset.boardView).toBe("fit");
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
+    expect(frame.dataset.boardView).toBe("touch");
+    expect(screen.queryByRole("img", { name: `Simplified illustration of ${board.name}` })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
+    expect(screen.getByRole("img", { name: `Simplified illustration of ${board.name}` })).toBeTruthy();
+  });
+
+  it("registers the Orange Pi 5's 26 contacts on its illustrated component side", () => {
+    const board = byId("orange-pi-5");
+    const geometry = buildBoardGeometry(board)!;
+    const { container } = render(<BoardPinoutVisualization board={board} />);
+    const frame = container.querySelector<HTMLElement>('[data-board-view="fit"]')!;
+    const drawing = frame.querySelector('[data-product-artwork="orange-pi-5"]')!;
+    for (const kind of ["bga", "memory", "microsd", "usb-c", "ethernet", "ribbon", "hdmi"]) {
+      expect(drawing.querySelector(`[data-landmark="${kind}"]`)).toBeTruthy();
+    }
+    expect(drawing.textContent).toContain("RK3588S");
+    expect(frame.querySelectorAll("[data-pin-key]")).toHaveLength(26);
+    expect(geometry.orientation).not.toContain("40-pin");
+    const pin = (position: number) => geometry.anchors.find(a => a.pin.position === position)!;
+    expect(pin(1).cx).toBe(pin(2).cx);
+    expect(pin(1).cy).toBeGreaterThan(pin(2).cy);
+    expect(pin(25).cx - pin(1).cx).toBeCloseTo(12 * geometry.pitch);
+    expect(pin(1).cx - geometry.body.x).toBeCloseTo(geometry.body.w * .112);
   });
 });

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutVisualization";
 import { boards } from "@/lib/boards";
@@ -33,6 +33,7 @@ describe("compact pin map stage", () => {
   it("offers keyboard panning and says so when the drawing overflows", () => {
     const measure = stubStageWidth(640);
     render(<BoardPinoutVisualization board={board} />);
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     measure();
     expect(screen.getByRole("group", { name: "Scrollable pin map" }).tabIndex).toBe(0);
     expect(screen.getByText(/arrow keys/)).toBeTruthy();

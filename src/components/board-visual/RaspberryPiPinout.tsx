@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Expand, ExternalLink, Search, ShieldAlert, ZoomIn, ZoomOut } from "lucide-react";
+import { Expand, ExternalLink, Search, ShieldAlert } from "lucide-react";
 import type { Board, Pin, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
-import { BoardStage } from "@/components/board-visual/BoardStage";
-import { usePinViewport } from "./use-pin-viewport";
-import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { BoardDrawingViewport } from "./BoardDrawingViewport";
 import { connectorCells, connectorKeyTarget } from "@/components/board-visual/connector-cells";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
@@ -28,9 +26,6 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const [zoomed, setZoomed] = useState(true);
-  const boardScrollRef = useRef<HTMLDivElement>(null);
-  usePinViewport(boardScrollRef, board.id, selectedKey, zoomed);
   const expandRef = useRef<HTMLButtonElement>(null);
   const connectorRef = useRef<HTMLDivElement>(null);
   const pinRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -99,22 +94,12 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
       </header>
 
       <div className="pi-component-layout">
-        <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
+        <div className="pi-canvas">
           <p className="pi-board-orientation">{geometry.orientation}</p>
-          <div className="pi-canvas-footer">
-            <span>{zoomed ? "Pan to see more pins" : "Whole board"}</span>
-            <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(!zoomed)}>
-              {zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Fit whole board" : "Zoom to touch size"}
-            </button>
-          </div>
-          <div ref={boardScrollRef} className="pi-canvas-scroll" data-zoomed={zoomed || undefined}
-            {...(zoomed ? { tabIndex: 0, role: "group", "aria-label": "Scrollable board at touch size" } : {})}>
-            <div className="pi-board-frame" data-board-view={zoomed ? "touch" : "fit"}
-              style={{ aspectRatio: zoomed ? `${geometry.vbw} / ${geometry.vbh}` : `${geometry.body.w + 48} / ${geometry.body.h + 55}`, ...(zoomed ? { boxSizing: "content-box", minWidth: touchDrawingWidth(geometry), maxWidth: "none" } : {}) }}>
-              <BoardStage geometry={geometry} title={`${board.name} physical board — ${board.pinout.connector}`} sheetLabel={board.name}
-                compact={!zoomed} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={zoomed} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
-            </div>
-          </div>
+          <BoardDrawingViewport
+            board={board} geometry={geometry} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole}
+            netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey}
+          />
         </div>
 
         <aside className="pi-readout">

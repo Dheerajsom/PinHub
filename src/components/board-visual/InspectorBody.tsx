@@ -1,14 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import { clsx } from "clsx";
-import { Search, Scan, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
-import { ProductPortrait } from "@/components/board-visual/ProductPortrait";
-import { BoardStage } from "@/components/board-visual/BoardStage";
-import { usePinViewport } from "./use-pin-viewport";
-import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { BoardDrawingViewport } from "./BoardDrawingViewport";
 import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import {
   PinDetails,
@@ -120,17 +117,7 @@ export function InspectorBody({
     [geometry.anchors],
   );
   const baseId = useId();
-  const hintId = `${baseId}-sheet-hint`;
   const showPinsId = `${baseId}-show-pins`;
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [zoomLabels, setZoomLabels] = useState(false);
-  usePinViewport(scrollRef, board.id, selectedKey, true);
-  const [scroll, setScroll] = useState({
-    scrollable: false,
-    atStart: true,
-    atEnd: true,
-  });
-  const { scrollable, atStart, atEnd } = scroll;
   const activeCategoryLabels = explorerCategories.map(
     (category) =>
       pinoutFilterOptions.find((option) => option.id === category)?.label ??
@@ -144,37 +131,6 @@ export function InspectorBody({
   ]
     .filter(Boolean)
     .join(" ");
-
-  // Whether the sheet overflows, and which way it can still go. Read from the
-  // element rather than assumed from the geometry, because the same drawing
-  // overflows in a phone panel and does not on a desktop sheet.
-  const updateScrollState = useCallback(() => {
-    const node = scrollRef.current;
-    if (!node) return;
-    const slack = node.scrollWidth - node.clientWidth;
-    const next = {
-      scrollable: slack > 1,
-      atStart: node.scrollLeft <= 1,
-      atEnd: node.scrollLeft >= slack - 1,
-    };
-    // Scrolling within the same region does not change the edge hints. Keep
-    // the snapshot stable instead of rebuilding the SVG and table per pixel.
-    setScroll((current) =>
-      current.scrollable === next.scrollable &&
-      current.atStart === next.atStart && current.atEnd === next.atEnd
-        ? current
-        : next,
-    );
-  }, []);
-
-  useEffect(() => {
-    updateScrollState();
-    const node = scrollRef.current;
-    if (!node) return;
-    const observer = new ResizeObserver(updateScrollState);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [zoomLabels, geometry, updateScrollState]);
 
   return (
     <div className="@container grid min-h-0 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
@@ -276,92 +232,11 @@ export function InspectorBody({
         </div>
 
         <div className="mt-3">
-          {/* Keep every pin tappable at working size; zoom can enlarge labels
-              without shrinking controls below their minimum touch size. */}
-          {scrollable || zoomLabels ? (
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <p
-                id={hintId}
-                className="min-w-0 text-[11px] leading-4 text-zinc-500"
-              >
-                {zoomLabels
-                  ? "Labels enlarged — swipe to view the full connector"
-                  : "Swipe horizontally to view the full connector"}
-              </p>
-              <button
-                type="button"
-                onClick={() => setZoomLabels((value) => !value)}
-                aria-pressed={zoomLabels}
-                className={clsx(
-                  "touch-target inline-flex shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition",
-                  zoomLabels
-                    ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50"
-                    : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
-                )}
-              >
-                <Scan className="size-3.5" aria-hidden="true" />
-                {zoomLabels ? "Working size" : "Zoom labels"}
-              </button>
-            </div>
-          ) : null}
-          <div className="relative">
-            <div
-              ref={scrollRef}
-              onScroll={updateScrollState}
-              // Focusable so the drawing can be panned from the keyboard, and
-              // labelled so its instructions reach a screen reader rather than
-              // sitting in a caption nobody is pointed at.
-              tabIndex={0}
-              role="group"
-              aria-label={`${board.name} connector diagram`}
-              aria-describedby={scrollable || zoomLabels ? hintId : undefined}
-              className="bv-stage-wrap w-full overflow-auto rounded-md p-2"
-            >
-              <div
-                className="mx-auto"
-                style={{
-                  aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-                  minWidth: touchDrawingWidth(geometry) * (zoomLabels ? 1.5 : 1),
-                  maxWidth: Math.max(geometry.vbw, touchDrawingWidth(geometry)) * (zoomLabels ? 1.5 : 1),
-                }}
-              >
-                <BoardStage
-                  productId={board.id}
-                  geometry={geometry}
-                  title={`${board.name} — ${board.pinout?.connector ?? "pinout"}`}
-                  sheetLabel={board.name}
-                  selectedKey={selectedKey}
-                  activeKey={activeKey}
-                  activeRole={activeRole}
-                  showAllLabels
-                  netKeys={probe.keys}
-                  highlight={highlight}
-                  onSelect={onSelect}
-                  onActiveKey={onActiveKey}
-                />
-              </div>
-            </div>
-            {/* The diagram runs under a fade at the edge it continues past, so
-                "there is more board this way" is visible, not just stated. */}
-            {scrollable ? (
-              <>
-                <div
-                  aria-hidden="true"
-                  className={clsx(
-                    "pointer-events-none absolute inset-y-px left-px w-8 rounded-l-md bg-gradient-to-r from-[#0a0c11] to-transparent transition-opacity",
-                    atStart ? "opacity-0" : "opacity-100",
-                  )}
-                />
-                <div
-                  aria-hidden="true"
-                  className={clsx(
-                    "pointer-events-none absolute inset-y-px right-px w-8 rounded-r-md bg-gradient-to-l from-[#0a0c11] to-transparent transition-opacity",
-                    atEnd ? "opacity-0" : "opacity-100",
-                  )}
-                />
-              </>
-            ) : null}
-          </div>
+          {geometry.portraitId && <p className="text-xs text-zinc-400">{geometry.orientation}</p>}
+          <BoardDrawingViewport
+            board={board} geometry={geometry} selectedKey={selectedKey} activeKey={activeKey} activeRole={activeRole}
+            netKeys={probe.keys} highlight={highlight} onSelect={onSelect} onActiveKey={onActiveKey} enlargeLabels
+          />
           <div className="mt-2">
             <PinColorKey counts={roleCounts} />
           </div>
@@ -382,10 +257,6 @@ export function InspectorBody({
             onClear={() => onSelect(null)}
           />
         </div>
-
-        {!geometry.artworkId && geometry.kind !== "edge-dual" && (
-          <div className="mt-3"><ProductPortrait id={board.id} name={board.name} /></div>
-        )}
 
         {board.pinout ? (
           <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-3 text-sm leading-6 text-zinc-400">

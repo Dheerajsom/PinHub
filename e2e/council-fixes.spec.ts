@@ -112,7 +112,9 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 
     await expect(pad).toBeFocused();
     await expect(pad).toBeInViewport();
     await expect(pad).toHaveAttribute("aria-pressed", "true");
-    if (viewport.width < 500) expect(await page.getByRole("group", { name: /connector diagram/ }).evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
+    await expect(page.locator("[data-board-view]")).toHaveAttribute("data-board-view", "fit");
+    await page.getByRole("button", { name: "Zoom to touch size" }).click();
+    if (viewport.width < 500) expect(await page.getByRole("group", { name: "Scrollable pin map" }).evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
   });
 }
 

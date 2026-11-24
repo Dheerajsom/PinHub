@@ -3,6 +3,8 @@
 // always come from the independently sourced pinout, never from these shapes.
 export type PartKind =
   | "chip"
+  | "bga"
+  | "memory"
   | "dip"
   | "hole"
   | "ethernet"
@@ -12,13 +14,25 @@ export type PartKind =
   | "joystick"
   | "shield"
   | "usb"
+  | "usb-c"
+  | "hdmi"
+  | "microsd"
+  | "ribbon"
+  | "mezzanine"
   | "jack"
   | "socket"
   | "header"
+  | "header-2x"
   | "pads"
+  | "test-pads"
   | "button"
+  | "crystal"
+  | "capacitor"
+  | "led"
   | "screen"
   | "antenna"
+  | "rf-socket"
+  | "ceramic-antenna"
   | "sink"
   | "fan"
   | "camera"
@@ -27,6 +41,7 @@ export type PartKind =
   | "digits"
   | "proto"
   | "jst"
+  | "jst-sh"
   | "contacts";
 export type Part = readonly [
   kind: PartKind,
@@ -34,7 +49,7 @@ export type Part = readonly [
   y: number,
   width: number,
   height: number,
-  count?: number,
+  countOrMark?: number | string,
 ];
 type Outline = "round" | "shield" | "case" | "beagle";
 export type BoardPortrait = {
@@ -42,6 +57,9 @@ export type BoardPortrait = {
   color: string;
   outline: Outline;
   parts: Part[];
+  /** Component-side top header, pin 1 on the inner row at the left.
+   * Dimensions locate the centre of pin 2 in millimetres from the top left. */
+  topHeader?: { boardWidth: number; firstX: number; outerY: number };
 };
 
 const black = "#323a40",
@@ -85,14 +103,19 @@ function feather(color: string, ...parts: Part[]) {
 function nano(...parts: Part[]) {
   return moduleBoard(2.5, blue, [usb, ...parts]);
 }
-function xiao(center: PartKind = "shield") {
+const xiaoUsb: Part = ["usb-c", -3, 25, 42, 50];
+const xiaoEndButtons: Part[] = [["button", 86, 18, 11, 16], ["button", 86, 66, 11, 16]];
+const xiaoUsbButtons: Part[] = [["button", 18, 14, 10, 10], ["button", 18, 76, 10, 10]];
+function xiao(...parts: Part[]) {
   return moduleBoard(1.18, black, [
-    ["usb", -3, 22, 45, 56],
-    [center, 47, 16, 48, 69],
+    xiaoUsb, ["shield", 40, 16, 44, 68], ...parts,
   ]);
 }
-function qtPy(color: string, ...parts: Part[]) {
-  return moduleBoard(1.15, color, [["usb", -3, 22, 43, 55], ...parts]);
+function qtPy(color: string, reset: Part, boot: Part, pixel: Part) {
+  return moduleBoard(1.15, color, [
+    ["usb-c", -3, 24, 40, 51], ["jst-sh", 77, 40, 24, 40],
+    ["chip", 45, 40, 12, 13], reset, boot, pixel,
+  ]);
 }
 function devkit(aspect: number, ports: number, mini = false, color = black) {
   const jacks: Part[] =
@@ -107,6 +130,7 @@ function devkit(aspect: number, ports: number, mini = false, color = black) {
     ["button", 18, 18, 7, 13],
     ["button", 18, 69, 7, 13],
     ["chip", 29, 37, 12, 24],
+    ["led", 28, 19, 4, 6],
     ["shield", mini ? 61 : 54, 20, mini ? 25 : 33, 60],
     ["antenna", 88, 22, 11, 55],
   ]);
@@ -154,7 +178,7 @@ function nucleo(kind: "classic" | "new" | "small" | "144") {
 }
 function sbc(aspect: number, color: string, parts: Part[]) {
   return board(aspect, color, [
-    ["header", 6, 4, 62, 7, 20],
+    ["header-2x", 6, 3, 62, 9, 20],
     ["hole", 2, 2, 3, 4],
     ["hole", 2, 90, 3, 4],
     ...parts,
@@ -165,9 +189,9 @@ const twinUsb: Part[] = [
   ["socket", 82, 8, 19, 21],
   ["socket", 82, 37, 19, 21],
 ];
-const hdmi: Part = ["usb", 39, 87, 17, 14];
-const memory: Part = ["chip", 51, 32, 13, 25];
-const soc: Part = ["chip", 29, 38, 20, 26];
+const hdmi: Part = ["hdmi", 39, 87, 17, 14];
+const memory: Part = ["memory", 51, 32, 13, 25];
+const soc: Part = ["bga", 29, 38, 20, 26];
 function fpga(aspect: number, color: string, extras: Part[]) {
   return board(aspect, color, [["chip", 42, 35, 21, 28], ...extras]);
 }
@@ -215,6 +239,9 @@ models(
     [
       ["dip", 39, 57, 46, 16],
       ["chip", 22, 25, 11, 15],
+      ["button", 3, 3, 7, 9], ["crystal", 34, 29, 9, 6],
+      ["capacitor", 23, 65, 7, 9], ["capacitor", 23, 76, 7, 9],
+      ["header-2x", 19, 12, 9, 8, 3], ["header-2x", 86, 46, 10, 9, 3],
     ],
   ),
 );
@@ -247,7 +274,12 @@ models(
 );
 models(["arduino-leonardo"], shieldBoard(1.29, teal, [smallUsb, barrel], [processor]));
 models(["arduino-zero"], shieldBoard(1.29, teal, [smallUsb, ["usb", -1, 40, 13, 13], barrel], [processor]));
-models(["arduino-mega-2560-rev3"], shieldBoard(1.9, teal, [usbB, barrel], [processor], true));
+models(["arduino-mega-2560-rev3"], shieldBoard(1.9, teal, [usbB, barrel], [
+  ["chip", 45, 36, 15, 27, "ATmega2560"], ["chip", 18, 26, 6, 11],
+  ["button", 2, 3, 6, 10], ["crystal", 17, 43, 9, 6],
+  ["capacitor", 16, 78, 5, 9], ["capacitor", 23, 78, 5, 9],
+  ["header-2x", 18, 11, 7, 9, 3], ["header-2x", 64, 43, 8, 9, 3],
+], true));
 models(
   ["arduino-giga-r1-wifi"],
   shieldBoard(
@@ -265,7 +297,10 @@ models(
 models(["arduino-nano"], nano(processor, ["button", 74, 36, 13, 27]));
 models(
   ["arduino-nano-every"],
-  moduleBoard(2.5, teal, [usb, ["chip", 40, 34, 16, 34], ["button", 72, 38, 10, 25]]),
+  moduleBoard(2.5, teal, [
+    usb, ["button", 21, 40, 9, 21], ["chip", 39, 26, 8, 18],
+    ["chip", 64, 33, 16, 36, "ATmega4809"], ["led", 33, 61, 4, 7], ["led", 39, 61, 4, 7],
+  ]),
 );
 models(
   ["arduino-nano-r4"],
@@ -288,7 +323,10 @@ models(
 models(["arduino-nano-matter"], nano(["chip", 38, 32, 16, 35], ["shield", 68, 28, 22, 43]));
 models(["arduino-micro"], moduleBoard(2.66, teal, [usb, processor, ["button", 79, 31, 12, 34]]));
 models(["arduino-pro-mini"], moduleBoard(1.83, blue, [processor, ["button", 76, 37, 13, 26]]));
-models(["arduino-mkr-zero"], moduleBoard(2.46, teal, [usb, processor, ["shield", 65, 25, 29, 48]]));
+models(["arduino-mkr-zero"], moduleBoard(2.46, teal, [
+  usb, ["jst", 14, 1, 17, 26], ["button", 27, 38, 8, 18],
+  ["chip", 54, 36, 13, 31, "SAMD21"], ["microsd", 78, 22, 22, 55],
+]));
 models(
   ["arduino-mkr-wifi-1010", "arduino-mkr-1000-wifi"],
   moduleBoard(2.46, teal, [usb, ["chip", 34, 32, 16, 35], radio]),
@@ -312,15 +350,9 @@ models(
   ]),
 );
 
-models(
-  [
-    "adafruit-feather-rp2040",
-    "adafruit-feather-rp2350",
-    "adafruit-feather-m0-express",
-    "adafruit-feather-m4-express",
-  ],
-  feather(black, processor, ["chip", 74, 38, 12, 22]),
-);
+models(["adafruit-feather-rp2040"], feather(black, ["chip", 40, 33, 18, 38, "RP2040"], ["chip", 68, 37, 10, 24], ["button", 22, 61, 7, 13], ["jst", 82, 28, 17, 37]));
+models(["adafruit-feather-rp2350"], feather(black, ["chip", 42, 32, 17, 38, "RP2350"], ["chip", 67, 37, 10, 24], ["button", 22, 61, 7, 13], ["jst", 82, 28, 17, 37]));
+models(["adafruit-feather-m0-express", "adafruit-feather-m4-express"], feather(black, ["chip", 39, 34, 16, 35], ["chip", 57, 31, 7, 23], ["proto", 68, 27, 24, 49], ["button", 23, 61, 7, 13]));
 models(
   ["adafruit-feather-esp32-v2", "adafruit-feather-esp32-s2", "adafruit-esp32-s3-feather"],
   feather(black, radio),
@@ -333,34 +365,47 @@ models(
 );
 models(
   ["adafruit-qt-py-esp32-s2", "adafruit-qt-py-esp32-c3", "adafruit-qt-py-esp32-s3"],
-  qtPy(purple, ["chip", 48, 35, 22, 29], ["antenna", 77, 25, 19, 48]),
+  qtPy(purple, ["button", 44, 61, 15, 17], ["button", 64, 61, 15, 17], ["led", 62, 28, 9, 9]),
 );
-models(["adafruit-qt-py-rp2040"], qtPy(black, ["chip", 52, 32, 27, 35]));
+models(["adafruit-qt-py-rp2040"], qtPy(black, ["button", 79, 20, 16, 17], ["button", 46, 64, 20, 19], ["led", 64, 23, 9, 9]));
 models(["adafruit-metro-m4-express"], shieldBoard(1.29, purple, [smallUsb, barrel], [processor]));
 models(
   ["adafruit-metro-esp32-s3"],
   shieldBoard(1.29, black, [smallUsb, barrel], [radio, ["socket", 29, 55, 19, 21]]),
 );
 models(["adafruit-grand-central-m4-express"], shieldBoard(1.9, black, [smallUsb, barrel], [processor], true));
-models(
-  [
-    "seeed-xiao-samd21",
-    "seeed-xiao-rp2040",
-    "seeed-xiao-rp2350",
-    "seeed-xiao-esp32s3",
-    "seeed-xiao-esp32c3",
-    "seeed-xiao-esp32c6",
-    "seeed-xiao-nrf52840",
-    "seeed-xiao-nrf52840-sense",
-    "seeed-xiao-mg24",
-    "seeed-xiao-nrf54l15",
-    "seeed-xiao-nrf54lm20a",
-    "seeed-xiao-esp32c5",
-    "seeed-xiao-ra4m1",
-  ],
-  xiao(),
-);
-models(["seeed-xiao-esp32s3-sense"], xiao("camera"));
+// Component-side layouts from the front pinout sheets linked by Seeed.
+// https://wiki.seeedstudio.com/SeeedStudio_XIAO_Series_Introduction/
+models(["seeed-xiao-samd21"], moduleBoard(1.18, black, [
+  xiaoUsb, ["shield", 41, 16, 55, 68], ["test-pads", 17, 17, 12, 5, 2],
+  ["led", 10, 77, 5, 5], ["led", 20, 77, 5, 5], ["led", 30, 77, 5, 5],
+]));
+models(["seeed-xiao-rp2040", "seeed-xiao-rp2350", "seeed-xiao-ra4m1"], xiao(
+  ...xiaoEndButtons, ["led", 87, 44, 11, 12], ["led", 29, 17, 5, 5],
+));
+models(["seeed-xiao-esp32c3", "seeed-xiao-esp32c5"], xiao(
+  ...xiaoEndButtons, ["rf-socket", 87, 43, 11, 14], ["led", 29, 17, 5, 5],
+));
+models(["seeed-xiao-esp32c6"], xiao(
+  ...xiaoUsbButtons, ["rf-socket", 87, 65, 11, 14], ["ceramic-antenna", 89, 17, 9, 33],
+));
+models(["seeed-xiao-esp32s3"], xiao(
+  ...xiaoUsbButtons, ["rf-socket", 86, 66, 12, 14], ["mezzanine", 90, 16, 7, 40],
+));
+models(["seeed-xiao-nrf52840", "seeed-xiao-nrf52840-sense"], xiao(
+  ["button", 12, 76, 11, 11], ["led", 13, 16, 5, 5], ["ceramic-antenna", 89, 51, 8, 24],
+));
+models(["seeed-xiao-mg24"], xiao(
+  ["button", 16, 75, 11, 11], ["led", 21, 17, 5, 5],
+  ["ceramic-antenna", 89, 16, 9, 35], ["rf-socket", 86, 65, 12, 15],
+));
+models(["seeed-xiao-nrf54l15", "seeed-xiao-nrf54lm20a"], moduleBoard(1.18, black, [
+  xiaoUsb, ["shield", 38, 16, 35, 68], ["button", 75, 19, 10, 15], ["button", 75, 64, 10, 15],
+  ["rf-socket", 87, 65, 11, 14], ["led", 18, 16, 5, 5],
+]));
+models(["seeed-xiao-esp32s3-sense"], moduleBoard(1.18, black, [
+  xiaoUsb, ["camera", 22, 24, 43, 52], ["ribbon", 88, 10, 11, 80], ["ribbon", 65, 28, 9, 44],
+]));
 models(["esp32-devkit-v1", "esp32-devkitc", "nodemcu-devkit-v1"], devkit(1.94, 1));
 models(
   ["esp32-s3-devkitc-1", "esp32-c6-devkitc-1", "esp32-c61-devkitc-1", "esp32-c5-devkitc-1"],
@@ -425,11 +470,11 @@ models(
 );
 models(
   ["stm32f103-blue-pill"],
-  moduleBoard(2.31, blue, [usb, processor, ["header", 72, 26, 17, 19], ["button", 69, 61, 10, 16]]),
+  moduleBoard(2.31, blue, [usb, ["chip", 44, 34, 19, 32, "STM32F103"], ["header", 72, 26, 17, 19], ["button", 69, 61, 10, 16], ["crystal", 27, 35, 9, 28]]),
 );
 models(
   ["weact-black-pill-stm32f411"],
-  moduleBoard(2.55, black, [usb, processor, ["button", 23, 21, 7, 15], ["button", 23, 63, 7, 15]]),
+  moduleBoard(2.55, black, [usb, ["chip", 44, 34, 19, 32, "STM32F411"], ["button", 23, 21, 7, 15], ["button", 23, 63, 7, 15], ["crystal", 33, 40, 6, 17]]),
 );
 models(["nordic-nrf52840-dk", "nordic-nrf52-dk", "nordic-nrf5340-dk"], nordic(1.87));
 models(["nordic-nrf9160-dk"], nordic(2.36, true));
@@ -468,7 +513,17 @@ models(
     true,
   ),
 );
-models(["sparkfun-pro-micro", "sparkfun-pro-micro-rp2040"], moduleBoard(1.85, red, [usb, processor]));
+// Both boards use the Pro Micro footprint, with different component layouts.
+// https://learn.sparkfun.com/tutorials/pro-micro-rp2040-hookup-guide/hardware-overview
+models(["sparkfun-pro-micro"], moduleBoard(1.85, red, [
+  usb, ["chip", 23, 35, 9, 22], ["chip", 47, 34, 19, 34, "ATmega32U4"],
+  ["crystal", 81, 37, 12, 25], ["led", 15, 21, 5, 7], ["led", 20, 71, 5, 7],
+]));
+models(["sparkfun-pro-micro-rp2040"], moduleBoard(1.85, red, [
+  ["usb-c", -2, 27, 22, 47], ["memory", 27, 33, 15, 32], ["bga", 49, 34, 20, 34, "RP2040"],
+  ["crystal", 70, 54, 7, 12], ["jst-sh", 81, 32, 19, 37],
+  ["button", 86, 15, 9, 13], ["button", 86, 73, 9, 13], ["led", 54, 18, 6, 10],
+]));
 models(
   ["sparkfun-esp32-thing"],
   moduleBoard(2.3, red, [usb, battery, processor, ["antenna", 83, 20, 13, 57]]),
@@ -485,7 +540,14 @@ models(
     ["antenna", 78, 25, 14, 46],
   ]),
 );
-models(["lolin-d1-mini"], moduleBoard(1.34, blue, [usb, processor]));
+// LOLIN D1 mini V4.0, USB end at left in portrait coordinates.
+// https://www.wemos.cc/en/latest/d1/d1_mini.html
+models(["lolin-d1-mini"], moduleBoard(34.2 / 25.6, blue, [
+  ["usb-c", -1, 30, 22, 40], ["jst", 0, 75, 18, 20], ["button", 4, 9, 13, 7],
+  ["chip", 50, 48, 16, 23, "ESP8266EX"], ["chip", 50, 19, 15, 20],
+  ["chip", 25, 46, 16, 34, "CH340"], ["crystal", 52, 76, 10, 9],
+  ["antenna", 82, 17, 17, 62], ["hole", 85, 4, 9, 12], ["hole", 85, 84, 9, 12],
+]));
 models(["lolin-s2-mini"], moduleBoard(1.34, purple, [usb, processor, ["antenna", 76, 25, 18, 52]]));
 models(
   ["lilygo-t-display-s3"],
@@ -583,10 +645,18 @@ models(
     ["jst", 92, 25, 6, 43],
   ]),
 );
-models(
-  ["orange-pi-zero-2w"],
-  sbc(2.17, blue, [soc, memory, ["usb", 19, 82, 17, 19], ["usb", 60, 88, 11, 13], ["usb", 80, 88, 11, 13]]),
-);
+// Orange Pi Zero 2W user manual §§1.4–1.5, rotated with GPIO at the top.
+models(["orange-pi-zero-2w"], {
+  ...board(65 / 30, blue, [
+    ["hole", 2.5, 5, 6, 13], ["hole", 91.5, 5, 6, 13],
+    ["hole", 2.5, 82, 6, 13], ["hole", 91.5, 82, 6, 13],
+    ["microsd", -1, 25, 15, 38], ["memory", 18, 27, 17, 43],
+    ["bga", 37, 25, 21, 45, "H618"], ["chip", 59, 48, 7, 15],
+    ["shield", 72, 27, 18, 39], ["ribbon", 94, 25, 6, 45],
+    ["hdmi", 10, 75, 18, 27], ["usb-c", 58, 75, 14, 27], ["usb-c", 78, 75, 14, 27],
+  ]),
+  topHeader: { boardWidth: 65, firstX: 8.4, outerY: 2.2 },
+});
 models(
   ["radxa-zero-3w"],
   sbc(2.17, green, [soc, memory, ["usb", 16, 84, 14, 17], ["usb", 58, 86, 12, 15], ["usb", 79, 86, 12, 15]]),
@@ -609,31 +679,63 @@ models(
   ["radxa-rock-5b"],
   sbc(1.39, green, [["shield", 27, 31, 25, 30], memory, ...twinUsb, ethernet, hdmi, ["usb", 12, 84, 14, 17]]),
 );
-models(["orange-pi-3b"], sbc(1.52, blue, [soc, memory, ...twinUsb, ethernet, hdmi]));
-models(
-  ["orange-pi-5"],
-  sbc(1.61, teal, [
-    soc,
-    memory,
-    ["socket", 82, 7, 19, 20],
-    ["socket", 82, 35, 19, 20],
-    ethernet,
-    hdmi,
-    ["jst", 9, 29, 6, 34],
+// Orange Pi 3B user manual, component side and 40-pin interface diagram.
+models(["orange-pi-3b"], {
+  ...board(85 / 56, blue, [
+    ["hole", 1, 2, 6, 9], ["hole", 70, 2, 6, 9],
+    ["hole", 1, 89, 6, 9], ["hole", 70, 89, 6, 9],
+    ["bga", 40, 28, 22, 33, "RK3566"], ["memory", 64, 22, 12, 27],
+    ["shield", 9, 19, 16, 25], ["ribbon", 0, 30, 6, 41],
+    ["socket", 84, 8, 19, 24], ["socket", 84, 39, 19, 24], ethernet,
+    ["usb-c", 7, 88, 11, 15], ["hdmi", 30, 85, 19, 19],
+    ["jack", 62, 81, 9, 22], ["ribbon", 48, 77, 15, 6], ["jst", 21, 83, 7, 11],
   ]),
-);
-models(
-  ["orange-pi-5-plus"],
-  sbc(1.6, blue, [
-    soc,
-    memory,
-    ["socket", 80, 5, 21, 21],
-    ["socket", 80, 31, 21, 21],
-    ["socket", 80, 59, 21, 17],
-    ["socket", 80, 81, 21, 17],
-    hdmi,
+  topHeader: { boardWidth: 85, firstX: 7.9, outerY: 2.2 },
+});
+// Orange Pi 5 V1.3.2, component side. The 5 Plus has a different PCB.
+// Manufacturer's top view and pin definition:
+// https://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html
+models(["orange-pi-5"], {
+  ...board(100 / 62, "#236796", [
+    ["hole", 0.6, 0.5, 5, 8], ["hole", 94.4, 0.5, 5, 8],
+    ["hole", 0.6, 91.5, 5, 8], ["hole", 94.4, 91.5, 5, 8],
+    ["hole", 25, 12.5, 6, 9.5], ["hole", 68, 19, 5, 8],
+    ["hole", 67.5, 77.5, 6, 9.5], ["hole", 68, 0.5, 5, 8],
+    ["header", 48.5, 0.9, 7.5, 4.5, 3],
+    ["led", 59.4, 5.7, 1.7, 2.2], ["led", 62.2, 5.7, 1.7, 2.2],
+    ["microsd", 0, 12, 14.6, 24],
+    ["bga", 37.2, 37.5, 17.3, 28.2, "RK3588S"],
+    ["memory", 39, 18, 15.3, 16.5, "LPDDR4X"],
+    ["memory", 25.1, 37.5, 10.4, 24.6, "LPDDR4X"],
+    ["chip", 6.8, 47.3, 7.6, 11.6, "RK806"],
+    ["chip", 64.2, 44, 5.1, 9.8], ["chip", 72, 45.3, 5.7, 8.5],
+    ["button", 19.2, 29, 3, 8], ["button", 14.1, 75.2, 3, 8],
+    ["button", -0.7, 72, 4.4, 7.4],
+    ["socket", 85.2, 12, 20.2, 21.8],
+    ["ethernet", 81, 42, 24, 26.7], ["socket", 88, 77.4, 16.2, 10.4],
+    ["usb-c", 7, 90.4, 9, 12], ["jack", 18.9, 80.2, 6.6, 23.8],
+    ["hdmi", 30.2, 85, 15, 20.5], ["usb-c", 50.2, 88.3, 9.4, 14],
+    ["ribbon", 61.5, 91.5, 20, 8.5], ["ribbon", 84.2, 92.8, 8.6, 5],
+    ["ribbon", 66.7, 63.5, 9, 4.8], ["jst", 81.7, 71, 4.3, 12.3],
   ]),
-);
+  topHeader: { boardWidth: 100, firstX: 11.2, outerY: 1.5 },
+});
+// Orange Pi 5 Plus user manual §§1.5, 3.16. With the 40-pin header at
+// the top, the HDMI connectors and twin Ethernet jacks face left.
+models(["orange-pi-5-plus"], {
+  ...board(75 / 100, "#315c97", [
+    ["hole", 89, 5, 6, 4.5], ["hole", 89, 92, 6, 4.5],
+    ["hole", 27, 12, 6, 4.5], ["hole", 84, 53, 6, 4.5],
+    ["bga", 40, 28, 28, 21, "RK3588"], ["memory", 49, 11, 21, 10],
+    ["memory", 72, 29, 14, 16], ["chip", 49, 62, 12, 9],
+    ["socket", -2, 2, 23, 14], ["hdmi", -1, 20, 18, 13],
+    ["hdmi", -1, 35, 18, 13], ["hdmi", -1, 50, 18, 13],
+    ["ethernet", -2, 69, 24, 14], ["ethernet", -2, 84, 24, 14],
+    ["usb-c", 0, 97, 11, 5], ["socket", 81, 69, 21, 15],
+    ["jack", 89, 16, 12, 7], ["jst", 60, 8, 9, 5], ["ribbon", 28, 88, 40, 5],
+  ]),
+  topHeader: { boardWidth: 75, firstX: 22.5, outerY: 2.1 },
+});
 models(["libre-computer-le-potato"], sbc(1.52, white, [soc, memory, ...twinUsb, ethernet, hdmi]));
 models(
   ["libre-computer-alta", "libre-computer-solitude"],

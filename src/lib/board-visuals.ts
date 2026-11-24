@@ -287,7 +287,11 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "odroid-c4": preset("sbc"),
   "pine64-rockpro64": preset("sbc", { aspect: 1.6, ports: ["ethernet", "usb-a", "hdmi"] }),
   "libre-computer-le-potato": preset("sbc"),
-  "orange-pi-5": preset("sbc"),
+  "orange-pi-5": preset("sbc", {
+    aspect: 100 / 62,
+    orientation: "Component side up, 26-pin expansion header along the top edge",
+    revisionNote: "The illustration follows the Orange Pi 5 V1.3.2 component layout. Check the revision printed on your board.",
+  }),
   "radxa-zero-3w": preset("sbcZero"),
   "radxa-zero-3e": preset("sbcZero", { ports: ["ethernet", "hdmi"] }),
   "radxa-rock-5b": preset("sbc"),
@@ -388,7 +392,10 @@ export const boardVisuals: Record<string, BoardVisual> = {
   }),
   "arduino-pro-mini": preset("grouped", { accent: "#0e7c86" }),
   "sparkfun-esp32-thing": preset("moduleDip", { aspect: 0.4 }),
-  "lolin-d1-mini": preset("moduleDip", { aspect: 0.78 }),
+  "lolin-d1-mini": preset("moduleDip", {
+    aspect: 25.6 / 34.2,
+    revisionNote: "The illustration shows the D1 mini V4.0. Earlier revisions use different USB connectors and radio layouts.",
+  }),
 
   // --- MilkV Duo (grouped left/right edges → edge-dual) -------------------
   "milkv-duo": preset("moduleDip", { aspect: 0.42, source: "groups" }),
@@ -450,9 +457,9 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "libre-computer-alta": preset("sbc"),
   "libre-computer-solitude": preset("sbc"),
   "libre-computer-tritium-h5": preset("sbc"),
-  "orange-pi-zero-2w": preset("sbc"),
-  "orange-pi-3b": preset("sbc"),
-  "orange-pi-5-plus": preset("sbc"),
+  "orange-pi-zero-2w": preset("sbcZero", { aspect: 65 / 30, revisionNote: "The 40-pin footprint may be supplied without a soldered header." }),
+  "orange-pi-3b": preset("sbc", { aspect: 85 / 56, revisionNote: "Component placement varies between Orange Pi 3B revisions. Check the markings on your board." }),
+  "orange-pi-5-plus": preset("sbc", { aspect: 75 / 100 }),
 
   // --- Nordic / Arduino-footprint dev kits --------------------------------
   "nordic-nrf52840-dk": preset("devKit", { accent: "#1d4ed8" }),

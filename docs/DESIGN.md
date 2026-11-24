@@ -172,26 +172,27 @@ Two presentations of one dataset, behind a persisted segmented control:
   draws a leader line, and shows the label; click/Enter pins the selection
   and fills the inspector with role, aliases, and note. Pads are real
   buttons: `Tab`/arrow navigable with visible focus rings.
-- **Embedded Dynamic maps.** Every mapped board opens on its labelled pins
-  with a minimum 44 px hit diameter. The drawing pans inside a bounded
-  viewport. Selecting an offscreen pin reveals it inside the drawing and
-  keeps the surrounding page in place. Physical maps offer **Fit whole board**
-  for orientation and **Zoom to touch size** to resume at the selected pin.
-  Separate product illustrations follow the pin controls. Raspberry Pi maps
-  also provide a list in physical connector pairs. The drawing, picker,
-  readout and full view share the selected pin.
-- **Pin-size regression check.** The independent Chrome review measured all
-  7,075 interactive pin targets across the 190 mapped boards at 390 × 844.
-  Every target measured at least 44 CSS pixels in both dimensions, and the
-  first pin was fully inside the drawing viewport on every board before any
-  zoom or pan. The six boards awaiting a pin map still show their illustrations.
+- **Dynamic maps.** The catalog panel, inspector and full board page open with
+  the complete board fitted to the available space. **Zoom to touch size**
+  reveals the selected pin, or the first pin when none is selected. The
+  enlarged drawing scrolls inside its own viewport. **Fit whole board**
+  restores the overview and preserves the selection. The pin picker and
+  Raspberry Pi connector list also support selection from the overview.
+- **November 24 fit and zoom review.** The Chrome review checked every illustration
+  at 390 × 844. After zooming, all 7,075 interactive pin targets across 190
+  boards measured at least 44 CSS pixels in both dimensions. Eighty journeys
+  covered the catalog, inspector and full board pages at 360 × 800, 390 × 844,
+  412 × 915 and 844 × 390 in both themes. All 16 swipe checks and eight XIAO
+  board-switch checks passed. The reviewer used Chrome touch emulation and
+  the criteria in `AGENTS.md` because the mobile-mojo skill file was unavailable.
 - **Board renders.** All 196 catalog models have an identification drawing.
-  The 18 Raspberry Pi drawings and 69 dual-edge module drawings carry selectable
-  source pins. For 103 boards the product illustration appears beside a separate
-  connector diagram. This keeps a rear header, a shield map in catalog order,
-  or a function-grouped FPGA sheet from appearing to mark physical pad locations
-  on the product. The remaining six boards show the product and their existing
-  pin-map status. `renderCoverage` checks these categories against the catalog.
+  Selectable pins appear on 18 Raspberry Pi models, 69 dual-edge modules and
+  four Orange Pi boards with documented header positions. On the Orange Pi 5
+  the drawing locates all 26 contacts on the V1.3.2 component side. For 99
+  boards with rear headers or signals listed in catalog or function order, a
+  separate selectable connector diagram follows the product illustration.
+  Six boards awaiting pin maps show the product and its reference links.
+  `renderCoverage` checks these counts. [Orange Pi 5 user manual, §§1.5 and 3.16](https://orangepi.vn/wp-content/uploads/2023/03/OrangePi_5_RK3588S_User-Manual_v0.7.pdf).
 - **Hardware landmarks.** Each non-Pi model has an explicit entry in
   `src/lib/board-portraits.ts`. Shared footprints use the same drawing when
   their visible landmarks coincide. Port shells, radio cans, screens, buttons
@@ -520,17 +521,12 @@ embedding it.
   labels out to either side, and no illustrated components, copper, or
   Raspberry Pi artwork. It claims nothing about the board around the pins.
   Other layouts use their usual pad positions on a flat outline.
-- **Touch scale before fit.** Interactive pads have at least a 44 × 44 CSS px
-  hit region. Hit regions stay within the connector pitch; diagrams grow and
-  scroll within their panel instead of overlapping neighboring pins. This
-  applies to planner/link sheets and full inspectors. Embedded Dynamic maps
-  of physical boards open fitted whole and offer **Zoom to touch size** for
-  this scale; their named pin list (Raspberry Pi) or pin table carries the
-  touch-sized selection meanwhile. Function-grouped schematics stay at touch
-  scale.
-  The inspector offers **Zoom labels** and **Working size** rather than a
-  fit-to-width action that would shrink labels and controls below usable size.
-  Scroll instructions and keyboard access accompany the drawing.
+- **Touch scale.** Planner and link sheets use a 44 × 44 CSS px hit region
+  on touch devices. Targets stay within the connector pitch and the sheet
+  scrolls inside its panel. Dynamic board views open fitted and provide
+  this scale through **Zoom to touch size**. The inspector also offers
+  **Zoom labels** and **Working size** while zoomed. Scroll instructions
+  and keyboard access accompany drawings that overflow their viewport.
 - **Link sheets show the linked connector.** On `/link` each sheet is framed
   on the connectors (pin groups) its wires use, whole, with their labels, and
   a **Whole board** toggle opens it out. A two-row header is one connector and

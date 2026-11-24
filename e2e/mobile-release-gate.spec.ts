@@ -77,11 +77,12 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await page.goto("/boards/raspberry-pi-pico");
         const selectPin = page.getByRole("button", { name: /^(Unselect|Select) pin 6, GP4$/ });
         await touchSize(selectPin);
+        await page.getByRole("button", { name: "Zoom to touch size" }).tap();
         await touchSize(page.locator('.bv-pad > circle[fill="transparent"]').first());
         await selectPin.tap();
         await expect(selectPin).toHaveAttribute("aria-pressed", "true");
         await page.getByRole("button", { name: "Zoom labels", exact: true }).tap();
-        await expect(page.getByText("Labels enlarged — swipe to view the full connector")).toBeVisible();
+        await expect(page.getByText(/Labels enlarged/)).toBeVisible();
         await page.getByRole("textbox", { name: "Search pins", exact: true }).fill("GP4");
         await touchSize(page.getByRole("button", { name: "Clear pin search", exact: true }));
         await touchSize(page.getByRole("button", { name: "6 · GP4", exact: true }));
@@ -117,7 +118,7 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 390, height: 844 }
         await expect(page.getByRole("button", { name: /^Copy pin 40,/ })).toBeVisible();
         expect(await connector.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(0);
         await expect(page.getByRole("group", { name: /^Raspberry Pi Pico physical board/ })).toBeVisible();
-        expect((await page.locator(".pi-canvas-scroll").boundingBox())!.width).toBeLessThanOrEqual(viewport.width);
+        expect((await page.locator(".board-view-scroll").boundingBox())!.width).toBeLessThanOrEqual(viewport.width);
         await noOverflow(page);
         await page.locator(".pi-schedule summary").tap();
         await touchSize(page.getByRole("button", { name: "Select pin 1, GP0", exact: true }));

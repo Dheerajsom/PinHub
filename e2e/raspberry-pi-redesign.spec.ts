@@ -99,12 +99,13 @@ for (const viewport of viewports) {
         await connector.getByRole("button", { name: /^Pin 1,/ }).tap();
         await expect(connector.getByRole("button", { name: /^Pin 1,/ })).toHaveAttribute("aria-pressed", "true");
         await expect(picker).not.toHaveValue("");
-        // The physical board is the primary view: visible, interactive, and
-        // initially framed on the header at touch size.
+        // The fitted board and the enlarged header share the same selected pin.
         const physical = interactive.getByRole("group", { name: new RegExp(`^${model.name} physical board`) });
         await expect(physical).toBeVisible();
         await expect(physical.getByRole("button", { name: /^Pin 1,/ })).toHaveAttribute("aria-pressed", "true");
-        const frame = interactive.locator(".pi-board-frame");
+        const frame = interactive.locator(".board-view-frame");
+        await expect(frame).toHaveAttribute("data-board-view", "fit");
+        await interactive.getByRole("button", { name: "Zoom to touch size", exact: true }).tap();
         await expect(frame).toHaveAttribute("data-board-view", "touch");
         const hit = await physical.locator('.bv-pad > circle[fill="transparent"]').first().boundingBox();
         expect(Math.min(hit!.width, hit!.height)).toBeGreaterThanOrEqual(44);
@@ -201,8 +202,8 @@ for (const viewport of [...viewports, { width: 1280, height: 800 }]) {
     const physical = map.getByRole("group", { name: /^Raspberry Pi 5 physical board/ });
     await expect(physical).toBeVisible();
     await expect(physical.getByRole("button", { name: /^Pin 40,/ })).toHaveAttribute("aria-pressed", "true");
-    expect((await map.locator(".pi-canvas-scroll").boundingBox())!.width).toBeLessThanOrEqual(bounds!.width);
-    expect(await map.locator(".pi-board-frame").evaluate((element) => element.closest("details, [inert], [aria-hidden='true']"))).toBeNull();
+    expect((await map.locator(".board-view-scroll").boundingBox())!.width).toBeLessThanOrEqual(bounds!.width);
+    expect(await map.locator(".board-view-frame").evaluate((element) => element.closest("details, [inert], [aria-hidden='true']"))).toBeNull();
     await connector.scrollIntoViewIfNeeded();
     await page.screenshot({ path: testInfo.outputPath("labelled-connector.png"), scale: "css", animations: "disabled" });
     await fitsViewport(page);

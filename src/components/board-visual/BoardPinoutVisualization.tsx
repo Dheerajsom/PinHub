@@ -2,14 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Expand, ExternalLink, X, ZoomIn, ZoomOut } from "lucide-react";
+import { Expand, ExternalLink, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry, type BoardGeometry, type PinAnchor } from "@/lib/board-visual-geometry";
-import { BoardStage } from "@/components/board-visual/BoardStage";
-import { usePinViewport } from "./use-pin-viewport";
-import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { BoardDrawingViewport } from "./BoardDrawingViewport";
 import { connectorCaption } from "@/components/board-visual/illustration-caption";
-import { ProductPortrait } from "@/components/board-visual/ProductPortrait";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
@@ -26,24 +23,6 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [expanded, setExpanded] = useState(false);
   const expandButtonRef = useRef<HTMLButtonElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [pannable, setPannable] = useState(false);
-  const [touchSize, setTouchSize] = useState(true);
-  usePinViewport(stageRef, board.id, selectedKey, touchSize);
-  // Interaction state is reset across board switches by remounting via a
-  // `key={board.id}` on this component (see PinHubApp), so no reset effect is
-  // needed here.
-
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() =>
-      setPannable(stage.scrollWidth > stage.clientWidth + 1 || stage.scrollHeight > stage.clientHeight + 1),
-    );
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, [geometry, touchSize]);
-
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
     geometry?.anchors.forEach((a) => map.set(a.key, a));
@@ -78,13 +57,6 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   }
 
   const liveAnchor = anchorsByKey.get(liveKey ?? "") ?? null;
-  const stageTitle = `${board.name} — ${board.pinout.connector}`;
-  const integrated = geometry.kind === "edge-dual";
-  const overviewLabel = integrated ? "Whole board" : "Full diagram";
-  const compact = integrated && !touchSize;
-  const drawingWidth = compact ? geometry.body.w + 48 : geometry.vbw;
-  const drawingHeight = compact ? geometry.body.h + 55 : geometry.vbh;
-
   function handleEscape() {
     if (expanded) {
       setExpanded(false);
@@ -133,70 +105,12 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       </div>
 
       <div className="connector-drawing mt-3">
-        <p className="text-xs text-zinc-400">{geometry.orientation}</p>
-        {geometry.kind !== "group-strips" ? (
-          <div className="flex flex-wrap items-center justify-between gap-x-3 text-[11px] leading-5 text-zinc-500">
-            <span>
-              {touchSize ? "Pin detail" : overviewLabel}
-            </span>
-            <button
-              type="button"
-              aria-pressed={touchSize}
-              onClick={() => setTouchSize(!touchSize)}
-              className="touch-target inline-flex items-center gap-1.5 rounded-md px-1.5 font-medium text-cyan-200 hover:text-cyan-100"
-            >
-              {touchSize ? (
-                <ZoomOut className="size-3.5" aria-hidden="true" />
-              ) : (
-                <ZoomIn className="size-3.5" aria-hidden="true" />
-              )}
-              {touchSize ? (integrated ? "Fit whole board" : "Fit diagram") : "Zoom to touch size"}
-            </button>
-          </div>
-        ) : null}
-
-        <div
-          ref={stageRef}
-          className="bv-stage-wrap mt-2 w-full overflow-auto rounded-md"
-          style={touchSize ? { maxHeight: "min(55svh, 440px)" } : undefined}
-          {...(pannable ? { tabIndex: 0, role: "group", "aria-label": "Scrollable pin map" } : {})}
-        >
-          <div
-            className="mx-auto w-full"
-            data-board-view={touchSize ? "touch" : "fit"}
-            style={{
-              aspectRatio: `${drawingWidth} / ${drawingHeight}`,
-              ...(touchSize
-                ? { minWidth: touchDrawingWidth(geometry) }
-                : { maxWidth: `min(100%, calc(60svh * ${drawingWidth / drawingHeight}))` }),
-            }}
-          >
-            <BoardStage
-              geometry={geometry}
-              compact={compact}
-              productId={board.id}
-              title={stageTitle}
-              sheetLabel={board.name}
-              selectedKey={selectedKey}
-              activeKey={liveKey}
-              activeRole={activeRole}
-              showAllLabels={touchSize}
-              netKeys={probe.keys}
-              onSelect={(key) => {
-                setSelectedKey(key);
-                setActiveKey(key);
-              }}
-              onActiveKey={setActiveKey}
-            />
-          </div>
-        </div>
-
-        {pannable ? (
-          <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-            Swipe the drawing, or focus it and use the arrow keys, to reach every pad.
-          </p>
-        ) : null}
-
+        {(geometry.artworkId || geometry.portraitId) && <p className="text-xs text-zinc-400">{geometry.orientation}</p>}
+        <BoardDrawingViewport
+          board={board} geometry={geometry} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole}
+          netKeys={probe.keys} onActiveKey={setActiveKey}
+          onSelect={(key) => { setSelectedKey(key); setActiveKey(key); }}
+        />
         <p className="mt-2 text-[11px] leading-5 text-zinc-500">{connectorCaption(geometry)}</p>
       </div>
       <label className="mt-3 block">
@@ -236,11 +150,6 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         </div>
       )}
 
-      {!integrated && (
-        <div className="mt-3">
-          <ProductPortrait id={board.id} name={board.name} />
-        </div>
-      )}
       <details className="mt-3 border-t border-white/10">
         <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium text-zinc-300">
           Highlight pin roles

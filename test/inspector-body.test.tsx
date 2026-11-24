@@ -73,13 +73,14 @@ describe("InspectorBody sheet", () => {
   it("explains the horizontal scroll and describes it to the drawing", () => {
     renderSheet();
 
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     const drawing = screen.getByRole("group", {
-      name: "Raspberry Pi 5 connector diagram",
+      name: "Scrollable pin map",
     });
     expect(drawing.getAttribute("tabindex")).toBe("0");
 
     const hint = screen.getByText(
-      "Swipe horizontally to view the full connector",
+      "Swipe the drawing, or focus it and use the arrow keys, to reach every pad.",
     );
     expect(drawing.getAttribute("aria-describedby")).toBe(hint.id);
   });
@@ -87,6 +88,7 @@ describe("InspectorBody sheet", () => {
   it("enlarges labels without shrinking touch controls", () => {
     renderSheet();
 
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     const fit = screen.getByRole("button", { name: "Zoom labels" });
     expect(fit.getAttribute("aria-pressed")).toBe("false");
 
@@ -94,10 +96,10 @@ describe("InspectorBody sheet", () => {
 
     expect(fit.getAttribute("aria-pressed")).toBe("true");
     expect(
-      screen.getByText("Labels enlarged — swipe to view the full connector"),
+      screen.getByText(/Labels enlarged/),
     ).toBeTruthy();
     expect(
-      screen.queryByText("Swipe horizontally to view the full connector"),
+      screen.queryByText("Swipe the drawing, or focus it and use the arrow keys, to reach every pad."),
     ).toBeNull();
   });
 
@@ -105,6 +107,7 @@ describe("InspectorBody sheet", () => {
     renderSheet();
 
     expect(screen.getByRole("heading", { name: /All \d+ pins/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     fireEvent.click(screen.getByRole("button", { name: "Zoom labels" }));
     expect(screen.getByRole("heading", { name: /All \d+ pins/ })).toBeTruthy();
   });

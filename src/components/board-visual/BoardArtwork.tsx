@@ -32,10 +32,12 @@ const COPPER = "#c6873f";
 export function BoardArtwork({
   geometry,
   label,
+  connectorOnly = false,
 }: {
   geometry: BoardGeometry;
   /** Board name, set into the outline the way a PCB carries its silkscreen. */
   label?: string;
+  connectorOnly?: boolean;
 }) {
   const raw = useId();
   const uid = raw.replace(/[^a-zA-Z0-9]/g, "");
@@ -73,7 +75,7 @@ export function BoardArtwork({
   if (geometry.plain) {
     return (
       <g aria-hidden="true">
-        <rect
+        {!connectorOnly && <rect
           x={body.x}
           y={body.y}
           width={body.w}
@@ -83,7 +85,7 @@ export function BoardArtwork({
           stroke="#ffffff"
           strokeOpacity={0.1}
           strokeWidth={1.5}
-        />
+        />}
         {headerZones.map((zone, index) => (
           <rect
             key={`zone-${index}`}

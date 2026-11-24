@@ -10,7 +10,7 @@ afterEach(cleanup);
 
 const physicalBoard = (name: string) => screen.getByRole("group", { name: new RegExp(`^${name} physical board`) });
 
-it.each(["raspberry-pi-5", "raspberry-pi-pico-2-w", "raspberry-pi-500"])("shows the interactive physical board first for %s, at working size", (id) => {
+it.each(["raspberry-pi-5", "raspberry-pi-pico-2-w", "raspberry-pi-500"])("shows the interactive physical board first for %s, fitted to the viewer", (id) => {
   const board = boards.find((board) => board.id === id)!;
   const { container } = render(<RaspberryPiPinout board={board} />);
   const physical = physicalBoard(board.name);
@@ -20,10 +20,10 @@ it.each(["raspberry-pi-5", "raspberry-pi-pico-2-w", "raspberry-pi-500"])("shows 
   // The board precedes the pin list in reading order.
   const list = screen.getByRole("group", { name: "Select a physical pin from the connector" });
   expect(physical.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  // The first view already has full-size targets.
-  const frame = container.querySelector(".pi-board-frame")!;
-  expect(frame.getAttribute("data-board-view")).toBe("touch");
-  expect(frame.getAttribute("style")).toContain("min-width");
+  // Fit uses the space available to show the entire illustration.
+  const frame = container.querySelector(".board-view-frame")!;
+  expect(frame.getAttribute("data-board-view")).toBe("fit");
+  expect(frame.getAttribute("style")).not.toContain("min-width");
   // Every source pin is a pad on the board, labelled with its physical number.
   const pads = within(physical).getAllByRole("button");
   expect(pads).toHaveLength(40);
@@ -71,11 +71,12 @@ it("selecting a pad on the board marks the same pin in the list, picker and read
 it("zooms the board to a 44px touch size and back", () => {
   const board = boards.find((board) => board.id === "raspberry-pi-4-model-b")!;
   const { container } = render(<RaspberryPiPinout board={board} />);
-  const frame = container.querySelector<HTMLElement>(".pi-board-frame")!;
+  const frame = container.querySelector<HTMLElement>(".board-view-frame")!;
+  expect(frame.getAttribute("data-board-view")).toBe("fit");
+  fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
   expect(frame.getAttribute("data-board-view")).toBe("touch");
-  expect(frame.style.boxSizing).toBe("content-box");
+
   expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!));
-  expect(screen.getByRole("group", { name: "Scrollable board at touch size" }).tabIndex).toBe(0);
   expect(frame.querySelector(".bv-label")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
   expect(frame.getAttribute("data-board-view")).toBe("fit");
