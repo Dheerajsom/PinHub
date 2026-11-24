@@ -172,19 +172,19 @@ Two presentations of one dataset, behind a persisted segmented control:
   draws a leader line, and shows the label; click/Enter pins the selection
   and fills the inspector with role, aliases, and note. Pads are real
   buttons: `Tab`/arrow navigable with visible focus rings.
-- **Embedded Raspberry Pi maps** — the physical board is the primary view.
-  It opens fitted whole inside the panel (334 px catalog column, 360 px
-  phones), with its orientation line above and pin 1 marked, and its pads stay
-  interactive: tap, click, or `Tab`/arrows then Enter. At fit size the pads are
-  small and the footer says so; **Zoom to touch size** enlarges the board until
-  every pad's hit region is at least 44 px and lets it pan, and **Fit whole
-  board** returns. The readout and cautions sit directly after the board, or
-  beside it in a wide container. A named pin list (44 px+ buttons in the
-  source's physical pairs, GPIO 1/2 and Pico 1/40) and a physical-pin picker
-  follow as the secondary selector; the board, list, picker and readout share
-  one selection. Never hide the board in a collapsed or inert disclosure, and
-  never describe fit-size pads as touch-sized. **Inspect** and **Full view**
-  keep the large interactive drawing.
+- **Embedded Dynamic maps.** Every mapped board opens on its labelled pins
+  with a minimum 44 px hit diameter. The drawing pans inside a bounded
+  viewport. Selecting an offscreen pin reveals it inside the drawing and
+  keeps the surrounding page in place. Physical maps offer **Fit whole board**
+  for orientation and **Zoom to touch size** to resume at the selected pin.
+  Separate product illustrations follow the pin controls. Raspberry Pi maps
+  also provide a list in physical connector pairs. The drawing, picker,
+  readout and full view share the selected pin.
+- **Pin-size regression check.** The independent Chrome review measured all
+  7,075 interactive pin targets across the 190 mapped boards at 390 × 844.
+  Every target measured at least 44 CSS pixels in both dimensions, and the
+  first pin was fully inside the drawing viewport on every board before any
+  zoom or pan. The six boards awaiting a pin map still show their illustrations.
 - **Board renders.** All 196 catalog models have an identification drawing.
   The 18 Raspberry Pi drawings and 69 dual-edge module drawings carry selectable
   source pins. For 103 boards the product illustration appears beside a separate

@@ -6,6 +6,7 @@ import type { Board, Pin, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { usePinViewport } from "./use-pin-viewport";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { connectorCells, connectorKeyTarget } from "@/components/board-visual/connector-cells";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
@@ -27,10 +28,9 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
-  // Fit is the default: the whole physical board is visible in a 334 px panel.
-  // Touch size enlarges it so every pad's hit area is at least 44 px.
-  const [zoomed, setZoomed] = useState(false);
+  const [zoomed, setZoomed] = useState(true);
   const boardScrollRef = useRef<HTMLDivElement>(null);
+  usePinViewport(boardScrollRef, board.id, selectedKey, zoomed);
   const expandRef = useRef<HTMLButtonElement>(null);
   const connectorRef = useRef<HTMLDivElement>(null);
   const pinRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -74,16 +74,6 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
     if (pinBox.top < regionBox.top) region.scrollTop -= regionBox.top - pinBox.top;
     else if (pinBox.bottom > regionBox.bottom) region.scrollTop += pinBox.bottom - regionBox.bottom;
   }, [connectorPins, selectedKey]);
-  useEffect(() => {
-    const region = boardScrollRef.current;
-    if (!zoomed || !region || !selectedKey) return;
-    const pad = region.querySelector(`[data-pin-key="${CSS.escape(selectedKey)}"]`);
-    if (!pad) return;
-    const padBox = pad.getBoundingClientRect();
-    const regionBox = region.getBoundingClientRect();
-    region.scrollLeft += padBox.left + padBox.width / 2 - (regionBox.left + regionBox.width / 2);
-    region.scrollTop += padBox.top + padBox.height / 2 - (regionBox.top + regionBox.height / 2);
-  }, [zoomed, selectedKey]);
   if (!geometry || !board.pinout) return null;
   const model = raspberryPiModel(board.id)!;
   const liveAnchor = anchors.find((anchor) => anchor.key === liveKey) ?? null;
@@ -111,19 +101,19 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
       <div className="pi-component-layout">
         <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
           <p className="pi-board-orientation">{geometry.orientation}</p>
-          <div ref={boardScrollRef} className="pi-canvas-scroll" data-zoomed={zoomed || undefined}
-            {...(zoomed ? { tabIndex: 0, role: "group", "aria-label": "Scrollable board at touch size" } : {})}>
-            <div className="pi-board-frame" data-board-view={zoomed ? "touch" : "fit"}
-              style={{ aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}`, ...(zoomed ? { boxSizing: "content-box", minWidth: touchDrawingWidth(geometry, true), maxWidth: "none" } : {}) }}>
-              <BoardStage geometry={geometry} title={`${board.name} physical board — ${board.pinout.connector}`} sheetLabel={board.name}
-                compact selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={false} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
-            </div>
-          </div>
           <div className="pi-canvas-footer">
-            <span>{zoomed ? "Touch size · every pad has a 44 px target · swipe to pan" : "Whole board · pads are small at this size"}</span>
+            <span>{zoomed ? "Pan to see more pins" : "Whole board"}</span>
             <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(!zoomed)}>
               {zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Fit whole board" : "Zoom to touch size"}
             </button>
+          </div>
+          <div ref={boardScrollRef} className="pi-canvas-scroll" data-zoomed={zoomed || undefined}
+            {...(zoomed ? { tabIndex: 0, role: "group", "aria-label": "Scrollable board at touch size" } : {})}>
+            <div className="pi-board-frame" data-board-view={zoomed ? "touch" : "fit"}
+              style={{ aspectRatio: zoomed ? `${geometry.vbw} / ${geometry.vbh}` : `${geometry.body.w + 48} / ${geometry.body.h + 55}`, ...(zoomed ? { boxSizing: "content-box", minWidth: touchDrawingWidth(geometry), maxWidth: "none" } : {}) }}>
+              <BoardStage geometry={geometry} title={`${board.name} physical board — ${board.pinout.connector}`} sheetLabel={board.name}
+                compact={!zoomed} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={zoomed} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
+            </div>
           </div>
         </div>
 

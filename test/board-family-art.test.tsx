@@ -118,19 +118,20 @@ describe("render coverage inventory", () => {
 });
 
 describe("embedded product pin map", () => {
-  it("fits the whole physical board by default and zooms to touch size on request", () => {
+  it("opens with labelled, touch-sized pins and offers the whole board on request", () => {
     const board = byId("esp32-devkitc");
     const { container } = render(<BoardPinoutVisualization board={board} />);
     const frame = container.querySelector<HTMLElement>("[data-board-view]")!;
-    expect(frame.dataset.boardView).toBe("fit");
-    expect(frame.style.minWidth).toBe("");
-    expect(screen.getByText(/pads are small at this size/)).toBeTruthy();
-    expect(container.querySelector('[data-product-artwork="esp32-devkitc"]')).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     expect(frame.dataset.boardView).toBe("touch");
-    expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!, true));
+    expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!));
+    expect(frame.closest("details:not([open])")).toBeNull();
+    expect(frame.querySelector(".bv-label")).toBeTruthy();
+    expect(frame.querySelector('[data-product-artwork="esp32-devkitc"]')).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
     expect(frame.dataset.boardView).toBe("fit");
+    expect(frame.style.minWidth).toBe("");
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
+    expect(frame.dataset.boardView).toBe("touch");
   });
 
   it("shows the Feather short row opposite the last twelve pads in the long row", () => {

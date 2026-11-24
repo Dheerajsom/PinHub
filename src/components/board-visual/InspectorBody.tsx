@@ -7,6 +7,7 @@ import type { Board, PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
 import { ProductPortrait } from "@/components/board-visual/ProductPortrait";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { usePinViewport } from "./use-pin-viewport";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import {
@@ -123,6 +124,7 @@ export function InspectorBody({
   const showPinsId = `${baseId}-show-pins`;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [zoomLabels, setZoomLabels] = useState(false);
+  usePinViewport(scrollRef, board.id, selectedKey, true);
   const [scroll, setScroll] = useState({
     scrollable: false,
     atStart: true,
@@ -274,7 +276,6 @@ export function InspectorBody({
         </div>
 
         <div className="mt-3">
-          {!geometry.artworkId && geometry.kind !== "edge-dual" && <div className="mb-3"><ProductPortrait id={board.id} name={board.name} /></div>}
           {/* Keep every pin tappable at working size; zoom can enlarge labels
               without shrinking controls below their minimum touch size. */}
           {scrollable || zoomLabels ? (
@@ -381,6 +382,10 @@ export function InspectorBody({
             onClear={() => onSelect(null)}
           />
         </div>
+
+        {!geometry.artworkId && geometry.kind !== "edge-dual" && (
+          <div className="mt-3"><ProductPortrait id={board.id} name={board.name} /></div>
+        )}
 
         {board.pinout ? (
           <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-3 text-sm leading-6 text-zinc-400">

@@ -6,6 +6,7 @@ import { Expand, ExternalLink, X, ZoomIn, ZoomOut } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry, type BoardGeometry, type PinAnchor } from "@/lib/board-visual-geometry";
 import { BoardStage } from "@/components/board-visual/BoardStage";
+import { usePinViewport } from "./use-pin-viewport";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import { ProductPortrait } from "@/components/board-visual/ProductPortrait";
@@ -27,11 +28,8 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const expandButtonRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [pannable, setPannable] = useState(false);
-  // Physical drawings open fitted so the whole board is visible in a narrow
-  // panel; touch size enlarges them until every pad's hit area is 44 px. The
-  // function-grouped schematic has no board to show whole, so it stays at
-  // touch size.
-  const [touchSize, setTouchSize] = useState(() => geometry?.kind === "group-strips");
+  const [touchSize, setTouchSize] = useState(true);
+  usePinViewport(stageRef, board.id, selectedKey, touchSize);
   // Interaction state is reset across board switches by remounting via a
   // `key={board.id}` on this component (see PinHubApp), so no reset effect is
   // needed here.
@@ -82,9 +80,10 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const liveAnchor = anchorsByKey.get(liveKey ?? "") ?? null;
   const stageTitle = `${board.name} — ${board.pinout.connector}`;
   const integrated = geometry.kind === "edge-dual";
-  // Very tall drawings would shrink to an unreadable sliver at the panel's
-  // height, so their stage is capped and scrolls vertically.
-  const tall = geometry.vbh / geometry.vbw > 1.4 || integrated;
+  const overviewLabel = integrated ? "Whole board" : "Full diagram";
+  const compact = integrated && !touchSize;
+  const drawingWidth = compact ? geometry.body.w + 48 : geometry.vbw;
+  const drawingHeight = compact ? geometry.body.h + 55 : geometry.vbh;
 
   function handleEscape() {
     if (expanded) {
@@ -133,68 +132,12 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         </div>
       </div>
 
-      {!integrated && (
-        <div className="mt-3">
-          <ProductPortrait id={board.id} name={board.name} />
-        </div>
-      )}
-      <details open={integrated || undefined} className="connector-drawing mt-3">
-        <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium text-zinc-300">
-          Connector diagram
-        </summary>
+      <div className="connector-drawing mt-3">
         <p className="text-xs text-zinc-400">{geometry.orientation}</p>
-        {/* The drawing keeps a touch-sized width, so it pans inside this stage
-          when the panel is narrower than that or the board is tall. */}
-        <div
-          ref={stageRef}
-          className="bv-stage-wrap mt-3 w-full overflow-auto rounded-md"
-          style={tall && touchSize ? { maxHeight: 460 } : undefined}
-          {...(pannable ? { tabIndex: 0, role: "group", "aria-label": "Scrollable pin map" } : {})}
-        >
-          <div
-            className="mx-auto w-full"
-            data-board-view={touchSize ? "touch" : "fit"}
-            style={{
-              aspectRatio: integrated
-                ? `${geometry.body.w + 48} / ${geometry.body.h + 55}`
-                : `${geometry.vbw} / ${geometry.vbh}`,
-              ...(touchSize
-                ? { minWidth: touchDrawingWidth(geometry, integrated) }
-                : tall
-                  ? {
-                      maxWidth: integrated
-                        ? Math.round((245 * (geometry.body.w + 48)) / (geometry.body.h + 55))
-                        : Math.round((460 * geometry.vbw) / geometry.vbh),
-                    }
-                  : {}),
-            }}
-          >
-            <BoardStage
-              geometry={geometry}
-              compact={integrated}
-              productId={board.id}
-              title={stageTitle}
-              sheetLabel={board.name}
-              selectedKey={selectedKey}
-              activeKey={liveKey}
-              activeRole={activeRole}
-              showAllLabels={false}
-              netKeys={probe.keys}
-              onSelect={(key) => {
-                setSelectedKey(key);
-                setActiveKey(key);
-              }}
-              onActiveKey={setActiveKey}
-            />
-          </div>
-        </div>
-
         {geometry.kind !== "group-strips" ? (
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 text-[11px] leading-5 text-zinc-500">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 text-[11px] leading-5 text-zinc-500">
             <span>
-              {touchSize
-                ? "Touch size: every pad has a 44 px target."
-                : "Whole board: pads are small at this size."}
+              {touchSize ? "Pin detail" : overviewLabel}
             </span>
             <button
               type="button"
@@ -207,10 +150,46 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
               ) : (
                 <ZoomIn className="size-3.5" aria-hidden="true" />
               )}
-              {touchSize ? "Fit whole board" : "Zoom to touch size"}
+              {touchSize ? (integrated ? "Fit whole board" : "Fit diagram") : "Zoom to touch size"}
             </button>
           </div>
         ) : null}
+
+        <div
+          ref={stageRef}
+          className="bv-stage-wrap mt-2 w-full overflow-auto rounded-md"
+          style={touchSize ? { maxHeight: "min(55svh, 440px)" } : undefined}
+          {...(pannable ? { tabIndex: 0, role: "group", "aria-label": "Scrollable pin map" } : {})}
+        >
+          <div
+            className="mx-auto w-full"
+            data-board-view={touchSize ? "touch" : "fit"}
+            style={{
+              aspectRatio: `${drawingWidth} / ${drawingHeight}`,
+              ...(touchSize
+                ? { minWidth: touchDrawingWidth(geometry) }
+                : { maxWidth: `min(100%, calc(60svh * ${drawingWidth / drawingHeight}))` }),
+            }}
+          >
+            <BoardStage
+              geometry={geometry}
+              compact={compact}
+              productId={board.id}
+              title={stageTitle}
+              sheetLabel={board.name}
+              selectedKey={selectedKey}
+              activeKey={liveKey}
+              activeRole={activeRole}
+              showAllLabels={touchSize}
+              netKeys={probe.keys}
+              onSelect={(key) => {
+                setSelectedKey(key);
+                setActiveKey(key);
+              }}
+              onActiveKey={setActiveKey}
+            />
+          </div>
+        </div>
 
         {pannable ? (
           <p className="mt-2 text-[11px] leading-5 text-zinc-500">
@@ -219,7 +198,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         ) : null}
 
         <p className="mt-2 text-[11px] leading-5 text-zinc-500">{connectorCaption(geometry)}</p>
-      </details>
+      </div>
       <label className="mt-3 block">
         <span className="text-xs font-medium text-zinc-400">Select a pin</span>
         <select
@@ -257,6 +236,11 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         </div>
       )}
 
+      {!integrated && (
+        <div className="mt-3">
+          <ProductPortrait id={board.id} name={board.name} />
+        </div>
+      )}
       <details className="mt-3 border-t border-white/10">
         <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium text-zinc-300">
           Highlight pin roles
