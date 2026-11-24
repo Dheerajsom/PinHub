@@ -137,7 +137,7 @@ const PRESETS = {
     aspect: 0.46,
     usb: "top",
     ports: ["usb-c", "jst"],
-    orientation: "USB at top, JST battery at top-left, component side up",
+    orientation: "USB at top, JST battery at top-right beside the short header, component side up",
   },
   xiao: {
     template: "xiao",

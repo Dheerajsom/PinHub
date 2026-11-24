@@ -3,7 +3,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
 import { boards } from "@/lib/boards";
-import { boardPortrait } from "@/lib/board-portraits";
+import { boardPortrait, type Part } from "@/lib/board-portraits";
 import { boardVisuals } from "@/lib/board-visuals";
 import { buildBoardGeometry, SHIELD_ORDER_NOTE, type BoardGeometry } from "@/lib/board-visual-geometry";
 import { familyArtFor, freeField, layoutFamilyArt, overlaps } from "@/lib/board-family-art";
@@ -129,6 +129,51 @@ describe("render coverage inventory", () => {
     expect(parts("sparkfun-pro-micro")).toContain("crystal");
     expect(parts("sparkfun-pro-micro")).not.toContain("jst-sh");
     expect(parts("sparkfun-pro-micro-rp2040")).toEqual(expect.arrayContaining(["usb-c", "jst-sh", "memory", "button"]));
+  });
+
+  // Mirrors MappedProductArtwork: portrait percentages land on the geometry's
+  // body, turned so the portrait's left (USB) end meets the USB edge.
+  function landmarkBox(geometry: BoardGeometry, [, x, y, w, h]: Part) {
+    const { x: bx, y: by, w: bw, h: bh } = geometry.body;
+    if (geometry.kind !== "edge-dual") return { x0: bx + x / 100 * bw, x1: bx + (x + w) / 100 * bw, y0: by + y / 100 * bh, y1: by + (y + h) / 100 * bh };
+    return geometry.usbEdge === "bottom"
+      ? { x0: bx + y / 100 * bw, x1: bx + (y + h) / 100 * bw, y0: by + (1 - (x + w) / 100) * bh, y1: by + (1 - x / 100) * bh }
+      : { x0: bx + (1 - (y + h) / 100) * bw, x1: bx + (1 - y / 100) * bw, y0: by + x / 100 * bh, y1: by + (x + w) / 100 * bh };
+  }
+
+  it.each(boards.filter(board => buildBoardGeometry(board)?.portraitId))("keeps $id's illustrated landmarks clear of its mapped pads", (board) => {
+    const geometry = buildBoardGeometry(board)!;
+    for (const part of boardPortrait(board.id)!.parts) {
+      // Copper lands are hidden on mapped drawings; the real pads replace them.
+      if (part[0] === "pads" || part[0] === "test-pads") continue;
+      const box = landmarkBox(geometry, part);
+      const r = geometry.padR * .9;
+      const covered = geometry.anchors.filter(a => a.cx + r > box.x0 && a.cx - r < box.x1 && a.cy + r > box.y0 && a.cy - r < box.y1);
+      expect(covered.map(a => a.pin.label), `${part[0]} at ${part[1]},${part[2]}`).toEqual([]);
+    }
+  });
+
+  it("draws the connectors and header rows the product carries", () => {
+    const parts = (id: string) => boardPortrait(id)!.parts;
+    const kinds = (id: string) => parts(id).map(([kind]) => kind);
+    for (const id of ["adafruit-feather-rp2040", "adafruit-esp32-s3-feather", "arduino-uno-r4-wifi", "arduino-nano-esp32", "waveshare-rp2040-zero"]) {
+      expect(kinds(id), id).toContain("usb-c");
+      expect(kinds(id), id).not.toContain("usb");
+    }
+    // The LiPo socket shares the short header's edge, so with USB at the top
+    // it sits on the right, where the twelve-pin row is drawn.
+    const feather = buildBoardGeometry(byId("adafruit-feather-rp2040"))!;
+    expect(feather.anchors.filter(a => a.side === "right")).toHaveLength(12);
+    expect(feather.orientation).toContain("JST battery at top-right");
+    // ESP32 Feathers carry a module whose antenna overhangs the far end.
+    expect(kinds("adafruit-feather-esp32-v2")).toEqual(expect.arrayContaining(["shield", "antenna"]));
+    // BeagleBone P8 and P9 are 2 x 23, with Ethernet at one end.
+    const capes = parts("beaglebone-black").filter(([kind]) => kind === "header-2x");
+    expect(capes.map(part => part[5])).toEqual([23, 23]);
+    expect(kinds("beaglebone-black")).toEqual(expect.arrayContaining(["ethernet", "jack"]));
+    // Nucleo-64 morpho connectors are two-row 19-pin strips.
+    expect(parts("stm32-nucleo-f401re").filter(([kind, , , , , count]) => kind === "header-2x" && count === 19)).toHaveLength(2);
+    expect(parts("arduino-mega-2560-rev3").some(([kind, , , , , count]) => kind === "header-2x" && count === 18)).toBe(true);
   });
 
   it("accounts for every catalog board in exactly one tier", () => {

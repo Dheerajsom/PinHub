@@ -122,7 +122,8 @@ function Landmark({ kind, w, h, count: specifiedCount, paint }: PartProps) {
           <rect x=".4" y={h * at} width={inset * .7} height={h * .05} />
           <rect x={w - inset} y={h * at} width={inset * .7} height={h * .05} />
         </g>)}
-        <path d={`M${w * .2} ${h * .71}h${w * .30}m-${w * .3} 2h${w * .20}`} stroke="#778283" fill="none" />
+        {/* Kept in a corner so it never crosses a module mark, upright or turned. */}
+        <path d={`M${w * .1} ${h * .86}h${w * .2}m-${w * .2} 2h${w * .12}`} stroke="#778283" fill="none" />
       </>;
     case "usb":
     case "socket":

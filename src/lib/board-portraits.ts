@@ -72,7 +72,9 @@ const green = "#397953",
 const usb: Part = ["usb", -1, 31, 15, 38];
 const processor: Part = ["chip", 44, 34, 19, 32];
 const radio: Part = ["shield", 60, 20, 32, 60];
-const battery: Part = ["jst", 16, 1, 20, 25];
+// The LiPo socket sits beside USB, in the pitches the short header leaves free.
+const battery: Part = ["jst", 12, 1, 15, 22];
+const usbC: Part = ["usb-c", -1, 31, 15, 38];
 function board(aspect: number, color: string, parts: Part[], outline: Outline = "round"): BoardPortrait {
   return { aspect, color, parts, outline };
 }
@@ -89,17 +91,20 @@ function moduleBoard(
 ): BoardPortrait {
   return board(aspect, color, [...rows, ...parts]);
 }
-function feather(color: string, ...parts: Part[]) {
+// 16-pin and 12-pin rows; the short row ends level with the long one.
+function feather(color: string, port: Part, ...parts: Part[]) {
   return moduleBoard(
     2.23,
     color,
-    [usb, battery, ...parts],
+    [port, battery, ...parts],
     [
-      ["pads", 18, 88, 77, 8],
-      ["pads", 39, 4, 56, 8],
+      ["pads", 5, 88, 90, 8, 16],
+      ["pads", 28, 4, 67, 8, 12],
     ],
   );
 }
+// ESP32 Feathers carry a module whose PCB antenna overhangs the far end.
+const featherModule: Part[] = [["shield", 58, 22, 26, 56], ["antenna", 85, 22, 12, 56]];
 function nano(...parts: Part[]) {
   return moduleBoard(2.5, blue, [usb, ...parts]);
 }
@@ -142,7 +147,7 @@ function shieldBoard(aspect: number, color: string, ports: Part[], components: P
     ["header", 44, 89, 23, 7, 8],
     ["header", 71, 89, 20, 7, mega ? 8 : 6],
   ];
-  if (mega) headers.push(["header", 93, 12, 5, 74]);
+  if (mega) headers.push(["header-2x", 92, 10, 7, 78, 18]);
   return board(
     aspect,
     color,
@@ -153,6 +158,7 @@ function shieldBoard(aspect: number, color: string, ports: Part[], components: P
 const barrel: Part = ["jack", -1, 73, 18, 19];
 const usbB: Part = ["usb", -2, 12, 23, 22];
 const smallUsb: Part = ["usb", -1, 17, 13, 13];
+const smallUsbC: Part = ["usb-c", -1, 17, 13, 13];
 function nucleo(kind: "classic" | "new" | "small" | "144") {
   if (kind === "small")
     return moduleBoard(2.76, white, [
@@ -164,15 +170,15 @@ function nucleo(kind: "classic" | "new" | "small" | "144") {
   const parts: Part[] = [
     ["usb", 36, -1, 23, 10],
     ["chip", 41, 13, 15, 10],
-    ["header", 5, 35, 5, 58],
-    ["header", 90, 35, 5, 58],
+    ["header-2x", 3, 35, 8, 58, 19],
+    ["header-2x", 89, 35, 8, 58, 19],
     ["header", 17, 44, 6, 41],
     ["header", 77, 42, 6, 47],
     ["chip", 38, 55, 25, 18],
     ["button", 23, 30, 9, 7],
     ["button", 66, 30, 9, 7],
   ];
-  if (kind === "144") parts.push(["socket", 66, 82, 20, 17], ["usb", 4, 79, 11, 10]);
+  if (kind === "144") parts.push(["ethernet", 66, 82, 20, 17], ["usb", 4, 79, 11, 10]);
   if (kind === "new") parts.push(["jst", 61, 12, 18, 9]);
   return board(kind === "144" ? 0.525 : 0.85, white, parts);
 }
@@ -245,13 +251,13 @@ models(
     ],
   ),
 );
-models(["arduino-uno-r4-minima"], shieldBoard(1.29, teal, [smallUsb, barrel], [processor]));
+models(["arduino-uno-r4-minima"], shieldBoard(1.29, teal, [smallUsbC, barrel], [processor]));
 models(
   ["arduino-uno-r4-wifi"],
   shieldBoard(
     1.29,
     teal,
-    [smallUsb, barrel],
+    [smallUsbC, barrel],
     [
       ["shield", 21, 18, 19, 25],
       ["matrix", 51, 36, 34, 33, 12],
@@ -264,7 +270,7 @@ models(
   shieldBoard(
     1.29,
     blue,
-    [smallUsb],
+    [smallUsbC],
     [
       ["shield", 18, 59, 18, 24],
       ["chip", 41, 19, 21, 27],
@@ -285,7 +291,7 @@ models(
   shieldBoard(
     1.9,
     blue,
-    [smallUsb, ["socket", -1, 46, 16, 18], barrel],
+    [smallUsbC, ["socket", -1, 46, 16, 18], barrel],
     [processor, ["shield", 17, 66, 15, 15]],
     true,
   ),
@@ -304,7 +310,7 @@ models(
 );
 models(
   ["arduino-nano-r4"],
-  moduleBoard(2.5, blue, [usb, ["chip", 34, 22, 26, 55], ["button", 68, 36, 8, 20], ["jst", 84, 26, 15, 48]]),
+  moduleBoard(2.5, blue, [usbC, ["chip", 34, 22, 26, 55], ["button", 68, 36, 8, 20], ["jst", 84, 26, 15, 48]]),
 );
 models(["arduino-nano-33-iot", "arduino-nano-rp2040-connect"], nano(["chip", 29, 34, 16, 32], radio));
 models(
@@ -314,17 +320,17 @@ models(
 models(
   ["arduino-nano-esp32"],
   moduleBoard(2.5, teal, [
-    usb,
+    usbC,
     ["button", 26, 35, 9, 21],
     ["shield", 43, 24, 32, 51],
     ["antenna", 78, 25, 16, 48],
   ]),
 );
-models(["arduino-nano-matter"], nano(["chip", 38, 32, 16, 35], ["shield", 68, 28, 22, 43]));
+models(["arduino-nano-matter"], moduleBoard(2.5, blue, [usbC, ["chip", 38, 32, 16, 35], ["shield", 68, 28, 22, 43]]));
 models(["arduino-micro"], moduleBoard(2.66, teal, [usb, processor, ["button", 79, 31, 12, 34]]));
 models(["arduino-pro-mini"], moduleBoard(1.83, blue, [processor, ["button", 76, 37, 13, 26]]));
 models(["arduino-mkr-zero"], moduleBoard(2.46, teal, [
-  usb, ["jst", 14, 1, 17, 26], ["button", 27, 38, 8, 18],
+  usb, ["jst", 14, 17, 14, 22], ["button", 30, 44, 8, 18],
   ["chip", 54, 36, 13, 31, "SAMD21"], ["microsd", 78, 22, 22, 55],
 ]));
 models(
@@ -340,7 +346,7 @@ models(
     ["button", 84, 48, 7, 14],
   ]),
 );
-models(["arduino-portenta-h7"], moduleBoard(2.45, black, [usb, processor, ["chip", 72, 31, 17, 37]]));
+models(["arduino-portenta-h7"], moduleBoard(2.45, black, [usbC, processor, ["chip", 72, 31, 17, 37]]));
 models(
   ["arduino-nicla-sense-me"],
   moduleBoard(1, black, [
@@ -350,15 +356,15 @@ models(
   ]),
 );
 
-models(["adafruit-feather-rp2040"], feather(black, ["chip", 40, 33, 18, 38, "RP2040"], ["chip", 68, 37, 10, 24], ["button", 22, 61, 7, 13], ["jst", 82, 28, 17, 37]));
-models(["adafruit-feather-rp2350"], feather(black, ["chip", 42, 32, 17, 38, "RP2350"], ["chip", 67, 37, 10, 24], ["button", 22, 61, 7, 13], ["jst", 82, 28, 17, 37]));
-models(["adafruit-feather-m0-express", "adafruit-feather-m4-express"], feather(black, ["chip", 39, 34, 16, 35], ["chip", 57, 31, 7, 23], ["proto", 68, 27, 24, 49], ["button", 23, 61, 7, 13]));
+models(["adafruit-feather-rp2040"], feather(black, usbC, ["chip", 40, 33, 18, 38, "RP2040"], ["chip", 68, 37, 10, 24], ["button", 22, 61, 7, 13], ["jst-sh", 86, 30, 12, 40]));
+models(["adafruit-feather-rp2350"], feather(black, usbC, ["chip", 42, 32, 17, 38, "RP2350"], ["chip", 67, 37, 10, 24], ["button", 22, 61, 7, 13], ["jst-sh", 86, 30, 12, 40]));
+models(["adafruit-feather-m0-express", "adafruit-feather-m4-express"], feather(black, usb, ["chip", 39, 34, 16, 35], ["chip", 57, 31, 7, 23], ["proto", 68, 27, 24, 49], ["button", 23, 61, 7, 13]));
 models(
   ["adafruit-feather-esp32-v2", "adafruit-feather-esp32-s2", "adafruit-esp32-s3-feather"],
-  feather(black, radio),
+  feather(black, usbC, ["jst-sh", 30, 30, 9, 26], ...featherModule),
 );
-models(["adafruit-feather-nrf52840-express"], feather(blue, radio));
-models(["adafruit-kb2040"], moduleBoard(1.85, black, [usb, processor, ["jst", 82, 33, 17, 34]]));
+models(["adafruit-feather-nrf52840-express"], feather(blue, usb, radio));
+models(["adafruit-kb2040"], moduleBoard(1.85, black, [usbC, processor, ["jst", 82, 33, 17, 34]]));
 models(
   ["adafruit-itsybitsy-m4", "adafruit-itsybitsy-rp2040"],
   moduleBoard(1.96, black, [usb, processor, ["chip", 70, 32, 12, 21]]),
@@ -371,7 +377,7 @@ models(["adafruit-qt-py-rp2040"], qtPy(black, ["button", 79, 20, 16, 17], ["butt
 models(["adafruit-metro-m4-express"], shieldBoard(1.29, purple, [smallUsb, barrel], [processor]));
 models(
   ["adafruit-metro-esp32-s3"],
-  shieldBoard(1.29, black, [smallUsb, barrel], [radio, ["socket", 29, 55, 19, 21]]),
+  shieldBoard(1.29, black, [smallUsbC, barrel], [radio, ["socket", 29, 55, 19, 21]]),
 );
 models(["adafruit-grand-central-m4-express"], shieldBoard(1.9, black, [smallUsb, barrel], [processor], true));
 // Component-side layouts from the front pinout sheets linked by Seeed.
@@ -422,7 +428,7 @@ models(
     ["socket", 80, 72, 21, 26],
     processor,
     ["jst", 38, 4, 28, 8],
-    ["header", 8, 83, 53, 7],
+    ["header-2x", 8, 82, 53, 10, 20],
   ]),
 );
 
@@ -462,19 +468,20 @@ models(
     ["usb", 38, -1, 23, 11],
     ["chip", 40, 15, 18, 12],
     ["chip", 34, 52, 31, 21],
-    ["header", 3, 38, 7, 59],
-    ["header", 90, 38, 7, 59],
+    ["header-2x", 2, 30, 9, 67, 25],
+    ["header-2x", 89, 30, 9, 67, 25],
+    ["usb", 42, 89, 15, 11],
     ["button", 24, 41, 9, 7],
     ["button", 67, 41, 9, 7],
   ]),
 );
 models(
   ["stm32f103-blue-pill"],
-  moduleBoard(2.31, blue, [usb, ["chip", 44, 34, 19, 32, "STM32F103"], ["header", 72, 26, 17, 19], ["button", 69, 61, 10, 16], ["crystal", 27, 35, 9, 28]]),
+  moduleBoard(2.31, blue, [usb, ["chip", 44, 34, 19, 32, "STM32F103"], ["header-2x", 72, 22, 14, 22, 3], ["button", 69, 61, 10, 16], ["crystal", 27, 35, 9, 28], ["header", 95, 30, 4, 40, 4]]),
 );
 models(
   ["weact-black-pill-stm32f411"],
-  moduleBoard(2.55, black, [usb, ["chip", 44, 34, 19, 32, "STM32F411"], ["button", 23, 21, 7, 15], ["button", 23, 63, 7, 15], ["crystal", 33, 40, 6, 17]]),
+  moduleBoard(2.55, black, [usbC, ["chip", 44, 34, 19, 32, "STM32F411"], ["button", 23, 21, 7, 15], ["button", 23, 63, 7, 15], ["crystal", 33, 40, 6, 17], ["header", 95, 30, 4, 40, 4]]),
 );
 models(["nordic-nrf52840-dk", "nordic-nrf52-dk", "nordic-nrf5340-dk"], nordic(1.87));
 models(["nordic-nrf9160-dk"], nordic(2.36, true));
@@ -488,7 +495,7 @@ models(
     usb,
     ["chip", 32, 27, 16, 46],
     ["button", 71, 22, 8, 19],
-    ["socket", 83, 28, 17, 46],
+    ["microsd", 83, 28, 17, 46],
   ]),
 );
 models(
@@ -526,11 +533,11 @@ models(["sparkfun-pro-micro-rp2040"], moduleBoard(1.85, red, [
 ]));
 models(
   ["sparkfun-esp32-thing"],
-  moduleBoard(2.3, red, [usb, battery, processor, ["antenna", 83, 20, 13, 57]]),
+  moduleBoard(2.3, red, [usb, ["jst", 13, 16, 15, 22], processor, ["antenna", 83, 20, 13, 57]]),
 );
-models(["sparkfun-thing-plus-rp2040"], feather(red, processor, ["socket", 72, 28, 21, 42]));
-models(["sparkfun-thing-plus-esp32-wroom-usbc"], feather(red, radio));
-models(["particle-argon", "particle-boron"], feather("#365966", radio, ["button", 33, 51, 8, 14]));
+models(["sparkfun-thing-plus-rp2040"], feather(red, usbC, processor, ["microsd", 74, 26, 20, 46]));
+models(["sparkfun-thing-plus-esp32-wroom-usbc"], feather(red, usbC, ["shield", 56, 22, 28, 56], ["antenna", 85, 22, 12, 56]));
+models(["particle-argon", "particle-boron"], feather("#365966", usb, radio, ["button", 33, 51, 8, 14]));
 models(
   ["particle-photon-2"],
   moduleBoard(2.23, black, [
@@ -543,20 +550,20 @@ models(
 // LOLIN D1 mini V4.0, USB end at left in portrait coordinates.
 // https://www.wemos.cc/en/latest/d1/d1_mini.html
 models(["lolin-d1-mini"], moduleBoard(34.2 / 25.6, blue, [
-  ["usb-c", -1, 30, 22, 40], ["jst", 0, 75, 18, 20], ["button", 4, 9, 13, 7],
+  ["usb-c", -1, 30, 22, 40], ["jst-sh", 0, 72, 10, 16], ["button", 1, 12, 10, 8],
   ["chip", 50, 48, 16, 23, "ESP8266EX"], ["chip", 50, 19, 15, 20],
   ["chip", 25, 46, 16, 34, "CH340"], ["crystal", 52, 76, 10, 9],
-  ["antenna", 82, 17, 17, 62], ["hole", 85, 4, 9, 12], ["hole", 85, 84, 9, 12],
+  ["antenna", 82, 17, 17, 62], ["hole", 90, 2, 9, 12], ["hole", 90, 86, 9, 12],
 ]));
-models(["lolin-s2-mini"], moduleBoard(1.34, purple, [usb, processor, ["antenna", 76, 25, 18, 52]]));
+models(["lolin-s2-mini"], moduleBoard(1.34, purple, [usbC, processor, ["antenna", 76, 25, 18, 52]]));
 models(
   ["lilygo-t-display-s3"],
-  board(2.64, black, [usb, ["screen", 13, 6, 82, 83], ["button", 5, 78, 5, 12]]),
+  board(2.64, black, [usbC, ["screen", 13, 6, 82, 83], ["button", 5, 78, 5, 12]]),
 );
 models(
   ["waveshare-rp2040-zero", "waveshare-rp2350-zero"],
   moduleBoard(1.31, blue, [
-    ["usb", -2, 24, 38, 51],
+    ["usb-c", -2, 24, 38, 51],
     ["chip", 48, 35, 23, 30],
     ["button", 77, 20, 13, 17],
     ["button", 77, 64, 13, 17],
@@ -564,9 +571,9 @@ models(
 );
 models(
   ["waveshare-rp2350-plus"],
-  moduleBoard(2.43, blue, [usb, processor, ["button", 21, 23, 8, 15], ["button", 21, 62, 8, 15]]),
+  moduleBoard(2.43, blue, [usbC, processor, ["button", 21, 23, 8, 15], ["button", 21, 62, 8, 15]]),
 );
-models(["milkv-duo"], moduleBoard(2.43, green, [usb, processor, ["chip", 72, 28, 11, 40]]));
+models(["milkv-duo"], moduleBoard(2.43, green, [usbC, processor, ["chip", 72, 28, 11, 40]]));
 models(
   ["milkv-duo-s-v12"],
   board(1.19, green, [
@@ -593,8 +600,8 @@ models(
   board(1.22, red, [
     ["usb", 14, -1, 16, 16],
     ["chip", 42, 12, 15, 19],
-    ["header", 12, 46, 6, 43],
-    ["header", 82, 46, 6, 43],
+    ["header", 12, 40, 6, 49, 10],
+    ["header", 82, 40, 6, 49, 10],
     ["dip", 34, 47, 22, 38],
     ["button", 7, 85, 9, 10],
   ]),
@@ -616,8 +623,8 @@ models(
     ["usb", 15, -1, 18, 10],
     ["chip", 39, 12, 20, 15],
     ["chip", 38, 55, 23, 19],
-    ["header", 6, 41, 8, 48],
-    ["header", 86, 41, 8, 48],
+    ["header-2x", 4, 37, 11, 50, 10],
+    ["header-2x", 85, 37, 11, 50, 10],
     ["button", 13, 89, 9, 7],
     ["button", 77, 89, 9, 7],
   ]),
@@ -642,7 +649,7 @@ models(
     ["usb", 17, 85, 16, 16],
     ["usb", 58, 89, 11, 12],
     ["usb", 77, 89, 11, 12],
-    ["jst", 92, 25, 6, 43],
+    ["ribbon", 92, 25, 6, 43],
   ]),
 );
 // Orange Pi Zero 2W user manual §§1.4–1.5, rotated with GPIO at the top.
@@ -659,7 +666,7 @@ models(["orange-pi-zero-2w"], {
 });
 models(
   ["radxa-zero-3w"],
-  sbc(2.17, green, [soc, memory, ["usb", 16, 84, 14, 17], ["usb", 58, 86, 12, 15], ["usb", 79, 86, 12, 15]]),
+  sbc(2.17, green, [soc, memory, ["hdmi", 16, 84, 14, 17], ["usb-c", 58, 86, 12, 15], ["usb-c", 79, 86, 12, 15]]),
 );
 models(
   ["radxa-zero-3e"],
@@ -724,7 +731,7 @@ models(["orange-pi-5"], {
 // the top, the HDMI connectors and twin Ethernet jacks face left.
 models(["orange-pi-5-plus"], {
   ...board(75 / 100, "#315c97", [
-    ["hole", 89, 5, 6, 4.5], ["hole", 89, 92, 6, 4.5],
+    ["hole", 89, 8, 6, 4.5], ["hole", 89, 92, 6, 4.5],
     ["hole", 27, 12, 6, 4.5], ["hole", 84, 53, 6, 4.5],
     ["bga", 40, 28, 28, 21, "RK3588"], ["memory", 49, 11, 21, 10],
     ["memory", 72, 29, 14, 16], ["chip", 49, 62, 12, 9],
@@ -779,12 +786,13 @@ models(
     1.58,
     black,
     [
-      ["header", 14, 6, 72, 9],
-      ["header", 14, 85, 72, 9],
+      ["header-2x", 14, 3, 72, 12, 23],
+      ["header-2x", 14, 85, 72, 12, 23],
       soc,
       memory,
-      ["socket", -1, 48, 23, 30],
-      ["socket", 86, 32, 15, 22],
+      ["ethernet", -1, 22, 22, 34],
+      ["jack", -1, 59, 13, 21],
+      ["socket", 87, 39, 14, 22],
     ],
     "beagle",
   ),
@@ -795,8 +803,8 @@ models(
     1.58,
     green,
     [
-      ["header", 14, 5, 72, 11, 23],
-      ["header", 14, 84, 72, 11, 23],
+      ["header-2x", 14, 3, 72, 12, 23],
+      ["header-2x", 14, 85, 72, 12, 23],
       soc,
       memory,
       ["ethernet", -1, 27, 23, 33],
@@ -813,8 +821,8 @@ models(
     1.21,
     black,
     [
-      ["header", 9, 6, 78, 8],
-      ["header", 9, 87, 78, 8],
+      ["header-2x", 9, 3, 78, 11, 23],
+      ["header-2x", 9, 86, 78, 11, 23],
       ["sink", 26, 25, 47, 48],
       ethernet,
       ["socket", 82, 17, 19, 24],
