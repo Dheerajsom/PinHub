@@ -104,7 +104,8 @@ test.describe("touch landscape (844 × 390)", () => {
   test("text fields stay at 16 px on touch so iOS does not zoom on focus", async ({ page }) => {
     await page.goto("/link?a=raspberry-pi-4-model-b&b=stm32-nucleo-h753zi&bus=uart");
     const selects = page.locator("select.ph-link-select");
-    expect(await selects.count()).toBeGreaterThan(0);
+    // The port selects appear only once both boards' details have loaded.
+    await expect(selects.first()).toBeVisible();
     for (const select of await selects.all()) await expect(select).toHaveCSS("font-size", "16px");
     await page.goto("/");
     await expect(page.getByRole("textbox", { name: "Search boards" })).toHaveCSS("font-size", "16px");

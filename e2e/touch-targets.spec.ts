@@ -7,6 +7,9 @@ import { devices, expect, test, type Locator } from "@playwright/test";
 const minimum = 44;
 
 async function expectTouchSize(locator: Locator, label: string) {
+  // The board page swaps its prerendered workbench for the live one after
+  // hydration; wait out that swap instead of measuring a detached node.
+  await expect(locator, label).toBeVisible();
   const box = await locator.boundingBox();
   expect(box, label).not.toBeNull();
   expect(box!.height, `${label} height`).toBeGreaterThanOrEqual(minimum);
@@ -38,7 +41,7 @@ for (const viewport of [
       }
       await expectTouchSize(page.getByRole("button", { name: /^Remove .* from comparison$/ }).filter({ visible: true }).first(), "remove board");
       await expectTouchSize(page.getByRole("link", { name: /Raspberry Pi 5/ }).filter({ visible: true }).first(), "board name");
-      const more = page.locator("summary", { hasText: /^Show \d+ more/ });
+      const more = page.locator("summary", { hasText: /^Show \d+ more/ }).filter({ visible: true });
       if (await more.count()) await expectTouchSize(more.first(), "show more findings");
     });
 
