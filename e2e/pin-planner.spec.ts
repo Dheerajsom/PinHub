@@ -38,13 +38,14 @@ test.describe("planner page", () => {
 
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "PinHub sections" });
-    await nav.getByRole("link", { name: "Planner", exact: true }).click();
+    await nav.getByRole("button", { name: /^Tools/ }).click();
+    await nav.getByRole("link", { name: /^Pin planner/ }).click();
     await expect(page).toHaveURL(/\/planner$/);
-    await expect(
-      page
-        .getByRole("navigation", { name: "PinHub sections" })
-        .getByRole("link", { name: "Planner", exact: true }),
-    ).toHaveAttribute("aria-current", "page");
+    const toolsNav = page.getByRole("navigation", { name: "PinHub sections" });
+    await expect(toolsNav.getByRole("button", { name: /^Tools.*current: Pin planner/ })).toBeVisible();
+    await toolsNav.getByRole("button", { name: /^Tools/ }).click();
+    await expect(toolsNav.getByRole("link", { name: /^Pin planner/ })).toHaveAttribute("aria-current", "page");
+    await page.keyboard.press("Escape");
 
     const search = page.getByRole("combobox", { name: "Search for your board" });
     await expect(async () => {
@@ -189,7 +190,7 @@ test.describe("planner page", () => {
     await expect(page).toHaveURL(/\/planner\?board=raspberry-pi-pico$/);
     await workspace(page);
 
-    await page.goto("/pinout/esp32-devkitc");
+    await page.goto("/boards/esp32-devkitc");
     await expect(page.getByRole("link", { name: /Plan pins on this board/ })).toHaveAttribute(
       "href",
       "/planner?board=esp32-devkitc",
@@ -232,12 +233,12 @@ test.describe("planner page", () => {
     }
   });
 
-  test("six sections fit one row at 360 px without overflow", async ({ page }) => {
+  test("the section nav and Tools fit one row at 360 px without overflow", async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
-    for (const path of ["/", "/planner", "/check", "/link", "/compare", "/prices", "/boards/raspberry-pi-pico"]) {
+    for (const path of ["/", "/planner", "/check", "/link", "/find", "/compare", "/prices", "/boards/raspberry-pi-pico"]) {
       await page.goto(path);
-      const links = page.getByRole("navigation", { name: "PinHub sections" }).first().getByRole("link");
-      await expect(links).toHaveCount(6);
+      const links = page.getByRole("navigation", { name: "PinHub sections" }).first().locator(":scope > a, :scope > div > button");
+      await expect(links).toHaveCount(4);
       const boxes = await links.evaluateAll((nodes) =>
         nodes.map((node) => {
           const box = node.getBoundingClientRect();

@@ -55,6 +55,19 @@ const nextConfig: NextConfig = {
     ],
     minimumCacheTTL: 60 * 60 * 24,
   },
+  // The standalone pinout page merged into the board page. Query strings pass
+  // through a redirect, so `?pin=` and `?role=` in old shared links still
+  // select the pin and seed the filter on /boards/[id].
+  async redirects() {
+    return [
+      { source: "/pinout/:id", destination: "/boards/:id", permanent: true },
+      {
+        source: "/pinout/:id/opengraph-image",
+        destination: "/boards/:id/opengraph-image",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

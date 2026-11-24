@@ -8,25 +8,24 @@ import { boards } from "@/lib/boards";
 import { siteUrl } from "@/lib/site";
 
 describe("discovery metadata", () => {
-  it("publishes every static pinout in the canonical sitemap", () => {
+  it("publishes every board page once in the canonical sitemap", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(boards.length * 2 + 6);
+    expect(entries).toHaveLength(boards.length + 7);
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/prices", siteUrl).toString() }));
     expect(entries[0]?.url).toBe(siteUrl.toString());
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/compare", siteUrl).toString() }));
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/planner", siteUrl).toString() }));
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/link", siteUrl).toString() }));
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/check", siteUrl).toString() }));
+    expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/find", siteUrl).toString() }));
     expect(entries).toContainEqual(
       expect.objectContaining({
         url: new URL(`/boards/${boards[0]?.id}`, siteUrl).toString(),
       }),
     );
-    expect(entries).toContainEqual(
-      expect.objectContaining({
-        url: new URL(`/pinout/${boards[0]?.id}`, siteUrl).toString(),
-      }),
-    );
+    // The standalone pinout page merged into the board page and redirects
+    // there, so the sitemap lists each board once.
+    expect(entries.some((entry) => entry.url.includes("/pinout/"))).toBe(false);
   });
 
   it("allows indexing and points crawlers to the sitemap", () => {

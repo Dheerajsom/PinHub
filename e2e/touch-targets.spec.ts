@@ -7,6 +7,9 @@ import { devices, expect, test, type Locator } from "@playwright/test";
 const minimum = 44;
 
 async function expectTouchSize(locator: Locator, label: string) {
+  // The board page swaps its prerendered workbench for the live one after
+  // hydration; wait out that swap instead of measuring a detached node.
+  await expect(locator, label).toBeVisible();
   const box = await locator.boundingBox();
   expect(box, label).not.toBeNull();
   expect(box!.height, `${label} height`).toBeGreaterThanOrEqual(minimum);
@@ -30,7 +33,7 @@ for (const viewport of [
 
     test("comparison links and actions are at least 44 px tall", async ({ page }) => {
       await page.goto("/compare?boards=raspberry-pi-5,nvidia-jetson-agx-orin-devkit");
-      for (const name of ["Overview", "Pinout", "Show identical", "Share", "Clear comparison"]) {
+      for (const name of ["Pin map", "Show identical", "Share", "Clear comparison"]) {
         const control = page.getByRole("link", { name }).or(page.getByRole("button", { name }));
         await expectTouchSize(control.filter({ visible: true }).first(), name);
         const box = await control.filter({ visible: true }).first().boundingBox();
@@ -38,13 +41,13 @@ for (const viewport of [
       }
       await expectTouchSize(page.getByRole("button", { name: /^Remove .* from comparison$/ }).filter({ visible: true }).first(), "remove board");
       await expectTouchSize(page.getByRole("link", { name: /Raspberry Pi 5/ }).filter({ visible: true }).first(), "board name");
-      const more = page.locator("summary", { hasText: /^Show \d+ more/ });
+      const more = page.locator("summary", { hasText: /^Show \d+ more/ }).filter({ visible: true });
       if (await more.count()) await expectTouchSize(more.first(), "show more findings");
     });
 
     test("pinout filter chips are at least 44 px tall", async ({ page }) => {
-      await page.goto("/pinout/raspberry-pi-pico");
-      const group = page.getByRole("group", { name: "Filter pins by category" }).first();
+      await page.goto("/boards/raspberry-pi-pico");
+      const group = page.getByRole("group", { name: "Show pins", exact: true }).first();
       await expect(group).toBeVisible();
       const chips = group.getByRole("button");
       const count = await chips.count();

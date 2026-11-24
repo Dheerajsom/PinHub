@@ -67,7 +67,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const probe = probedNet(nets, liveKey);
   const report = useMemo(() => pinReportContextFor(board), [board]);
   const linkState = serializePinoutState({ role: activeRole, pin: selectedKey }, new Set(geometry?.anchors.map((anchor) => anchor.key)), new Set(geometry?.anchors.map((anchor) => anchor.pin.role)));
-  const fullViewHref = `/pinout/${board.id}${linkState ? `?${linkState}` : ""}`;
+  const fullViewHref = `/boards/${board.id}${linkState ? `?${linkState}` : ""}#pins`;
 
   if (!board.pinout || !geometry) {
     return (

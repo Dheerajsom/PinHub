@@ -4,6 +4,7 @@ import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
 import {
   roleChipStyle,
+  roleColors,
   roleLabels,
   roleOrder,
 } from "@/components/board-visual/roles";
@@ -28,7 +29,7 @@ export function PinRoleLegend({ counts, activeRole, onToggle }: PinRoleLegendPro
 
   return (
     <div>
-      <p className="mb-1.5 text-[10px] uppercase tracking-[0.16em] text-zinc-500">Highlight by primary role</p>
+      <p className="mb-1.5 text-[10px] uppercase tracking-[0.16em] text-zinc-500">Highlight pins</p>
       <div
       className="flex flex-wrap gap-1.5"
       role="group"
@@ -60,5 +61,33 @@ export function PinRoleLegend({ counts, activeRole, onToggle }: PinRoleLegendPro
       })}
       </div>
     </div>
+  );
+}
+
+/**
+ * The drawing's colour key: what each pad hue means, with no controls. The
+ * full pin workbench filters with one row of capability chips, so its key is
+ * read, not pressed; one interactive row per surface keeps the two from being
+ * mistaken for each other.
+ */
+export function PinColorKey({ counts }: { counts: Map<PinRole, number> }) {
+  const roles = roleOrder.filter((role) => (counts.get(role) ?? 0) > 0);
+  return (
+    <ul aria-label="Pin colour key" className="flex flex-wrap gap-x-3 gap-y-1.5">
+      {roles.map((role) => {
+        const count = counts.get(role) ?? 0;
+        return (
+          <li key={role} className="inline-flex items-center gap-1.5 text-[11px] text-zinc-400">
+            <span
+              aria-hidden="true"
+              className="size-2.5 shrink-0 rounded-[3px] border"
+              style={{ backgroundColor: roleColors[role].fill, borderColor: roleColors[role].edge }}
+            />
+            {roleLabels[role]}
+            <span className="sr-only">: {count} {count === 1 ? "pin" : "pins"}</span>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

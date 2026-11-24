@@ -99,7 +99,7 @@ function BoardMatches({ board, term }: { board: PinLookupResult["boards"][number
         </Link>;
       })}
       {board.pins.length > 2 ? <button type="button" aria-expanded={expanded} className="min-h-11 w-full px-3 text-left text-xs text-cyan-200" onClick={() => setExpanded((value) => !value)}>{expanded ? "Show fewer" : `Show ${board.pins.length - 2} more pins`}<span className="sr-only"> for {board.name}</span></button> : null}
-      {board.pinCount > board.pins.length ? <Link href={`/pinout/${board.id}`} className="block min-h-11 px-3 py-2 text-xs text-cyan-200">Lookup contains the first {board.pins.length} of {board.pinCount} matches. Open full pinout.</Link> : null}
+      {board.pinCount > board.pins.length ? <Link href={`/boards/${board.id}#pins`} className="block min-h-11 px-3 py-2 text-xs text-cyan-200">Lookup contains the first {board.pins.length} of {board.pinCount} matches. Open full pinout.</Link> : null}
     </div>
   </div>;
 }

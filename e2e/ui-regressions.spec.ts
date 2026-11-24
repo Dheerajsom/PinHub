@@ -53,7 +53,7 @@ test("light-theme price navigation uses readable green ink", async ({ page }) =>
 });
 
 test("pinout SVG definitions have unique IDs", async ({ page }) => {
-  await page.goto("/pinout/raspberry-pi-pico");
+  await page.goto("/boards/raspberry-pi-pico");
 
   const ids = await page.locator("svg [id]").evaluateAll((elements) =>
     elements.map((element) => element.id),

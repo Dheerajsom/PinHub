@@ -38,10 +38,10 @@ async function expectExternalLink(link: Locator) {
 
 for (const theme of ["dark", "light"] as const) {
   test.describe(`pin error reports (${theme} theme)`, () => {
-    test("a pinned pin on the full pinout links to a pre-filled issue", async ({ page }) => {
+    test("a pinned pin on the board page links to a pre-filled issue", async ({ page }) => {
       const errors: string[] = [];
       page.on("pageerror", (error) => errors.push(error.message));
-      await page.goto("/pinout/raspberry-pi-5");
+      await page.goto("/boards/raspberry-pi-5");
       await setTheme(page, theme);
 
       const report = page.getByRole("link", { name: pinReportName });
@@ -67,7 +67,7 @@ for (const theme of ["dark", "light"] as const) {
       expect(errors).toEqual([]);
     });
 
-    test("the Raspberry Pi workbench and board page offer both report links", async ({ page }) => {
+    test("the board page and the catalog\u2019s Raspberry Pi workbench offer both report links", async ({ page }) => {
       await page.goto("/boards/raspberry-pi-5");
       await setTheme(page, theme);
 
@@ -81,6 +81,11 @@ for (const theme of ["dark", "light"] as const) {
       await expectExternalLink(boardReport);
       await expectColor(boardReport, reportInk[theme]);
 
+      // The Raspberry Pi workbench is the catalog panel's pin map.
+      await page.goto("/");
+      const search = page.getByRole("textbox", { name: "Search boards" });
+      await search.fill("Raspberry Pi 5");
+      await search.press("Enter");
       const workbench = page.getByRole("region", { name: "Raspberry Pi 5 dynamic pinout" });
       const dynamicTab = page.getByRole("tab", { name: "Dynamic", exact: true });
       await expect(async () => {

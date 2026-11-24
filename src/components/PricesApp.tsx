@@ -43,7 +43,7 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
         <h1 className="brand-title text-2xl leading-tight text-white sm:text-3xl">Prices &amp; availability</h1>
         <div className="ph-price-rule pl-3 text-xs leading-5 text-zinc-400">
           <div className="font-medium text-zinc-200">US stores · USD · one board · shipping and tax excluded</div>
-          <a href="#price-notes" className="ph-price-ink inline-flex min-h-6 items-center underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
+          <a href="#price-notes" className="ph-price-ink inline-flex min-h-11 items-center underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
         </div>
       </div>
 
@@ -143,7 +143,7 @@ function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
       <div className="price-actions flex gap-2 lg:flex-col">
         <a href={listing.url} target="_blank" rel="noopener noreferrer" aria-label={`View ${listing.name} at ${listing.retailer} (opens in a new tab)`}
           className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 ph-price-button rounded-lg px-3 text-xs font-medium transition">View store <ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
-        <Link href={`/pinout/${listing.boardId}`} aria-label={`Pinout for ${listing.name}`} className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 px-3 text-xs text-cyan-200 transition hover:bg-white/[0.05]"><CircuitBoard className="size-3.5" aria-hidden="true" /> Pinout</Link>
+        <Link href={`/boards/${listing.boardId}#pins`} aria-label={`Pin map for ${listing.name}`} className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 px-3 text-xs text-cyan-200 transition hover:bg-white/[0.05]"><CircuitBoard className="size-3.5" aria-hidden="true" /> Pin map</Link>
       </div>
     </li>
   );

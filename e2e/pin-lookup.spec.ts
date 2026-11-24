@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("lazy lookup opens a ringed pin and round-trips role selection", async ({ page }) => {
+test("lazy lookup opens a ringed pin and round-trips the Show pins filter", async ({ page }) => {
   const requests: string[] = [];
   page.on("request", (request) => { if (request.url().includes("/api/pins")) requests.push(request.url()); });
   await page.goto("/");
@@ -12,13 +12,14 @@ test("lazy lookup opens a ringed pin and round-trips role selection", async ({ p
   const answer = page.getByRole("region", { name: "Pin lookup" });
   await expect(answer.getByRole("link").first()).toBeVisible();
   await answer.getByRole("link").first().click();
-  await expect(page).toHaveURL(/\/pinout\/raspberry-pi-pico\?pin=/);
+  await expect(page).toHaveURL(/\/boards\/raspberry-pi-pico\?pin=[^#]*#pins$/);
   await expect(page.locator('svg [role="button"][aria-pressed="true"]')).toHaveCount(1);
   await page.reload();
   await expect(page.locator('svg [role="button"][aria-pressed="true"]')).toHaveCount(1);
-  const role = page.getByRole("group", { name: "Highlight pins by role" }).getByRole("button", { name: /^I2C/ });
+  const role = page.getByRole("group", { name: "Show pins", exact: true }).getByRole("button", { name: "I2C", exact: true });
   await role.click();
-  await expect(page).toHaveURL(/\?role=i2c$/);
+  await expect(page).toHaveURL(/[?&]show=i2c#pins$/);
+  await expect(page.locator('svg [role="button"][aria-pressed="true"]')).toHaveCount(1);
   await page.reload();
   await expect(role).toHaveAttribute("aria-pressed", "true");
   expect((await role.boundingBox())!.height).toBeGreaterThanOrEqual(44);
@@ -28,9 +29,11 @@ test("lazy lookup opens a ringed pin and round-trips role selection", async ({ p
 
 test.describe("pin lookup touch controls", () => {
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
-  test("role links remain at least 44px on coarse pointers", async ({ page }) => {
+  test("an old role link redirects and opens with a 44px filter chip on", async ({ page }) => {
+    // /pinout merged into the board page; old shared links keep their filter.
     await page.goto("/pinout/raspberry-pi-pico?role=i2c");
-    const role = page.getByRole("group", { name: "Highlight pins by role" }).getByRole("button", { name: /^I2C/ });
+    await expect(page).toHaveURL(/\/boards\/raspberry-pi-pico\?role=i2c$/);
+    const role = page.getByRole("group", { name: "Show pins", exact: true }).getByRole("button", { name: "I2C", exact: true });
     await expect(role).toHaveAttribute("aria-pressed", "true");
     const box = await role.boundingBox();
     expect(box!.height).toBeGreaterThanOrEqual(44);

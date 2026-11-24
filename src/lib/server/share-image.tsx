@@ -6,8 +6,8 @@ import { boards } from "@/lib/boards";
 import { shareCardModel } from "@/lib/share-card";
 import { BoardShareCard, shareCardSize } from "@/components/og/BoardShareCard";
 
-// Link-preview images for /pinout/[id] and /boards/[id]. Both routes are
-// prerendered for every catalog board at build time.
+// Link-preview images for /boards/[id], prerendered for every catalog board at
+// build time. The old /pinout/[id] image path redirects here.
 
 let logo: Promise<string> | undefined;
 function logoDataUrl() {

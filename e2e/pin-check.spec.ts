@@ -82,7 +82,7 @@ test("says so when a paste runs past 100,000 characters", async ({ page, context
   // A real paste: Playwright's fill types a text this long too slowly.
   await page.evaluate((text) => navigator.clipboard.writeText(text), code);
   await editor(page).focus();
-  await page.keyboard.press("Control+v");
+  await page.keyboard.press("ControlOrMeta+v");
   await expect(page.getByRole("status").filter({ hasText: "The pasted code was cut at 100,000 characters. The rest was not checked." })).toBeVisible();
   await expect(report(page).getByRole("heading", { level: 2 })).toHaveText("Only part of the code was checked");
   expect(await editor(page).evaluate((element) => (element as HTMLTextAreaElement).value.length)).toBe(100_000);
@@ -107,15 +107,15 @@ test("indents a selection with Tab, keeps undo, and lets Escape then Tab leave",
   await expect(area).toHaveValue("  pinMode(2, OUTPUT);\n  pinMode(3, OUTPUT);\nloop();");
   await page.keyboard.press("Shift+Tab");
   await expect(area).toHaveValue("pinMode(2, OUTPUT);\npinMode(3, OUTPUT);\nloop();");
-  await page.keyboard.press("Control+z");
+  await page.keyboard.press("ControlOrMeta+z");
   await expect(area).toHaveValue("  pinMode(2, OUTPUT);\n  pinMode(3, OUTPUT);\nloop();");
-  await page.keyboard.press("Control+z");
+  await page.keyboard.press("ControlOrMeta+z");
   await expect(area).toHaveValue("pinMode(2, OUTPUT);\npinMode(3, OUTPUT);\nloop();");
 
   // Clear keeps undo too.
   await page.getByRole("button", { name: "Clear the code" }).click();
   await expect(area).toHaveValue("");
-  await page.keyboard.press("Control+z");
+  await page.keyboard.press("ControlOrMeta+z");
   await expect(area).toHaveValue("pinMode(2, OUTPUT);\npinMode(3, OUTPUT);\nloop();");
 
   await area.focus();

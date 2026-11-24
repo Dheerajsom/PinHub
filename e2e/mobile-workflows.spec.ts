@@ -87,7 +87,7 @@ for (const viewport of viewports) {
     });
 
     test("pinout search, pin selection, and inspector dismissal", async ({ page }, testInfo) => {
-      await page.goto("/pinout/raspberry-pi-pico");
+      await page.goto("/boards/raspberry-pi-pico");
       await expectPageFits(page);
       await page.screenshot({ path: testInfo.outputPath("pinout.png") });
       await page.getByRole("textbox", { name: "Search pins", exact: true }).fill("GP28");
@@ -97,8 +97,11 @@ for (const viewport of viewports) {
       await expectPageFits(page);
       await page.screenshot({ path: testInfo.outputPath("selected-pin.png") });
       await page.getByRole("button", { name: "Clear pin search" }).tap();
-      await expect(page.getByText("Showing 40 of 40 pins", { exact: true })).toBeVisible();
-      await page.goto("/boards/raspberry-pi-pico");
+      await expect(page.getByRole("heading", { name: "All 40 pins", exact: true })).toBeVisible();
+      // The Inspect dialog belongs to the catalog panel's compact pin map.
+      await page.goto("/");
+      await page.getByRole("textbox", { name: "Search boards", exact: true }).fill("raspberry pi pico");
+      await page.getByRole("button", { name: "Show Raspberry Pi Pico details", exact: true }).tap();
       await page.getByRole("button", { name: "Inspect", exact: true }).tap();
       const inspector = page.getByRole("dialog", { name: "Raspberry Pi Pico pinout inspector" });
       await expect(inspector).toBeVisible();
@@ -159,14 +162,15 @@ for (const viewport of viewports) {
       await page.getByText(/^Shared signals and capability overlaps/).tap();
       await expect(page.getByRole("heading", { name: "Pin-conflict analysis" })).toBeVisible();
       await expectPageFits(page);
-      // The list's Overview links and remove buttons were 16px and 40px tall.
+      // The list's links and remove buttons were 16px and 40px tall.
       if (viewport.width < 768) {
         const list = page.getByRole("list").filter({ has: page.getByRole("button", { name: /^Remove .* from comparison$/ }) }).filter({ visible: true }).first();
         const targets = [
-          ...(await list.getByRole("link", { name: "Overview", exact: true }).all()),
+          ...(await list.getByRole("link").all()),
           ...(await list.getByRole("button", { name: /^Remove / }).all()),
         ];
-        expect(targets.length).toBe(4);
+        // Two board-name links, two remove buttons, and a Pin map link per mapped board.
+        expect(targets.length).toBeGreaterThanOrEqual(4);
         for (const target of targets) {
           expect(Math.round((await target.boundingBox())!.height)).toBeGreaterThanOrEqual(44);
         }
@@ -193,11 +197,6 @@ for (const viewport of viewports) {
       await expectPageFits(page);
       const toolbar = page.locator("main .sticky").first();
       const controls = [
-        toolbar.getByRole("link", { name: "Pin Maps", exact: true }),
-        toolbar.getByRole("link", { name: "Planner", exact: true }),
-        toolbar.getByRole("link", { name: "Check", exact: true }),
-        toolbar.getByRole("link", { name: "Compare", exact: true }),
-        toolbar.getByRole("link", { name: "Prices", exact: true }),
         toolbar.getByRole("button", { name: /^Favorites/ }),
         toolbar.getByRole("combobox", { name: "Sort boards" }),
       ];
@@ -230,7 +229,7 @@ for (const viewport of viewports) {
       await expect(sort).toHaveText("Recently added");
       await expect(menu).toBeHidden();
       await toolbar.getByRole("button", { name: /^Filters/ }).tap();
-      await expect(page.getByText("Discovery facets", { exact: true })).toBeVisible();
+      await expect(page.locator("aside").getByText("Filters", { exact: true })).toBeVisible();
     });
   });
 }

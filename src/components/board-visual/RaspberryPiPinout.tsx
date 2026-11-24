@@ -102,7 +102,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
         <h3>{board.pinout.connector}</h3>
         <div className="pi-tools">
           <button ref={expandRef} type="button" onClick={() => setExpanded(true)}><Expand size={14} aria-hidden="true" /> Inspect</button>
-          <a href={`/pinout/${board.id}`} aria-label={`Open the ${board.name} full pinout`}><ExternalLink size={14} aria-hidden="true" /><span>Full view</span></a>
+          <a href={`/boards/${board.id}#pins`} aria-label={`Open the ${board.name} full pinout`}><ExternalLink size={14} aria-hidden="true" /><span>Full view</span></a>
         </div>
       </header>
 
