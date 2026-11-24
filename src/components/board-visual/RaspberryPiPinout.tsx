@@ -16,6 +16,7 @@ import { countRoles, pinAccessibleLabel, roleLabels, roleColors } from "@/compon
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { pinReportContextFor } from "@/lib/pin-report";
+import { serializePinoutState } from "@/lib/pinout-state";
 import { fiveVoltCaution } from "@/lib/board-utilities";
 
 /** The same source pin objects drive the board, selector, readout and schedule. */
@@ -91,6 +92,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
     (!activeRole || pin.role === activeRole) && terms.every((term) =>
       `${pin.position} ${pin.label} ${(pin.aliases ?? []).join(" ")} ${pin.note ?? ""}`.toLowerCase().includes(term)),
   );
+  const linkState = serializePinoutState({ role: activeRole, pin: selectedKey }, new Set(anchors.map(a => a.key)), new Set(anchors.map(a => a.pin.role)));
   const select = (key: string | null) => { setSelectedKey(key); setHoverKey(null); };
 
   return (
@@ -102,7 +104,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
         <h3>{board.pinout.connector}</h3>
         <div className="pi-tools">
           <button ref={expandRef} type="button" onClick={() => setExpanded(true)}><Expand size={14} aria-hidden="true" /> Inspect</button>
-          <a href={`/boards/${board.id}#pins`} aria-label={`Open the ${board.name} full pinout`}><ExternalLink size={14} aria-hidden="true" /><span>Full view</span></a>
+          <a href={`/boards/${board.id}${linkState ? `?${linkState}` : ""}#pins`} aria-label={`Open the ${board.name} full pinout`}><ExternalLink size={14} aria-hidden="true" /><span>Full view</span></a>
         </div>
       </header>
 
@@ -137,7 +139,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
 
       <section className="pi-pin-list" aria-label="Pin list">
         <div className="pi-connector-heading">
-          <p>Pick a pin by name: the board pads, this list and the picker select the same pin. Keyboard: arrows, then Enter.</p>
+          <p>Select a pin</p>
           <select className="pi-pin-picker" aria-label="Select physical pin" value={selectedKey ?? ""} onChange={(event) => select(event.target.value || null)}>
             <option value="">Choose a pin…</option>
             {anchors.map(({ key, pin }) => <option key={key} value={key}>{pin.position} · {pin.label}{pin.aliases?.length ? ` / ${pin.aliases.join(", ")}` : ""}</option>)}
@@ -175,7 +177,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
         </div>
       </details>
 
-      <p className="pi-illustration-note">{geometry.revisionNote} Decorative traces do not represent electrical connections.</p>
+      <p className="pi-illustration-note">{geometry.revisionNote}</p>
 
       <details className="pin-reference-table pi-schedule">
         <summary>{`All ${anchors.length} pins (table)`}</summary>

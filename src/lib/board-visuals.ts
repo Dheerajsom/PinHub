@@ -143,7 +143,7 @@ const PRESETS = {
     template: "xiao",
     form: "vertical",
     headerKind: "edge-dual",
-    aspect: 0.72,
+    aspect: 17.8 / 21,
     usb: "top",
     ports: ["usb-c"],
     orientation: "USB-C at top, component side up, 7 pads down each long edge",
@@ -264,7 +264,7 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "raspberry-pi-4-model-b": preset("sbc"),
   "raspberry-pi-3-model-b-plus": preset("sbc"),
   "raspberry-pi-3-model-a-plus": preset("sbc", {
-    aspect: 1.35,
+    aspect: 65 / 56,
     ports: ["usb-a", "hdmi", "camera"],
   }),
   "raspberry-pi-400": preset("sbc", {
@@ -431,7 +431,7 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "stm32-nucleo-g431kb": preset("nano"),
   "stm32-nucleo-f303k8": preset("nano"),
   "raspberry-pi-3-model-b": preset("sbc"),
-  "raspberry-pi-1-model-a-plus": preset("sbc"),
+  "raspberry-pi-1-model-a-plus": preset("sbc", { aspect: 65 / 56 }),
   "adafruit-feather-rp2350": preset("feather"),
   "adafruit-kb2040": preset("feather"),
   "waveshare-rp2350-plus": preset("pico"),

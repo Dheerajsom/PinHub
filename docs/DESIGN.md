@@ -185,21 +185,34 @@ Two presentations of one dataset, behind a persisted segmented control:
   one selection. Never hide the board in a collapsed or inert disclosure, and
   never describe fit-size pads as touch-sized. **Inspect** and **Full view**
   keep the large interactive drawing.
-- **Board renders** — every Dynamic drawing is one of five tiers, computed by
-  `renderTier` in `src/lib/board-render-coverage.ts` from the same geometry
-  the renderer uses (a unit test pins the counts):
-  dedicated model artwork (Raspberry Pi), family illustration, generic
-  outline, function-grouped schematic, or no map yet. Family illustrations
-  (`src/lib/board-family-art.ts`) add only features the family is known for
-  and the record can back — a shielded module and antenna only when the board
-  records a radio, Espressif EN/BOOT beside the USB, the Nucleo ST-LINK
-  section with USER/RESET, the micro:bit LED matrix and A/B buttons, an SBC's
-  SoC and memory, a Jetson heatsink. They are placed only in the clear field
-  between connectors, never over a pad, and the caption calls them
-  representative, not the model's layout. Shield-footprint boards (UNO, Mega,
-  Nucleo-64, Nordic DK, LaunchPad) draw their header pads in the catalog's
-  signal order, and the caption says so. Never copy Raspberry Pi artwork onto
-  another board, and never draw a feature the catalog cannot back.
+- **Board renders.** All 196 catalog models have an identification drawing.
+  The 18 Raspberry Pi drawings and 69 dual-edge module drawings carry selectable
+  source pins. For 103 boards the product illustration appears beside a separate
+  connector diagram. This keeps a rear header, a shield map in catalog order,
+  or a function-grouped FPGA sheet from appearing to mark physical pad locations
+  on the product. The remaining six boards show the product and their existing
+  pin-map status. `renderCoverage` checks these categories against the catalog.
+- **Hardware landmarks.** Each non-Pi model has an explicit entry in
+  `src/lib/board-portraits.ts`. Shared footprints use the same drawing when
+  their visible landmarks coincide. Port shells, radio cans, screens, buttons
+  and heat sinks are simplified. The linked model documentation remains the
+  reference for physical revisions and wiring. The illustration carries no nets.
+  References for distinctive landmarks include the Pi 4/5 port order, the
+  Feather's asymmetric headers, the Basys 3 controls, and the Wio Terminal's
+  screen and case. [Raspberry Pi 5 introduction](https://www.raspberrypi.com/news/introducing-raspberry-pi-5/),
+  [Feather RP2040 pinouts](https://learn.adafruit.com/adafruit-feather-rp2040-pico/pinouts),
+  [Basys 3 reference manual](https://digilent.com/reference/programmable-logic/basys-3/reference-manual),
+  [Wio Terminal hardware overview](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/).
+- **November 2026 illustration review.** The independent reviewer opened all
+  196 boards at 390 × 844 and compared the pin picker and diagram counts on
+  every mapped board. Forty journeys covered five representative boards in both
+  themes at 360 × 800, 390 × 844, 412 × 915 and 844 × 390. After correcting
+  the Freedom KL25Z touch slider, 16 additional journeys checked the Freedom
+  and micro:bit at those sizes. Keyboard, touch, full-view selection, overflow
+  and browser-error checks passed in Chrome touch emulation. The reviewer used
+  the mobile criteria in AGENTS.md because the standalone mobile-mojo skill
+  file was unavailable. Physical-device and mechanical validation were outside
+  this browser review.
 - **Distinguishing roles**: color + on-pad number + text role label +
   legend — never color alone. Reserved and strap pins additionally carry
   notes explaining *why* they're risky.

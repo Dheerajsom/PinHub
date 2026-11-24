@@ -5,9 +5,10 @@ import { clsx } from "clsx";
 import { Search, Scan, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import type { BoardGeometry, PinAnchor } from "@/lib/board-visual-geometry";
+import { ProductPortrait } from "@/components/board-visual/ProductPortrait";
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
-import { illustrationCaption } from "@/components/board-visual/illustration-caption";
+import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import {
   PinDetails,
   type PinoutSource,
@@ -273,6 +274,7 @@ export function InspectorBody({
         </div>
 
         <div className="mt-3">
+          {!geometry.artworkId && geometry.kind !== "edge-dual" && <div className="mb-3"><ProductPortrait id={board.id} name={board.name} /></div>}
           {/* Keep every pin tappable at working size; zoom can enlarge labels
               without shrinking controls below their minimum touch size. */}
           {scrollable || zoomLabels ? (
@@ -323,6 +325,7 @@ export function InspectorBody({
                 }}
               >
                 <BoardStage
+                  productId={board.id}
                   geometry={geometry}
                   title={`${board.name} — ${board.pinout?.connector ?? "pinout"}`}
                   sheetLabel={board.name}
@@ -362,7 +365,7 @@ export function InspectorBody({
             <PinColorKey counts={roleCounts} />
           </div>
           <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-            {illustrationCaption(geometry)}
+            {connectorCaption(geometry)}
           </p>
         </div>
 

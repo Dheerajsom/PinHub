@@ -1,5 +1,6 @@
 "use client";
 
+import { ModuleArtwork } from "@/components/board-visual/ProductPortrait";
 import { useId, useRef, useState } from "react";
 import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
@@ -20,6 +21,7 @@ import {
 const ANNOTATION = "#9fb0c0";
 
 type BoardStageProps = {
+  productId?: string;
   geometry: BoardGeometry;
   title: string;
   /** Board name, lettered into the outline like a PCB's silkscreen. */
@@ -66,6 +68,7 @@ type BoardStageProps = {
 };
 
 export function BoardStage({
+  productId,
   geometry,
   title,
   sheetLabel,
@@ -127,7 +130,9 @@ export function BoardStage({
       className={clsx("bv-stage h-full w-full", className)}
       preserveAspectRatio="xMidYMid meet"
     >
-      <BoardArtwork geometry={geometry} label={sheetLabel} />
+      {productId && geometry.kind === "edge-dual" && !geometry.artworkId
+        ? <ModuleArtwork id={productId} geometry={geometry} />
+        : <BoardArtwork geometry={productId && !geometry.artworkId ? { ...geometry, plain: true } : geometry} label={sheetLabel} />}
 
       {/* Function-block titles for the schematic sheet. */}
       {stacked

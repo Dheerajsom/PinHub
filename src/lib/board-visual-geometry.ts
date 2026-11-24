@@ -175,9 +175,12 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   const rightX = bodyX + bodyW - edgeInset;
   const startY = bodyY + padPad;
 
+  // Feather's 12-pin header ends level with the far end of the 16-pin
+  // header. The LiPo socket occupies the missing pitches near USB.
+  const firstY = (length: number) => startY + (visual.template === "feather" ? (n - length) * pitch : 0);
   const anchors: PinAnchor[] = [];
   left.forEach((pin, i) => {
-    const cy = startY + i * pitch;
+    const cy = firstY(left.length) + i * pitch;
     anchors.push({
       key: `pL:${i}`,
       pin,
@@ -191,7 +194,7 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
     });
   });
   right.forEach((pin, i) => {
-    const cy = startY + i * pitch;
+    const cy = firstY(right.length) + i * pitch;
     anchors.push({
       key: `pR:${i}`,
       pin,
@@ -210,7 +213,7 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   // reader could act on.
   const strip = (count: number, x: number): Rect => ({
     x: x - PAD_R - 6,
-    y: startY - PAD_R - 6,
+    y: firstY(count) - PAD_R - 6,
     w: (PAD_R + 6) * 2,
     h: Math.max(count - 1, 0) * pitch + (PAD_R + 6) * 2,
     rx: 8,

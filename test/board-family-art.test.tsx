@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
 import { boards } from "@/lib/boards";
+import { boardPortrait } from "@/lib/board-portraits";
 import { boardVisuals } from "@/lib/board-visuals";
 import { buildBoardGeometry, SHIELD_ORDER_NOTE, type BoardGeometry } from "@/lib/board-visual-geometry";
 import { familyArtFor, freeField, layoutFamilyArt, overlaps } from "@/lib/board-family-art";
@@ -10,7 +11,7 @@ import { renderCoverage, renderTier } from "@/lib/board-render-coverage";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
 import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutVisualization";
-import { illustrationCaption } from "@/components/board-visual/illustration-caption";
+import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 
 afterEach(cleanup);
@@ -55,7 +56,7 @@ describe("family board artwork", () => {
     for (const board of boards) {
       const visual = boardVisuals[board.id];
       if (raspberryPiModel(board.id)) expect(familyArtFor(board, visual), board.id).toBeNull();
-      if (visual?.headerKind === "group-strips") expect(renderTier(board) === "schematic" || !board.pinout, board.id).toBe(true);
+      if (visual?.headerKind === "group-strips") expect(renderTier(board) === "separate" || !board.pinout, board.id).toBe(true);
     }
   });
 
@@ -90,28 +91,33 @@ describe("family board artwork", () => {
   it("says what is illustration and flags catalog-ordered shield headers", () => {
     const uno = buildBoardGeometry(byId("arduino-uno-rev3"))!;
     expect(uno.orderNote).toBe(SHIELD_ORDER_NOTE);
-    expect(illustrationCaption(uno)).toContain("UNO-footprint board family illustration");
-    expect(illustrationCaption(uno)).toContain("not the physical sequence");
+    expect(connectorCaption(uno)).toContain("Connector reference.");
+    expect(connectorCaption(uno)).toContain("not the physical sequence");
     const devkit = buildBoardGeometry(byId("esp32-devkit-v1"))!;
     expect(devkit.orderNote).toBeUndefined();
-    expect(illustrationCaption(buildBoardGeometry(byId("teensy-40"))!)).toMatch(/^Simplified technical illustration/);
+    expect(connectorCaption(buildBoardGeometry(byId("teensy-40"))!)).toContain("Illustrated component side.");
   });
 });
 
 describe("render coverage inventory", () => {
+  it("distinguishes the Freedom board's touch slider from the micro:bit edge contacts", () => {
+    const freedom = boardPortrait("nxp-frdm-kl25z")!.parts.map(([kind]) => kind);
+    expect(freedom).toContain("touch-slider");
+    expect(freedom).not.toContain("contacts");
+    expect(boardPortrait("bbc-microbit-v2")!.parts.some(([kind]) => kind === "contacts")).toBe(true);
+  });
+
   it("accounts for every catalog board in exactly one tier", () => {
     const coverage = renderCoverage(boards);
     const counts = Object.fromEntries(Object.entries(coverage).map(([tier, ids]) => [tier, ids.length]));
-    // Update docs/DESIGN.md and the dated audit when these numbers change.
-    expect(counts).toEqual({ dedicated: 18, family: 98, generic: 31, schematic: 43, unmapped: 6 });
+    expect(counts).toEqual({ pi: 18, module: 69, separate: 103, portraitOnly: 6, missing: 0 });
     expect(Object.values(coverage).flat().sort()).toEqual(boards.map((board) => board.id).sort());
-    for (const id of ["arduino-uno-rev3", "arduino-mega-2560-rev3", "arduino-nano", "esp32-devkitc", "nodemcu-devkit-v1", "stm32-nucleo-f401re", "stm32-nucleo-h753zi"]) {
-      expect(coverage.family, id).toContain(id);
-    }
+    expect(coverage.separate).toContain("digilent-nexys-a7-100t");
+    expect(coverage.portraitOnly).toContain("digilent-basys-3");
   });
 });
 
-describe("embedded generic pin map", () => {
+describe("embedded product pin map", () => {
   it("fits the whole physical board by default and zooms to touch size on request", () => {
     const board = byId("esp32-devkitc");
     const { container } = render(<BoardPinoutVisualization board={board} />);
@@ -119,12 +125,34 @@ describe("embedded generic pin map", () => {
     expect(frame.dataset.boardView).toBe("fit");
     expect(frame.style.minWidth).toBe("");
     expect(screen.getByText(/pads are small at this size/)).toBeTruthy();
-    expect(screen.getByText(/Espressif DevKit family illustration/)).toBeTruthy();
+    expect(container.querySelector('[data-product-artwork="esp32-devkitc"]')).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     expect(frame.dataset.boardView).toBe("touch");
-    expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!));
+    expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!, true));
     fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
     expect(frame.dataset.boardView).toBe("fit");
+  });
+
+  it("shows the Feather short row opposite the last twelve pads in the long row", () => {
+    const geometry = buildBoardGeometry(byId("adafruit-feather-rp2040"))!;
+    const left = geometry.anchors.filter(a => a.side === "left");
+    const right = geometry.anchors.filter(a => a.side === "right");
+    expect(right.map(a => a.cy)).toEqual(left.slice(4).map(a => a.cy));
+  });
+
+  it("keeps connector-local numbers distinguishable in the picker", () => {
+    const board = byId("digilent-nexys-a7-100t");
+    const { container } = render(<BoardPinoutVisualization board={board} />);
+    expect(screen.getByRole("img", { name: `Simplified illustration of ${board.name}` })).toBeTruthy();
+    const geometry = buildBoardGeometry(board)!;
+    const firstPins = geometry.anchors.filter(a => a.pin.position === 1);
+    expect(firstPins.length).toBeGreaterThan(1);
+    const picker = screen.getByRole("combobox", { name: "Select a pin" }) as HTMLSelectElement;
+    for (const anchor of firstPins) {
+      expect([...picker.options].find(o => o.value === anchor.key)?.text).toContain(anchor.group);
+      fireEvent.change(picker, { target: { value: anchor.key } });
+      expect(container.querySelector(`[data-pin-key="${anchor.key}"]`)?.getAttribute("aria-pressed")).toBe("true");
+    }
   });
 
   it("keeps function-grouped schematics at touch size with no physical zoom toggle", () => {

@@ -2327,3 +2327,19 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .ph-check :is(.ph-check-strip-pad span, .ph-check-card, .ph-check-example, .ph-check-action, .ph-check-icon-button, .ph-check-ghost, .ph-check-line-chip) { transition: none; }
 }
+
+/* Product identification artwork has its own framing, independent of the
+   connector sheet's working zoom, ordering and touch targets. */
+.product-portrait {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 20px 16px 14px;
+  background: radial-gradient(ellipse at 50% 40%, #24323a 0%, #111b22 75%);
+  border: 1px solid #34414a;
+  border-radius: 9px;
+  color: #d5dfdf;
+}
+.product-portrait > svg { display: block; width: min(100%, 360px); height: clamp(130px, 23svh, 215px); filter: drop-shadow(0 3px 3px #070b0c80); }
+.product-portrait > figcaption { font: 500 12px/1.4 var(--font-mono), monospace; text-align: center; overflow-wrap: anywhere; }

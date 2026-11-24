@@ -143,3 +143,15 @@ it("moves through connector rows and columns without wrapping to the other heade
   fireEvent.keyDown(named(39), { key: "ArrowLeft" });
   expect(document.activeElement).toBe(named(39));
 });
+
+
+it("carries the selected pin into the board workbench", () => {
+  const board = boards.find(b => b.id === "raspberry-pi-5")!;
+  render(<RaspberryPiPinout board={board} />);
+  const picker = screen.getByRole("combobox", { name: "Select physical pin" }) as HTMLSelectElement;
+  const key = picker.options[5].value;
+  fireEvent.change(picker, { target: { value: key } });
+  const link = screen.getByRole("link", { name: "Open the Raspberry Pi 5 full pinout" }) as HTMLAnchorElement;
+  expect(new URL(link.href).searchParams.get("pin")).toBe(key);
+  expect(link.hash).toBe("#pins");
+});
