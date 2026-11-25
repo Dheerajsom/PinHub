@@ -82,6 +82,18 @@ person can match to the board in front of them.
   content change.
 - `CI=1 npx playwright test --retries=0`: 173/173 in two consecutive full
   runs, after the finder test fix below.
+- Mobile gate (mobile-mojo, Playwright with touch emulation and system
+  Chrome): 88 runs, all passing. The Feather RP2040, ESP32-S3 Feather,
+  BeagleBone Black and Orange Pi 5 Plus ran at 360 × 800, 390 × 844, 412 × 915
+  and 844 × 390. The D1 mini, MKR Zero, Blue Pill, ESP32-S2-DevKitM-1,
+  Nucleo-F401RE and Mega 2560 ran at 390 × 844. Each ran in light and dark,
+  on the catalog panel and on the board page. The checks covered fit with no
+  page overflow, 44 px pads after zoom, panning inside the drawing's own
+  viewport, pad selection, the return to fit, visible focus and no console
+  errors. Screenshots showed no part over a pad and no line crossing module
+  text. Not covered: real devices, arrow-key panning, 200% text zoom, and the
+  explicit theme-toggle path, because the theme came from OS colour-scheme
+  emulation.
 
 ## Follow-up: Board finder browser test
 
@@ -100,18 +112,6 @@ server-round-trip timeout. The test also asserts that the optimistic count
 ("SPI, 1 needed") appears straight away, which is what a user sees. Not
 changed: each finder step returns about 335 KB of RSC. That is a possible
 payload optimisation, not a defect.
-- Mobile gate (mobile-mojo, Playwright with touch emulation and system
-  Chrome): 88 runs, all passing. The Feather RP2040, ESP32-S3 Feather,
-  BeagleBone Black and Orange Pi 5 Plus ran at 360 × 800, 390 × 844, 412 × 915
-  and 844 × 390. The D1 mini, MKR Zero, Blue Pill, ESP32-S2-DevKitM-1,
-  Nucleo-F401RE and Mega 2560 ran at 390 × 844. Each ran in light and dark,
-  on the catalog panel and on the board page. The checks covered fit with no
-  page overflow, 44 px pads after zoom, panning inside the drawing's own
-  viewport, pad selection, the return to fit, visible focus and no console
-  errors. Screenshots showed no part over a pad and no line crossing module
-  text. Not covered: real devices, arrow-key panning, 200% text zoom, and the
-  explicit theme-toggle path, because the theme came from OS colour-scheme
-  emulation.
 
 ## Known limits
 
