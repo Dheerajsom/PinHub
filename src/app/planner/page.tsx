@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { boards } from "@/lib/boards";
 import { summarizeBoard } from "@/lib/board-summary";
 import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
@@ -7,12 +8,12 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PlannerApp } from "@/components/planner/PlannerApp";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Pin planner",
   description:
     "Pick your board, mark the pins your circuit uses, and let PinHub fit I2C, SPI, UART, PWM, and ADC into the pins that are left, from source-backed pin functions.",
-  alternates: { canonical: "/planner" },
-};
+  path: "/planner",
+});
 
 assertBoardSourcesValid(boards);
 assertBoardVisualsValid();

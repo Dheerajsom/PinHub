@@ -1,16 +1,17 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import manifest from "@/app/manifest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { boards } from "@/lib/boards";
-import { siteUrl } from "@/lib/site";
+import { pageMetadata, siteUrl } from "@/lib/site";
 
 describe("discovery metadata", () => {
   it("publishes every board page once in the canonical sitemap", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(boards.length + 7);
+    expect(entries).toHaveLength(boards.length + 8);
+    expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/privacy", siteUrl).toString() }));
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/prices", siteUrl).toString() }));
     expect(entries[0]?.url).toBe(siteUrl.toString());
     expect(entries).toContainEqual(expect.objectContaining({ url: new URL("/compare", siteUrl).toString() }));
@@ -66,5 +67,25 @@ describe("icon assets", () => {
     // PNG IHDR: width and height are the two big-endian uint32s at offset 16.
     expect(icon.readUInt32BE(16)).toBeLessThanOrEqual(128);
     expect(icon.readUInt32BE(20)).toBeLessThanOrEqual(128);
+  });
+});
+
+describe("page social metadata", () => {
+  // Next merges openGraph and twitter shallowly: a page that set only a title
+  // shared the homepage's preview URL ("/") and card title.
+  it("gives a page its own preview URL and title", () => {
+    const metadata = pageMetadata({ title: "Board finder", description: "Find a board.", path: "/find" });
+    expect(metadata.alternates.canonical).toBe("/find");
+    expect(metadata.openGraph).toEqual(expect.objectContaining({ url: "/find", title: "Board finder · PinHub", description: "Find a board." }));
+    expect(metadata.openGraph.images).toHaveLength(1);
+    expect(metadata.twitter).toEqual(expect.objectContaining({ title: "Board finder · PinHub", description: "Find a board." }));
+  });
+
+  it.each(readdirSync(fileURLToPath(new URL("../src/app", import.meta.url)), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(fileURLToPath(new URL(`../src/app/${entry.name}/page.tsx`, import.meta.url))))
+    .map((entry) => entry.name))("/%s builds its metadata with pageMetadata at its own path", (route) => {
+    const source = readFileSync(fileURLToPath(new URL(`../src/app/${route}/page.tsx`, import.meta.url)), "utf8");
+    expect(source).toMatch(/pageMetadata\(\{/);
+    expect(source).toContain(`path: "/${route}"`);
   });
 });

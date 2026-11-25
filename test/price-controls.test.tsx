@@ -77,3 +77,25 @@ it("rechecks freshness while the page remains open", () => {
     expect(screen.getByText("Older check")).toBeTruthy();
   } finally { cleanup(); vi.useRealTimers(); }
 });
+
+it("opens the price notes from the header link and from a #price-notes URL", () => {
+  // The link landed on a closed disclosure, so the notes it promised stayed hidden.
+  render(<PricesApp listings={[price]} now={checked} />);
+  const notes = document.getElementById("price-notes") as HTMLDetailsElement;
+  expect(notes.open).toBe(false);
+  fireEvent.click(screen.getByRole("link", { name: /Hourly checks|Reference prices/ }));
+  expect(notes.open).toBe(true);
+  cleanup();
+  history.replaceState(null, "", "/prices#price-notes");
+  render(<PricesApp listings={[price]} now={checked} />);
+  expect((document.getElementById("price-notes") as HTMLDetailsElement).open).toBe(true);
+});
+
+it("shows stock with the shared indicator, on the page's own clock", () => {
+  // The stock column used bare text, without the LED indicator the board
+  // pages and compare table use.
+  const { container } = render(<PricesApp listings={[price]} now={checked + 60_000} />);
+  const status = container.querySelector(".ph-stock");
+  expect(status?.getAttribute("data-tone")).toBe("in-stock");
+  expect(status?.textContent).toBe("In stock at check");
+});

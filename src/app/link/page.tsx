@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { boards } from "@/lib/boards";
 import { summarizeBoard } from "@/lib/board-summary";
 import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
@@ -7,12 +8,12 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 import { SiteHeader } from "@/components/SiteHeader";
 import { LinkApp } from "@/components/link/LinkApp";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Connect two boards",
   description:
     "Wire two development boards together over UART or I2C. PinHub lists the wires from each board's source-backed pin map and flags logic-level mismatches before you connect anything.",
-  alternates: { canonical: "/link" },
-};
+  path: "/link",
+});
 
 assertBoardSourcesValid(boards);
 assertBoardVisualsValid();

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { GitCompareArrows } from "lucide-react";
 import { boards, type Board } from "@/lib/boards";
 import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
@@ -10,12 +11,12 @@ import { CompareTable } from "@/components/CompareTable";
 import { DiscoveryApp } from "@/components/DiscoveryApp";
 import { SiteHeader } from "@/components/SiteHeader";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Compare development boards",
   description:
     "Discover and compare processors, logic levels, power, interfaces, connector ecosystems, warnings, and source-backed pinout coverage.",
-  alternates: { canonical: "/compare" },
-};
+  path: "/compare",
+});
 
 assertBoardSourcesValid(boards);
 assertBoardVisualsValid();

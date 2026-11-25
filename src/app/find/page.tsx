@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { boards } from "@/lib/boards";
 import { findBoards, parseFinderQuery } from "@/lib/board-finder";
 import { CircuitBackground } from "@/components/CircuitBackground";
@@ -6,12 +7,12 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { FindControls } from "@/components/find/FindControls";
 import { FindResults } from "@/components/find/FindResults";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Board finder",
   description:
     "Say how many I2C, SPI, UART, CAN, PWM, ADC, DAC, and GPIO pins your project needs, and see every board where all of them fit at once, planned from source-backed pin functions.",
-  alternates: { canonical: "/find" },
-};
+  path: "/find",
+});
 
 export default async function FindPage({
   searchParams,

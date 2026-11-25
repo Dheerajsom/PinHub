@@ -39,7 +39,8 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - run: npm run build
+      # No `next build`: publish-prices runs from source with tsx, and Web CI
+      # already builds every change before it reaches main.
       - name: Publish verified prices
         id: refresh
         env:

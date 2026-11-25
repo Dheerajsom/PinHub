@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { boards } from "@/lib/boards";
 import { summarizeBoard } from "@/lib/board-summary";
 import { assertBoardVisualsValid } from "@/lib/board-visual-validation";
@@ -7,12 +8,12 @@ import { CircuitBackground } from "@/components/CircuitBackground";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CheckApp } from "@/components/check/CheckApp";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Code check",
   description:
     "Paste Arduino, MicroPython, CircuitPython, Raspberry Pi, Pico SDK, or ESP-IDF code and check the pin references PinHub recognizes against the board's source-backed pin record: strapping pins, input-only pins, flash pins, and missing ADC or PWM. Values it cannot follow are listed for a hand check.",
-  alternates: { canonical: "/check" },
-};
+  path: "/check",
+});
 
 assertBoardSourcesValid(boards);
 assertBoardVisualsValid();

@@ -27,6 +27,7 @@ describe("dialect detection", () => {
     ["import board\nimport digitalio\nled = digitalio.DigitalInOut(board.LED)", "circuitpython"],
     ["import RPi.GPIO as GPIO\nGPIO.setup(17, GPIO.OUT)", "rpi-python"],
     ["from gpiozero import LED\nled = LED(17)", "rpi-python"],
+    ["from RPi import GPIO\nGPIO.setup(17, GPIO.OUT)", "rpi-python"],
     ['#include "pico/stdlib.h"\nint main(){ gpio_init(15); }', "pico-sdk"],
     ['#include "driver/gpio.h"\nvoid app_main(void){ gpio_set_level(GPIO_NUM_4, 1); }', "esp-idf"],
   ])("detects %#", (code, dialect) => {
@@ -252,6 +253,16 @@ describe("Raspberry Pi Python", () => {
     const physical = check("raspberry-pi-5", "import RPi.GPIO as GPIO\nGPIO.setmode(GPIO.BOARD)\nGPIO.setup(11, GPIO.OUT)");
     expect(physical.pins[0].pin.mcu?.name).toBe("GPIO17");
     expect(physical.numbering).toMatch(/physical/);
+  });
+
+  it("reads RPi.GPIO imported with from RPi import GPIO", () => {
+    // `from RPi import GPIO` never spells `RPi.GPIO`, so the script was not
+    // recognised as Raspberry Pi Python and its pins went unread.
+    const report = check("raspberry-pi-3-model-b", "from RPi import GPIO\nGPIO.setmode(GPIO.BOARD)\nGPIO.setup(6, GPIO.OUT)");
+    expect(report.pins[0].pin.label).toMatch(/GND/);
+    expect(report.numbering).toMatch(/physical/);
+    const aliased = check("raspberry-pi-5", "from RPi import GPIO as IO\nIO.setmode(IO.BCM)\nIO.setup(17, IO.OUT)");
+    expect(aliased.pins[0].pin.mcu?.name).toBe("GPIO17");
   });
 
   it("reads BOARD numbering through an import alias (import RPi.GPIO as IO)", () => {

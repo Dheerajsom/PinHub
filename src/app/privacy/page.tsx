@@ -2,16 +2,18 @@ import type { Metadata } from "next";
 import { Shield } from "lucide-react";
 import { CircuitBackground } from "@/components/CircuitBackground";
 import { SiteHeader } from "@/components/SiteHeader";
-import { repoUrl } from "@/lib/site";
+import { repoUrl, pageMetadata } from "@/lib/site";
+import { storedItems } from "@/lib/privacy-storage";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy & disclaimer",
   description:
     "What PinHub collects, what it doesn't, and the terms under which its pinout data is provided.",
-  alternates: { canonical: "/privacy" },
-};
+  path: "/privacy",
+});
 
-const lastUpdated = "2026-09-26";
+const lastUpdated = "2026-11-25";
+
 
 export default function PrivacyPage() {
   return (
@@ -39,15 +41,25 @@ export default function PrivacyPage() {
           </section>
 
           <section className="surface-panel rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-white">Favorites stay on your device</h2>
+            <h2 className="text-lg font-semibold text-white">What stays on your device</h2>
             <p className="mt-2 text-sm leading-6 text-zinc-400">
-              Starring a board saves its ID to your browser&apos;s{" "}
-              <code className="rounded bg-white/10 px-1 py-0.5 text-[13px] text-zinc-300">
-                localStorage
-              </code>
-              . It never leaves your browser, is never sent to PinHub, and is
-              cleared if you clear your browser&apos;s site data.
+              PinHub keeps a few settings in your browser&apos;s storage so they
+              survive a reload. None of it is sent to PinHub or anywhere else,
+              and clearing your browser&apos;s site data removes all of it.
             </p>
+            <dl className="mt-3 grid gap-3 text-sm leading-6">
+              {storedItems.map((item) => (
+                <div key={item.key} className="surface-well min-w-0 rounded-lg px-3 py-2">
+                  <dt className="font-medium text-zinc-200">
+                    {item.label}
+                    <span className="block break-all font-mono text-xs font-normal text-zinc-400">
+                      {item.storage}: {item.key}
+                    </span>
+                  </dt>
+                  <dd className="text-zinc-400">{item.detail}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
 
           <section className="surface-panel rounded-xl p-5">

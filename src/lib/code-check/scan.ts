@@ -293,6 +293,8 @@ const dialectSignals: Array<{ dialect: Dialect; pattern: RegExp; weight: number 
   { dialect: "circuitpython", pattern: /^[ \t]*import[ \t]+(?:board|digitalio|busio|analogio|pwmio)\b/m, weight: 4 },
   { dialect: "circuitpython", pattern: /\bboard\.[A-Z][A-Z0-9_]*\b/, weight: 2 },
   { dialect: "rpi-python", pattern: /\b(?:RPi\.GPIO|gpiozero|lgpio)\b/, weight: 5 },
+  // `from RPi import GPIO` never spells `RPi.GPIO`.
+  { dialect: "rpi-python", pattern: /^[ \t]*from[ \t]+RPi[ \t]+import[ \t]+\(?[ \t]*GPIO\b/m, weight: 5 },
   { dialect: "micropython", pattern: /^[ \t]*(?:from[ \t]+machine[ \t]+import|import[ \t]+machine\b)/m, weight: 5 },
   { dialect: "micropython", pattern: /\b(?:Pin\.(?:OUT|IN)|SoftI2C|neopixel\.NeoPixel\([ \t]*Pin)\b/, weight: 2 },
   { dialect: "pico-sdk", pattern: /#include[ \t]*[<"](?:pico\/|hardware\/)/, weight: 5 },

@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { boards } from "@/lib/boards";
 import { getLivePrices } from "@/lib/server/price-store";
 import { PricesApp } from "@/components/PricesApp";
 import { SiteHeader } from "@/components/SiteHeader";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Board prices & availability",
-  description: "Check dated USD prices, exact board variants, and retailer availability for popular boards in PinHub. Jump from a listing to its pinout.",
-  alternates: { canonical: "/prices" },
-};
+  description:
+    "Check dated USD prices, exact board variants, and retailer availability for popular boards in PinHub. Jump from a listing to its pinout.",
+  path: "/prices",
+});
 
 export default async function PricesPage({ searchParams }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

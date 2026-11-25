@@ -97,9 +97,9 @@ user-facing feature, update the route table in `README.md` in the same commit.
    `src/lib/boards.ts` or the pin index: `cli/src/pin-match.ts` is generated
    from `src/lib/pin-match.ts`, and `cli/src/boards/pin-index.ts` from
    `createPinIndex` (`src/lib/server/pin-index.ts` and what it imports, such
-   as `pin-reference.ts` and `board-visual-geometry.ts`). CLI CI does not
-   trigger on those `src/lib` paths, so a stale copy is only caught by
-   running `check:boards` yourself. Look at the changed pages in the browser
+   as `pin-reference.ts` and `board-visual-geometry.ts`). CLI CI runs on
+   any `src/lib/**` change and fails on a stale copy, but run
+   `check:boards` yourself before pushing so it never gets that far. Look at the changed pages in the browser
    in both themes.
 7. **Mobile gate (mandatory for any UI or UX change).** Before committing and
    pushing, spawn the `mobile-mojo` subagent. Its skill is not loaded
@@ -155,5 +155,6 @@ without being asked again:
   a slow store cannot hold every request open.
 - Board ids are lowercase kebab-case everywhere (`isBoardId`). Input that
   fails that shape is dropped at the boundary.
-- `next-env.d.ts` flips between `.next/types` (after `next build`) and
-  `.next/dev/types` (after `next dev`). Leave that churn out of commits.
+- `next-env.d.ts` is generated (by `next dev`, `next build`, or
+  `next typegen`, which `npm run typecheck` runs first) and is gitignored, as
+  the Next.js docs recommend. Never commit it.
