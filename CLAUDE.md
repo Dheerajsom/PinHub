@@ -7,9 +7,11 @@ files cannot drift apart. Everything below adds to them; nothing overrides them.
 
 ## Branches, never worktrees (strict)
 
-- **Never create a git worktree.** Do not run `git worktree add`, do not use
-  worktree isolation for subagents, and do not call worktree tools. This rule
-  has no exceptions.
+- **NEVER create a git worktree when working on PinHub.** Do not run
+  `git worktree add`, do not use worktree isolation for subagents or delegated
+  tasks, do not call worktree tools, and do not copy the repository into a
+  second folder to work there. This rule has no exceptions. `AGENTS.md`
+  carries the same rule for non-Claude agents.
 - Work in this checkout. When work needs isolation, create a new **branch**
   here (`git switch -c <branch>` from an up-to-date `main`) and work on it.
 

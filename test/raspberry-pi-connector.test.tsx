@@ -10,7 +10,7 @@ afterEach(cleanup);
 
 const physicalBoard = (name: string) => screen.getByRole("group", { name: new RegExp(`^${name} physical board`) });
 
-it.each(["raspberry-pi-5", "raspberry-pi-pico-2-w", "raspberry-pi-500"])("shows the interactive physical board first for %s, fitted to the panel", (id) => {
+it.each(["raspberry-pi-5", "raspberry-pi-pico-2-w", "raspberry-pi-500"])("shows the interactive physical board first for %s, fitted to the viewer", (id) => {
   const board = boards.find((board) => board.id === id)!;
   const { container } = render(<RaspberryPiPinout board={board} />);
   const physical = physicalBoard(board.name);
@@ -20,8 +20,8 @@ it.each(["raspberry-pi-5", "raspberry-pi-pico-2-w", "raspberry-pi-500"])("shows 
   // The board precedes the pin list in reading order.
   const list = screen.getByRole("group", { name: "Select a physical pin from the connector" });
   expect(physical.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  // Fit by default: no forced touch-size minimum width.
-  const frame = container.querySelector(".pi-board-frame")!;
+  // Fit uses the space available to show the entire illustration.
+  const frame = container.querySelector(".board-view-frame")!;
   expect(frame.getAttribute("data-board-view")).toBe("fit");
   expect(frame.getAttribute("style")).not.toContain("min-width");
   // Every source pin is a pad on the board, labelled with its physical number.
@@ -71,19 +71,18 @@ it("selecting a pad on the board marks the same pin in the list, picker and read
 it("zooms the board to a 44px touch size and back", () => {
   const board = boards.find((board) => board.id === "raspberry-pi-4-model-b")!;
   const { container } = render(<RaspberryPiPinout board={board} />);
-  const frame = container.querySelector<HTMLElement>(".pi-board-frame")!;
-  expect(screen.queryByRole("group", { name: "Scrollable board at touch size" })).toBeNull();
+  const frame = container.querySelector<HTMLElement>(".board-view-frame")!;
+  expect(frame.getAttribute("data-board-view")).toBe("fit");
   fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
   expect(frame.getAttribute("data-board-view")).toBe("touch");
-  expect(frame.style.boxSizing).toBe("content-box");
-  expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!, true));
-  expect(screen.getByRole("group", { name: "Scrollable board at touch size" }).tabIndex).toBe(0);
-  expect(screen.getByText(/every pad has a 44 px target/)).toBeTruthy();
+
+  expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!));
+  expect(frame.querySelector(".bv-label")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
   expect(frame.getAttribute("data-board-view")).toBe("fit");
   expect(frame.style.minWidth).toBe("");
-  // Fit mode does not claim touch-sized pads.
-  expect(screen.getByText(/pads are small at this size/)).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
+  expect(frame.getAttribute("data-board-view")).toBe("touch");
 });
 
 it("supports a far-end picker selection, keyboard movement and clearing", () => {
@@ -142,4 +141,16 @@ it("moves through connector rows and columns without wrapping to the other heade
   expect(document.activeElement).toBe(named(39));
   fireEvent.keyDown(named(39), { key: "ArrowLeft" });
   expect(document.activeElement).toBe(named(39));
+});
+
+
+it("carries the selected pin into the board workbench", () => {
+  const board = boards.find(b => b.id === "raspberry-pi-5")!;
+  render(<RaspberryPiPinout board={board} />);
+  const picker = screen.getByRole("combobox", { name: "Select physical pin" }) as HTMLSelectElement;
+  const key = picker.options[5].value;
+  fireEvent.change(picker, { target: { value: key } });
+  const link = screen.getByRole("link", { name: "Open the Raspberry Pi 5 full pinout" }) as HTMLAnchorElement;
+  expect(new URL(link.href).searchParams.get("pin")).toBe(key);
+  expect(link.hash).toBe("#pins");
 });

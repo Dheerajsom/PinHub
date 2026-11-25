@@ -39,6 +39,13 @@ describe("board utilities", () => {
   it("extracts revision-specific caveats without inventing them", () => {
     expect(revisionNotesFor(board)).toEqual(["Revision B changes the LED pin."]);
   });
+
+  it("shows a revision note once when it appears in both warnings and pinout notes", () => {
+    const shared = "Check the PCB revision.";
+    expect(revisionNotesFor({
+      ...board, warnings: [shared], pinout: { ...board.pinout!, notes: [shared] },
+    })).toEqual([shared]);
+  });
 });
 
 

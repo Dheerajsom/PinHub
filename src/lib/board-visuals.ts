@@ -66,6 +66,12 @@ export type BoardVisual = {
   revisionNote?: string;
   /** Optional PCB accent; defaults to a per-vendor color. */
   accent?: string;
+  /**
+   * zio-quad: the first pin row of each connector group, in millimetres from
+   * the board's top edge, in group order. Places the stacked headers at their
+   * measured heights instead of aligning their tops.
+   */
+  firstRowMm?: readonly number[];
 };
 
 type Preset = Omit<BoardVisual, "revisionNote" | "accent">;
@@ -137,13 +143,13 @@ const PRESETS = {
     aspect: 0.46,
     usb: "top",
     ports: ["usb-c", "jst"],
-    orientation: "USB at top, JST battery at top-left, component side up",
+    orientation: "USB at top, JST battery at top-right beside the short header, component side up",
   },
   xiao: {
     template: "xiao",
     form: "vertical",
     headerKind: "edge-dual",
-    aspect: 0.72,
+    aspect: 17.8 / 21,
     usb: "top",
     ports: ["usb-c"],
     orientation: "USB-C at top, component side up, 7 pads down each long edge",
@@ -203,6 +209,9 @@ const PRESETS = {
     ports: ["usb-micro", "usb-micro", "ethernet"],
     orientation:
       "ST-LINK at top, component side up — Zio CN8/CN9 down the left edge, CN7/CN10 down the right",
+    // CN7, CN8, CN9, CN10, measured from the UM2407 mechanical drawing
+    // (Figure 6): CN7 starts 9.1 mm above CN8, and CN9 and CN10 end level.
+    firstRowMm: [32.9, 42.04, 64.9, 59.8],
   },
   nucleo: {
     template: "nucleo-64",
@@ -264,7 +273,7 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "raspberry-pi-4-model-b": preset("sbc"),
   "raspberry-pi-3-model-b-plus": preset("sbc"),
   "raspberry-pi-3-model-a-plus": preset("sbc", {
-    aspect: 1.35,
+    aspect: 65 / 56,
     ports: ["usb-a", "hdmi", "camera"],
   }),
   "raspberry-pi-400": preset("sbc", {
@@ -287,7 +296,11 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "odroid-c4": preset("sbc"),
   "pine64-rockpro64": preset("sbc", { aspect: 1.6, ports: ["ethernet", "usb-a", "hdmi"] }),
   "libre-computer-le-potato": preset("sbc"),
-  "orange-pi-5": preset("sbc"),
+  "orange-pi-5": preset("sbc", {
+    aspect: 100 / 62,
+    orientation: "Component side up, 26-pin expansion header along the top edge",
+    revisionNote: "The illustration follows the Orange Pi 5 V1.3.2 component layout. Check the revision printed on your board.",
+  }),
   "radxa-zero-3w": preset("sbcZero"),
   "radxa-zero-3e": preset("sbcZero", { ports: ["ethernet", "hdmi"] }),
   "radxa-rock-5b": preset("sbc"),
@@ -388,7 +401,10 @@ export const boardVisuals: Record<string, BoardVisual> = {
   }),
   "arduino-pro-mini": preset("grouped", { accent: "#0e7c86" }),
   "sparkfun-esp32-thing": preset("moduleDip", { aspect: 0.4 }),
-  "lolin-d1-mini": preset("moduleDip", { aspect: 0.78 }),
+  "lolin-d1-mini": preset("moduleDip", {
+    aspect: 25.6 / 34.2,
+    revisionNote: "The illustration shows the D1 mini V4.0. Earlier revisions use different USB connectors and radio layouts.",
+  }),
 
   // --- MilkV Duo (grouped left/right edges → edge-dual) -------------------
   "milkv-duo": preset("moduleDip", { aspect: 0.42, source: "groups" }),
@@ -431,7 +447,7 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "stm32-nucleo-g431kb": preset("nano"),
   "stm32-nucleo-f303k8": preset("nano"),
   "raspberry-pi-3-model-b": preset("sbc"),
-  "raspberry-pi-1-model-a-plus": preset("sbc"),
+  "raspberry-pi-1-model-a-plus": preset("sbc", { aspect: 65 / 56 }),
   "adafruit-feather-rp2350": preset("feather"),
   "adafruit-kb2040": preset("feather"),
   "waveshare-rp2350-plus": preset("pico"),
@@ -450,9 +466,9 @@ export const boardVisuals: Record<string, BoardVisual> = {
   "libre-computer-alta": preset("sbc"),
   "libre-computer-solitude": preset("sbc"),
   "libre-computer-tritium-h5": preset("sbc"),
-  "orange-pi-zero-2w": preset("sbc"),
-  "orange-pi-3b": preset("sbc"),
-  "orange-pi-5-plus": preset("sbc"),
+  "orange-pi-zero-2w": preset("sbcZero", { aspect: 65 / 30, revisionNote: "The 40-pin footprint may be supplied without a soldered header." }),
+  "orange-pi-3b": preset("sbc", { aspect: 85 / 56, revisionNote: "Component placement varies between Orange Pi 3B revisions. Check the markings on your board." }),
+  "orange-pi-5-plus": preset("sbc", { aspect: 75 / 100 }),
 
   // --- Nordic / Arduino-footprint dev kits --------------------------------
   "nordic-nrf52840-dk": preset("devKit", { accent: "#1d4ed8" }),

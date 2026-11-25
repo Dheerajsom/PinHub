@@ -1,3 +1,4 @@
+import { ProductPortrait } from "@/components/board-visual/ProductPortrait";
 import { clsx } from "clsx";
 import type { Pin, PinRole, Pinout, PinoutGroup } from "@/lib/boards";
 import {
@@ -20,6 +21,7 @@ export function PinoutDiagram({ pinout, board }: PinoutDiagramProps) {
   if (!pinout) {
     return (
       <section className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-4">
+        {board && <div className="mb-3"><ProductPortrait id={board.id} name={board.name} /></div>}
         <div className="text-sm font-medium text-white">Pin map queued</div>
         <p className="mt-2 text-sm leading-6 text-zinc-400">
           This board has official references linked, but its in-app connector map

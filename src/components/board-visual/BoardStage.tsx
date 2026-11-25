@@ -1,9 +1,10 @@
 "use client";
 
+import { MappedProductArtwork } from "@/components/board-visual/ProductPortrait";
 import { useId, useRef, useState } from "react";
 import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
-import type { BoardGeometry, PinAnchor, Rect } from "@/lib/board-visual-geometry";
+import { wholeBoardFrame, type BoardGeometry, type PinAnchor, type Rect } from "@/lib/board-visual-geometry";
 import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
 import { padHitRadius } from "@/components/board-visual/touch-sizing";
 import {
@@ -20,6 +21,7 @@ import {
 const ANNOTATION = "#9fb0c0";
 
 type BoardStageProps = {
+  connectorOnly?: boolean;
   geometry: BoardGeometry;
   title: string;
   /** Board name, lettered into the outline like a PCB's silkscreen. */
@@ -66,6 +68,7 @@ type BoardStageProps = {
 };
 
 export function BoardStage({
+  connectorOnly = false,
   geometry,
   title,
   sheetLabel,
@@ -88,6 +91,7 @@ export function BoardStage({
   const raw = useId();
   const uid = raw.replace(/[^a-zA-Z0-9]/g, "");
   const { anchors, vbw, vbh, padR } = geometry;
+  const frame = compact ? wholeBoardFrame(geometry) : view;
 
   // The schematic sheet has no rails to run labels out to, so its labels are
   // stacked under each pad and are always drawn.
@@ -117,17 +121,15 @@ export function BoardStage({
 
   return (
     <svg
-      viewBox={compact
-        ? `${geometry.body.x - 24} ${geometry.body.y - 24} ${geometry.body.w + 48} ${geometry.body.h + 55}`
-        : view
-          ? `${view.x} ${view.y} ${view.w} ${view.h}`
-          : `0 0 ${vbw} ${vbh}`}
+      viewBox={frame ? `${frame.x} ${frame.y} ${frame.w} ${frame.h}` : `0 0 ${vbw} ${vbh}`}
       role="group"
       aria-label={title}
       className={clsx("bv-stage h-full w-full", className)}
       preserveAspectRatio="xMidYMid meet"
     >
-      <BoardArtwork geometry={geometry} label={sheetLabel} />
+      {geometry.portraitId
+        ? <MappedProductArtwork id={geometry.portraitId} geometry={geometry} />
+        : <BoardArtwork geometry={geometry} label={sheetLabel} connectorOnly={connectorOnly} />}
 
       {/* Function-block titles for the schematic sheet. */}
       {stacked
@@ -250,7 +252,7 @@ export function BoardStage({
             claimed={Boolean(claimed?.has(anchor.key))}
             tabIndex={index === focusIndex ? 0 : -1}
             uid={uid}
-            realistic={Boolean(geometry.artworkId)}
+            realistic={Boolean(geometry.artworkId || (geometry.portraitId && geometry.kind === "header2x"))}
             onFocus={() => {
               setFocusIndex(index);
               onActiveKey(anchor.key);

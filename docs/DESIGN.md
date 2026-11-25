@@ -172,34 +172,67 @@ Two presentations of one dataset, behind a persisted segmented control:
   draws a leader line, and shows the label; click/Enter pins the selection
   and fills the inspector with role, aliases, and note. Pads are real
   buttons: `Tab`/arrow navigable with visible focus rings.
-- **Embedded Raspberry Pi maps** — the physical board is the primary view.
-  It opens fitted whole inside the panel (334 px catalog column, 360 px
-  phones), with its orientation line above and pin 1 marked, and its pads stay
-  interactive: tap, click, or `Tab`/arrows then Enter. At fit size the pads are
-  small and the footer says so; **Zoom to touch size** enlarges the board until
-  every pad's hit region is at least 44 px and lets it pan, and **Fit whole
-  board** returns. The readout and cautions sit directly after the board, or
-  beside it in a wide container. A named pin list (44 px+ buttons in the
-  source's physical pairs, GPIO 1/2 and Pico 1/40) and a physical-pin picker
-  follow as the secondary selector; the board, list, picker and readout share
-  one selection. Never hide the board in a collapsed or inert disclosure, and
-  never describe fit-size pads as touch-sized. **Inspect** and **Full view**
-  keep the large interactive drawing.
-- **Board renders** — every Dynamic drawing is one of five tiers, computed by
-  `renderTier` in `src/lib/board-render-coverage.ts` from the same geometry
-  the renderer uses (a unit test pins the counts):
-  dedicated model artwork (Raspberry Pi), family illustration, generic
-  outline, function-grouped schematic, or no map yet. Family illustrations
-  (`src/lib/board-family-art.ts`) add only features the family is known for
-  and the record can back — a shielded module and antenna only when the board
-  records a radio, Espressif EN/BOOT beside the USB, the Nucleo ST-LINK
-  section with USER/RESET, the micro:bit LED matrix and A/B buttons, an SBC's
-  SoC and memory, a Jetson heatsink. They are placed only in the clear field
-  between connectors, never over a pad, and the caption calls them
-  representative, not the model's layout. Shield-footprint boards (UNO, Mega,
-  Nucleo-64, Nordic DK, LaunchPad) draw their header pads in the catalog's
-  signal order, and the caption says so. Never copy Raspberry Pi artwork onto
-  another board, and never draw a feature the catalog cannot back.
+- **Dynamic maps.** The catalog panel, inspector and full board page open with
+  the complete board fitted to the available space. **Zoom to touch size**
+  reveals the selected pin, or the first pin when none is selected. The
+  enlarged drawing scrolls inside its own viewport. **Fit whole board**
+  restores the overview and preserves the selection. The pin picker and
+  Raspberry Pi connector list also support selection from the overview.
+- **Connector diagrams pan and zoom.** A board whose pins are drawn on a
+  separate connector diagram keeps its product illustration above, and the
+  diagram sits on its own canvas (`ConnectorDiagramCanvas`). The mouse wheel
+  zooms about the pointer; a drag with the left, middle or right button pans,
+  as in a PCB editor. A drag never selects a pad; a click still does. At the
+  whole-diagram view, zooming out with the wheel scrolls the page instead,
+  and a finger scrolls the page. Once zoomed in, one finger pans and two
+  fingers pinch. **−**, **+**, **Zoom to touch size** and **Fit diagram**
+  cover the same moves, and the focused canvas takes `+`, `−`, `0` and the
+  arrow keys. A pad picked from the list or focused by keyboard is brought
+  into view.
+- **November 24 fit and zoom review.** The Chrome review checked every illustration
+  at 390 × 844. After zooming, all 7,075 interactive pin targets across 190
+  boards measured at least 44 CSS pixels in both dimensions. Eighty journeys
+  covered the catalog, inspector and full board pages at 360 × 800, 390 × 844,
+  412 × 915 and 844 × 390 in both themes. All 16 swipe checks and eight XIAO
+  board-switch checks passed. The reviewer used Chrome touch emulation and
+  the criteria in `AGENTS.md` because the mobile-mojo skill file was unavailable.
+- **Board renders.** All 196 catalog models have an identification drawing.
+  Selectable pins appear on 18 Raspberry Pi models, 69 dual-edge modules and
+  four Orange Pi boards with documented header positions. On the Orange Pi 5
+  the drawing locates all 26 contacts on the V1.3.2 component side. For 99
+  boards with rear headers or signals listed in catalog or function order, a
+  separate selectable connector diagram follows the product illustration.
+  Six boards awaiting pin maps show the product and its reference links.
+  `renderCoverage` checks these counts. [Orange Pi 5 user manual, §§1.5 and 3.16](https://orangepi.vn/wp-content/uploads/2023/03/OrangePi_5_RK3588S_User-Manual_v0.7.pdf).
+- **STM32 boards follow ST's drawings.** The NUCLEO-H753ZI (MB1364) is
+  measured from the UM2407 mechanical drawing: two-row Zio sockets at their
+  own heights (CN7 above CN8), 2 × 35 morpho headers, and along the bottom
+  edge the blue USER switch, user USB, RJ45 jack and black RESET switch. Its
+  Zio connector diagram uses the same measured row heights
+  (`firstRowMm` in `board-visuals.ts`). Nucleo-64 boards share the UM1724
+  header frame, with per-board ST-LINK sections. A dashed perforation is
+  drawn only where the ST-LINK section breaks off.
+- **Hardware landmarks.** Each non-Pi model has an explicit entry in
+  `src/lib/board-portraits.ts`. Shared footprints use the same drawing when
+  their visible landmarks coincide. Port shells, radio cans, screens, buttons
+  and heat sinks are simplified. The linked model documentation remains the
+  reference for physical revisions and wiring. The illustration carries no nets.
+  References for distinctive landmarks include the Pi 4/5 port order, the
+  Feather's asymmetric headers, the Basys 3 controls, and the Wio Terminal's
+  screen and case. [Raspberry Pi 5 introduction](https://www.raspberrypi.com/news/introducing-raspberry-pi-5/),
+  [Feather RP2040 pinouts](https://learn.adafruit.com/adafruit-feather-rp2040-pico/pinouts),
+  [Basys 3 reference manual](https://digilent.com/reference/programmable-logic/basys-3/reference-manual),
+  [Wio Terminal hardware overview](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/).
+- **November 2026 illustration review.** The independent reviewer opened all
+  196 boards at 390 × 844 and compared the pin picker and diagram counts on
+  every mapped board. Forty journeys covered five representative boards in both
+  themes at 360 × 800, 390 × 844, 412 × 915 and 844 × 390. After correcting
+  the Freedom KL25Z touch slider, 16 additional journeys checked the Freedom
+  and micro:bit at those sizes. Keyboard, touch, full-view selection, overflow
+  and browser-error checks passed in Chrome touch emulation. The reviewer used
+  the mobile criteria in AGENTS.md because the standalone mobile-mojo skill
+  file was unavailable. Physical-device and mechanical validation were outside
+  this browser review.
 - **Distinguishing roles**: color + on-pad number + text role label +
   legend — never color alone. Reserved and strap pins additionally carry
   notes explaining *why* they're risky.
@@ -507,17 +540,12 @@ embedding it.
   labels out to either side, and no illustrated components, copper, or
   Raspberry Pi artwork. It claims nothing about the board around the pins.
   Other layouts use their usual pad positions on a flat outline.
-- **Touch scale before fit.** Interactive pads have at least a 44 × 44 CSS px
-  hit region. Hit regions stay within the connector pitch; diagrams grow and
-  scroll within their panel instead of overlapping neighboring pins. This
-  applies to planner/link sheets and full inspectors. Embedded Dynamic maps
-  of physical boards open fitted whole and offer **Zoom to touch size** for
-  this scale; their named pin list (Raspberry Pi) or pin table carries the
-  touch-sized selection meanwhile. Function-grouped schematics stay at touch
-  scale.
-  The inspector offers **Zoom labels** and **Working size** rather than a
-  fit-to-width action that would shrink labels and controls below usable size.
-  Scroll instructions and keyboard access accompany the drawing.
+- **Touch scale.** Planner and link sheets use a 44 × 44 CSS px hit region
+  on touch devices. Targets stay within the connector pitch and the sheet
+  scrolls inside its panel. Dynamic board views open fitted and provide
+  this scale through **Zoom to touch size**. The inspector also offers
+  **Zoom labels** and **Working size** while zoomed. Scroll instructions
+  and keyboard access accompany drawings that overflow their viewport.
 - **Link sheets show the linked connector.** On `/link` each sheet is framed
   on the connectors (pin groups) its wires use, whole, with their labels, and
   a **Whole board** toggle opens it out. A two-row header is one connector and

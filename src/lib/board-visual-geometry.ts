@@ -9,6 +9,7 @@
 // while decorative components and traces must never imply verified circuitry.
 
 import type { Board, Pin } from "@/lib/boards";
+import { boardPortrait, type BoardPortrait } from "@/lib/board-portraits";
 import { raspberryPiGeometry } from "@/lib/raspberry-pi-models";
 import { familyArtFor, type FamilyArt } from "@/lib/board-family-art";
 import {
@@ -67,6 +68,8 @@ export type SilkLine = {
 export type BoardGeometry = {
   /** Selects a model-specific decorative illustration without changing pin data. */
   artworkId?: string;
+  /** Portrait whose headers line up with the interactive pads. */
+  portraitId?: string;
   /** Family-level decorative features (module can, buttons, debugger section). */
   familyArt?: FamilyArt;
   /** The template's recorded USB edge, which orients the family features. */
@@ -105,6 +108,13 @@ export type BoardGeometry = {
    */
   plain?: boolean;
 };
+
+/** Leave room for connector shells which overhang the PCB. */
+export function wholeBoardFrame({ body }: BoardGeometry): Rect {
+  const mx = Math.max(24, body.w * 0.065);
+  const my = Math.max(28, body.h * 0.065);
+  return { x: body.x - mx, y: body.y - my, w: body.w + mx * 2, h: body.h + my * 2 };
+}
 
 // --- tunable layout constants (all in viewBox units) -----------------------
 const PAD_R = 13;
@@ -156,7 +166,8 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   const headerLen = (n - 1) * pitch;
   const padPad = 70;
   const bodyH = headerLen + padPad * 2;
-  const bodyW = Math.max(bodyH * visual.aspect, 220);
+  const portrait = boardPortrait(board.id);
+  const bodyW = portrait ? bodyH / portrait.aspect : Math.max(bodyH * visual.aspect, 220);
 
   const leftRail = railFor(left, MIN_LABEL_SIDE);
   const rightRail = railFor(right, MIN_LABEL_SIDE);
@@ -175,9 +186,12 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   const rightX = bodyX + bodyW - edgeInset;
   const startY = bodyY + padPad;
 
+  // Feather's 12-pin header ends level with the far end of the 16-pin
+  // header. The LiPo socket occupies the missing pitches near USB.
+  const firstY = (length: number) => startY + (visual.template === "feather" ? (n - length) * pitch : 0);
   const anchors: PinAnchor[] = [];
   left.forEach((pin, i) => {
-    const cy = startY + i * pitch;
+    const cy = firstY(left.length) + i * pitch;
     anchors.push({
       key: `pL:${i}`,
       pin,
@@ -191,7 +205,7 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
     });
   });
   right.forEach((pin, i) => {
-    const cy = startY + i * pitch;
+    const cy = firstY(right.length) + i * pitch;
     anchors.push({
       key: `pR:${i}`,
       pin,
@@ -210,7 +224,7 @@ function buildEdgeDual(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
   // reader could act on.
   const strip = (count: number, x: number): Rect => ({
     x: x - PAD_R - 6,
-    y: startY - PAD_R - 6,
+    y: firstY(count) - PAD_R - 6,
     w: (PAD_R + 6) * 2,
     h: Math.max(count - 1, 0) * pitch + (PAD_R + 6) * 2,
     rx: 8,
@@ -331,6 +345,43 @@ function buildHeader2x(board: Board, visual: BoardVisual): Omit<BoardGeometry, "
     arrangement: `2 × ${n}`,
     notToScale: Boolean(visual.notToScale),
     orientation: visual.orientation,
+    revisionNote: visual.revisionNote,
+  };
+}
+
+/** Register source pins to a documented top-edge header on the product portrait. */
+function portraitHeaderGeometry(
+  board: Board,
+  visual: BoardVisual,
+  rows: { left: Pin[]; right: Pin[] },
+  aspect: number,
+  header: NonNullable<BoardPortrait["topHeader"]>,
+): BoardGeometry {
+  const pitch = COL_PITCH;
+  const scale = pitch / 2.54;
+  const w = header.boardWidth * scale;
+  const h = w / aspect;
+  const margin = Math.ceil(w * 0.065);
+  const top = railFor(rows.right, MIN_LABEL_BAND) + 12;
+  const bottom = railFor(rows.left, MIN_LABEL_BAND) + 12;
+  const body = { x: margin, y: top, w, h };
+  const startX = body.x + header.firstX * scale;
+  const outerY = body.y + header.outerY * scale;
+  const pinRow = (pins: Pin[], inner: boolean): PinAnchor[] => pins.map((pin, i) => {
+    const cx = startX + Math.floor((pin.position - 1) / 2) * pitch;
+    return {
+      pin, key: `p${inner ? "L" : "R"}:${i}`, cx, cy: outerY + (inner ? pitch : 0),
+      side: inner ? "bottom" : "top", rotateLabel: true, labelX: cx,
+      labelY: inner ? top + h + 20 : top - 20, labelAnchor: inner ? "end" : "start",
+    };
+  });
+  const columns = Math.max(rows.left.length, rows.right.length);
+  return {
+    kind: "header2x", portraitId: board.id, body, vbw: w + margin * 2, vbh: top + h + bottom,
+    anchors: [...pinRow(rows.left, true), ...pinRow(rows.right, false)], pitch, padR: PAD_R,
+    headerZones: [{ x: startX - pitch / 2, y: outerY - pitch / 2, w: columns * pitch, h: 2 * pitch, rx: 4 }],
+    ports: [], holes: [], accent: accentForBoard(board.id, board.vendor), arrangement: `2 × ${columns}`,
+    notToScale: false, orientation: "Component side up. Pin 1 is at the left end of the header, on the inner row.",
     revisionNote: visual.revisionNote,
   };
 }
@@ -536,7 +587,14 @@ function buildZioQuad(board: Board, visual: BoardVisual): Omit<BoardGeometry, "k
     ZIO_STACK_GAP +
     Math.max(rowsOf(lower) - 1, 0) * ZIO_ROW_PITCH;
 
-  const connSpan = Math.max(edgeSpan(1, 2), edgeSpan(0, 3));
+  // Measured row heights, when the board records them, place each header
+  // where it sits; otherwise the upper headers align and the lower ones follow.
+  const measured = visual.firstRowMm?.length === groups.length ? visual.firstRowMm : undefined;
+  const measuredTop = measured ? Math.min(...measured) : 0;
+  const measuredY = (gi: number) => ((measured?.[gi] ?? 0) - measuredTop) * ZIO_ROW_PITCH / 2.54;
+  const connSpan = measured
+    ? Math.max(...groups.map((_, gi) => measuredY(gi) + Math.max(rowsOf(gi) - 1, 0) * ZIO_ROW_PITCH))
+    : Math.max(edgeSpan(1, 2), edgeSpan(0, 3));
   const topPad = 54; // debugger delimiter down to the first pin row
   const bottomPad = 84;
   const bodyH = ZIO_DEBUG_H + topPad + connSpan + bottomPad;
@@ -565,7 +623,9 @@ function buildZioQuad(board: Board, visual: BoardVisual): Omit<BoardGeometry, "k
     const slot = ZIO_SLOTS[gi % ZIO_SLOTS.length];
     const rows = rowsOf(gi);
     const upperIndex = slot.side === "left" ? 1 : 0;
-    const firstY = slot.lower
+    const firstY = measured
+      ? connTop + measuredY(gi)
+      : slot.lower
       ? connTop +
         Math.max(rowsOf(upperIndex) - 1, 0) * ZIO_ROW_PITCH +
         ZIO_STACK_GAP
@@ -975,11 +1035,16 @@ export function buildBoardGeometry(
     if (sheet) return { kind: "edge-dual", ...sheet };
     return { kind: visual.headerKind, ...builders[visual.headerKind](board, visual), plain: true };
   }
+  const portrait = boardPortrait(board.id);
+  if (visual.headerKind === "header2x" && portrait?.topHeader && board.pinout.pins) {
+    return portraitHeaderGeometry(board, visual, board.pinout.pins, portrait.aspect, portrait.topHeader);
+  }
   const familyArt = familyArtFor(board, visual) ?? undefined;
   return raspberryPiGeometry(board, {
     kind: visual.headerKind,
     ...builders[visual.headerKind](board, visual),
     familyArt,
+    ...(visual.headerKind === "edge-dual" && portrait ? { portraitId: board.id } : {}),
     usbEdge: visual.usb,
     ...(visual.headerKind === "shield-split" ? { orderNote: SHIELD_ORDER_NOTE } : {}),
   });

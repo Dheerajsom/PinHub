@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Expand, ExternalLink, Search, ShieldAlert, ZoomIn, ZoomOut } from "lucide-react";
+import { Expand, ExternalLink, Search, ShieldAlert } from "lucide-react";
 import type { Board, Pin, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
-import { BoardStage } from "@/components/board-visual/BoardStage";
-import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
+import { BoardDrawingViewport } from "./BoardDrawingViewport";
 import { connectorCells, connectorKeyTarget } from "@/components/board-visual/connector-cells";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
@@ -16,6 +15,7 @@ import { countRoles, pinAccessibleLabel, roleLabels, roleColors } from "@/compon
 import { probedNet, useBoardNets } from "@/components/board-visual/use-board-nets";
 import { classifySource, verificationSourceFor } from "@/lib/source-trust";
 import { pinReportContextFor } from "@/lib/pin-report";
+import { serializePinoutState } from "@/lib/pinout-state";
 import { fiveVoltCaution } from "@/lib/board-utilities";
 
 /** The same source pin objects drive the board, selector, readout and schedule. */
@@ -26,10 +26,6 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
-  // Fit is the default: the whole physical board is visible in a 334 px panel.
-  // Touch size enlarges it so every pad's hit area is at least 44 px.
-  const [zoomed, setZoomed] = useState(false);
-  const boardScrollRef = useRef<HTMLDivElement>(null);
   const expandRef = useRef<HTMLButtonElement>(null);
   const connectorRef = useRef<HTMLDivElement>(null);
   const pinRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -73,16 +69,6 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
     if (pinBox.top < regionBox.top) region.scrollTop -= regionBox.top - pinBox.top;
     else if (pinBox.bottom > regionBox.bottom) region.scrollTop += pinBox.bottom - regionBox.bottom;
   }, [connectorPins, selectedKey]);
-  useEffect(() => {
-    const region = boardScrollRef.current;
-    if (!zoomed || !region || !selectedKey) return;
-    const pad = region.querySelector(`[data-pin-key="${CSS.escape(selectedKey)}"]`);
-    if (!pad) return;
-    const padBox = pad.getBoundingClientRect();
-    const regionBox = region.getBoundingClientRect();
-    region.scrollLeft += padBox.left + padBox.width / 2 - (regionBox.left + regionBox.width / 2);
-    region.scrollTop += padBox.top + padBox.height / 2 - (regionBox.top + regionBox.height / 2);
-  }, [zoomed, selectedKey]);
   if (!geometry || !board.pinout) return null;
   const model = raspberryPiModel(board.id)!;
   const liveAnchor = anchors.find((anchor) => anchor.key === liveKey) ?? null;
@@ -91,6 +77,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
     (!activeRole || pin.role === activeRole) && terms.every((term) =>
       `${pin.position} ${pin.label} ${(pin.aliases ?? []).join(" ")} ${pin.note ?? ""}`.toLowerCase().includes(term)),
   );
+  const linkState = serializePinoutState({ role: activeRole, pin: selectedKey }, new Set(anchors.map(a => a.key)), new Set(anchors.map(a => a.pin.role)));
   const select = (key: string | null) => { setSelectedKey(key); setHoverKey(null); };
 
   return (
@@ -102,27 +89,17 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
         <h3>{board.pinout.connector}</h3>
         <div className="pi-tools">
           <button ref={expandRef} type="button" onClick={() => setExpanded(true)}><Expand size={14} aria-hidden="true" /> Inspect</button>
-          <a href={`/boards/${board.id}#pins`} aria-label={`Open the ${board.name} full pinout`}><ExternalLink size={14} aria-hidden="true" /><span>Full view</span></a>
+          <a href={`/boards/${board.id}${linkState ? `?${linkState}` : ""}#pins`} aria-label={`Open the ${board.name} full pinout`}><ExternalLink size={14} aria-hidden="true" /><span>Full view</span></a>
         </div>
       </header>
 
       <div className="pi-component-layout">
-        <div className={`pi-canvas ${model.family === "pico" ? "pi-canvas-pico" : ""}`}>
+        <div className="pi-canvas">
           <p className="pi-board-orientation">{geometry.orientation}</p>
-          <div ref={boardScrollRef} className="pi-canvas-scroll" data-zoomed={zoomed || undefined}
-            {...(zoomed ? { tabIndex: 0, role: "group", "aria-label": "Scrollable board at touch size" } : {})}>
-            <div className="pi-board-frame" data-board-view={zoomed ? "touch" : "fit"}
-              style={{ aspectRatio: `${geometry.body.w + 48} / ${geometry.body.h + 55}`, ...(zoomed ? { boxSizing: "content-box", minWidth: touchDrawingWidth(geometry, true), maxWidth: "none" } : {}) }}>
-              <BoardStage geometry={geometry} title={`${board.name} physical board — ${board.pinout.connector}`} sheetLabel={board.name}
-                compact selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole} showAllLabels={false} netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} />
-            </div>
-          </div>
-          <div className="pi-canvas-footer">
-            <span>{zoomed ? "Touch size · every pad has a 44 px target · swipe to pan" : "Whole board · pads are small at this size"}</span>
-            <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(!zoomed)}>
-              {zoomed ? <ZoomOut size={14} aria-hidden="true" /> : <ZoomIn size={14} aria-hidden="true" />}{zoomed ? "Fit whole board" : "Zoom to touch size"}
-            </button>
-          </div>
+          <BoardDrawingViewport
+            board={board} geometry={geometry} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole}
+            netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey}
+          />
         </div>
 
         <aside className="pi-readout">
@@ -137,7 +114,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
 
       <section className="pi-pin-list" aria-label="Pin list">
         <div className="pi-connector-heading">
-          <p>Pick a pin by name: the board pads, this list and the picker select the same pin. Keyboard: arrows, then Enter.</p>
+          <p>Select a pin</p>
           <select className="pi-pin-picker" aria-label="Select physical pin" value={selectedKey ?? ""} onChange={(event) => select(event.target.value || null)}>
             <option value="">Choose a pin…</option>
             {anchors.map(({ key, pin }) => <option key={key} value={key}>{pin.position} · {pin.label}{pin.aliases?.length ? ` / ${pin.aliases.join(", ")}` : ""}</option>)}
@@ -175,7 +152,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
         </div>
       </details>
 
-      <p className="pi-illustration-note">{geometry.revisionNote} Decorative traces do not represent electrical connections.</p>
+      <p className="pi-illustration-note">{geometry.revisionNote}</p>
 
       <details className="pin-reference-table pi-schedule">
         <summary>{`All ${anchors.length} pins (table)`}</summary>

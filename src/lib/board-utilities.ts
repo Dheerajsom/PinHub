@@ -63,7 +63,7 @@ export function fiveVoltCaution(
 
 export function revisionNotesFor(board: Board): string[] {
   const pattern = /\b(rev(?:ision)?|variant|version|silkscreen|batch|module|unverified)\b/i;
-  return [...board.warnings, ...(board.pinout?.notes ?? [])].filter((note) =>
+  return [...new Set([...board.warnings, ...(board.pinout?.notes ?? [])])].filter((note) =>
     pattern.test(note),
   );
 }

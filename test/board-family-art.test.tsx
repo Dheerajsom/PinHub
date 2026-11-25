@@ -3,14 +3,17 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
 import { boards } from "@/lib/boards";
+import { boardPortrait, type Part } from "@/lib/board-portraits";
 import { boardVisuals } from "@/lib/board-visuals";
 import { buildBoardGeometry, SHIELD_ORDER_NOTE, type BoardGeometry } from "@/lib/board-visual-geometry";
 import { familyArtFor, freeField, layoutFamilyArt, overlaps } from "@/lib/board-family-art";
 import { renderCoverage, renderTier } from "@/lib/board-render-coverage";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { BoardArtwork } from "@/components/board-visual/BoardArtwork";
+import { BoardDrawingViewport } from "@/components/board-visual/BoardDrawingViewport";
+import { PinoutDiagram } from "@/components/PinoutDiagram";
 import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutVisualization";
-import { illustrationCaption } from "@/components/board-visual/illustration-caption";
+import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 
 afterEach(cleanup);
@@ -55,7 +58,7 @@ describe("family board artwork", () => {
     for (const board of boards) {
       const visual = boardVisuals[board.id];
       if (raspberryPiModel(board.id)) expect(familyArtFor(board, visual), board.id).toBeNull();
-      if (visual?.headerKind === "group-strips") expect(renderTier(board) === "schematic" || !board.pinout, board.id).toBe(true);
+      if (visual?.headerKind === "group-strips") expect(renderTier(board) === "separate" || !board.pinout, board.id).toBe(true);
     }
   });
 
@@ -80,7 +83,6 @@ describe("family board artwork", () => {
     expect(kinds("stm32-nucleo-f401re")).toEqual(["debug-section", "button", "button"]);
     expect(kinds("jetson-orin-nano-dev-kit")).toEqual(["heatsink"]);
     expect(kinds("arduino-uno-rev3")).toEqual(["button"]);
-    expect(kinds("orange-pi-5")).toEqual(["soc"]);
     // The micro:bit's processor is on the back, so no generic IC is drawn.
     const microbit = renderToStaticMarkup(<svg><BoardArtwork geometry={buildBoardGeometry(byId("bbc-microbit-v2"))!} /></svg>);
     expect(microbit).not.toContain("url(#silicon-");
@@ -90,47 +92,172 @@ describe("family board artwork", () => {
   it("says what is illustration and flags catalog-ordered shield headers", () => {
     const uno = buildBoardGeometry(byId("arduino-uno-rev3"))!;
     expect(uno.orderNote).toBe(SHIELD_ORDER_NOTE);
-    expect(illustrationCaption(uno)).toContain("UNO-footprint board family illustration");
-    expect(illustrationCaption(uno)).toContain("not the physical sequence");
+    expect(connectorCaption(uno)).toContain("Connector reference.");
+    expect(connectorCaption(uno)).toContain("not the physical sequence");
     const devkit = buildBoardGeometry(byId("esp32-devkit-v1"))!;
     expect(devkit.orderNote).toBeUndefined();
-    expect(illustrationCaption(buildBoardGeometry(byId("teensy-40"))!)).toMatch(/^Simplified technical illustration/);
+    expect(connectorCaption(buildBoardGeometry(byId("teensy-40"))!)).toContain("Illustrated component side.");
   });
 });
 
 describe("render coverage inventory", () => {
+  it.each(boards)("renders $id's complete artwork and preserves its mapped pins in fit view", (board) => {
+    const idle = { selectedKey: null, activeKey: null, activeRole: null, netKeys: new Set<string>(), onSelect() {}, onActiveKey() {} };
+    const geometry = buildBoardGeometry(board);
+    const markup = renderToStaticMarkup(geometry
+      ? <BoardDrawingViewport board={board} geometry={geometry} {...idle} />
+      : <PinoutDiagram board={board} />);
+    expect(markup).toContain(`data-${geometry?.artworkId ? "pi" : "product"}-artwork="${board.id}"`);
+    if (!geometry?.artworkId) expect(markup.match(/data-landmark=/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(markup.match(/data-pin-key=/g)?.length ?? 0).toBe(geometry?.anchors.length ?? 0);
+    if (geometry) expect(markup).toContain('data-board-view="fit"');
+  });
+
+  it("distinguishes the Freedom board's touch slider from the micro:bit edge contacts", () => {
+    const freedom = boardPortrait("nxp-frdm-kl25z")!.parts.map(([kind]) => kind);
+    expect(freedom).toContain("touch-slider");
+    expect(freedom).not.toContain("contacts");
+    expect(boardPortrait("bbc-microbit-v2")!.parts.some(([kind]) => kind === "contacts")).toBe(true);
+  });
+
+  it("keeps model-specific controls and connectors on boards with a shared footprint", () => {
+    const parts = (id: string) => boardPortrait(id)!.parts.map(([kind]) => kind);
+    expect(parts("seeed-xiao-samd21")).toContain("test-pads");
+    expect(parts("seeed-xiao-samd21")).not.toContain("button");
+    expect(parts("seeed-xiao-esp32c3")).toContain("rf-socket");
+    expect(parts("seeed-xiao-esp32s3-sense")).toContain("camera");
+    expect(parts("sparkfun-pro-micro")).toContain("crystal");
+    expect(parts("sparkfun-pro-micro")).not.toContain("jst-sh");
+    expect(parts("sparkfun-pro-micro-rp2040")).toEqual(expect.arrayContaining(["usb-c", "jst-sh", "memory", "button"]));
+  });
+
+  // Mirrors MappedProductArtwork: portrait percentages land on the geometry's
+  // body, turned so the portrait's left (USB) end meets the USB edge.
+  function landmarkBox(geometry: BoardGeometry, [, x, y, w, h]: Part) {
+    const { x: bx, y: by, w: bw, h: bh } = geometry.body;
+    if (geometry.kind !== "edge-dual") return { x0: bx + x / 100 * bw, x1: bx + (x + w) / 100 * bw, y0: by + y / 100 * bh, y1: by + (y + h) / 100 * bh };
+    return geometry.usbEdge === "bottom"
+      ? { x0: bx + y / 100 * bw, x1: bx + (y + h) / 100 * bw, y0: by + (1 - (x + w) / 100) * bh, y1: by + (1 - x / 100) * bh }
+      : { x0: bx + (1 - (y + h) / 100) * bw, x1: bx + (1 - y / 100) * bw, y0: by + x / 100 * bh, y1: by + (x + w) / 100 * bh };
+  }
+
+  it.each(boards.filter(board => buildBoardGeometry(board)?.portraitId))("keeps $id's illustrated landmarks clear of its mapped pads", (board) => {
+    const geometry = buildBoardGeometry(board)!;
+    for (const part of boardPortrait(board.id)!.parts) {
+      // Copper lands are hidden on mapped drawings; the real pads replace them.
+      if (part[0] === "pads" || part[0] === "test-pads") continue;
+      const box = landmarkBox(geometry, part);
+      const r = geometry.padR * .9;
+      const covered = geometry.anchors.filter(a => a.cx + r > box.x0 && a.cx - r < box.x1 && a.cy + r > box.y0 && a.cy - r < box.y1);
+      expect(covered.map(a => a.pin.label), `${part[0]} at ${part[1]},${part[2]}`).toEqual([]);
+    }
+  });
+
+  it("draws the connectors and header rows the product carries", () => {
+    const parts = (id: string) => boardPortrait(id)!.parts;
+    const kinds = (id: string) => parts(id).map(([kind]) => kind);
+    for (const id of ["adafruit-feather-rp2040", "adafruit-esp32-s3-feather", "arduino-uno-r4-wifi", "arduino-nano-esp32", "waveshare-rp2040-zero"]) {
+      expect(kinds(id), id).toContain("usb-c");
+      expect(kinds(id), id).not.toContain("usb");
+    }
+    // The LiPo socket shares the short header's edge, so with USB at the top
+    // it sits on the right, where the twelve-pin row is drawn.
+    const feather = buildBoardGeometry(byId("adafruit-feather-rp2040"))!;
+    expect(feather.anchors.filter(a => a.side === "right")).toHaveLength(12);
+    expect(feather.orientation).toContain("JST battery at top-right");
+    // ESP32 Feathers carry a module whose antenna overhangs the far end.
+    expect(kinds("adafruit-feather-esp32-v2")).toEqual(expect.arrayContaining(["shield", "antenna"]));
+    // BeagleBone P8 and P9 are 2 x 23, with Ethernet at one end.
+    const capes = parts("beaglebone-black").filter(([kind]) => kind === "header-2x");
+    expect(capes.map(part => part[5])).toEqual([23, 23]);
+    expect(kinds("beaglebone-black")).toEqual(expect.arrayContaining(["ethernet", "jack"]));
+    // Nucleo-64 morpho connectors are two-row 19-pin strips.
+    expect(parts("stm32-nucleo-f401re").filter(([kind, , , , , count]) => kind === "header-2x" && count === 19)).toHaveLength(2);
+    expect(parts("arduino-mega-2560-rev3").some(([kind, , , , , count]) => kind === "header-2x" && count === 18)).toBe(true);
+  });
+
   it("accounts for every catalog board in exactly one tier", () => {
     const coverage = renderCoverage(boards);
     const counts = Object.fromEntries(Object.entries(coverage).map(([tier, ids]) => [tier, ids.length]));
-    // Update docs/DESIGN.md and the dated audit when these numbers change.
-    expect(counts).toEqual({ dedicated: 18, family: 98, generic: 31, schematic: 43, unmapped: 6 });
+    expect(counts).toEqual({ pi: 18, module: 69, header: 4, separate: 99, portraitOnly: 6, missing: 0 });
     expect(Object.values(coverage).flat().sort()).toEqual(boards.map((board) => board.id).sort());
-    for (const id of ["arduino-uno-rev3", "arduino-mega-2560-rev3", "arduino-nano", "esp32-devkitc", "nodemcu-devkit-v1", "stm32-nucleo-f401re", "stm32-nucleo-h753zi"]) {
-      expect(coverage.family, id).toContain(id);
-    }
+    expect(coverage.separate).toContain("digilent-nexys-a7-100t");
+    expect(coverage.portraitOnly).toContain("digilent-basys-3");
   });
 });
 
-describe("embedded generic pin map", () => {
-  it("fits the whole physical board by default and zooms to touch size on request", () => {
+describe("embedded product pin map", () => {
+  it("opens on the complete product and enlarges the pins on request", () => {
     const board = byId("esp32-devkitc");
     const { container } = render(<BoardPinoutVisualization board={board} />);
     const frame = container.querySelector<HTMLElement>("[data-board-view]")!;
     expect(frame.dataset.boardView).toBe("fit");
     expect(frame.style.minWidth).toBe("");
-    expect(screen.getByText(/pads are small at this size/)).toBeTruthy();
-    expect(screen.getByText(/Espressif DevKit family illustration/)).toBeTruthy();
+    expect(frame.closest("details:not([open])")).toBeNull();
+    expect(frame.querySelector(".bv-label")).toBeNull();
+    expect(frame.querySelector('[data-product-artwork="esp32-devkitc"]')).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
     expect(frame.dataset.boardView).toBe("touch");
     expect(parseFloat(frame.style.minWidth)).toBe(touchDrawingWidth(buildBoardGeometry(board)!));
+    expect(frame.querySelector(".bv-label")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
+    expect(frame.dataset.boardView).toBe("fit");
+    expect(frame.style.minWidth).toBe("");
+  });
+
+  it("shows the Feather short row opposite the last twelve pads in the long row", () => {
+    const geometry = buildBoardGeometry(byId("adafruit-feather-rp2040"))!;
+    const left = geometry.anchors.filter(a => a.side === "left");
+    const right = geometry.anchors.filter(a => a.side === "right");
+    expect(right.map(a => a.cy)).toEqual(left.slice(4).map(a => a.cy));
+  });
+
+  it("keeps connector-local numbers distinguishable in the picker", () => {
+    const board = byId("digilent-nexys-a7-100t");
+    const { container } = render(<BoardPinoutVisualization board={board} />);
+    expect(screen.getByRole("img", { name: `Simplified illustration of ${board.name}` })).toBeTruthy();
+    const geometry = buildBoardGeometry(board)!;
+    const firstPins = geometry.anchors.filter(a => a.pin.position === 1);
+    expect(firstPins.length).toBeGreaterThan(1);
+    const picker = screen.getByRole("combobox", { name: "Select a pin" }) as HTMLSelectElement;
+    for (const anchor of firstPins) {
+      expect([...picker.options].find(o => o.value === anchor.key)?.text).toContain(anchor.group);
+      fireEvent.change(picker, { target: { value: anchor.key } });
+      expect(container.querySelector(`[data-pin-key="${anchor.key}"]`)?.getAttribute("aria-pressed")).toBe("true");
+    }
+  });
+
+  it("shows the whole product above a zoomable grouped signal diagram", () => {
+    const board = byId("beaglebone-black");
+    const { container } = render(<BoardPinoutVisualization board={board} />);
+    const portrait = screen.getByRole("img", { name: `Simplified illustration of ${board.name}` });
+    const frame = container.querySelector<HTMLElement>("[data-board-view]")!;
+    expect(portrait.compareDocumentPosition(frame) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(frame.dataset.boardView).toBe("fit");
+    fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
+    expect(frame.dataset.boardView).toBe("zoomed");
+    // The product stays in view: the diagram zooms inside its own canvas.
+    expect(screen.getByRole("img", { name: `Simplified illustration of ${board.name}` })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Fit diagram" }));
     expect(frame.dataset.boardView).toBe("fit");
   });
 
-  it("keeps function-grouped schematics at touch size with no physical zoom toggle", () => {
-    const board = byId("beaglebone-black");
+  it("registers the Orange Pi 5's 26 contacts on its illustrated component side", () => {
+    const board = byId("orange-pi-5");
+    const geometry = buildBoardGeometry(board)!;
     const { container } = render(<BoardPinoutVisualization board={board} />);
-    expect(container.querySelector<HTMLElement>("[data-board-view]")!.dataset.boardView).toBe("touch");
-    expect(screen.queryByRole("button", { name: "Zoom to touch size" })).toBeNull();
+    const frame = container.querySelector<HTMLElement>('[data-board-view="fit"]')!;
+    const drawing = frame.querySelector('[data-product-artwork="orange-pi-5"]')!;
+    for (const kind of ["bga", "memory", "microsd", "usb-c", "ethernet", "ribbon", "hdmi"]) {
+      expect(drawing.querySelector(`[data-landmark="${kind}"]`)).toBeTruthy();
+    }
+    expect(drawing.textContent).toContain("RK3588S");
+    expect(frame.querySelectorAll("[data-pin-key]")).toHaveLength(26);
+    expect(geometry.orientation).not.toContain("40-pin");
+    const pin = (position: number) => geometry.anchors.find(a => a.pin.position === position)!;
+    expect(pin(1).cx).toBe(pin(2).cx);
+    expect(pin(1).cy).toBeGreaterThan(pin(2).cy);
+    expect(pin(25).cx - pin(1).cx).toBeCloseTo(12 * geometry.pitch);
+    expect(pin(1).cx - geometry.body.x).toBeCloseTo(geometry.body.w * .112);
   });
 });

@@ -55,13 +55,19 @@
 .pi-role-bar button { min-height: 44px; }
 .pi-component-layout { display: grid; grid-template-columns: minmax(0, 1fr); }
 .pi-canvas { min-width: 0; background: radial-gradient(ellipse at 45% 35%, #1d2927, #0c1316 78%); color: #aebfbc; }
-/* The physical board is the Dynamic view's subject: fitted whole by default,
-   enlarged to touch size on request (the frame then pans inside its well). */
+/* The pin viewport pans independently of the catalog panel. */
 .pi-board-orientation { padding: 10px 14px 0; font-size: 11px; line-height: 1.5; color: #aebfbc; }
-.pi-canvas-scroll { overflow: hidden; }
-.pi-canvas-scroll[data-zoomed] { overflow: auto; max-height: min(70svh, 560px); overscroll-behavior: contain; scrollbar-color: #4d6457 #101b16; }
-.pi-board-frame { width: 100%; max-width: 560px; padding: 10px; margin: auto; touch-action: manipulation; }
-.pi-canvas-pico .pi-board-frame[data-board-view="fit"] { max-width: 200px; }
+.board-view-scroll { overflow: hidden; border-radius: 6px; }
+.board-view-scroll[data-zoomed] { overflow: auto; max-height: min(55svh, 440px); scrollbar-color: #526b71 #10191e; }
+.board-view-frame { width: 100%; margin-inline: auto; touch-action: manipulation; }
+/* Connector diagram canvas: wheel zoom and drag pan. At the whole-diagram
+   view a finger still scrolls the page; once zoomed in, gestures pan it. */
+.diagram-canvas { width: 100%; max-height: min(70svh, 640px); cursor: grab; user-select: none; touch-action: pan-x pan-y; }
+/* Containment only once zoomed: at fit a swipe must chain to the page. */
+.diagram-canvas[data-board-view="zoomed"] { touch-action: none; overscroll-behavior: contain; }
+.diagram-canvas[data-dragging] { cursor: grabbing; }
+.diagram-canvas .bv-pad { cursor: pointer; }
+.board-view-toolbar button:disabled { opacity: .4; cursor: default; text-decoration: none; }
 .pi-pin-list { border-top: 1px solid var(--pi-rule); }
 .pi-connector-heading { display: grid; gap: 9px; padding: 14px 14px 10px; color: var(--pi-muted); font-size: 12px; line-height: 1.5; background: var(--pi-well); }
 .pi-connector-orientation { font-size: 11px; }
@@ -77,9 +83,15 @@
 .pi-connector-signal small { display: block; font-size: 10px; line-height: 1.3; color: var(--pi-muted); }
 .pi-role-disclosure { border-top: 1px solid var(--pi-rule); }
 .pi-role-disclosure > summary { min-height: 44px; padding: 12px 18px; cursor: pointer; font-size: 12px; font-weight: 600; }
-.pi-canvas-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 0 16px; min-height: 45px; border-top: 1px solid #26352e; font-size: 11px; }
-.pi-canvas-footer button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 4px; color: #bce9e3; }
-.pi-canvas-footer button[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 3px; }
+.board-view-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0 8px; min-height: 44px; font-size: 12px; color: #aebabe; }
+.board-view-toolbar button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 6px; color: #83d9e0; cursor: pointer; }
+.board-view-toolbar button:hover, .board-view-toolbar button[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 3px; }
+[data-theme="light"] .board-view-toolbar button { color: #07656e; }
+[data-theme="light"] .board-view-toolbar { color: #536369; }
+.pi-canvas .board-view-toolbar { color: #b6c7c5; padding-inline: 14px; }
+.pi-canvas .board-view-toolbar button { color: #bce9e3; }
+.pi-canvas .board-view-scroll { background: transparent; border: 0; }
+.pi-canvas .board-drawing > p { padding: 0 14px 8px; color: #b6c7c5; }
 .pi-readout { display: grid; align-content: start; gap: 16px; min-width: 0; padding: 20px; background: var(--pi-well); border-top: 1px solid var(--pi-rule); }
 .pi-pin-picker { width: 100%; min-width: 0; min-height: 44px; padding: 7px 10px; border: 1px solid var(--pi-rule); border-radius: 6px; background: var(--pi-panel); color: var(--pi-text); font-size: 16px; }
 .pi-readout .pin-readout { background: var(--pi-panel); }
@@ -122,17 +134,16 @@
 @container (min-width: 650px) {
   .pi-component-layout { grid-template-columns: minmax(0, 1fr) 210px; }
   .pi-readout { border-top: 0; border-left: 1px solid var(--pi-rule); }
-  .pi-board-frame { padding: 20px; }
   /* The readout column sets this row's height, and it changes as soon as a
      finger lands on a pad (the readout switches to that pin). A vertically
      centred board would slide under the finger before the tap's click fired,
      so the board stays anchored to the top of the canvas. */
   .pi-canvas { display: flex; flex-direction: column; }
-  .pi-canvas-scroll { flex: 1; display: grid; align-items: start; }
+
 }
 @media print {
   .pi-workbench { overflow: visible; --pi-panel: #fff; --pi-well: #fff; --pi-rule: #bbb; --pi-text: #111; --pi-muted: #444; }
-  .pi-tools, .pi-schedule-tools, .pi-canvas-footer button { display: none; }
+  .pi-tools, .pi-schedule-tools, .board-view-toolbar { display: none; }
   .pi-schedule-scroll { overflow: visible; }
   .pi-schedule tr { break-inside: avoid; }
 }
@@ -2327,3 +2338,19 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .ph-check :is(.ph-check-strip-pad span, .ph-check-card, .ph-check-example, .ph-check-action, .ph-check-icon-button, .ph-check-ghost, .ph-check-line-chip) { transition: none; }
 }
+
+/* Product identification artwork has its own framing, independent of the
+   connector sheet's working zoom, ordering and touch targets. */
+.product-portrait {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 10px 8px;
+  background: radial-gradient(ellipse at 50% 40%, #24323a 0%, #111b22 75%);
+  border: 1px solid #34414a;
+  border-radius: 9px;
+  color: #d5dfdf;
+}
+.product-portrait > svg { display: block; width: min(100%, 640px); height: auto; max-height: min(62svh, 460px); filter: drop-shadow(0 3px 3px #070b0c80); }
+.product-portrait > figcaption { font: 500 12px/1.4 var(--font-mono), monospace; text-align: center; overflow-wrap: anywhere; }

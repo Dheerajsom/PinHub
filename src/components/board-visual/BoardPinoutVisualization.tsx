@@ -2,17 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { clsx } from "clsx";
-import { Expand, ExternalLink, X, ZoomIn, ZoomOut } from "lucide-react";
+import { Expand, ExternalLink, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
-import {
-  buildBoardGeometry,
-  type BoardGeometry,
-  type PinAnchor,
-} from "@/lib/board-visual-geometry";
-import { BoardStage } from "@/components/board-visual/BoardStage";
-import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
-import { illustrationCaption } from "@/components/board-visual/illustration-caption";
+import { buildBoardGeometry, type BoardGeometry, type PinAnchor } from "@/lib/board-visual-geometry";
+import { BoardDrawingViewport } from "./BoardDrawingViewport";
+import { connectorCaption } from "@/components/board-visual/illustration-caption";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
 import { PinoutTable } from "@/components/board-visual/PinoutTable";
@@ -29,29 +23,6 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const [activeRole, setActiveRole] = useState<PinRole | null>(null);
   const [expanded, setExpanded] = useState(false);
   const expandButtonRef = useRef<HTMLButtonElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [pannable, setPannable] = useState(false);
-  // Physical drawings open fitted so the whole board is visible in a narrow
-  // panel; touch size enlarges them until every pad's hit area is 44 px. The
-  // function-grouped schematic has no board to show whole, so it stays at
-  // touch size.
-  const [touchSize, setTouchSize] = useState(() => geometry?.kind === "group-strips");
-  // Interaction state is reset across board switches by remounting via a
-  // `key={board.id}` on this component (see PinHubApp), so no reset effect is
-  // needed here.
-
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() =>
-      setPannable(
-        stage.scrollWidth > stage.clientWidth + 1 || stage.scrollHeight > stage.clientHeight + 1,
-      ),
-    );
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, [geometry, touchSize]);
-
   const anchorsByKey = useMemo(() => {
     const map = new Map<string, NonNullable<typeof geometry>["anchors"][number]>();
     geometry?.anchors.forEach((a) => map.set(a.key, a));
@@ -66,7 +37,11 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
   const liveKey = activeKey ?? selectedKey;
   const probe = probedNet(nets, liveKey);
   const report = useMemo(() => pinReportContextFor(board), [board]);
-  const linkState = serializePinoutState({ role: activeRole, pin: selectedKey }, new Set(geometry?.anchors.map((anchor) => anchor.key)), new Set(geometry?.anchors.map((anchor) => anchor.pin.role)));
+  const linkState = serializePinoutState(
+    { role: activeRole, pin: selectedKey },
+    new Set(geometry?.anchors.map((anchor) => anchor.key)),
+    new Set(geometry?.anchors.map((anchor) => anchor.pin.role)),
+  );
   const fullViewHref = `/boards/${board.id}${linkState ? `?${linkState}` : ""}#pins`;
 
   if (!board.pinout || !geometry) {
@@ -74,23 +49,14 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
       <section className="rounded-lg border border-dashed border-white/15 bg-[#101319] p-4">
         <div className="text-sm font-medium text-white">Pin map queued</div>
         <p className="mt-2 text-sm leading-6 text-zinc-400">
-          This board has official references linked, but its in-app connector map
-          still needs a source-backed import.
+          This board has official references linked, but its in-app connector map still needs a source-backed
+          import.
         </p>
       </section>
     );
   }
 
   const liveAnchor = anchorsByKey.get(liveKey ?? "") ?? null;
-  const stageTitle = `${board.name} — ${board.pinout.connector}`;
-  // Dense schematic headers (FPGA expansion landings, 50+ pads) are cramped in
-  // the narrow detail column, so we steer users to the roomy standalone view.
-  const isComplex =
-    geometry.kind === "group-strips" || geometry.anchors.length > 48;
-  // Very tall drawings would shrink to an unreadable sliver at the panel's
-  // height, so their stage is capped and scrolls vertically.
-  const tall = geometry.vbh / geometry.vbw > 1.4;
-
   function handleEscape() {
     if (expanded) {
       setExpanded(false);
@@ -111,15 +77,8 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
     >
       <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
         <div className="min-w-0">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-            Connector
-          </div>
-          <h3 className="mt-1 text-base font-semibold text-white">
-            {board.pinout.connector}
-          </h3>
-          <p className="mt-0.5 text-[11px] leading-4 text-zinc-500">
-            {geometry.orientation}
-          </p>
+          <h3 className="text-sm font-semibold text-white">{board.pinout.connector}</h3>
+          <p className="mt-1 text-xs text-zinc-400">{board.logicLevel}</p>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
           <button
@@ -137,12 +96,7 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
             rel="noopener noreferrer"
             aria-label={`Open the ${board.name} pinout in a new tab`}
             title="Open the full pinout in a new tab"
-            className={clsx(
-              "touch-target inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition",
-              isComplex
-                ? "border-cyan-300/60 bg-cyan-300/10 text-cyan-50 hover:bg-cyan-300/20"
-                : "border-white/15 bg-[#15181f] text-zinc-200 hover:border-cyan-300/60 hover:text-white",
-            )}
+            className="touch-target inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-cyan-200 hover:text-white"
           >
             <ExternalLink className="size-3.5" aria-hidden="true" />
             Full view
@@ -150,120 +104,63 @@ export function BoardPinoutVisualization({ board }: { board: Board }) {
         </div>
       </div>
 
-      <div className="mt-3">
-        <PinRoleLegend
-          counts={roleCounts}
-          activeRole={activeRole}
-          onToggle={setActiveRole}
+      <div className="connector-drawing mt-3">
+        {(geometry.artworkId || geometry.portraitId) && <p className="text-xs text-zinc-400">{geometry.orientation}</p>}
+        <BoardDrawingViewport
+          board={board} geometry={geometry} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole}
+          netKeys={probe.keys} onActiveKey={setActiveKey}
+          onSelect={(key) => { setSelectedKey(key); setActiveKey(key); }}
         />
+        <p className="mt-2 text-[11px] leading-5 text-zinc-500">{connectorCaption(geometry)}</p>
       </div>
-
-      {/* The drawing keeps a touch-sized width, so it pans inside this stage
-          when the panel is narrower than that or the board is tall. */}
-      <div
-        ref={stageRef}
-        className="bv-stage-wrap mt-3 w-full overflow-auto rounded-md"
-        style={tall && touchSize ? { maxHeight: 460 } : undefined}
-        {...(pannable ? { tabIndex: 0, role: "group", "aria-label": "Scrollable pin map" } : {})}
-      >
-        <div
-          className="mx-auto w-full"
-          data-board-view={touchSize ? "touch" : "fit"}
-          style={{
-            aspectRatio: `${geometry.vbw} / ${geometry.vbh}`,
-            ...(touchSize
-              ? { minWidth: touchDrawingWidth(geometry) }
-              : tall
-                ? { maxWidth: Math.round((460 * geometry.vbw) / geometry.vbh) }
-                : {}),
-          }}
-        >
-          <BoardStage
-            geometry={geometry}
-            title={stageTitle}
-            sheetLabel={board.name}
-            selectedKey={selectedKey}
-            activeKey={liveKey}
-            activeRole={activeRole}
-            showAllLabels={false}
-            netKeys={probe.keys}
-            onSelect={(key) => {
-              setSelectedKey(key);
-              setActiveKey(key);
-            }}
-            onActiveKey={setActiveKey}
-          />
-        </div>
-      </div>
-
-      {geometry.kind !== "group-strips" ? (
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 text-[11px] leading-5 text-zinc-500">
-          <span>
-            {touchSize
-              ? "Touch size: every pad has a 44 px target."
-              : "Whole board: pads are small at this size."}
-          </span>
-          <button
-            type="button"
-            aria-pressed={touchSize}
-            onClick={() => setTouchSize(!touchSize)}
-            className="touch-target inline-flex items-center gap-1.5 rounded-md px-1.5 font-medium text-cyan-200 hover:text-cyan-100"
-          >
-            {touchSize ? <ZoomOut className="size-3.5" aria-hidden="true" /> : <ZoomIn className="size-3.5" aria-hidden="true" />}
-            {touchSize ? "Fit whole board" : "Zoom to touch size"}
-          </button>
-        </div>
-      ) : null}
-
-      {isComplex ? (
-        <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] leading-5 text-cyan-200/80">
-          <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
-          Dense header — open{" "}
-          <a
-            href={fullViewHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-11 min-w-11 shrink-0 items-center font-medium underline underline-offset-2 hover:text-cyan-100"
-          >
-            Full view
-          </a>{" "}
-          for a roomier, fully-labelled diagram.
-        </p>
-      ) : null}
-
-      {pannable ? (
-        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-          Swipe the drawing, or focus it and use the arrow keys, to reach every pad.
-        </p>
-      ) : null}
-
-      <p className="mt-2 text-[11px] leading-5 text-zinc-500">
-        {illustrationCaption(geometry)}
-      </p>
-
-      <div className="mt-3">
-        <PinDetails
-          anchor={liveAnchor}
-          pinned={selectedKey !== null}
-          net={probe.net}
-          netSize={probe.keys.size}
-          report={report}
-          flagNotes={board.pinFunctions?.flagNotes}
-          onClear={() => {
-            setSelectedKey(null);
+      <label className="mt-3 block">
+        <span className="text-xs font-medium text-zinc-400">Select a pin</span>
+        <select
+          className="mt-1 block min-h-11 w-full min-w-0 rounded-md border border-white/15 bg-[#15181f] px-2 text-base text-white"
+          value={selectedKey ?? ""}
+          onChange={(event) => {
+            setSelectedKey(event.target.value || null);
             setActiveKey(null);
           }}
-        />
-      </div>
+        >
+          <option value="">Choose a pin…</option>
+          {geometry.anchors.map(({ key, pin, group }) => (
+            <option key={key} value={key}>
+              {group ? `${group} · ` : ""}
+              {pin.position} · {pin.label}
+              {pin.aliases?.length ? ` / ${pin.aliases.join(" / ")}` : ""}
+            </option>
+          ))}
+        </select>
+      </label>
+      {liveAnchor && (
+        <div className="mt-3">
+          <PinDetails
+            anchor={liveAnchor}
+            pinned={selectedKey !== null}
+            net={probe.net}
+            netSize={probe.keys.size}
+            report={report}
+            flagNotes={board.pinFunctions?.flagNotes}
+            onClear={() => {
+              setSelectedKey(null);
+              setActiveKey(null);
+            }}
+          />
+        </div>
+      )}
 
+      <details className="mt-3 border-t border-white/10">
+        <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium text-zinc-300">
+          Highlight pin roles
+        </summary>
+        <PinRoleLegend counts={roleCounts} activeRole={activeRole} onToggle={setActiveRole} />
+      </details>
       {/* Connector caveats from the source-backed pinout notes. */}
       <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-3 text-sm leading-6 text-zinc-400">
         {board.pinout.notes.map((note) => (
           <li key={note} className="flex gap-2">
-            <span
-              className="mt-2.5 size-1 shrink-0 rounded-full bg-zinc-600"
-              aria-hidden="true"
-            />
+            <span className="mt-2.5 size-1 shrink-0 rounded-full bg-zinc-600" aria-hidden="true" />
             <span className="min-w-0">{note}</span>
           </li>
         ))}
@@ -394,9 +291,7 @@ export function ExpandedInspector({
       >
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
           <div className="min-w-0">
-            <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-              Connector
-            </div>
+            <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Connector</div>
             <div className="mt-1 truncate text-sm font-semibold text-white">
               {board.name} · {board.pinout?.connector}
             </div>

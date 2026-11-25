@@ -28,7 +28,7 @@ async function openInCatalog(page: Page, id: string) {
   await page.goto(`/?${new URLSearchParams({ q: name })}`);
   const show = page.getByRole("button", { name: `Show ${name} details`, exact: true });
   if ((page.viewportSize()?.width ?? 1280) < 1024) await show.click();
-  else await expect(page.getByRole("heading", { name, exact: true, level: 2 })).toBeVisible();
+  else await expect(page.getByRole("complementary").getByRole("heading", { name, exact: true, level: 2 })).toBeVisible();
 }
 
 async function fitsViewport(page: Page) {
@@ -99,14 +99,12 @@ for (const viewport of viewports) {
         await connector.getByRole("button", { name: /^Pin 1,/ }).tap();
         await expect(connector.getByRole("button", { name: /^Pin 1,/ })).toHaveAttribute("aria-pressed", "true");
         await expect(picker).not.toHaveValue("");
-        // The physical board is the primary view: visible, interactive, and
-        // fitted whole inside the panel before any zoom.
+        // The fitted board and the enlarged header share the same selected pin.
         const physical = interactive.getByRole("group", { name: new RegExp(`^${model.name} physical board`) });
         await expect(physical).toBeVisible();
         await expect(physical.getByRole("button", { name: /^Pin 1,/ })).toHaveAttribute("aria-pressed", "true");
-        const frame = interactive.locator(".pi-board-frame");
+        const frame = interactive.locator(".board-view-frame");
         await expect(frame).toHaveAttribute("data-board-view", "fit");
-        expect((await frame.boundingBox())!.width).toBeLessThanOrEqual(viewport.width);
         await interactive.getByRole("button", { name: "Zoom to touch size", exact: true }).tap();
         await expect(frame).toHaveAttribute("data-board-view", "touch");
         const hit = await physical.locator('.bv-pad > circle[fill="transparent"]').first().boundingBox();
@@ -118,6 +116,7 @@ for (const viewport of viewports) {
         await fitsViewport(page);
         await interactive.getByRole("button", { name: "Fit whole board", exact: true }).tap();
         await expect(frame).toHaveAttribute("data-board-view", "fit");
+        expect((await frame.boundingBox())!.width).toBeLessThanOrEqual(viewport.width);
         await interactive.getByText("Highlight pin roles", { exact: true }).tap();
         await interactive.getByRole("button", { name: /^Power —/ }).tap();
         await expect(interactive.getByRole("button", { name: "Show all roles", exact: true })).toBeVisible();
@@ -158,7 +157,8 @@ test.describe("Raspberry Pi workbench in landscape", () => {
     }).toPass();
     const interactive = page.getByRole("region", { name: "Raspberry Pi 5 dynamic pinout", exact: true });
     const pad = interactive.getByRole("group", { name: /physical board/ }).getByRole("button", { name: /^Pin 1,/ });
-    const padTop = () => pad.evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+    // Measure the fixed hit area. The selected ring changes the SVG group bounds.
+    const padTop = () => pad.locator('circle[fill="transparent"]').evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
     const empty = await padTop();
 
     await interactive.getByRole("combobox", { name: "Select physical pin" }).selectOption({ index: 1 });
@@ -198,12 +198,12 @@ for (const viewport of [...viewports, { width: 1280, height: 800 }]) {
     await expect(last).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(map.getByRole("button", { name: /^Copy pin 40,/ })).toBeVisible();
-    // The whole physical board stays on screen, fitted to the panel width.
+    // The pin viewport stays inside the panel while the drawing pans.
     const physical = map.getByRole("group", { name: /^Raspberry Pi 5 physical board/ });
     await expect(physical).toBeVisible();
     await expect(physical.getByRole("button", { name: /^Pin 40,/ })).toHaveAttribute("aria-pressed", "true");
-    expect((await map.locator(".pi-board-frame").boundingBox())!.width).toBeLessThanOrEqual(bounds!.width);
-    expect(await map.locator(".pi-board-frame").evaluate((element) => element.closest("details, [inert], [aria-hidden='true']"))).toBeNull();
+    expect((await map.locator(".board-view-scroll").boundingBox())!.width).toBeLessThanOrEqual(bounds!.width);
+    expect(await map.locator(".board-view-frame").evaluate((element) => element.closest("details, [inert], [aria-hidden='true']"))).toBeNull();
     await connector.scrollIntoViewIfNeeded();
     await page.screenshot({ path: testInfo.outputPath("labelled-connector.png"), scale: "css", animations: "disabled" });
     await fitsViewport(page);

@@ -39,38 +39,19 @@ export const RaspberryPiArtwork = memo(function RaspberryPiArtwork({ geometry, l
         <linearGradient id={`${uid}-case`} x2="0" y2="1">
           <stop stopColor="#f3f1e9" /><stop offset="1" stopColor="#babeb7" />
         </linearGradient>
-        <pattern id={`${uid}-grain`} width="7" height="7" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="0.45" fill="#d8eece" opacity="0.16" />
-          <path d="M4 3h2" stroke="#061c10" strokeWidth="0.5" opacity="0.3" />
-        </pattern>
-        <pattern id={`${uid}-vias`} width="37" height="31" patternUnits="userSpaceOnUse">
-          <circle cx="7" cy="9" r="1.8" fill="#476747" stroke="#c7b776" strokeWidth="0.8" />
-          <circle cx="7" cy="9" r="0.65" fill="#133b25" />
-        </pattern>
-        <g id={`${uid}-resistor`}>
-          <rect width="15" height="7" rx="1" fill="#cbd0c3" />
-          <rect x="3" width="9" height="7" fill="#242d26" />
-          <path d="M4 1h7" stroke="#667466" strokeWidth="0.7" />
-        </g>
-        <g id={`${uid}-capacitor`}>
-          <rect width="11" height="7" rx="1" fill="#dce0ca" />
-          <rect x="2" width="7" height="7" fill="#b29b70" />
-          <path d="M3 1h5" stroke="#e6d5a4" strokeWidth="1" />
-        </g>
       </defs>
 
       <rect x={body.x + 1} y={body.y + 7} width={body.w} height={body.h} rx={body.rx} fill="#020906" opacity="0.65" />
       <rect x={body.x} y={body.y} width={body.w} height={body.h} rx={body.rx} fill={paint(keyboard ? "case" : "pcb")} stroke={keyboard ? "#858e88" : "#89a761"} strokeWidth="2" />
       <rect x={body.x + 4} y={body.y + 4} width={body.w - 8} height={body.h - 8} rx={body.rx} fill="none" stroke={keyboard ? "#ffffff" : "#80b278"} strokeOpacity="0.4" />
-      {!keyboard ? <rect x={body.x + 6} y={body.y + 6} width={body.w - 12} height={body.h - 12} rx={body.rx} fill={paint("grain")} /> : null}
 
       <g transform={`translate(${body.x} ${body.y}) scale(${body.w / width} ${body.h / height})`}>
-        {keyboard ? <Keyboard model={model} paint={paint} /> : pico ? (
-          <Pico model={model} uid={uid} paint={paint} />
+        {keyboard ? <Keyboard model={model} plus={geometry.artworkId === "raspberry-pi-500-plus"} paint={paint} /> : pico ? (
+          <Pico model={model} paint={paint} />
         ) : model.family === "zero" ? (
-          <Zero model={model} uid={uid} paint={paint} />
+          <Zero model={model} paint={paint} />
         ) : (
-          <Sbc model={model} uid={uid} paint={paint} />
+          <Sbc model={model} paint={paint} />
         )}
         {model.family === "zero" ? (
           <text x={355} y={height - 35} fill="#d7e7c4" fontSize={17} fontFamily="var(--font-technical), monospace" letterSpacing="0.5">
@@ -101,7 +82,7 @@ function rectProps(rect: { x: number; y: number; w: number; h: number; rx?: numb
 }
 
 type Paint = (name: string) => string;
-type ArtProps = { model: RaspberryPiModel; uid: string; paint: Paint };
+type ArtProps = { model: RaspberryPiModel; paint: Paint };
 
 function Chip({ x, y, w, h, label, metal = false, paint }: {
   x: number; y: number; w: number; h: number; label: string; metal?: boolean; paint: Paint;
@@ -162,41 +143,28 @@ function Ribbon({ x, y, height, label }: { x: number; y: number; height: number;
   </g>;
 }
 
-function Parts({ x, y, cols, rows, uid, step = 22 }: { x: number; y: number; cols: number; rows: number; uid: string; step?: number }) {
-  return <g transform={`translate(${x} ${y})`}>
-    {Array.from({ length: cols * rows }, (_, i) => <use key={i} href={`#${uid}-${i % 3 === 0 ? "resistor" : "capacitor"}`} x={(i % cols) * step} y={Math.floor(i / cols) * 16} />)}
-  </g>;
-}
-
-function Traces({ width, height }: { width: number; height: number }) {
-  return <g fill="none" stroke="#6b9a58" strokeWidth="1.1" opacity="0.33">
-    {Array.from({ length: 20 }, (_, i) => <path key={i} d={`M${100 + i * 19} 108v${38 + i * 3}l${75 + i * 2} ${75 + i * 2}v${height * 0.23}l${90 + i * 2} ${40 + i * 2}H${width - 65}`} />)}
-    {Array.from({ length: 9 }, (_, i) => <path key={`b${i}`} d={`M40 ${height - 100 - i * 6}h${80 + i * 10}l${90 + i * 4} -${90 + i * 4}h${width * 0.32}`} />)}
-  </g>;
-}
-
-function Sbc({ model, uid, paint }: ArtProps) {
+function Sbc({ model, paint }: ArtProps) {
   const modern = (model.generation ?? 0) >= 4;
   const pi5 = model.generation === 5;
+  const pi4 = model.generation === 4;
   return <>
-    <rect x="52" y="122" width="720" height="465" fill={paint("vias")} opacity="0.65" />
-    <Traces width={1000} height={660} />
-    {model.wireless ? <Chip x={80} y={145} w={105} h={115} label="Wireless" metal paint={paint} /> : <Parts x={70} y={150} cols={5} rows={6} uid={uid} />}
+
+    {model.wireless ? <Chip x={80} y={145} w={105} h={115} label="Wireless" metal paint={paint} /> : null}
     <Chip x={275} y={235} w={170} h={185} label={model.silicon} metal={(model.generation ?? 0) >= 3} paint={paint} />
-    {modern ? <Chip x={500} y={240} w={110} h={160} label="LPDDR4" paint={paint} /> : null}
+    {modern ? <Chip x={500} y={240} w={110} h={160} label={pi5 ? "LPDDR4X" : "LPDDR4"} paint={paint} /> : null}
     {!model.compact ? <Chip x={650} y={pi5 ? 420 : 340} w={105} h={100} label={pi5 ? "RP1" : modern ? "VL805" : "USB / LAN"} paint={paint} /> : null}
-    <Parts x={260} y={169} cols={10} rows={3} uid={uid} />
-    <Parts x={250} y={443} cols={9} rows={4} uid={uid} />
-    <Parts x={76} y={442} cols={5} rows={5} uid={uid} />
-    <Parts x={650} y={230} cols={6} rows={5} uid={uid} />
-    <Parts x={650} y={560} cols={5} rows={3} uid={uid} />
+
+
+
+
+
     <Chip x={86} y={350} w={52} h={55} label="PMIC" paint={paint} />
     <rect x="154" y="349" width="38" height="47" rx="4" fill="#788476" stroke="#b9c3ab" />
     <text x="173" y="378" textAnchor="middle" fontSize="14" fill="#263c29">4R7</text>
     {!model.compact ? <>
-      <Port x={815} y={pi5 ? 80 : 450} w={179} h={168} type="ethernet" label="Ethernet" paint={paint} />
-      <Port x={840} y={pi5 ? 290 : 92} w={155} h={145} label={pi5 ? "USB 3" : "USB 2"} blue={pi5} paint={paint} />
-      <Port x={840} y={pi5 ? 466 : 267} w={155} h={145} label={pi5 ? "USB 2" : modern ? "USB 3" : "USB 2"} blue={modern && !pi5} paint={paint} />
+      <Port x={815} y={pi4 ? 80 : 450} w={179} h={168} type="ethernet" label="Ethernet" paint={paint} />
+      <Port x={840} y={pi4 ? 466 : 92} w={155} h={145} label="USB 2" paint={paint} />
+      <Port x={840} y={pi4 ? 290 : 267} w={155} h={145} label={modern ? "USB 3" : "USB 2"} blue={modern} paint={paint} />
     </> : <Port x={840} y={280} w={150} h={170} label="USB 2" paint={paint} />}
     <Port x={100} y={577} w={modern ? 90 : 70} h={78} type="power" label={modern ? "USB-C" : "PWR"} paint={paint} />
     {modern ? <>
@@ -216,17 +184,16 @@ function Sbc({ model, uid, paint }: ArtProps) {
       <text x="67" y="516" textAnchor="middle" fontSize="10" fill="#dae4c5">BAT</text>
     </>}
     <text x="265" y="552" fill="#d0e0c1" fontSize="23" fontFamily="var(--font-sans), sans-serif" fontWeight="600">Raspberry Pi</text>
-    <text x="280" y="575" fill="#8eb891" fontSize="10" fontFamily="monospace">Component side · illustrated</text>
+
   </>;
 }
 
-function Zero({ model, uid, paint }: ArtProps) {
+function Zero({ model, paint }: ArtProps) {
   return <>
-    <rect x="50" y="135" width="870" height="236" fill={paint("vias")} />
-    <Traces width={1000} height={435} />
+
     <Chip x={350} y={180} w={160} h={155} label={model.silicon} paint={paint} />
-    <Parts x={238} y={182} cols={4} rows={8} uid={uid} />
-    <Parts x={545} y={195} cols={9} rows={4} uid={uid} />
+
+
     <Port x={180} y={350} w={125} h={79} type="hdmi" label="Mini HDMI" paint={paint} />
     <Port x={595} y={357} w={84} h={72} type="power" label="USB" paint={paint} />
     <Port x={755} y={357} w={84} h={72} type="power" label="PWR" paint={paint} />
@@ -241,42 +208,38 @@ function Zero({ model, uid, paint }: ArtProps) {
   </>;
 }
 
-function Pico({ model, uid, paint }: ArtProps) {
+function Pico({ model, paint }: ArtProps) {
   return <>
-    <rect x="67" y="154" width="285" height="675" fill={paint("vias")} />
-    <g fill="none" stroke="#8eac64" strokeWidth="1.1" opacity="0.45">
-      {Array.from({ length: 18 }, (_, i) => <path key={i} d={`M40 ${130 + i * 41}h${60 + i % 4 * 9}l${45 + i % 3 * 7} -32H270l35 32h75`} />)}
-    </g>
     <Port x={130} y={4} w={160} h={118} label="USB" type="power" paint={paint} />
     <rect x="233" y="145" width="66" height="42" rx="3" fill="#b9c4b0" stroke="#d6e0ce" />
     <rect x="246" y="152" width="40" height="28" rx="3" fill="#e1dece" stroke="#747f6e" />
     <text x="266" y="207" textAnchor="middle" fill="#e0eaca" fontSize="11">BOOTSEL</text>
     <rect x="108" y="156" width="20" height="11" rx="2" fill="#a7d267" stroke="#d7e8a7" />
     <text x="109" y="146" fill="#d4e2b8" fontSize="10">LED</text>
-    <Parts x={97} y={229} cols={10} rows={5} step={22} uid={uid} />
+
     <g transform="rotate(45 210 425)"><Chip x={142} y={357} w={136} h={136} label={model.silicon} paint={paint} /></g>
-    <Parts x={92} y={556} cols={10} rows={5} step={22} uid={uid} />
+
     <Chip x={142} y={658} w={66} h={73} label="Flash" paint={paint} />
     {model.wireless ? <>
       <Chip x={100} y={733} w={217} h={124} label="Wireless" metal paint={paint} />
       <path d="M117 931v-36h28v28h29v-28h30v28h30v-28h30v36" fill="none" stroke="#d4c883" strokeWidth="5" />
     </> : <>
-      <Parts x={109} y={764} cols={9} rows={4} step={22} uid={uid} />
+
       <text x="210" y="899" textAnchor="middle" fill="#d7e6c5" fontSize="27" fontWeight="600">Raspberry Pi</text>
       <text x="210" y="931" textAnchor="middle" fill="#a1c99c" fontSize="18">Pico{model.generation === 2 ? " 2" : ""}</text>
     </>}
   </>;
 }
 
-function Keyboard({ model, paint }: { model: RaspberryPiModel; paint: Paint }) {
+function Keyboard({ model, plus, paint }: { model: RaspberryPiModel; plus: boolean; paint: Paint }) {
   return <>
     <path d="M5 371h990v10H5z" fill={model.generation === 4 ? "#a83943" : "#859087"} />
-    <text x="500" y="152" textAnchor="middle" fontSize="17" fill="#4c6154" fontFamily="var(--font-sans), sans-serif">Raspberry Pi {model.generation === 4 ? "400" : "500"} · rear connector reference above</text>
+    <text x="500" y="152" textAnchor="middle" fontSize="17" fill="#4c6154" fontFamily="var(--font-sans), sans-serif">Raspberry Pi {model.generation === 4 ? "400" : plus ? "500+" : "500"} · rear connector reference above</text>
     {Array.from({ length: 4 }, (_, row) => <g key={row}>
       {Array.from({ length: 15 }, (_, col) => <g key={col} transform={`translate(${40 + col * 62} ${182 + row * 39})`}>
-        <rect x="1" y="3" width="54" height="31" rx="4" fill="#8f9a8e" />
+        <rect x="1" y="3" width="54" height="31" rx="4" fill={plus ? "#88afb8" : "#8f9a8e"} />
         <rect width="54" height="30" rx="4" fill={paint("case")} stroke="#9ca898" />
-        <path d="M8 8h10" stroke="#83917f" strokeWidth="1.5" />
+
       </g>)}
     </g>)}
     <rect x="283" y="342" width="435" height="24" rx="4" fill="#d6dbd0" stroke="#94a08f" />

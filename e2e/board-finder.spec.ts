@@ -6,6 +6,11 @@ async function touchSize(locator: Locator) {
   expect(Math.round(box.width), `${locator} width`).toBeGreaterThanOrEqual(44);
 }
 
+// A finder change replaces the URL only when the server's new plan arrives.
+// Under a full parallel run that first plan render has measured almost 5 s, so
+// the URL gets longer than Playwright's default; the counts update at once.
+const serverPlan = { timeout: 15_000 };
+
 test("the Tools menu reaches the finder, and a fit opens as the same plan in the planner", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -17,14 +22,16 @@ test("the Tools menu reaches the finder, and a fit opens as the same plan in the
   await expect(page.getByRole("heading", { name: "Board finder", level: 1 })).toBeVisible();
 
   await page.getByRole("button", { name: "I2C sensor + 2 analog inputs" }).click();
-  await expect(page).toHaveURL(/\/find\?plan=i2c1\.adc2$/);
+  await expect(page.getByRole("group", { name: "ADC, 2 needed" })).toBeVisible();
+  await expect(page).toHaveURL(/\/find\?plan=i2c1\.adc2$/, serverPlan);
   const status = page.getByRole("status").filter({ hasText: /^Fits on \d+ of \d+ boards checked\.$/ });
-  await expect(status).toBeVisible();
+  await expect(status).toBeVisible(serverPlan);
 
   await page.getByRole("button", { name: "Add one SPI" }).click();
-  await expect(page).toHaveURL(/\/find\?plan=i2c1\.spi1\.adc2$/);
+  await expect(page.getByRole("group", { name: "SPI, 1 needed" })).toBeVisible();
+  await expect(page).toHaveURL(/\/find\?plan=i2c1\.spi1\.adc2$/, serverPlan);
   await page.getByRole("group", { name: "Platform" }).getByRole("button", { name: "Microcontroller" }).click();
-  await expect(page).toHaveURL(/\/find\?plan=i2c1\.spi1\.adc2&platform=mcu$/);
+  await expect(page).toHaveURL(/\/find\?plan=i2c1\.spi1\.adc2&platform=mcu$/, serverPlan);
 
   const card = page.getByRole("listitem").filter({ has: page.getByRole("link", { name: /Open this plan/ }) }).first();
   const boardName = (await card.getByRole("link").first().textContent())!.trim();
