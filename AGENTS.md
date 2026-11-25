@@ -1,5 +1,11 @@
 # PinHub Agent Notes
 
+## Branches, Never Worktrees (strict, every agent and model)
+
+- **NEVER create a git worktree when working on PinHub.** Do not run `git worktree add`, do not use a tool's worktree or isolation mode, and do not clone or copy the repository into a second folder (such as `PinHub-<name>`) to work there. This has no exceptions, whichever agent, model, or tool you are.
+- Always work in this checkout (`Documents/PinHub`). New work goes on a **new branch** here: `git fetch`, then `git switch -c <branch> origin/main`. If the user says to keep working on the current branch, stay on it.
+- Never commit or push to `main` unless the user explicitly says to in the current conversation. Code reaches `main` only through a pull request the user asked to merge.
+
 ## Project Shape
 
 - PinHub is a Next.js App Router app using TypeScript, Tailwind CSS v4, and static board data in `src/lib/boards.ts`.
