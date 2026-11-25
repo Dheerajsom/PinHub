@@ -41,6 +41,16 @@ test("dark-theme muted labels use the accessible contrast token", async ({ page 
   );
 });
 
+test("light-theme privacy disclaimer is readable on its cream card", async ({ page }) => {
+  // `text-orange-50/80` escaped the light theme, so the no-warranty and
+  // no-liability text rendered near-white on #fff7ed.
+  await page.goto("/privacy");
+  await page.locator("html").evaluate((element) => {
+    element.setAttribute("data-theme", "light");
+  });
+  await expect(page.getByText(/accept no\s+liability/)).toHaveCSS("color", "rgb(154, 52, 18)");
+});
+
 test("light-theme price navigation uses readable green ink", async ({ page }) => {
   await page.goto("/");
   await page.locator("html").evaluate((element) => {

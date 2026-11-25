@@ -166,11 +166,46 @@ export type LinkPort = {
   /** The controller as the source names it, or "" when the data does not name one. */
   instance: string;
   label: string;
-  /** Candidate pins per signal, best first. */
+  /**
+   * Candidate pins per signal, best first. On a complete port the first pin of
+   * each signal is a usable pair: the two signals never share one pad.
+   */
   signals: Partial<Record<Signal, PortPin[]>>;
   complete: boolean;
   missing: Signal[];
+  /** True when every signal is named but only on one shared pad, so no pair can be wired. */
+  sharedPad: boolean;
 };
+
+// One physical pad. Two connector positions can break out the same chip pin
+// (a Nucleo's Arduino and Morpho headers), so the chip's own name wins when the
+// record states it; otherwise the pin entry itself is the pad.
+function padKey(pin: Pin): Pin | string {
+  return pin.mcu?.name ?? pin;
+}
+
+// The best pair of distinct pads for a two-signal bus: the lowest combined
+// rank, then the better first signal. Ranks come from `rankPins`, so a pair of
+// default, caution-free pins wins over one that is only first in pin order.
+function distinctPair(first: PortPin[], second: PortPin[]): [PortPin, PortPin] | null {
+  let best: [PortPin, PortPin] | null = null;
+  let bestScore = Infinity;
+  for (let i = 0; i < first.length; i += 1) {
+    for (let j = 0; j < second.length; j += 1) {
+      if (padKey(first[i].pin) === padKey(second[j].pin)) continue;
+      const score = (i + j) * first.length + i;
+      if (score < bestScore) {
+        bestScore = score;
+        best = [first[i], second[j]];
+      }
+    }
+  }
+  return best;
+}
+
+function leadWith(pins: PortPin[], lead: PortPin): PortPin[] {
+  return [lead, ...pins.filter((item) => item !== lead)];
+}
 
 function pinCautions(board: Board, pin: Pin): ClaimCaution[] {
   const cautions = claimCautions(board, pin);
@@ -211,6 +246,7 @@ export function linkPorts(board: Board, bus: LinkBus): LinkPort[] {
           signals: {},
           complete: false,
           missing: [],
+          sharedPad: false,
           first: placed.order,
           hasDefault: false,
         };
@@ -230,7 +266,15 @@ export function linkPorts(board: Board, bus: LinkBus): LinkPort[] {
         port.signals[signal] = rankPins(port.signals[signal] ?? []);
       }
       const missing = requiredSignals[family].filter((signal) => !port.signals[signal]?.length);
-      return { ...port, missing, complete: missing.length === 0 };
+      if (missing.length) return { ...port, missing, complete: false, sharedPad: false };
+      // Each signal having some pin is not enough: a pad that can carry either
+      // I2C2 SDA or SCL (PB3 on a Nucleo-H503RB) cannot carry both at once.
+      const [s1, s2] = requiredSignals[family];
+      const pair = distinctPair(port.signals[s1] ?? [], port.signals[s2] ?? []);
+      if (!pair) return { ...port, missing, complete: false, sharedPad: true };
+      port.signals[s1] = leadWith(port.signals[s1] ?? [], pair[0]);
+      port.signals[s2] = leadWith(port.signals[s2] ?? [], pair[1]);
+      return { ...port, missing, complete: true, sharedPad: false };
     })
     .sort(
       (x, y) =>
@@ -247,6 +291,7 @@ export function linkPorts(board: Board, bus: LinkBus): LinkPort[] {
       signals: port.signals,
       complete: port.complete,
       missing: port.missing,
+      sharedPad: port.sharedPad,
     }));
 }
 
@@ -365,13 +410,23 @@ function pick(ports: LinkPort[], id: string | undefined): LinkPort | null {
 
 function end(port: LinkPort, signal: Signal): WireEnd {
   const [chosen, ...rest] = port.signals[signal] ?? [];
+  // Pads the port's other signals already use are not an alternative here.
+  const taken = new Set(
+    Object.entries(port.signals)
+      .filter(([other]) => other !== signal)
+      .map(([, pins]) => pins?.[0])
+      .filter((item): item is PortPin => item !== undefined)
+      .map((item) => padKey(item.pin)),
+  );
   return {
     pin: chosen.pin,
     ...(chosen.group ? { group: chosen.group } : {}),
     signal: port.instance ? `${port.instance} ${signal}` : signal,
     // Only a named controller vouches that another pin carries the same
     // signal; two unnamed "SDA" pins may belong to different buses.
-    alternatives: port.instance ? rest.map((item) => item.pin) : [],
+    alternatives: port.instance
+      ? rest.filter((item) => !taken.has(padKey(item.pin))).map((item) => item.pin)
+      : [],
     cautions: chosen.cautions,
   };
 }
@@ -390,6 +445,11 @@ function blockerFor(board: Board, ports: LinkPort[], bus: LinkBus): string {
   const name = busNames[bus];
   const best = ports[0];
   if (!best) return `PinHub’s pin map for ${board.name} labels no ${name} pins.`;
+  if (best.sharedPad) {
+    return `PinHub’s pin map for ${board.name} names ${best.label} ${requiredSignals[best.family].join(
+      " and ",
+    )} only on one shared pin, which cannot carry both at once.`;
+  }
   const have = requiredSignals[best.family].filter((signal) => !best.missing.includes(signal));
   return `PinHub’s pin map for ${board.name} names ${best.label} ${have.join(" and ")} but no ${best.missing.join(" or ")}.`;
 }

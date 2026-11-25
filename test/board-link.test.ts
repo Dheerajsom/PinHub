@@ -215,6 +215,66 @@ describe("buildBoardLink", () => {
     expect(link.blockers.join(" ")).toMatch(/no RX/);
   });
 
+  it("never puts both I2C signals on one pad that can carry either (Nucleo-H503RB I2C2)", () => {
+    // PB3 (D3) lists both I2C2.SDA and I2C2.SCL. Each signal used to take its
+    // first candidate on its own, so both wires landed on D3 and the plan
+    // still said "ready", tying the partner's SDA and SCL together.
+    const link = buildBoardLink(board("stm32-nucleo-h503rb"), board("raspberry-pi-pico"), "i2c", { a: "I2C2" });
+    expect(link.port.a?.id).toBe("I2C2");
+    const [sda, scl] = link.wires;
+    expect(sda.a.pin).not.toBe(scl.a.pin);
+    expect(sda.a.pin.mcu?.name).not.toBe(scl.a.pin.mcu?.name);
+    expect(sda.a.alternatives).not.toContain(scl.a.pin);
+    expect(scl.a.alternatives).not.toContain(sda.a.pin);
+  });
+
+  it("treats a bus named only on one shared pad as incomplete", () => {
+    const onePad: Board = {
+      ...board("raspberry-pi-pico"),
+      id: "one-pad",
+      pinFunctions: undefined,
+      pinout: {
+        connector: "J1",
+        layout: "grouped",
+        notes: ["Synthetic."],
+        groups: [
+          {
+            label: "J1",
+            pins: [
+              pin({ position: 1, label: "I2C1 SDA / I2C1 SCL", role: "i2c" }),
+              pin({ position: 2, label: "GND", role: "ground" }),
+            ],
+          },
+        ],
+      },
+    };
+    const [port] = linkPorts(onePad, "i2c");
+    expect(port).toMatchObject({ id: "I2C1", complete: false, sharedPad: true, missing: [] });
+    const link = buildBoardLink(onePad, board("raspberry-pi-pico"), "i2c");
+    expect(link.status).toBe("blocked");
+    expect(link.blockers.join(" ")).toMatch(/one shared pin/);
+  });
+
+  it("wires every complete catalog port to distinct pads", () => {
+    const pico = board("raspberry-pi-pico");
+    const clashes: string[] = [];
+    for (const entry of boards.filter((item) => item.pinout)) {
+      for (const bus of ["uart", "i2c"] as const) {
+        for (const port of linkPorts(entry, bus).filter((item) => item.complete)) {
+          const link = buildBoardLink(entry, pico, bus, { a: port.id });
+          const [first, second] = link.wires.filter((wire) => wire.kind === "signal");
+          if (!first || !second) continue;
+          const key = (item: Pin) => item.mcu?.name ?? item;
+          if (key(first.a.pin) === key(second.a.pin)) clashes.push(`${entry.id} ${port.id}`);
+          if (first.a.alternatives.some((item) => key(item) === key(second.a.pin))) {
+            clashes.push(`${entry.id} ${port.id} alternative`);
+          }
+        }
+      }
+    }
+    expect(clashes).toEqual([]);
+  });
+
   it("never joins power rails", () => {
     for (const bus of ["uart", "i2c"] as const) {
       const link = buildBoardLink(board("raspberry-pi-5"), board("esp32-devkitc"), bus);
