@@ -1,11 +1,13 @@
 ---
 name: council-review
-description: Run the three-seat Council Review (Claude Opus 5.5 at medium effort, GPT-6.2 Sol at high effort, Gemini 4 Hydrogen at high effort) on every new change or feature. Nothing is committed until all three seats score the change at least 9/10 across implementation, UI/UX, and verification. Claude and GPT outrank Gemini when they disagree. Use before committing any code or UI change, or when the user asks for a council review.
+description: Run the three-seat Council Review (Claude Opus 5.5 at medium effort, GPT-6.2 Sol at high effort, Gemini 4 Hydrogen at high effort) on a change or feature. Nothing is committed until all three seats score the change at least 9/10 across implementation, UI/UX, and verification. Claude and GPT outrank Gemini when they disagree. Use ONLY when the user explicitly asks for a council review (for example "do a council-review"); never run it automatically or on your own judgment.
 ---
 
 # Council Review
 
-Every new change or feature goes through the council before any code is committed. The coordinator (the agent doing the work) builds the change, freezes a snapshot, sends it to three independent reviewers, fixes what they confirm, and commits only when the council passes it.
+Run this skill **only when the user explicitly asks for a council review** (for example, "do a council-review"). Never start it automatically, as a default step before committing, or because a change seems large. Without that request, follow the normal workflow in `CLAUDE.md`.
+
+Once invoked, the council gates the change it was asked to review: the coordinator (the agent doing the work) builds the change, freezes a snapshot, sends it to three independent reviewers, fixes what they confirm, and commits only when the council passes it.
 
 ## Council seats
 
@@ -19,7 +21,7 @@ Every seat reviews the **entire** change and scores every applicable dimension; 
 
 ## The commit gate
 
-No code is committed, pushed, or merged until the council passes the change:
+While a council review is in progress, no code from the reviewed change is committed, pushed, or merged until the council passes the change:
 
 1. **Claude scores 9/10 or higher** with no open P0 or P1 finding.
 2. **GPT scores 9/10 or higher** with no open P0 or P1 finding.
