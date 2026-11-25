@@ -1,18 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Board } from "@/lib/boards";
+import { useCallback, useMemo } from "react";
 import type { BoardSummary } from "@/lib/board-summary";
 import { createBoardDetailLoader, type BoardDetailLoader } from "@/lib/board-detail-loader";
 import { boardFromSearch, boardParam } from "@/lib/plan-params";
+import { useBoardDetail } from "@/components/catalog/useBoardDetail";
+import { pushSearchParam, useLocationSync } from "@/components/catalog/useLocationSync";
 import { PlannerBoardPicker } from "@/components/planner/PlannerBoardPicker";
 import { PlannerWorkspace } from "@/components/planner/PlannerWorkspace";
-
-type Detail =
-  | { status: "idle"; notice?: string }
-  | { status: "loading"; id: string }
-  | { status: "ready"; board: Board }
-  | { status: "error"; id: string };
 
 /**
  * The planner page: pick a board, then plan it. The board lives in `?board=`
@@ -30,60 +25,27 @@ export function PlannerApp({
 }) {
   const byId = useMemo(() => new Map(catalog.map((board) => [board.id, board])), [catalog]);
   const loader = useMemo(() => providedLoader ?? createBoardDetailLoader([]), [providedLoader]);
-  const [detail, setDetail] = useState<Detail>({ status: "idle" });
-  const ticket = useRef(0);
+  const { detail, open: load, reset } = useBoardDetail(loader);
 
   const open = useCallback(
     (id: string | null) => {
-      const mine = ++ticket.current;
       const summary = id ? byId.get(id) : undefined;
-      if (!id || !summary) {
-        setDetail({ status: "idle" });
-        return;
-      }
-      if (!summary.hasPinout) {
-        setDetail({
-          status: "idle",
-          notice: `${summary.name} has no pin map in PinHub yet, so there is nothing to plan. Pick another board.`,
-        });
-        return;
-      }
-      const cached = loader.peek(id);
-      if (cached) {
-        setDetail({ status: "ready", board: cached });
-        return;
-      }
-      setDetail({ status: "loading", id });
-      loader.load(id).then(
-        (board) => {
-          if (ticket.current === mine) setDetail({ status: "ready", board });
-        },
-        () => {
-          if (ticket.current === mine) setDetail({ status: "error", id });
-        },
-      );
+      if (!id || !summary) reset();
+      else if (!summary.hasPinout) reset(`${summary.name} has no pin map in PinHub yet, so there is nothing to plan. Pick another board.`);
+      else load(id);
     },
-    [byId, loader],
+    [byId, load, reset],
   );
 
-  // The page is static, so the board in the URL is only known in the browser.
-  useEffect(() => {
-    const sync = () => open(boardFromSearch(location.search));
-    const frame = requestAnimationFrame(sync);
-    window.addEventListener("popstate", sync);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("popstate", sync);
-    };
-  }, [open]);
+  useLocationSync(useCallback(() => open(boardFromSearch(location.search)), [open]));
 
   function pick(id: string) {
-    history.pushState(null, "", `${location.pathname}?${boardParam}=${encodeURIComponent(id)}`);
+    pushSearchParam(boardParam, id);
     open(id);
   }
 
   function changeBoard() {
-    history.pushState(null, "", location.pathname);
+    pushSearchParam(boardParam, null);
     open(null);
   }
 

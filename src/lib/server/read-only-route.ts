@@ -30,9 +30,14 @@ export function rejectQuery(request: Request): Response | null {
 }
 
 export function methodNotAllowed(): Response {
+  return methodNotAllowedFor(readOnlyAllow);
+}
+
+/** A 405 that names the methods the route really serves. */
+export function methodNotAllowedFor(allow: string): Response {
   return Response.json(
     { error: "Method not allowed" },
-    { status: 405, headers: { ...noStoreHeaders, Allow: readOnlyAllow } },
+    { status: 405, headers: { ...noStoreHeaders, Allow: allow } },
   );
 }
 

@@ -4,10 +4,11 @@ import { useEffect } from "react";
 
 export default function ErrorBoundary({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  /** Re-fetches and re-renders the segment; `reset` would only re-render it. */
+  retry: () => void;
 }) {
   useEffect(() => {
     // Keep the digest for platform correlation without logging user data.
@@ -24,7 +25,7 @@ export default function ErrorBoundary({
         </p>
         <button
           type="button"
-          onClick={reset}
+          onClick={() => retry()}
           className="mt-5 min-h-11 rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-4 text-sm font-medium text-cyan-50 hover:bg-cyan-300/15"
         >
           Try again

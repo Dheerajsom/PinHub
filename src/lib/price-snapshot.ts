@@ -1,4 +1,5 @@
 import { parseBoardPrices, type BoardPrice } from "./board-price-schema";
+import { readBoundedBytes } from "./bounded-read";
 
 export const priceSnapshotPath = "prices/latest-v1.json";
 export const maxPriceSnapshotBytes = 256 * 1024;
@@ -49,24 +50,23 @@ export function mergePriceObservations(catalog: BoardPrice[], observations: Boar
   });
 }
 
+/**
+ * Merges a stored snapshot onto the curated catalog and keeps the result
+ * self-consistent. A deploy can re-check a curated listing after the stored
+ * snapshot was generated; that listing keeps its newer `checkedAt`, so the
+ * snapshot's `generatedAt` must advance to it. Otherwise the browser's
+ * `parsePriceSnapshot` rejects the whole response as carrying an observation
+ * from after its own generation time, and the page drops to bundled prices.
+ */
+export function mergePriceSnapshot(catalog: BoardPrice[], snapshot: PriceSnapshot): PriceSnapshot {
+  const prices = mergePriceObservations(catalog, snapshot.prices);
+  const latest = Math.max(Date.parse(snapshot.generatedAt), ...prices.map((price) => Date.parse(price.checkedAt)));
+  return { schemaVersion: 1, generatedAt: new Date(latest).toISOString(), prices };
+}
+
 /** Bound the streamed body too: Content-Length alone is not a size limit. */
 export async function readPriceJson(stream: ReadableStream<Uint8Array>, maxBytes = maxPriceSnapshotBytes): Promise<unknown> {
-  const reader = stream.getReader();
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      length += value.byteLength;
-      if (length > maxBytes) throw new Error("Price snapshot exceeds size limit");
-      chunks.push(value);
-    }
-  } finally { await reader.cancel().catch(() => undefined); reader.releaseLock(); }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
-  return JSON.parse(new TextDecoder().decode(bytes));
+  return JSON.parse(new TextDecoder().decode(await readBoundedBytes(stream, maxBytes, "Price snapshot exceeds size limit")));
 }
 
 export async function readPriceSnapshot(stream: ReadableStream<Uint8Array>): Promise<PriceSnapshot> {

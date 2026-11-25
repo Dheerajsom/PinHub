@@ -23,8 +23,8 @@ export const roleLabels: Record<PinRole, string> = {
  * One palette for every surface — SVG pads, HTML chips, table badges.
  *
  * A role is identified by hue, and the hues are the ones this audience already
- * reads off a breakout board: power red, ground grey, GPIO green, I2C cyan,
- * SPI amber, UART blue. Each role gets four steps at the same relative
+ * reads off a breakout board: power red, ground grey, GPIO green, I2C blue,
+ * SPI amber, UART sky. (I2C was cyan until the probe claimed that hue.) Each role gets four steps at the same relative
  * position on its ramp, so thirteen roles read as one system rather than
  * thirteen unrelated colors:
  *
@@ -44,7 +44,9 @@ export const roleColors: Record<
   power: { ink: "#fecaca", edge: "#f87171", fill: "#7f1d2b", wash: "#2a1216" },
   ground: { ink: "#e4e4e7", edge: "#a1a1aa", fill: "#3f3f46", wash: "#232327" },
   gpio: { ink: "#a7f3d0", edge: "#34d399", fill: "#0f5132", wash: "#0d2a20" },
-  i2c: { ink: "#a5f3fc", edge: "#22d3ee", fill: "#0e5566", wash: "#0a2b33" },
+  // Blue, not cyan: the probe owns #22d3ee, and an I2C pad ringed in the
+  // probe's colour read as "probed". OKLCH hue 268°, between UART and ADC.
+  i2c: { ink: "#c7d7fe", edge: "#8aa8fb", fill: "#2c4188", wash: "#151e37" },
   spi: { ink: "#fde68a", edge: "#fbbf24", fill: "#6b4709", wash: "#2c2109" },
   uart: { ink: "#bae6fd", edge: "#38bdf8", fill: "#0c4a6e", wash: "#0b2436" },
   adc: { ink: "#ddd6fe", edge: "#a78bfa", fill: "#4c1d95", wash: "#211a3c" },

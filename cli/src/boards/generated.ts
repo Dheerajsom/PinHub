@@ -85353,6 +85353,9 @@ export const generatedBoards: Board[] = [
               "I2C_AO_M0_SDA",
               "UART_AO_B_RX",
               "I2C_AO_S0_SDA"
+            ],
+            "notes": [
+              "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one."
             ]
           },
           {
@@ -85367,6 +85370,9 @@ export const generatedBoards: Board[] = [
               "I2C_AO_M0_SCL",
               "UART_AO_B_TX",
               "I2C_AO_S0_SCL"
+            ],
+            "notes": [
+              "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one."
             ]
           },
           {
@@ -85851,6 +85857,9 @@ export const generatedBoards: Board[] = [
               "I2C_AO_M0_SDA",
               "UART_AO_B_RX",
               "I2C_AO_S0_SDA"
+            ],
+            "notes": [
+              "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one."
             ]
           },
           {
@@ -85865,6 +85874,9 @@ export const generatedBoards: Board[] = [
               "I2C_AO_M0_SCL",
               "UART_AO_B_TX",
               "I2C_AO_S0_SCL"
+            ],
+            "notes": [
+              "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one."
             ]
           },
           {

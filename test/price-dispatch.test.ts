@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { handlePriceDispatch, minDispatchIntervalMs, priceWorkflowUrl } from "@/lib/server/price-dispatch";
-import { POST } from "@/app/api/cron/prices/route";
+import { DELETE, GET, HEAD, OPTIONS, POST } from "@/app/api/cron/prices/route";
+import { memoryDispatchLease, type DispatchLease } from "@/lib/server/dispatch-lease";
 
 const secret = "s".repeat(40);
 const env = { CRON_SECRET: secret, PRICE_WORKFLOW_TOKEN: "github-test-token" };
@@ -19,7 +20,7 @@ const run = (status: string, minutesAgo: number) => ({ status, created_at: new D
 describe("price workflow trigger", () => {
   it("dispatches the workflow on main when no recent run exists", async () => {
     const fetcher = github(run("completed", 120));
-    const response = await handlePriceDispatch(request(), { env, fetcher, now: () => now, log: () => {} });
+    const response = await handlePriceDispatch(request(), { lease: memoryDispatchLease(), env, fetcher, now: () => now, log: () => {} });
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ status: "dispatched" });
     expect(response.headers.get("Cache-Control")).toBe("no-store");
@@ -31,7 +32,7 @@ describe("price workflow trigger", () => {
   });
 
   it("dispatches when the workflow has never run", async () => {
-    const response = await handlePriceDispatch(request(), { env, fetcher: github(null), now: () => now, log: () => {} });
+    const response = await handlePriceDispatch(request(), { lease: memoryDispatchLease(), env, fetcher: github(null), now: () => now, log: () => {} });
     expect(await response.json()).toEqual({ status: "dispatched" });
   });
 
@@ -41,7 +42,7 @@ describe("price workflow trigger", () => {
     ["a run inside the interval", run("completed", minDispatchIntervalMs / 60_000 - 1)],
   ])("skips without dispatching for %s", async (_name, latest) => {
     const fetcher = github(latest);
-    const response = await handlePriceDispatch(request(), { env, fetcher, now: () => now, log: () => {} });
+    const response = await handlePriceDispatch(request(), { lease: memoryDispatchLease(), env, fetcher, now: () => now, log: () => {} });
     expect((await response.json()).status).toBe("skipped");
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
@@ -53,7 +54,7 @@ describe("price workflow trigger", () => {
     ["a secret prefix", `Bearer ${secret.slice(0, 20)}`],
   ])("rejects %s before calling GitHub", async (_name, auth) => {
     const fetcher = github(null);
-    const response = await handlePriceDispatch(request(auth), { env, fetcher, now: () => now });
+    const response = await handlePriceDispatch(request(auth), { lease: memoryDispatchLease(), env, fetcher, now: () => now });
     expect(response.status).toBe(401);
     expect(fetcher).not.toHaveBeenCalled();
   });
@@ -61,33 +62,129 @@ describe("price workflow trigger", () => {
   it("stays closed when unconfigured or the secret is too short", async () => {
     for (const partial of [{}, { CRON_SECRET: secret }, { PRICE_WORKFLOW_TOKEN: "t" }, { CRON_SECRET: "short", PRICE_WORKFLOW_TOKEN: "t" }]) {
       const fetcher = github(null);
-      const response = await handlePriceDispatch(request("Bearer short"), { env: partial, fetcher, now: () => now });
+      const response = await handlePriceDispatch(request("Bearer short"), { lease: memoryDispatchLease(), env: partial, fetcher, now: () => now });
       expect(response.status).toBe(503);
       expect(fetcher).not.toHaveBeenCalled();
     }
   });
 
   it("rejects query strings", async () => {
-    const response = await handlePriceDispatch(request(undefined, "/api/cron/prices?force=1"), { env, fetcher: github(null), now: () => now });
+    const response = await handlePriceDispatch(request(undefined, "/api/cron/prices?force=1"), { lease: memoryDispatchLease(), env, fetcher: github(null), now: () => now });
     expect(response.status).toBe(400);
   });
 
   it("reports GitHub failures without echoing GitHub's response", async () => {
     const log = vi.fn();
     const lookupFails = vi.fn(async () => new Response("token ghp_secret in body", { status: 401 }));
-    const lookup = await handlePriceDispatch(request(), { env, fetcher: lookupFails, now: () => now, log });
+    const lookup = await handlePriceDispatch(request(), { lease: memoryDispatchLease(), env, fetcher: lookupFails, now: () => now, log });
     expect(lookup.status).toBe(502);
     expect(await lookup.text()).not.toContain("ghp_secret");
 
-    const dispatch = await handlePriceDispatch(request(), { env, fetcher: github(null, 422), now: () => now, log });
+    const dispatch = await handlePriceDispatch(request(), { lease: memoryDispatchLease(), env, fetcher: github(null, 422), now: () => now, log });
     expect(dispatch.status).toBe(502);
 
     const malformed = vi.fn(async () => Response.json({ unexpected: true }));
-    expect((await handlePriceDispatch(request(), { env, fetcher: malformed, now: () => now, log })).status).toBe(502);
+    expect((await handlePriceDispatch(request(), { lease: memoryDispatchLease(), env, fetcher: malformed, now: () => now, log })).status).toBe(502);
     expect(log.mock.calls.flat().join(" ")).not.toContain("github-test-token");
   });
 
   it("only accepts GET", () => {
     expect(POST().status).toBe(405);
+  });
+
+  it("dispatches once when concurrent calls both pass the GitHub checks", async () => {
+    // GitHub's run list does not show a fresh dispatch yet, so both requests
+    // see no recent run; the lease is what stops the second dispatch.
+    const lease = memoryDispatchLease();
+    const fetcher = github(run("completed", 120));
+    const responses = await Promise.all(
+      [0, 1, 2].map(() => handlePriceDispatch(request(), { env, fetcher, lease, now: () => now, log: () => {} })),
+    );
+    const statuses = await Promise.all(responses.map(async (response) => (await response.json()).status));
+    expect(statuses.filter((status) => status === "dispatched")).toHaveLength(1);
+    expect(statuses.filter((status) => status === "skipped")).toHaveLength(2);
+    expect(fetcher.mock.calls.filter(([url]) => String(url).endsWith("/dispatches"))).toHaveLength(1);
+  });
+
+  it("keeps the claim for one interval, then allows the next dispatch", async () => {
+    const lease = memoryDispatchLease();
+    const fetcher = github(null);
+    const at = (offset: number) => handlePriceDispatch(request(), { env, fetcher, lease, now: () => now + offset, log: () => {} });
+    expect((await (await at(0)).json()).status).toBe("dispatched");
+    expect((await (await at(minDispatchIntervalMs - 1)).json()).status).toBe("skipped");
+    expect((await (await at(minDispatchIntervalMs)).json()).status).toBe("dispatched");
+  });
+
+  it.each([500, 502, 504, 408])("keeps the claim when the dispatch answers HTTP %i, which does not prove it was refused", async (status) => {
+    // A gateway 504 can arrive after GitHub queued the run; releasing then let
+    // the next call dispatch again.
+    const lease = memoryDispatchLease();
+    const fetcher = github(null, status);
+    expect((await handlePriceDispatch(request(), { env, fetcher, lease, now: () => now, log: () => {} })).status).toBe(502);
+    expect(lease.claimedAt).toBe(now);
+    const again = await handlePriceDispatch(request(), { env, fetcher, lease, now: () => now + 1000, log: () => {} });
+    expect((await again.json()).status).toBe("skipped");
+    expect(fetcher.mock.calls.filter(([url]) => String(url).endsWith("/dispatches"))).toHaveLength(1);
+  });
+
+  it("releases the claim when GitHub refuses the dispatch", async () => {
+    const lease = memoryDispatchLease();
+    const failed = await handlePriceDispatch(request(), { env, fetcher: github(null, 422), lease, now: () => now, log: () => {} });
+    expect(failed.status).toBe(502);
+    expect(lease.claimedAt).toBeNull();
+    const retried = await handlePriceDispatch(request(), { env, fetcher: github(null), lease, now: () => now, log: () => {} });
+    expect((await retried.json()).status).toBe("dispatched");
+  });
+
+  it("keeps the claim when the dispatch outcome is unknown, so a timeout cannot start a second run", async () => {
+    const lease = memoryDispatchLease();
+    const timesOut = vi.fn(async (url: string | URL | Request) => {
+      if (String(url).endsWith("/dispatches")) throw new DOMException("timed out", "TimeoutError");
+      return Response.json({ workflow_runs: [] });
+    });
+    const response = await handlePriceDispatch(request(), { env, fetcher: timesOut, lease, now: () => now, log: () => {} });
+    expect(response.status).toBe(502);
+    expect(lease.claimedAt).toBe(now);
+    const again = await handlePriceDispatch(request(), { env, fetcher: github(null), lease, now: () => now + 60_000, log: () => {} });
+    expect((await again.json()).status).toBe("skipped");
+  });
+
+  it("stays closed without a shared lease, and fails closed when the lease store errors", async () => {
+    const fetcher = github(null);
+    const unconfigured = await handlePriceDispatch(request(), { env, fetcher, lease: null, now: () => now, log: () => {} });
+    expect(unconfigured.status).toBe(503);
+    expect(fetcher).not.toHaveBeenCalled();
+
+    const broken: DispatchLease = {
+      claim: async () => {
+        throw new Error("store down");
+      },
+      release: async () => {},
+    };
+    const log = vi.fn();
+    const response = await handlePriceDispatch(request(), { env, fetcher, lease: broken, now: () => now, log });
+    expect(response.status).toBe(503);
+    expect(fetcher.mock.calls.some(([url]) => String(url).endsWith("/dispatches"))).toBe(false);
+    expect(log.mock.calls.flat().join(" ")).not.toContain("store down");
+  });
+});
+
+describe("price trigger route methods", () => {
+  it("rejects an authenticated HEAD instead of running GET", async () => {
+    // Next answers HEAD with GET when no HEAD handler is exported.
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const response = await HEAD();
+    expect(response.status).toBe(405);
+    expect(response.headers.get("Allow")).toBe("GET, OPTIONS");
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it("answers OPTIONS with only the methods that work", () => {
+    const response = OPTIONS();
+    expect(response.status).toBe(204);
+    expect(response.headers.get("Allow")).toBe("GET, OPTIONS");
+    expect(DELETE().headers.get("Allow")).toBe("GET, OPTIONS");
+    expect(typeof GET).toBe("function");
   });
 });

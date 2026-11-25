@@ -123,7 +123,7 @@ readable text against its actual surface in both themes.
 | text | white / zinc-200 / zinc-400 / zinc-500 | 4-step hierarchy |
 
 Pin-role colors are a separate 13-hue scale (power red, ground zinc, GPIO
-emerald, I2C cyan, SPI amber, UART sky, ADC violet, DAC rose, PWM fuchsia,
+emerald, I2C blue, SPI amber, UART sky, ADC violet, DAC rose, PWM fuchsia,
 debug lime, system orange, alt teal, reserved stone) defined once in
 `board-visual/roles.ts` and reused by chips, SVG pads, legend, and table so
 every rendering of a pin agrees.
@@ -493,9 +493,10 @@ and keyboard speed over decoration. Sections 2–4 are the layout spec,
   pin map out of view.
 - Planned pads get a dashed ring in the function's role hue, drawn with the
   role's lighter `ink` step, and the rest of the board recedes. The probe
-  keeps its solid cyan ring, so "planned" and "probed" never look alike (the
-  I2C role `edge` and the probe share `#22d3ee`, so the ring must not use
-  `edge`).
+  keeps its solid cyan ring, so "planned" and "probed" never look alike.
+  Since 2026-11-25 no role colour shares the probe's `#22d3ee`: I2C moved to
+  blue (`edge` `#8aa8fb`, OKLCH hue 268°), and `test/role-colors.test.ts`
+  keeps every role step away from the probe.
 - Results are a Geist Mono table. "default" (the source's default pin) and
   "routed" (placed through a GPIO matrix) are neutral zinc chips. Every
   caution is an orange row quoting the source.
@@ -699,9 +700,12 @@ is not already a PinHub user, without dropping any hardware fact.
   preflight already applies the reset inside its base layer, so the copy was
   removed; `test/global-css.test.ts` keeps it out.
 - **Light theme.** Nav and Tools hover fills are `.ph-nav-link` and
-  `.ph-tools-item` rules with light counterparts, not `hover:bg-white/…`
-  utilities, which the light theme's `bg-white/` substring rule paints at
-  rest.
+  `.ph-tools-item` rules with light counterparts. Since 2026-11-25 the light
+  theme names every alpha-suffixed and state-variant colour class exactly,
+  with each `hover:`, `focus:` and `disabled:` rule gated on its state; the
+  old `[class*="bg-white/"]` substring rules also caught `hover:` classes and
+  painted hover fills at rest. `test/global-css.test.ts` fails on a class
+  with no rule and on any substring colour selector.
 
 ## 22. Board finder (2026-11-23)
 
@@ -733,9 +737,12 @@ it, because buses compete for the same pins; the pin planner can.
   no ranking beyond that. Each card shows up to four assignment lines in
   Geist Mono ("I2C0 · SDA GP4 · SCL GP5"), the board's caution count, an
   "Open this plan" primary action (`.ph-find-open`, solid cyan with a light
-  counterpart), and a Pin map link. The first 24 fits show; the rest sit in a
-  disclosure. Misses list the planner's own reason and open by default when
+  counterpart), and a Pin map link. The first 24 fits show. "Show 24 more of
+  N boards that fit" asks the server for the next page (`?show=48`), and
+  focus moves to the first new board; fits are never rendered hidden.
+  Misses list the planner's own reason and open by default when
   nothing fits.
 - **Examples** are named by what they connect ("SPI display + I2C sensor"),
-  never by a product, and disappear once anything is asked for.
+  never by a product, and disappear once anything is asked for. Focus then
+  moves to the form's heading, as it does after "Start over".
 

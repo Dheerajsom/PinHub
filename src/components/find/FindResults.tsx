@@ -3,26 +3,31 @@ import { ArrowRight, CircuitBoard, TriangleAlert } from "lucide-react";
 import type { Board } from "@/lib/boards";
 import {
   assignmentLines,
+  finderPageSize,
   hasRequirements,
   plannerHref,
+  serializeFinderQuery,
   type FinderFit,
   type FinderQuery,
   type FinderResult,
 } from "@/lib/board-finder";
 import { defaultPlanStepBudget } from "@/lib/pin-planner";
 import { VendorLogo } from "@/components/VendorLogo";
+import { FindMoreLink } from "@/components/find/FindMoreLink";
 
-/** Fits listed before the rest fold into a disclosure. */
-export const finderVisibleFits = 24;
+/** Fits listed before "Show more"; a later page is asked for in the URL. */
+export const finderVisibleFits = finderPageSize;
 /** Assignment lines shown per board before "+N more in the plan". */
 const visibleLines = 4;
 
 export function FindResults({ query, result }: { query: FinderQuery; result: FinderResult }) {
   const asked = hasRequirements(query.requirements);
   const { fits, misses, undecided, unchecked, checked } = result;
-  const shown = fits.slice(0, finderVisibleFits);
+  const visible = Math.min(fits.length, query.show ?? finderVisibleFits);
+  const shown = fits.slice(0, visible);
   const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
-  const folded = fits.slice(finderVisibleFits);
+  const remaining = fits.length - visible;
+  const nextSearch = serializeFinderQuery({ ...query, show: visible + finderPageSize });
 
   return (
     <section aria-labelledby="find-results-heading">
@@ -51,23 +56,18 @@ export function FindResults({ query, result }: { query: FinderQuery; result: Fin
 
       {shown.length ? (
         <ul className="mt-4 grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(min(100%,22rem),1fr))]">
-          {shown.map((fit) => (
-            <FitCard key={fit.board.id} fit={fit} query={query} />
+          {shown.map((fit, index) => (
+            <FitCard key={fit.board.id} fit={fit} query={query} index={index} />
           ))}
         </ul>
       ) : null}
-      {folded.length ? (
-        <details className="mt-3">
-          <summary className="ph-find-summary inline-flex min-h-11 cursor-pointer items-center rounded-md px-3 text-sm font-medium text-cyan-200">
-            Show {folded.length} more {folded.length === 1 ? "board" : "boards"} that fit
-          </summary>
-          <ul className="mt-3 grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(min(100%,22rem),1fr))]">
-            {folded.map((fit) => (
-              <FitCard key={fit.board.id} fit={fit} query={query} />
-            ))}
-          </ul>
-        </details>
-      ) : null}
+      {/* Later fits are a URL step, never rendered hidden: each card is a
+          server-rendered plan, and folding them all cost ~300 KB per change. */}
+      <FindMoreLink
+        href={`/find?${nextSearch}`}
+        visible={visible}
+        label={remaining ? `Show ${Math.min(finderPageSize, remaining)} more of ${plural(remaining, "board", "boards")} that fit` : null}
+      />
 
       {asked && misses.length ? (
         <details className="surface-panel mt-5 rounded-xl p-4" open={!fits.length}>
@@ -121,12 +121,12 @@ export function FindResults({ query, result }: { query: FinderQuery; result: Fin
   );
 }
 
-function FitCard({ fit, query }: { fit: FinderFit; query: FinderQuery }) {
+function FitCard({ fit, query, index }: { fit: FinderFit; query: FinderQuery; index: number }) {
   const { board, assignments, usedFlaggedPins } = fit;
   const lines = assignmentLines(assignments);
   const extra = lines.length - visibleLines;
   return (
-    <li className="surface-panel flex min-w-0 flex-col rounded-xl p-4">
+    <li className="surface-panel flex min-w-0 flex-col rounded-xl p-4" data-fit-index={index}>
       <div className="flex min-w-0 items-start gap-2.5">
         <span className="mt-0.5 grid size-8 shrink-0 place-items-center overflow-hidden rounded-md border border-white/10 bg-[#0a0c11]">
           <VendorLogo vendor={board.vendor} size={18} />

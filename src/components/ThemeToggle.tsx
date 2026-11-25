@@ -2,9 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-
-type Theme = "light" | "dark";
-const storageKey = "pinhub.theme";
+import { applyTheme, themeStorageKey, type Theme } from "@/lib/theme";
 
 function currentTheme(): Theme {
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
@@ -20,10 +18,9 @@ export function ThemeToggle() {
 
   function toggleTheme() {
     const next = currentTheme() === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    document.documentElement.style.colorScheme = next;
+    applyTheme(next);
     try {
-      localStorage.setItem(storageKey, next);
+      localStorage.setItem(themeStorageKey, next);
     } catch {
       // Theme switching remains usable in private/restricted storage modes.
     }

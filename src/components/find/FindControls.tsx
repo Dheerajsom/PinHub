@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useOptimistic, useTransition, type ReactNode } from "react";
+import { useId, useOptimistic, useRef, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
 import { Minus, Plus, RotateCcw } from "lucide-react";
@@ -43,12 +43,21 @@ export function FindControls({ query, children }: { query: FinderQuery; children
   const [shown, setShown] = useOptimistic(query);
   const needsId = `${useId()}-needs`;
 
-  const go = (next: FinderQuery) => {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  const go = (request: FinderQuery) => {
+    // A new request starts from the first page of fits.
+    const next: FinderQuery = { requirements: request.requirements, filters: request.filters };
     startTransition(() => {
       setShown(next);
       const search = serializeFinderQuery(next);
       router.replace(search ? `/find?${search}` : "/find", { scroll: false });
     });
+  };
+  /** For controls that disappear once used (an example, Start over): keep focus in the form. */
+  const goAndKeepFocus = (next: FinderQuery) => {
+    go(next);
+    headingRef.current?.focus();
   };
   const step = (peripheral: PlanPeripheral, delta: number) => {
     const count = Math.min(maxPlanCount, Math.max(0, (shown.requirements[peripheral] ?? 0) + delta));
@@ -64,7 +73,7 @@ export function FindControls({ query, children }: { query: FinderQuery; children
       <section aria-labelledby={needsId} className="surface-panel rounded-2xl p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
           <div className="min-w-0">
-            <h2 id={needsId} className="text-base font-semibold tracking-tight text-white">
+            <h2 id={needsId} ref={headingRef} tabIndex={-1} className="text-base font-semibold tracking-tight text-white">
               What does your project need?
             </h2>
             <p className="mt-1 text-[13px] leading-6 text-zinc-400">
@@ -74,7 +83,7 @@ export function FindControls({ query, children }: { query: FinderQuery; children
           {total || filtered ? (
             <button
               type="button"
-              onClick={() => go({ requirements: {}, filters: {} })}
+              onClick={() => goAndKeepFocus({ requirements: {}, filters: {} })}
               className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-3 text-xs font-medium text-zinc-300 transition hover:border-white/25 hover:text-white"
             >
               <RotateCcw className="size-3.5" aria-hidden="true" />
@@ -172,7 +181,7 @@ export function FindControls({ query, children }: { query: FinderQuery; children
                 <button
                   key={example.label}
                   type="button"
-                  onClick={() => go({ ...shown, requirements: example.requirements })}
+                  onClick={() => goAndKeepFocus({ ...shown, requirements: example.requirements })}
                   className="ph-find-option min-h-11 rounded-md border border-white/10 px-3 text-xs text-zinc-300 transition"
                 >
                   {example.label}

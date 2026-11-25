@@ -5,6 +5,7 @@ import {
   isPinFunctionList,
   isPinMcu,
 } from "@/lib/pin-function-schema";
+import { readBoundedJson } from "@/lib/bounded-read";
 import { isSafeExternalUrl } from "@/lib/source-trust";
 
 const boardCategories = new Set([
@@ -67,6 +68,8 @@ type BoardFetcher = (
 ) => Promise<Response>;
 
 export const boardDetailTimeoutMs = 15_000;
+/** The largest record is about 26 KB; anything near this cap is not a board. */
+export const maxBoardDetailBytes = 256 * 1024;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -295,7 +298,7 @@ export function createBoardDetailLoader(
           throw new Error(`Board request failed (${response.status})`);
         }
 
-        const payload: unknown = await response.json();
+        const payload = await readBoundedJson(response, maxBoardDetailBytes, "Board response was too large");
         if (!isBoardPayload(payload, id)) {
           throw new Error("Board response was invalid");
         }

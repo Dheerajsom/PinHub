@@ -1,17 +1,14 @@
 "use client";
 
-import { useId, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { Search } from "lucide-react";
 import type { BoardSummary } from "@/lib/board-summary";
-import {
-  createBoardSearchIndex,
-  matchBoardSearchEntry,
-  tokenizeQuery,
-} from "@/lib/board-search";
+import { createBoardSearchIndex } from "@/lib/board-search";
 import { VendorLogo } from "@/components/VendorLogo";
 import { useSlashToFocus } from "@/components/catalog/useSlashToFocus";
+import { useBoardCombobox } from "@/components/catalog/useBoardCombobox";
 
 const maxResults = 12;
 const maxQueryLength = 256;
@@ -49,9 +46,6 @@ export function PlannerBoardPicker({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   useSlashToFocus(inputRef);
-  const listId = useId();
-  const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
   const index = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
   const auto = useMemo(() => new Set(autoAssignIds), [autoAssignIds]);
   const quickPicks = useMemo(
@@ -62,30 +56,13 @@ export function PlannerBoardPicker({
       }),
     [auto, catalog],
   );
-
-  const tokens = useMemo(() => tokenizeQuery(query), [query]);
-  const results = useMemo(() => {
-    if (!tokens.length) return [];
-    return index
-      .flatMap((entry) => {
-        const match = matchBoardSearchEntry(entry, tokens);
-        return match ? [{ board: entry.board, score: match.score }] : [];
-      })
-      .sort((a, b) => b.score - a.score || a.board.name.localeCompare(b.board.name))
-      .slice(0, maxResults)
-      .map((item) => item.board);
-  }, [index, tokens]);
-  const current = results[Math.min(active, results.length - 1)];
-
-  function move(delta: number) {
-    if (!results.length) return;
-    let next = Math.min(active, results.length - 1);
-    for (let step = 0; step < results.length; step += 1) {
-      next = (next + delta + results.length) % results.length;
-      if (results[next].hasPinout) break;
-    }
-    setActive(next);
-  }
+  const { listId, tokens, results, inputProps, optionProps } = useBoardCombobox({
+    index,
+    limit: maxResults,
+    maxQueryLength,
+    selectable: (board) => board.hasPinout,
+    onPick,
+  });
 
   return (
     <section aria-labelledby={`${listId}-title`} className="surface-panel rounded-2xl p-5 sm:p-6">
@@ -114,39 +91,9 @@ export function PlannerBoardPicker({
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
         <input
           ref={inputRef}
-          role="combobox"
+          {...inputProps}
           aria-label="Search for your board"
-          aria-expanded={results.length > 0}
-          aria-controls={listId}
-          aria-autocomplete="list"
-          aria-activedescendant={current ? `${listId}-${current.id}` : undefined}
-          autoComplete="off"
-          spellCheck={false}
-          maxLength={maxQueryLength}
-          value={query}
           placeholder="Search by board, vendor, or chip…"
-          onChange={(event) => {
-            setQuery(event.target.value.slice(0, maxQueryLength));
-            setActive(0);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "ArrowDown") {
-              event.preventDefault();
-              move(1);
-            } else if (event.key === "ArrowUp") {
-              event.preventDefault();
-              move(-1);
-            } else if (event.key === "Enter") {
-              const target = current?.hasPinout ? current : results.find((board) => board.hasPinout);
-              if (target) {
-                event.preventDefault();
-                onPick(target.id);
-              }
-            } else if (event.key === "Escape" && query) {
-              event.preventDefault();
-              setQuery("");
-            }
-          }}
           className="h-12 w-full rounded-md border border-white/10 bg-[#0a0c11] pl-10 pr-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-cyan-300/70 focus:ring-1 focus:ring-cyan-300/30"
         />
       </div>
@@ -159,18 +106,10 @@ export function PlannerBoardPicker({
       >
         {results.map((board) => {
           const selectable = board.hasPinout;
-          const isActive = board === current;
           return (
             <li
               key={board.id}
-              id={`${listId}-${board.id}`}
-              role="option"
-              aria-selected={isActive}
-              aria-disabled={!selectable}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => {
-                if (selectable) onPick(board.id);
-              }}
+              {...optionProps(board)}
               className={clsx(
                 "ph-plan-option flex min-h-11 items-center gap-3 rounded px-2 py-1.5",
                 selectable ? "cursor-pointer" : "cursor-not-allowed opacity-50",

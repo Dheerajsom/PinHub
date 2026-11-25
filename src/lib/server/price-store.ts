@@ -1,6 +1,6 @@
 import { get, put } from "@vercel/blob";
 import { boardPrices } from "../board-prices";
-import { maxPriceSnapshotBytes, mergePriceObservations, parsePriceSnapshot, priceSnapshotPath, readPriceSnapshot, type PriceResponse, type PriceSnapshot } from "../price-snapshot";
+import { maxPriceSnapshotBytes, mergePriceSnapshot, parsePriceSnapshot, priceSnapshotPath, readPriceSnapshot, type PriceResponse, type PriceSnapshot } from "../price-snapshot";
 
 export function priceStoreConfigured(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
@@ -64,9 +64,7 @@ async function readLivePrices(): Promise<PriceResponse> {
   if (priceStoreConfigured()) {
     try {
       const stored = await readStoredPrices();
-      if (stored) return { source: "shared", snapshot: {
-        ...stored.snapshot, prices: mergePriceObservations(boardPrices, stored.snapshot.prices),
-      } };
+      if (stored) return { source: "shared", snapshot: mergePriceSnapshot(boardPrices, stored.snapshot) };
     } catch {
       // Do not log upstream URLs/credentials or discard the bundled fallback.
       console.warn("Shared price snapshot unavailable; serving dated reference prices.");
