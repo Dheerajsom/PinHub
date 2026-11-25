@@ -216,7 +216,7 @@ export function LibraryRail({ catalog }: { catalog: BoardSummary[] }) {
                       if (!board) return null;
                       return (
                         <li key={id} className="flex items-center gap-1 rounded-md bg-white/[0.025] pl-2">
-                          <Link href={`/boards/${id}`} className="min-w-0 flex-1 truncate py-1.5 text-xs text-zinc-300 hover:text-white">{board.name}</Link>
+                          <Link href={`/boards/${id}`} className="flex min-h-11 min-w-0 flex-1 items-center text-xs text-zinc-300 hover:text-white"><span className="truncate">{board.name}</span></Link>
                           <button type="button" onClick={() => removeBoard(collection, id, board.name)} aria-label={`Remove ${board.name} from ${collection.name}`} className="grid size-11 place-items-center rounded text-zinc-600 hover:text-red-200">
                             <X className="size-3" aria-hidden="true" />
                           </button>

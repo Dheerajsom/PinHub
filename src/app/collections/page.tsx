@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import Link from "next/link";
 import { Folder, GitCompareArrows, ShieldAlert } from "lucide-react";
 import { boards, type Board } from "@/lib/boards";
@@ -10,8 +11,12 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { VendorLogo } from "@/components/VendorLogo";
 
 export const metadata: Metadata = {
-  title: "Shared board collection",
-  description: "A shareable set of source-backed PinHub board references.",
+  ...pageMetadata({
+    title: "Shared board collection",
+    description:
+      "A shareable set of source-backed PinHub board references.",
+    path: "/collections",
+  }),
   robots: { index: false, follow: true },
 };
 
@@ -80,7 +85,7 @@ export default async function CollectionsPage({
             <ShieldAlert className="mx-auto size-8 text-zinc-500" aria-hidden="true" />
             <h2 className="mt-3 text-lg font-semibold text-white">No valid boards in this link</h2>
             <p className="mt-2 text-sm text-zinc-400">The collection may be empty or refer to boards no longer in the catalog.</p>
-            <Link href="/" className="mt-4 inline-flex rounded-lg border border-cyan-300/40 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">Browse boards</Link>
+            <Link href="/" className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-cyan-300/40 bg-cyan-300/10 px-4 text-sm text-cyan-50">Browse boards</Link>
           </div>
         )}
       </div>

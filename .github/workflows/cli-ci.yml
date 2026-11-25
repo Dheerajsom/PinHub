@@ -5,14 +5,18 @@ on:
     branches: [main]
     paths:
       - "cli/**"
-      - "src/lib/boards.ts"
-      - "src/lib/source-trust.ts"
+      # cli/src/pin-match.ts and cli/src/boards/pin-index.ts are generated from
+      # src/lib (pin-match.ts, server/pin-index.ts and everything it imports),
+      # so any change there can leave the CLI's copy stale.
+      - "src/lib/**"
       - ".github/workflows/cli-ci.yml"
   pull_request:
     paths:
       - "cli/**"
-      - "src/lib/boards.ts"
-      - "src/lib/source-trust.ts"
+      # cli/src/pin-match.ts and cli/src/boards/pin-index.ts are generated from
+      # src/lib (pin-match.ts, server/pin-index.ts and everything it imports),
+      # so any change there can leave the CLI's copy stale.
+      - "src/lib/**"
       - ".github/workflows/cli-ci.yml"
 
 permissions:

@@ -24,6 +24,7 @@ links to official documentation, and most carry an interactive pin map.
 | `/link` | **Connect two boards.** Wire two boards over UART or I2C, with board cautions and logic-level mismatch warnings |
 | `/prices` | Dated USD prices and stock for 31 curated listings (Adafruit and the Arduino store), refreshed hourly |
 | `/collections` | Shareable board sets from your local library, with explicit four-board comparison subsets |
+| `/privacy` | What PinHub stores (only in your browser, key by key), what it doesn't collect, and the no-warranty terms for pinout data |
 
 The header links to Pin Maps, Compare, and Prices; the **Tools** menu lists
 Board finder, Pin planner, Code check, and Connect two boards, each with a one-line summary.

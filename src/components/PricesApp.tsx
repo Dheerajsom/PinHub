@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, CircuitBoard, Search, X } from "lucide-react";
 import { clsx } from "clsx";
-import { formatPrice, hasRecentStockCheck, priceFreshness, stockStatus } from "@/lib/board-prices";
+import { formatPrice, hasRecentStockCheck, priceFreshness } from "@/lib/board-prices";
 import { defaultPriceFilters, filterPrices, type PriceListing } from "@/lib/price-filters";
 import { VendorLogo } from "@/components/VendorLogo";
 import { usePriceUrlState } from "@/components/usePriceUrlState";
 import { useLivePrices } from "@/components/useLivePrices";
 import { PriceCheckTime } from "@/components/PriceCheckTime";
+import { PriceStockStatus } from "@/components/PriceStockStatus";
 
 const categories = [{ value: "all", label: "All boards" }, { value: "Microcontroller", label: "Microcontrollers" }, { value: "SBC", label: "SBCs" }];
 
@@ -26,6 +27,18 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
   });
   const [filters, update] = usePriceUrlState();
   const [clock, setClock] = useState(now);
+  const notesRef = useRef<HTMLDetailsElement>(null);
+
+  // The notes link, and a shared #price-notes URL, should land on the notes
+  // themselves, not on a closed disclosure.
+  useEffect(() => {
+    const openNotes = () => {
+      if (window.location.hash === "#price-notes" && notesRef.current) notesRef.current.open = true;
+    };
+    openNotes();
+    window.addEventListener("hashchange", openNotes);
+    return () => window.removeEventListener("hashchange", openNotes);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => setClock(Date.now()), 60_000);
@@ -43,7 +56,7 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
         <h1 className="brand-title text-2xl leading-tight text-white sm:text-3xl">Prices &amp; availability</h1>
         <div className="ph-price-rule pl-3 text-xs leading-5 text-zinc-400">
           <div className="font-medium text-zinc-200">US stores · USD · one board · shipping and tax excluded</div>
-          <a href="#price-notes" className="ph-price-ink inline-flex min-h-11 items-center underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
+          <a href="#price-notes" onClick={() => { if (notesRef.current) notesRef.current.open = true; }} className="ph-price-ink inline-flex min-h-11 items-center underline underline-offset-4">{source === "shared" ? "Hourly checks · page updates automatically" : "Reference prices · updates unavailable"}</a>
         </div>
       </div>
 
@@ -102,7 +115,7 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
         </div>}
       </section>
 
-      <details id="price-notes" className="surface-panel mt-5 scroll-mt-24 rounded-xl px-4 sm:px-5">
+      <details ref={notesRef} id="price-notes" className="surface-panel mt-5 scroll-mt-24 rounded-xl px-4 sm:px-5">
         <summary className="cursor-pointer py-4 text-sm font-medium text-zinc-200">How to read these prices</summary>
         <div className="grid gap-4 border-t border-white/10 py-4 text-sm leading-6 text-zinc-400 md:grid-cols-3">
           <p><strong className="font-medium text-zinc-200">Automatic checks.</strong> Retailer checks are scheduled hourly; this page retrieves updates every minute while visible. Schedules can be delayed. Failed checks keep the previous price and date. After three hours prices say “Older check”, and after 24 hours “Needs new check”. Stock checks expire after two hours.</p>
@@ -110,7 +123,7 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
           <p><strong className="font-medium text-zinc-200">Confirm before buying.</strong> These are selected US listings, not a lowest-price guarantee. The retailer sets the final price and availability. PinHub does not sell boards.</p>
         </div>
       </details>
-      <p className="mt-4 text-xs leading-5 text-zinc-400">Need a board that isn’t listed? <Link href="/" className="inline-flex min-h-6 items-center text-cyan-200 underline underline-offset-4">Explore the full pinout catalog</Link>.</p>
+      <p className="mt-4 text-xs leading-5 text-zinc-400">Need a board that isn’t listed? <Link href="/" className="inline-flex min-h-11 items-center text-cyan-200 underline underline-offset-4">Explore the full pinout catalog</Link>.</p>
     </div>
   );
 }
@@ -118,7 +131,6 @@ export function PricesApp({ listings: initialListings, now, initialSource = "fal
 function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
   const freshness = priceFreshness(listing, now);
   const recentStock = hasRecentStockCheck(listing, now);
-  const stock = stockStatus(listing, now);
   return (
     <li id={listing.id} className="price-grid grid scroll-mt-24 gap-x-4 gap-y-4 p-4 transition hover:bg-white/[0.02] sm:p-5">
       <div className="price-board min-w-0">
@@ -133,7 +145,7 @@ function PriceRow({ listing, now }: { listing: PriceListing; now: number }) {
       </div>
       <div className="price-seller min-w-0 text-xs leading-5">
         <div className="font-semibold text-zinc-200">{listing.retailer} <span className="font-normal text-zinc-400">/ {listing.sellerType}</span></div>
-        <div className={clsx("mt-1", stock.tone === "in-stock" ? "text-emerald-200" : "text-zinc-400")}>{stock.label}</div>
+        <div className="mt-1"><PriceStockStatus price={listing} now={now} /></div>
         <div className="mt-1 font-mono text-[11px] text-zinc-400">SKU {listing.sku}</div>
       </div>
       <div className="price-checked text-xs leading-5 text-zinc-400">
