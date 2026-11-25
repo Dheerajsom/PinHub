@@ -1470,7 +1470,26 @@ export function lineOf(starts: readonly number[], offset: number): number {
   return lo + 1;
 }
 
-const wifiPattern = /\b(?:WiFi\.begin|WiFi\.softAP|network\.WLAN|esp_wifi_start|esp_wifi_init|wifi\.radio)\b/;
+/**
+ * How an RPi.GPIO script numbers its pins. Every `setmode` call is read with
+ * import aliases resolved (`import RPi.GPIO as IO` then `IO.setmode(IO.BOARD)`).
+ * One scheme throughout settles it. A script that switches schemes, or passes
+ * a mode PinHub cannot read (`GPIO.setmode(mode)`), leaves it unsettled: call
+ * order inside functions is not source order, so no position can be trusted.
+ * No `setmode` at all keeps the BCM reading, as before.
+ */
+function rpiNumberingMode(masked: string, aliases: ReadonlyMap<string, string>): "bcm" | "board" | "unsettled" {
+  const modes = new Set<"bcm" | "board" | "unsettled">();
+  for (const match of masked.matchAll(/(?<![\w.])([A-Za-z_]\w*)[ \t]*\.[ \t]*setmode[ \t]*\(([^()\r\n]{0,64})\)/g)) {
+    if (unalias(match[1], aliases) !== "GPIO") continue;
+    const mode = unalias(match[2].replace(/\s+/g, ""), aliases);
+    modes.add(mode === "GPIO.BOARD" ? "board" : mode === "GPIO.BCM" ? "bcm" : "unsettled");
+  }
+  if (modes.size === 0) return "bcm";
+  return modes.size === 1 ? [...modes][0] : "unsettled";
+}
+
+const wifiPattern =/\b(?:WiFi\.begin|WiFi\.softAP|network\.WLAN|esp_wifi_start|esp_wifi_init|wifi\.radio)\b/;
 
 export function scanCode(input: string, chosen?: Dialect | null): ScanResult {
   const truncated = input.length > maxSourceLength;
@@ -1483,7 +1502,8 @@ export function scanCode(input: string, chosen?: Dialect | null): ScanResult {
   const pairs = bracketPairs(masked);
   const constants = family === "c" ? collectCConstants(source, masked, pairs) : collectPythonConstants(source, masked, pairs);
   const aliases = family === "python" ? pythonAliases(masked) : new Map<string, string>();
-  const rpiBoardNumbering = dialect === "rpi-python" && /GPIO\.setmode\s*\(\s*GPIO\.BOARD\s*\)/.test(masked);
+  const rpiNumbering = dialect === "rpi-python" ? rpiNumberingMode(masked, aliases) : "bcm";
+  const rpiBoardNumbering = rpiNumbering === "board";
   const ctx: Context = { dialect, family, constants, aliases, memo: new Map() };
   const starts = lineStarts(source);
 
@@ -1521,7 +1541,12 @@ export function scanCode(input: string, chosen?: Dialect | null): ScanResult {
       return;
     }
     const text = arg.text.trim().slice(0, 48);
-    const value = evaluate(arg.text, ctx, { at: arg.start, physical: Boolean(pick.rpiGpio && rpiBoardNumbering) });
+    // A number whose numbering scheme the code does not settle is not a pin
+    // PinHub can name: BCM 6 is a GPIO, physical 6 is ground.
+    const value =
+      pick.rpiGpio && rpiNumbering === "unsettled"
+        ? unfollowedValue
+        : evaluate(arg.text, ctx, { at: arg.start, physical: Boolean(pick.rpiGpio && rpiBoardNumbering) });
     const emit = (item: Value) => {
       if (item.kind === "list") {
         for (const entry of item.items) emit(entry);

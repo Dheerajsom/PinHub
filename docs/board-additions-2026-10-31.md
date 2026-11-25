@@ -1,10 +1,10 @@
 # Planner and board link expansion — 2026-10-31
 
 This is the original implementation record. The follow-up review, provenance
-disclosures, UI fixes, and fresh verification are recorded in
-[`code-audit-2026-10-31.md`](code-audit-2026-10-31.md). The later data review in
-[`code-audit-2026-11-01.md`](code-audit-2026-11-01.md) corrects maps and the
-single-source list here, and takes UART link boards to 179.
+disclosures, UI fixes, and fresh verification were recorded in
+`code-audit-2026-10-31.md`. The later data review in `code-audit-2026-11-01.md`
+corrects maps and the single-source list here, and takes UART link boards to
+179. Both audits were retired from `docs/` and remain in git history (`d1a1fee`).
 
 Branch `feature/planner-link-more-boards`, from `main` at `4c631c3`.
 
@@ -141,7 +141,7 @@ aliases.
 
 The original check below did **not** complete the required gate because the
 skill was not loaded. It is superseded by the skill-loaded mobile review in
-[`code-audit-2026-10-31.md`](code-audit-2026-10-31.md).
+`code-audit-2026-10-31.md` (retired; in git history at `d1a1fee`).
 
 The mobile-mojo agent tested the production build with Playwright (Chrome,
 touch, `isMobile`, DPR 2, `window.innerWidth` asserted) at 360 × 800, 390 × 844,

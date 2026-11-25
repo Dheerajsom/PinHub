@@ -1515,9 +1515,10 @@ button {
 
 /* Alpha-suffixed warm text and pale cool icons never matched the plain-class
    overrides either (e.g. `text-orange-100/90`, `text-cyan-300/70`), leaving
-   near-white text on cream or invisible icons on paper. */
+   near-white text on cream or invisible icons on paper. `text-orange-50/80`
+   is the /privacy liability disclaimer, which rendered ~1:1 on its cream card. */
 :root[data-theme="light"] :is(
-  [class*="text-orange-100/"], [class*="text-orange-200/"]
+  [class*="text-orange-50/"], [class*="text-orange-100/"], [class*="text-orange-200/"]
 ) {
   color: #9a3412;
 }

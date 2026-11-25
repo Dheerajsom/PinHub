@@ -254,6 +254,29 @@ describe("Raspberry Pi Python", () => {
     expect(physical.numbering).toMatch(/physical/);
   });
 
+  it("reads BOARD numbering through an import alias (import RPi.GPIO as IO)", () => {
+    // Physical pin 6 is ground. The mode check only matched the literal
+    // `GPIO.setmode(GPIO.BOARD)`, so with an alias the 6 was read as BCM GPIO6
+    // and cleared.
+    const report = check("raspberry-pi-3-model-b", "import RPi.GPIO as IO\nIO.setmode(IO.BOARD)\nIO.setup(6, IO.OUT)");
+    expect(report.pins[0].pin.label).toMatch(/GND/);
+    expect(report.pins[0].status).toBe("fix");
+    expect(report.numbering).toMatch(/physical/);
+    const bcm = check("raspberry-pi-5", "import RPi.GPIO as G\nG.setmode(G.BCM)\nG.setup(17, G.OUT)");
+    expect(bcm.pins[0].pin.mcu?.name).toBe("GPIO17");
+  });
+
+  it("leaves RPi.GPIO numbers unchecked when the script's numbering is not settled", () => {
+    const switched = scanCode(
+      "import RPi.GPIO as GPIO\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(17, GPIO.OUT)\nGPIO.cleanup()\nGPIO.setmode(GPIO.BOARD)\nGPIO.setup(11, GPIO.OUT)",
+    );
+    expect(switched.refs).toEqual([]);
+    expect(switched.unfollowed.map((item) => item.text)).toEqual(["17", "11"]);
+    const variable = scanCode("import RPi.GPIO as GPIO\nmode = GPIO.BOARD\nGPIO.setmode(mode)\nGPIO.setup(6, GPIO.OUT)");
+    expect(variable.refs).toEqual([]);
+    expect(variable.unfollowed.map((item) => item.text)).toEqual(["6"]);
+  });
+
   it("flags a power pin used as a signal under BOARD numbering", () => {
     const report = check("raspberry-pi-5", "import RPi.GPIO as GPIO\nGPIO.setmode(GPIO.BOARD)\nGPIO.setup(2, GPIO.OUT)");
     expect(report.pins[0].status).toBe("fix");

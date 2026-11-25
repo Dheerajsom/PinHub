@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -69,5 +69,28 @@ describe("global stylesheet", () => {
     // `.ph-link-select` drops to 12 px from 640 px up; on a touch screen that
     // is a phone in landscape, which iOS would zoom on focus.
     expect(css).toMatch(/@media \(pointer: coarse\) \{\s*:root \.ph-link-select \{\s*font-size: 16px;/);
+  });
+
+  it("gives every alpha-suffixed pale orange text class a light-theme colour", () => {
+    // The light theme overrides colour utilities by class name, so an opacity
+    // suffix escapes it: `text-orange-50/80` left the /privacy liability
+    // disclaimer near-white on its cream card (~1:1 contrast).
+    const sourceDir = join(process.cwd(), "src");
+    const files = (readdirSync(sourceDir, { recursive: true }) as string[]).filter((file) => file.endsWith(".tsx"));
+    const used = new Set<string>();
+    for (const file of files) {
+      for (const match of readFileSync(join(sourceDir, file), "utf8").matchAll(/(?<![\w:-])text-orange-(50|100|200)\/\d+/g)) {
+        used.add(match[0]);
+      }
+    }
+    expect(used.size).toBeGreaterThan(0);
+    const text = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    const lightRules = [...text.matchAll(/:root\[data-theme="light"\][^{]*\{/g)].map((found) => found[0]);
+    const uncovered = [...used].filter((name) => {
+      const shade = name.slice("text-".length, name.indexOf("/"));
+      const escaped = `.${name.replace("/", "\\/")}`;
+      return !lightRules.some((rule) => rule.includes(escaped) || rule.includes(`[class*="text-${shade}/"]`));
+    });
+    expect(uncovered).toEqual([]);
   });
 });
