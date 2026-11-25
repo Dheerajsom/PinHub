@@ -241,7 +241,7 @@ function identity(found: Located): string {
 /** Output, PWM, DAC and bus signals that a pin must drive. */
 function drives(use: Usage): boolean {
   if (use.kind === "bus") return !["RX", "MISO"].includes(use.signal);
-  return use.kind === "output" || use.kind === "pwm" || use.kind === "dac";
+  return use.kind === "output" || use.kind === "pwm" || use.kind === "dac" || Boolean(use.hostDriven);
 }
 
 function functionClass(use: Usage): string | null {

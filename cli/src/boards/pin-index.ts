@@ -23,6 +23,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -43,6 +44,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -115,6 +117,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -135,6 +138,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -155,6 +159,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -279,6 +284,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -299,6 +305,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -374,6 +381,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -506,6 +514,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -527,6 +536,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -621,6 +631,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -644,6 +655,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -670,6 +682,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -831,6 +844,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -855,6 +869,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -945,6 +960,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -1099,6 +1115,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -1119,6 +1136,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -1191,6 +1209,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -1211,6 +1230,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -1231,6 +1251,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -1355,6 +1376,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -1376,6 +1398,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -1452,6 +1475,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -1576,6 +1600,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -1605,6 +1630,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -1678,6 +1704,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -1707,6 +1734,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -2180,6 +2208,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -2206,6 +2235,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -2240,6 +2270,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS"
         ],
         "signals": [
@@ -2269,6 +2300,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -2300,6 +2332,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "Serial1",
           "RX"
         ],
         "signals": [
@@ -2321,6 +2354,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "Serial1",
           "TX"
         ],
         "signals": [
@@ -2587,6 +2621,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -2611,6 +2646,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -2687,6 +2723,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -2959,6 +2996,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -3014,6 +3052,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -3203,6 +3242,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MISO",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -3257,6 +3297,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MOSI",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -3310,6 +3351,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -3779,6 +3821,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -3832,6 +3875,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -4467,6 +4511,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -4521,6 +4566,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -4579,6 +4625,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -4637,6 +4684,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -4691,6 +4739,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -4745,6 +4794,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -4799,6 +4849,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -4857,6 +4908,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "CS"
         ],
         "signals": [
@@ -5603,6 +5655,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -5667,6 +5720,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -5736,6 +5790,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -5844,6 +5899,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -5898,6 +5954,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -5955,6 +6012,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -6012,6 +6070,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -6066,6 +6125,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -6128,6 +6188,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -6182,6 +6243,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -6239,6 +6301,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "CS"
         ],
         "signals": [
@@ -6296,6 +6359,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART2",
           "TX"
         ],
         "signals": [
@@ -6354,6 +6418,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART2",
           "RX"
         ],
         "signals": [
@@ -6587,6 +6652,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -6686,6 +6752,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -6720,6 +6787,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -6907,6 +6975,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -6934,6 +7003,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -6965,6 +7035,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -7007,6 +7078,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -7030,6 +7102,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -8559,6 +8632,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "RX"
         ],
         "signals": [
@@ -8589,6 +8663,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "TX"
         ],
         "signals": [
@@ -9078,6 +9153,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -9104,6 +9180,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -10231,6 +10308,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -10257,6 +10335,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -10283,6 +10362,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -10312,6 +10392,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -10341,6 +10422,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -10580,6 +10662,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -10606,6 +10689,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -10637,6 +10721,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -10666,6 +10751,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -10739,6 +10825,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -10768,6 +10855,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -11241,6 +11329,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -11267,6 +11356,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -11301,6 +11391,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS"
         ],
         "signals": [
@@ -11330,6 +11421,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -11364,6 +11456,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -11393,6 +11486,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -11472,6 +11566,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -11501,6 +11596,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -12001,6 +12097,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -12030,6 +12127,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -12067,6 +12165,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS"
         ],
         "signals": [
@@ -12096,6 +12195,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -13369,6 +13469,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -13600,6 +13701,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -13648,6 +13750,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -13814,6 +13917,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MISO",
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -13860,6 +13964,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MOSI",
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -14280,6 +14385,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -14326,6 +14432,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -15165,6 +15272,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -15320,6 +15428,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -15372,6 +15481,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -15424,6 +15534,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -15475,6 +15586,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -15526,6 +15638,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -15648,6 +15761,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -15698,6 +15812,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -16886,6 +17001,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -16932,6 +17048,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -16993,6 +17110,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -17046,6 +17164,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -17099,6 +17218,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -17144,6 +17264,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -17189,6 +17310,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -17236,6 +17358,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -17445,6 +17568,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -17497,6 +17621,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -17548,6 +17673,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -17598,6 +17724,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -17661,6 +17788,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -17714,6 +17842,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -18047,6 +18176,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -18096,6 +18226,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -18698,6 +18829,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -18754,6 +18886,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -19348,6 +19481,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -19402,6 +19536,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -19716,6 +19851,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -19770,6 +19906,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -19824,6 +19961,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -19878,6 +20016,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -20748,6 +20887,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -20794,6 +20934,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -20887,6 +21028,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -20932,6 +21074,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -20977,6 +21120,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -21022,6 +21166,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -21067,6 +21212,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -21112,6 +21258,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -21747,6 +21894,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -21802,6 +21950,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -22375,6 +22524,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -22428,6 +22578,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -22731,6 +22882,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -22780,6 +22932,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -22829,6 +22982,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -22878,6 +23032,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -23821,6 +23976,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -23868,6 +24024,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -23915,6 +24072,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -24004,6 +24162,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Shared with internal I2C bus.",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -24052,6 +24211,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Shared with internal I2C bus.",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -24205,6 +24365,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -24231,6 +24392,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -24257,6 +24419,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -24310,6 +24473,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -24336,6 +24500,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -24362,6 +24527,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -24388,6 +24554,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -24625,6 +24792,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -24680,6 +24848,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -24735,6 +24904,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -24812,6 +24982,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -24868,6 +25039,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -24923,6 +25095,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -24978,8 +25151,10 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX",
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -25239,6 +25414,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -25294,6 +25470,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -25349,6 +25526,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -25429,6 +25607,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -25482,6 +25661,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -25535,6 +25715,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -25588,6 +25769,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -25832,6 +26014,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -25883,8 +26066,10 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL",
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -25934,6 +26119,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -26008,6 +26194,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -26060,6 +26247,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -26109,6 +26297,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -26158,6 +26347,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -26212,6 +26402,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -26266,6 +26457,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -27244,6 +27436,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -27298,6 +27491,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -27352,6 +27546,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -27406,6 +27601,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -27460,6 +27656,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -27580,6 +27777,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -27607,6 +27805,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -27634,6 +27833,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -27658,6 +27858,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -27682,6 +27883,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -27709,6 +27911,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -27736,6 +27939,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -28048,6 +28252,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -28099,6 +28304,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -28259,6 +28465,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "CS"
         ],
         "signals": [
@@ -28596,6 +28803,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -28647,6 +28855,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -28698,6 +28907,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -28749,6 +28959,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -28800,6 +29011,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -29557,6 +29769,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -29577,6 +29790,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -29649,6 +29863,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -29669,6 +29884,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -29689,6 +29905,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -29813,6 +30030,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -29834,6 +30052,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -29910,6 +30129,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -30042,6 +30262,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -30062,6 +30283,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -30134,6 +30356,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -30154,6 +30377,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -30174,6 +30398,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -30298,6 +30523,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -30318,6 +30544,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -30393,6 +30620,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -30668,6 +30896,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -30693,6 +30922,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -30721,6 +30951,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -30937,6 +31168,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -30964,6 +31196,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -31109,6 +31342,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART1",
           "RX"
         ],
         "signals": [
@@ -31132,6 +31366,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART1",
           "TX"
         ],
         "signals": [
@@ -31398,6 +31633,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -31425,6 +31661,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -31452,6 +31689,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -31660,6 +31898,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -31686,6 +31925,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -31851,6 +32091,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART1",
           "RX"
         ],
         "signals": [
@@ -31877,6 +32118,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART1",
           "TX"
         ],
         "signals": [
@@ -31991,6 +32233,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -32037,6 +32280,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -32411,6 +32655,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "CS"
         ],
         "signals": [
@@ -32457,6 +32702,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -32503,6 +32749,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -32549,6 +32796,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -32595,6 +32843,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -32641,6 +32890,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -35286,6 +35536,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -35344,6 +35595,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -35401,6 +35653,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -35458,6 +35711,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -35566,6 +35820,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -35619,6 +35874,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -35673,6 +35929,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -35730,6 +35987,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -36061,6 +36319,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial",
           "TX"
         ],
         "signals": [
@@ -36087,6 +36346,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial",
           "RX"
         ],
         "signals": [
@@ -36110,6 +36370,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -36133,6 +36394,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -36282,6 +36544,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -36738,6 +37001,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -36866,6 +37130,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "ADC2 — avoid when Wi-Fi active.",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -36969,6 +37234,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "ADC2 — avoid when Wi-Fi active.",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -37075,6 +37341,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -37129,6 +37396,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -37484,6 +37752,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "default I2C SCL",
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -37507,6 +37776,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "default I2C SDA",
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -37685,6 +37955,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial",
           "RX"
         ],
         "signals": [
@@ -37711,6 +37982,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial",
           "TX"
         ],
         "signals": [
@@ -40545,6 +40817,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -40975,6 +41248,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -41025,6 +41299,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -41074,6 +41349,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -41122,6 +41398,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -41173,6 +41450,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -41219,6 +41497,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -41313,6 +41592,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -42905,6 +43185,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -42925,6 +43206,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -42997,6 +43279,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -43017,6 +43300,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -43037,6 +43321,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -43161,6 +43446,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -43182,6 +43468,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -43258,6 +43545,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -43390,6 +43678,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -43410,6 +43699,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -43482,6 +43772,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -43502,6 +43793,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -43522,6 +43814,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -43646,6 +43939,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -43667,6 +43961,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -43743,6 +44038,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -43875,6 +44171,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -43895,6 +44192,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -43967,6 +44265,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -43987,6 +44286,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -44007,6 +44307,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -44131,6 +44432,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -44152,6 +44454,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -44228,6 +44531,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -44360,6 +44664,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -44380,6 +44685,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -44452,6 +44758,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -44472,6 +44779,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -44492,6 +44800,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -44616,6 +44925,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -44637,6 +44947,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -44713,6 +45024,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -44845,6 +45157,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -44865,6 +45178,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -44937,6 +45251,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -44957,6 +45272,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -44977,6 +45293,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -45101,6 +45418,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -45122,6 +45440,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -45198,6 +45517,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -45330,6 +45650,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -45351,6 +45672,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -45445,6 +45767,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -45468,6 +45791,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -45494,6 +45818,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -45655,6 +45980,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -45679,6 +46005,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -45769,6 +46096,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -45912,6 +46240,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "Serial1",
           "RX"
         ],
         "signals": [
@@ -45933,6 +46262,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "Serial1",
           "TX"
         ],
         "signals": [
@@ -46199,6 +46529,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -46223,6 +46554,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -48468,6 +48800,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "TX"
         ],
         "signals": [
@@ -48488,6 +48821,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "RX"
         ],
         "signals": [
@@ -48740,6 +49074,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -48760,6 +49095,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -49288,6 +49624,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -49432,6 +49769,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -49461,6 +49799,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -49542,6 +49881,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MISO",
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -49572,6 +49912,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MOSI",
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -49820,6 +50161,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -49849,6 +50191,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -51474,6 +51817,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -51519,6 +51863,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -51564,6 +51909,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -51609,6 +51955,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -51654,6 +52001,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -52046,6 +52394,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -52091,6 +52440,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -52472,6 +52822,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -52525,6 +52876,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -52578,6 +52930,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -52631,6 +52984,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -52684,6 +53038,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -53127,6 +53482,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -53185,6 +53541,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -53415,6 +53772,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -53439,6 +53797,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -53463,6 +53822,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -53633,6 +53993,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -53657,6 +54018,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -53681,6 +54043,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -53708,6 +54071,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -55670,6 +56034,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -55717,6 +56082,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -55764,6 +56130,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -55833,6 +56200,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -55878,6 +56246,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -55923,6 +56292,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -55968,6 +56338,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -56205,6 +56576,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -56254,6 +56626,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -56303,6 +56676,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -56376,6 +56750,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -56428,6 +56803,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -56480,6 +56856,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -56529,8 +56906,10 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX",
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -56723,6 +57102,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -56771,6 +57151,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -56820,6 +57201,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -56869,6 +57251,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -56942,6 +57325,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -56991,6 +57375,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -57040,6 +57425,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -57089,6 +57475,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -57503,6 +57890,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -57532,6 +57920,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -57864,6 +58253,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -57891,6 +58281,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -57921,6 +58312,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -57947,6 +58339,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS"
         ],
         "signals": [
@@ -58524,6 +58917,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -58577,6 +58971,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -58630,6 +59025,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -58686,6 +59082,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -58742,6 +59139,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -58795,6 +59193,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -58848,6 +59247,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -59990,6 +60390,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "RX"
         ],
         "signals": [
@@ -60016,6 +60417,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "TX"
         ],
         "signals": [
@@ -60328,6 +60730,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -60354,6 +60757,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -65103,6 +65507,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -65135,6 +65540,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -65305,6 +65711,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -65333,6 +65740,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -65365,6 +65773,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -65405,6 +65814,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -65429,6 +65839,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -65631,6 +66042,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -65667,6 +66079,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -65862,6 +66275,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -65892,6 +66306,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -65925,6 +66340,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -65971,6 +66387,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -65999,6 +66416,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -66226,6 +66644,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -66261,6 +66680,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -66441,6 +66861,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -66471,6 +66892,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -66504,6 +66926,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -66550,6 +66973,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -66576,6 +67000,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -67040,6 +67465,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -67070,6 +67496,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -67102,6 +67529,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -67135,6 +67563,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -67165,6 +67594,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -67427,6 +67857,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -67481,6 +67912,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -67604,6 +68036,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "PA5 is also DAC1_OUT2.",
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -67659,6 +68092,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -67691,6 +68125,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Shares PB5 with D11 (CN7 pin 14); use only one at a time.",
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -69128,6 +69563,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -69174,6 +69610,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -69548,6 +69985,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI4",
           "CS"
         ],
         "signals": [
@@ -69594,6 +70032,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI4",
           "MOSI"
         ],
         "signals": [
@@ -69640,6 +70079,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI4",
           "MISO"
         ],
         "signals": [
@@ -69686,6 +70126,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI4",
           "SCK"
         ],
         "signals": [
@@ -69732,6 +70173,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -69778,6 +70220,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -70139,6 +70582,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -70185,6 +70629,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -70559,6 +71004,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -70605,6 +71051,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -70651,6 +71098,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -70697,6 +71145,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -70743,6 +71192,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -70789,6 +71239,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -71818,6 +72269,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -71847,6 +72299,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -71926,6 +72379,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -71955,6 +72409,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -72455,6 +72910,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -72484,6 +72940,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -72521,6 +72978,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS"
         ],
         "signals": [
@@ -72550,6 +73008,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -72690,6 +73149,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -72719,6 +73179,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -72749,6 +73210,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -72804,6 +73266,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -72831,6 +73294,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -72861,6 +73325,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -72888,6 +73353,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -72922,6 +73388,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -72952,6 +73419,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -73069,6 +73537,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -73092,6 +73561,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -73170,6 +73640,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -73197,6 +73668,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -73221,6 +73693,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -73247,6 +73720,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "CS"
         ],
         "signals": [
@@ -81145,6 +81619,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -81204,6 +81679,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -81317,6 +81793,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -81383,6 +81860,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -81862,6 +82340,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -81921,6 +82400,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -81989,6 +82469,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -82049,6 +82530,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Carries PWM to the LCD adapter board's J6 header.",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -86285,6 +86767,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -86334,6 +86817,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -86422,6 +86906,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA3",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -86468,6 +86953,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA2",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -86514,6 +87000,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA1",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -86560,6 +87047,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA0",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -86606,6 +87094,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_CLK",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -86652,6 +87141,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_CMD",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -87178,6 +87668,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -87227,6 +87718,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -87287,6 +87779,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -87339,6 +87832,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -87396,6 +87890,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "FSPID",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -87446,6 +87941,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "FSPICLK",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -87496,6 +87992,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "ADC2_CH0, FSPIWP",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -87548,6 +88045,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "ADC1_CH4, FSPIHD",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -88069,6 +88567,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "RTC_GPIO8, TOUCH8, ADC1_CH7, SUBSPICS1",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -88121,6 +88620,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "RTC_GPIO9, TOUCH9, ADC1_CH8, FSPIHD, SUBSPIHD",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -88175,6 +88675,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "RTC_GPIO10, TOUCH10, ADC1_CH9, FSPICS0, FSPIIO4, SUBSPICS0",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -88229,6 +88730,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "RTC_GPIO11, TOUCH11, ADC2_CH0, FSPID, FSPIIO5, SUBSPID",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -88282,6 +88784,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "RTC_GPIO12, TOUCH12, ADC2_CH1, FSPICLK, FSPIIO6, SUBSPICLK",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -88335,6 +88838,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "RTC_GPIO13, TOUCH13, ADC2_CH2, FSPIQ, FSPIIO7, SUBSPIQ",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -88774,6 +89278,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "CLK_OUT2. Default console/flashing UART.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -88828,6 +89333,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "CLK_OUT1. Default console/flashing UART.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -89960,6 +90466,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "FSPICS0. Default console/flashing UART.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -90010,6 +90517,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "FSPICS1. Default console/flashing UART.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -90057,6 +90565,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA3",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -90103,6 +90612,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA2",
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -90149,6 +90659,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA1, FSPICS5",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -90195,6 +90706,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_DATA0, FSPICS4",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -90241,6 +90753,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_CLK, FSPICS3",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -90287,6 +90800,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "SDIO_CMD, FSPICS2",
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -91923,6 +92437,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -91975,6 +92490,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -92028,6 +92544,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -92130,6 +92647,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -92180,6 +92698,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -92230,6 +92749,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -92373,6 +92893,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Connected to the onboard USB-to-UART bridge.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -92425,6 +92946,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Connected to the onboard USB-to-UART bridge.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -93397,6 +93919,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SDA"
         ],
         "signals": [
@@ -93424,6 +93947,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "Wire",
           "SCL"
         ],
         "signals": [
@@ -93725,6 +94249,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "RX"
         ],
         "signals": [
@@ -93749,6 +94274,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "Serial1",
           "TX"
         ],
         "signals": [
@@ -94324,6 +94850,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS"
         ],
         "signals": [
@@ -94354,6 +94881,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here.",
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -94384,6 +94912,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "I2C1. Arduino Wire defaults to I2C0 on back pads D13/D14; use Wire1 here.",
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -94414,6 +94943,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -94468,6 +94998,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -94498,6 +95029,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -94528,6 +95060,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -94558,6 +95091,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -95039,6 +95573,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -95087,6 +95622,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -95136,6 +95672,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -95185,6 +95722,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -95258,6 +95796,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -95307,6 +95846,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -95356,6 +95896,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -95405,6 +95946,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -95625,6 +96167,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -95645,6 +96188,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -95717,6 +96261,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -95737,6 +96282,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -95757,6 +96303,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -95881,6 +96428,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -95901,6 +96449,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -95976,6 +96525,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -96104,6 +96654,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -96138,6 +96689,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -96328,6 +96880,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -96355,6 +96908,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -96386,6 +96940,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -96428,6 +96983,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -96452,6 +97008,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -96652,6 +97209,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -96685,6 +97243,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -96853,6 +97412,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -96883,6 +97443,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -96915,6 +97476,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -96960,6 +97522,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -96984,6 +97547,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -97191,6 +97755,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -97224,6 +97789,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -97407,6 +97973,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -97437,6 +98004,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -97469,6 +98037,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -97517,6 +98086,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -97541,6 +98111,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -97759,6 +98330,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -97791,6 +98363,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -97994,6 +98567,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -98023,6 +98597,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -98055,6 +98630,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -98099,6 +98675,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -98129,6 +98706,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -98343,6 +98921,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -98375,6 +98954,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -98558,6 +99138,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -98587,6 +99168,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -98621,6 +99203,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -98665,6 +99248,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -98691,6 +99275,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -99114,6 +99699,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -99143,6 +99729,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -99175,6 +99762,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -99220,6 +99808,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -99250,6 +99839,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -99705,6 +100295,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -99734,6 +100325,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -99768,6 +100360,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -99813,6 +100406,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -99843,6 +100437,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -100317,6 +100912,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -100351,6 +100947,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -100387,6 +100984,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -100437,6 +101035,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -100470,6 +101069,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -100944,6 +101544,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -100974,6 +101575,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -101006,6 +101608,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -101051,6 +101654,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -101074,6 +101678,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -101296,6 +101901,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -101329,6 +101935,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -101486,6 +102093,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -101513,6 +102121,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -101544,6 +102153,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -101586,6 +102196,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -101604,6 +102215,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -101794,6 +102406,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "LPUART1",
           "RX"
         ],
         "signals": [
@@ -101828,6 +102441,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "LPUART1",
           "TX"
         ],
         "signals": [
@@ -102014,6 +102628,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -102042,6 +102657,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -102074,6 +102690,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -102119,6 +102736,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -102137,6 +102755,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -102348,6 +102967,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "RX"
         ],
         "signals": [
@@ -102382,6 +103002,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "USART2",
           "TX"
         ],
         "signals": [
@@ -102546,6 +103167,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -102575,6 +103197,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -102607,6 +103230,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -102652,6 +103276,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -102675,6 +103300,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -103159,6 +103785,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -103190,6 +103817,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -103221,6 +103849,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -103274,6 +103903,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -103306,6 +103936,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -103629,6 +104260,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -103648,6 +104280,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -103723,6 +104356,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -103740,6 +104374,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -103766,6 +104401,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -104084,6 +104720,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -104108,6 +104745,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -104332,6 +104970,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "LPUART1",
           "RX"
         ],
         "signals": [
@@ -104377,6 +105016,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -104402,6 +105042,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -104425,6 +105066,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -104452,6 +105094,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "LPUART1",
           "TX"
         ],
         "signals": [
@@ -104599,6 +105242,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -104621,6 +105265,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -104696,6 +105341,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -104717,6 +105363,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -104746,6 +105393,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -104978,6 +105626,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -104998,6 +105647,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -105070,6 +105720,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -105090,6 +105741,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -105110,6 +105762,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -105234,6 +105887,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -105255,6 +105909,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -105331,6 +105986,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -105463,6 +106119,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -105483,6 +106140,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -105555,6 +106213,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -105575,6 +106234,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -105595,6 +106255,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -105719,6 +106380,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -105740,6 +106402,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -105816,6 +106479,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS0"
         ],
         "signals": [
@@ -106127,6 +106791,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -106156,6 +106821,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -106185,6 +106851,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -106214,6 +106881,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -106243,6 +106911,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -106479,6 +107148,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -106508,6 +107178,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -106552,6 +107223,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -106581,6 +107253,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -106949,6 +107622,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -106975,6 +107649,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -107004,6 +107679,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -107056,6 +107732,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -107085,6 +107762,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -107219,6 +107897,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -107244,6 +107923,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -107693,6 +108373,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MOSI"
         ],
         "signals": [
@@ -107722,6 +108403,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "SCK"
         ],
         "signals": [
@@ -107759,6 +108441,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "CS"
         ],
         "signals": [
@@ -107788,6 +108471,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI0",
           "MISO"
         ],
         "signals": [
@@ -107822,6 +108506,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -107852,6 +108537,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -107975,6 +108661,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SDA"
         ],
         "signals": [
@@ -108001,6 +108688,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "I2C",
+          "I2C1",
           "SCL"
         ],
         "signals": [
@@ -108082,6 +108770,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "SCK"
         ],
         "signals": [
@@ -108112,6 +108801,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MOSI"
         ],
         "signals": [
@@ -108139,6 +108829,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "MISO"
         ],
         "signals": [
@@ -108165,6 +108856,7 @@ export const pinIndex: PinIndexBoard[] = [
         "gpio": true,
         "defaultSignals": [
           "SPI",
+          "SPI1",
           "CS"
         ],
         "signals": [
@@ -108655,6 +109347,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -108708,6 +109401,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -108761,6 +109455,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -108814,6 +109509,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -108867,6 +109563,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -109131,6 +109828,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "CS"
         ],
         "signals": [
@@ -109344,6 +110042,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -109397,6 +110096,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -109790,6 +110490,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -109843,6 +110544,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -109896,6 +110598,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -109949,6 +110652,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -110005,6 +110709,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -110445,6 +111150,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -110500,6 +111206,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -110765,6 +111472,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -110820,6 +111528,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -110875,6 +111584,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "TX"
         ],
         "signals": [
@@ -110954,6 +111664,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -111007,6 +111718,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -111060,6 +111772,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -111113,6 +111826,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART1",
           "RX"
         ],
         "signals": [
@@ -111561,6 +112275,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -111792,6 +112507,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -111840,6 +112556,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -112006,6 +112723,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MISO",
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -112052,6 +112770,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MOSI",
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -112472,6 +113191,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -112518,6 +113238,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -112568,6 +113289,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -112799,6 +113521,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -112847,6 +113570,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -113013,6 +113737,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MISO",
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -113059,6 +113784,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "MOSI",
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -113479,6 +114205,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -113525,6 +114252,7 @@ export const pinIndex: PinIndexBoard[] = [
         "note": "Serial1 TX is P1.03 and RX is P1.10. ArduinoCore-mbed numbers P1.03 as pin 0, so its D0 is not the pad labelled RX.",
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -114862,6 +115590,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -114917,6 +115646,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -114972,6 +115702,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -115049,6 +115780,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MOSI"
         ],
         "signals": [
@@ -115105,6 +115837,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "MISO"
         ],
         "signals": [
@@ -115160,6 +115893,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI2",
           "SCK"
         ],
         "signals": [
@@ -115215,8 +115949,10 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX",
           "SPI",
+          "SPI2",
           "CS"
         ],
         "signals": [
@@ -115445,6 +116181,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SDA"
         ],
         "signals": [
@@ -115492,6 +116229,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "I2C",
+          "I2C0",
           "SCL"
         ],
         "signals": [
@@ -115539,6 +116277,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "TX"
         ],
         "signals": [
@@ -115608,6 +116347,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MOSI"
         ],
         "signals": [
@@ -115653,6 +116393,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "MISO"
         ],
         "signals": [
@@ -115698,6 +116439,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "SPI",
+          "SPI3",
           "SCK"
         ],
         "signals": [
@@ -115743,6 +116485,7 @@ export const pinIndex: PinIndexBoard[] = [
         ],
         "defaultSignals": [
           "UART",
+          "UART0",
           "RX"
         ],
         "signals": [
@@ -115801,6 +116544,7 @@ export const pinIndex: PinIndexBoard[] = [
           "UART_AO_B_RX",
           "I2C_AO_S0_SDA"
         ],
+        "note": "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one.",
         "net": "I2C"
       },
       {
@@ -115814,6 +116558,7 @@ export const pinIndex: PinIndexBoard[] = [
           "UART_AO_B_TX",
           "I2C_AO_S0_SCL"
         ],
+        "note": "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one.",
         "net": "I2C"
       },
       {
@@ -116175,6 +116920,7 @@ export const pinIndex: PinIndexBoard[] = [
           "UART_AO_B_RX",
           "I2C_AO_S0_SDA"
         ],
+        "note": "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one.",
         "net": "I2C"
       },
       {
@@ -116188,6 +116934,7 @@ export const pinIndex: PinIndexBoard[] = [
           "UART_AO_B_TX",
           "I2C_AO_S0_SCL"
         ],
+        "note": "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one.",
         "net": "I2C"
       },
       {

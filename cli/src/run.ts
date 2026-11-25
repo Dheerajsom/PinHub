@@ -22,6 +22,15 @@ import { hasNoColor, isCiEnvironment } from "./status.js";
 import { pinIndex } from "./boards/pin-index.js";
 import { matchesPin, pinQueryTokens, pinRoles } from "./pin-match.js";
 import { renderPinLookup } from "./render/pin-lookup.js";
+import { diagramLocation } from "./lookup-location.js";
+import type { Board } from "./model.js";
+import type { LookupPin } from "./pin-match.js";
+
+/** JSON lookups carry the diagram's header and pin number beside the index record. */
+function withDiagramLocation(board: Board, pin: LookupPin) {
+  const location = diagramLocation(board, pin);
+  return location ? { ...pin, diagram: { header: location.header.id, pin: location.pin.physical } } : pin;
+}
 
 export type RunOptions = {
   /** Override detected terminal width (defaults to stdout columns or 80). */
@@ -161,7 +170,7 @@ export async function runCli(argv: string[], runOpts: RunOptions = {}): Promise<
       if (!board) return;
       const pins = (pinIndex.find((entry) => entry.id === board.id)?.pins ?? []).filter((pin) => flags.role ? pin.role === term : matchesPin(pin, term));
       if (!pins.length) { printErr(`No recorded pins match "${displayQuery(term)}" on ${safeTerminalValue(board.name)}.`); code = 1; return; }
-      print(flags.json ? JSON.stringify(pins, null, 2) : renderPinLookup(board.name, pins, buildRender(flags)));
+      print(flags.json ? JSON.stringify(pins.map((pin) => withDiagramLocation(board, pin)), null, 2) : renderPinLookup(board, pins, buildRender(flags)));
       return;
     }
     const board = resolveOrSuggest(words);

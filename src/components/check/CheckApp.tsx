@@ -4,10 +4,9 @@ import Link from "next/link";
 import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { ClipboardCopy, Code2, Lock, Route, Search, X } from "lucide-react";
-import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
 import { createBoardDetailLoader, type BoardDetailLoader } from "@/lib/board-detail-loader";
-import { createBoardSearchIndex, matchBoardSearchEntry, tokenizeQuery } from "@/lib/board-search";
+import { createBoardSearchIndex } from "@/lib/board-search";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { boardFromSearch, boardParam } from "@/lib/plan-params";
 import { maxClaims } from "@/lib/planner-claims";
@@ -19,18 +18,15 @@ import { isOfficialVerificationSource, verificationSourceFor } from "@/lib/sourc
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { touchDrawingWidth } from "@/components/board-visual/touch-sizing";
 import { ChoiceMenu, type ChoiceOption } from "@/components/catalog/SortMenu";
+import { useBoardCombobox } from "@/components/catalog/useBoardCombobox";
+import { detailId, useBoardDetail, type BoardDetail } from "@/components/catalog/useBoardDetail";
+import { pushSearchParam, useLocationSync } from "@/components/catalog/useLocationSync";
 import { VendorLogo } from "@/components/VendorLogo";
 import { CodeEditor, type CodeEditorHandle, type EditorHint, type EditorMark } from "@/components/check/CodeEditor";
 import { CheckReport } from "@/components/check/CheckReport";
 import { readDraft, writeDraft, type DialectChoice } from "@/components/check/draft";
 import { diffEdit, shiftLines, shiftSpans } from "@/components/check/stale-marks";
 import { headline, plural } from "@/components/check/verdict";
-
-type Detail =
-  | { status: "idle" }
-  | { status: "loading"; id: string }
-  | { status: "ready"; board: Board }
-  | { status: "error"; id: string };
 
 const maxHintsPerLine = 2;
 const draftDelayMs = 300;
@@ -57,7 +53,6 @@ export function CheckApp({
   const loader = useMemo(() => providedLoader ?? createBoardDetailLoader([]), [providedLoader]);
   const [code, setCode] = useState("");
   const [dialectChoice, setDialectChoice] = useState<DialectChoice>("auto");
-  const [detail, setDetail] = useState<Detail>({ status: "idle" });
   const [selectedPin, setSelectedPin] = useState<string | null>(null);
   const [hoverKey, setHoverKey] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
@@ -70,41 +65,32 @@ export function CheckApp({
   const editorRef = useRef<CodeEditorHandle>(null);
   const editorSectionRef = useRef<HTMLElement>(null);
   const sheetWrapRef = useRef<HTMLDivElement>(null);
-  const ticket = useRef(0);
   const restored = useRef(false);
   const labelId = useId();
   const helpId = useId();
 
+  const { detail, open: load, reset } = useBoardDetail(loader);
   const open = useCallback(
     (id: string | null) => {
-      const mine = ++ticket.current;
       setSelectedPin(null);
       setHoverKey(null);
-      if (!id || !byId.has(id)) {
-        setDetail({ status: "idle" });
-        return;
-      }
-      const cached = loader.peek(id);
-      if (cached) {
-        setDetail({ status: "ready", board: cached });
-        return;
-      }
-      setDetail({ status: "loading", id });
-      loader.load(id).then(
-        (board) => {
-          if (ticket.current === mine) setDetail({ status: "ready", board });
-        },
-        () => {
-          if (ticket.current === mine) setDetail({ status: "error", id });
-        },
-      );
+      if (!id || !byId.has(id)) reset();
+      else load(id);
     },
-    [byId, loader],
+    [byId, load, reset],
   );
 
   // The page is static: the board and the draft are only known in the browser.
-  useEffect(() => {
-    const sync = () => {
+  useLocationSync(
+    useCallback(() => {
+      if (!restored.current) {
+        restored.current = true;
+        const draft = readDraft();
+        if (draft) {
+          setCode(draft.code);
+          setDialectChoice(draft.dialect);
+        }
+      }
       const id = boardFromSearch(location.search);
       if (id && !byId.has(id)) {
         // A well-formed id this page cannot check: say so once and drop it from the URL.
@@ -117,24 +103,8 @@ export function CheckApp({
         return;
       }
       open(id);
-    };
-    const frame = requestAnimationFrame(() => {
-      if (!restored.current) {
-        restored.current = true;
-        const draft = readDraft();
-        if (draft) {
-          setCode(draft.code);
-          setDialectChoice(draft.dialect);
-        }
-      }
-      sync();
-    });
-    window.addEventListener("popstate", sync);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("popstate", sync);
-    };
-  }, [open, byId]);
+    }, [open, byId]),
+  );
 
   // The draft is written a beat after typing stops, and at once when the page
   // is hidden or this view unmounts, so a quick reload still keeps it.
@@ -175,12 +145,12 @@ export function CheckApp({
 
   function pickBoard(id: string) {
     setUnsupported(null);
-    history.pushState(null, "", `${location.pathname}?${boardParam}=${encodeURIComponent(id)}`);
+    pushSearchParam(boardParam, id);
     open(id);
   }
 
   function changeBoard() {
-    history.pushState(null, "", location.pathname);
+    pushSearchParam(boardParam, null);
     open(null);
   }
 
@@ -622,34 +592,23 @@ function BoardSlot({
   onRetry,
 }: {
   catalog: readonly BoardSummary[];
-  detail: Detail;
+  detail: BoardDetail;
   byId: ReadonlyMap<string, BoardSummary>;
   onPick: (id: string) => void;
   onChange: () => void;
   onRetry: () => void;
 }) {
-  const listId = useId();
   const changeRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   /** Where focus goes once the slot swaps views, so it never falls to the page. */
   const focusNext = useRef<"change" | "search" | null>(null);
-  const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
   const index = useMemo(() => createBoardSearchIndex(catalog), [catalog]);
-  const tokens = useMemo(() => tokenizeQuery(query), [query]);
-  const results = useMemo(() => {
-    if (!tokens.length) return [];
-    return index
-      .flatMap((entry) => {
-        const match = matchBoardSearchEntry(entry, tokens);
-        return match ? [{ board: entry.board, score: match.score }] : [];
-      })
-      .sort((x, y) => y.score - x.score || x.board.name.localeCompare(y.board.name))
-      .slice(0, 6)
-      .map((item) => item.board);
-  }, [index, tokens]);
-  const current = results[Math.min(active, results.length - 1)];
-  const id = detail.status === "idle" ? null : detail.status === "ready" ? detail.board.id : detail.id;
+  const pick = (boardId: string) => {
+    focusNext.current = "change";
+    onPick(boardId);
+  };
+  const { listId, tokens, results, inputProps, optionProps } = useBoardCombobox({ index, limit: 6, maxQueryLength: 128, onPick: pick });
+  const id = detailId(detail);
   const summary = id ? byId.get(id) : undefined;
 
   useEffect(() => {
@@ -661,11 +620,6 @@ function BoardSlot({
       inputRef.current.focus();
     }
   });
-
-  const pick = (boardId: string) => {
-    focusNext.current = "change";
-    onPick(boardId);
-  };
 
   if (summary) {
     return (
@@ -709,34 +663,8 @@ function BoardSlot({
         <input
           ref={inputRef}
           id={`${listId}-input`}
-          role="combobox"
-          aria-expanded={results.length > 0}
-          aria-controls={listId}
-          aria-autocomplete="list"
-          aria-activedescendant={current ? `${listId}-${current.id}` : undefined}
-          autoComplete="off"
-          spellCheck={false}
-          maxLength={128}
-          value={query}
+          {...inputProps}
           placeholder="Search, e.g. ESP32 DevKitC or Pico"
-          onChange={(event) => {
-            setQuery(event.target.value.slice(0, 128));
-            setActive(0);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-              event.preventDefault();
-              if (!results.length) return;
-              const delta = event.key === "ArrowDown" ? 1 : -1;
-              setActive((value) => (Math.min(value, results.length - 1) + delta + results.length) % results.length);
-            } else if (event.key === "Enter" && current) {
-              event.preventDefault();
-              pick(current.id);
-            } else if (event.key === "Escape" && query) {
-              event.preventDefault();
-              setQuery("");
-            }
-          }}
           className="ph-check-input-field h-11 w-full rounded-md pl-10 pr-3 text-[16px] outline-none sm:text-sm"
         />
       </div>
@@ -744,11 +672,7 @@ function BoardSlot({
         {results.map((item) => (
           <li
             key={item.id}
-            id={`${listId}-${item.id}`}
-            role="option"
-            aria-selected={item === current}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => pick(item.id)}
+            {...optionProps(item)}
             className="ph-plan-option flex min-h-11 cursor-pointer items-center gap-3 rounded px-2 py-1.5"
           >
             <VendorLogo vendor={item.vendor} />

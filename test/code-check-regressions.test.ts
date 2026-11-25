@@ -411,3 +411,76 @@ describe("the reference cap", () => {
     expect(scanCode("hello", null).refsCapped).toBe(false);
   });
 });
+
+// Council review 2026-11-24 (P2): output use of an ESP32 input-only pin that
+// arrived through a gpio_config bit mask or a 1-Wire bus was cleared.
+describe("input-only pins reached without an explicit OUTPUT call", () => {
+  function inputOnly(code: string, dialect: Dialect) {
+    const pin = check("esp32-devkitc", code, dialect).pins.find((item) => /34$/.test(item.pin.label));
+    return pin?.findings.find((finding) => finding.title === "Input-only pin");
+  }
+
+  it("flags a gpio_config designated initializer in output mode", () => {
+    const code = [
+      "void app_main(void) {",
+      "  gpio_config_t io = {",
+      "    .pin_bit_mask = (1ULL << GPIO_NUM_34),",
+      "    .mode = GPIO_MODE_OUTPUT,",
+      "    .pull_up_en = GPIO_PULLUP_DISABLE,",
+      "  };",
+      "  gpio_config(&io);",
+      "}",
+    ].join("\n");
+    expect(inputOnly(code, "esp-idf")).toBeDefined();
+  });
+
+  it("flags gpio_config fields assigned on a variable, in either order", () => {
+    for (const code of [
+      "void app_main(void) { gpio_config_t io_conf = {}; io_conf.mode = GPIO_MODE_INPUT_OUTPUT; io_conf.pin_bit_mask = 1ULL << 34; gpio_config(&io_conf); }",
+      "void app_main(void) { gpio_config_t io_conf = {}; io_conf.pin_bit_mask = (1ULL<<34) | (1ULL<<4); io_conf.mode = GPIO_MODE_OUTPUT_OD; gpio_config(&io_conf); }",
+    ]) {
+      expect(inputOnly(code, "esp-idf")).toBeDefined();
+    }
+  });
+
+  it("still clears a gpio_config bit mask in input mode", () => {
+    const code = "void app_main(void) { gpio_config_t io = { .pin_bit_mask = 1ULL << GPIO_NUM_34, .mode = GPIO_MODE_INPUT }; gpio_config(&io); }";
+    expect(inputOnly(code, "esp-idf")).toBeUndefined();
+    const other = "void app_main(void) { gpio_config_t in = {}; in.mode = GPIO_MODE_INPUT; in.pin_bit_mask = 1ULL << 34; gpio_config_t out = {}; out.mode = GPIO_MODE_OUTPUT; out.pin_bit_mask = 1ULL << 4; }";
+    expect(inputOnly(other, "esp-idf")).toBeUndefined();
+  });
+
+  it("reads the struct as it stands at each gpio_config() call", () => {
+    // Council round 1: a mode set in the initializer with the mask assigned
+    // later was cleared, and reusing the struct for another pin wrongly
+    // flagged an input on IO34; the same name in two functions leaked too.
+    const mixed = "void app_main(void) { gpio_config_t io = { .mode = GPIO_MODE_OUTPUT }; io.pin_bit_mask = 1ULL << 34; gpio_config(&io); }";
+    expect(inputOnly(mixed, "esp-idf")).toBeDefined();
+    const reused = [
+      "void app_main(void) {",
+      "  gpio_config_t io = { .pin_bit_mask = 1ULL << 34, .mode = GPIO_MODE_INPUT };",
+      "  gpio_config(&io);",
+      "  io.pin_bit_mask = 1ULL << 4;",
+      "  io.mode = GPIO_MODE_OUTPUT;",
+      "  gpio_config(&io);",
+      "}",
+    ].join("\n");
+    expect(inputOnly(reused, "esp-idf")).toBeUndefined();
+    const twoFunctions = [
+      "static void leds(void) { gpio_config_t io_conf = {}; io_conf.mode = GPIO_MODE_OUTPUT; io_conf.pin_bit_mask = 1ULL << 4; gpio_config(&io_conf); }",
+      "static void sensor(void) { gpio_config_t io_conf = {}; io_conf.mode = GPIO_MODE_INPUT; io_conf.pin_bit_mask = 1ULL << 34; gpio_config(&io_conf); }",
+    ].join("\n");
+    expect(inputOnly(twoFunctions, "esp-idf")).toBeUndefined();
+    const literal = "void app_main(void) { gpio_config(&(gpio_config_t){ .pin_bit_mask = 1ULL << 34, .mode = GPIO_MODE_OUTPUT }); }";
+    expect(inputOnly(literal, "esp-idf")).toBeDefined();
+  });
+
+  it("flags a 1-Wire bus on an input-only pin, which the master must pull low", () => {
+    expect(inputOnly("from machine import Pin\nimport onewire\now = onewire.OneWire(Pin(34))\n", "micropython")).toBeDefined();
+    expect(inputOnly("#include <OneWire.h>\nOneWire ds(34);\nvoid setup(){}\n", "arduino")).toBeDefined();
+  });
+
+  it("flags a DHT data line on an input-only pin, which the host drives to start a reading", () => {
+    expect(inputOnly("import dht\nfrom machine import Pin\nsensor = dht.DHT22(Pin(34))\n", "micropython")).toBeDefined();
+  });
+});

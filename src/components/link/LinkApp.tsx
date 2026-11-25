@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ArrowLeftRight, Ban, ChevronDown, CircleCheck, TriangleAlert } from "lucide-react";
 import type { Board } from "@/lib/boards";
 import type { BoardSummary } from "@/lib/board-summary";
@@ -12,8 +12,8 @@ import { linkSearch, linkStateFromSearch, type LinkState } from "@/lib/link-para
 import { LinkBoardSlot, useLinkSearchIndex } from "@/components/link/LinkBoardSlot";
 import { LinkHarness } from "@/components/link/LinkHarness";
 import { LinkSheets } from "@/components/link/LinkSheets";
-
-type Detail = { status: "loading" } | { status: "ready"; board: Board } | { status: "error" };
+import { useBoardDetails, type BoardDetailEntry } from "@/components/catalog/useBoardDetail";
+import { useLocationSync } from "@/components/catalog/useLocationSync";
 
 const emptyState: LinkState = { a: null, b: null, bus: "uart", pa: null, pb: null };
 
@@ -33,29 +33,14 @@ export function LinkApp({
   const index = useLinkSearchIndex(catalog);
   const loader = useMemo(() => providedLoader ?? createBoardDetailLoader([]), [providedLoader]);
   const [state, setState] = useState<LinkState>(emptyState);
-  const [details, setDetails] = useState<Record<string, Detail>>({});
+  const { details, ensure: load } = useBoardDetails(loader);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const mounted = useRef(true);
 
   const ensure = useCallback(
     (id: string | null, retry = false) => {
-      if (!id || !byId.get(id)?.hasPinout) return;
-      const cached = loader.peek(id);
-      if (cached) {
-        setDetails((value) => (value[id]?.status === "ready" ? value : { ...value, [id]: { status: "ready", board: cached } }));
-        return;
-      }
-      setDetails((value) => (value[id] && !retry ? value : { ...value, [id]: { status: "loading" } }));
-      loader.load(id).then(
-        (board) => {
-          if (mounted.current) setDetails((value) => ({ ...value, [id]: { status: "ready", board } }));
-        },
-        () => {
-          if (mounted.current) setDetails((value) => ({ ...value, [id]: { status: "error" } }));
-        },
-      );
+      if (id && byId.get(id)?.hasPinout) load(id, retry);
     },
-    [byId, loader],
+    [byId, load],
   );
 
   const apply = useCallback(
@@ -75,18 +60,9 @@ export function LinkApp({
     [byId, ensure],
   );
 
-  // The page is static, so the URL state is only known in the browser.
-  useEffect(() => {
-    mounted.current = true;
-    const sync = () => apply(linkStateFromSearch(location.search));
-    const frame = requestAnimationFrame(sync);
-    window.addEventListener("popstate", sync);
-    return () => {
-      mounted.current = false;
-      cancelAnimationFrame(frame);
-      window.removeEventListener("popstate", sync);
-    };
-  }, [apply]);
+  useLocationSync(useCallback(() => {
+    apply(linkStateFromSearch(location.search));
+  }, [apply]));
 
   function update(patch: Partial<LinkState>, mode: "push" | "replace") {
     const clean = apply({ ...state, ...patch });
@@ -104,7 +80,7 @@ export function LinkApp({
     [a, b, state.bus, state.pa, state.pb],
   );
 
-  const slotStatus = (id: string | null, detail: Detail | undefined) =>
+  const slotStatus = (id: string | null, detail: BoardDetailEntry | undefined) =>
     !id ? "idle" : !detail || detail.status === "loading" ? "loading" : detail.status;
 
   return (

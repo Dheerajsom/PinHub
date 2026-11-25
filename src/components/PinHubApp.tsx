@@ -205,6 +205,18 @@ export function PinHubApp({
   // Below the full three-column workspace the filter sidebar is collapsed
   // into a toggle so the catalog stays wide enough to scan comfortably.
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const filtersToggleRef = useRef<HTMLButtonElement>(null);
+  // The category disclosure is the reader's to open and close. It opens itself
+  // when a category becomes active (say, from a shared URL) but never closes
+  // itself: it used to follow `category.length`, so clearing the filter from
+  // inside it collapsed the panel under the reader's focus.
+  const categoryActive = catalogState.category.length > 0;
+  const [categoryOpen, setCategoryOpen] = useState(categoryActive);
+  const [categoryWasActive, setCategoryWasActive] = useState(categoryActive);
+  if (categoryActive !== categoryWasActive) {
+    setCategoryWasActive(categoryActive);
+    if (categoryActive) setCategoryOpen(true);
+  }
   // Paging in 32 more result rows is the one interaction here that can take
   // long enough to look broken, so it runs as a transition: the button says it
   // is working and stops accepting clicks until the rows are committed.
@@ -399,12 +411,19 @@ export function PinHubApp({
   ) {
     setCatalogState((current) => ({ ...current, ...update(current), page: 1 }));
     resetResultView();
-    if (closeFilters) setMobileFiltersOpen(false);
+    if (closeFilters && mobileFiltersOpen) {
+      setMobileFiltersOpen(false);
+      // The panel (and the control just used) disappears below xl; hand focus
+      // back to the toggle that opened it instead of dropping it on <body>.
+      if (!isDesktop) filtersToggleRef.current?.focus({ preventScroll: true });
+    }
   }
 
   function selectFacet(key: CatalogFilterKey, value: string) {
+    // Choosing a value closes the phone panel to show the results; clearing
+    // one ("All") keeps it open, since the reader is still adjusting filters.
     updateFilters(() => ({ [key]: value === all ? [] : [value] }), {
-      closeFilters: true,
+      closeFilters: value !== all,
     });
   }
 
@@ -602,6 +621,7 @@ export function PinHubApp({
             )}
           </label>
           <button
+            ref={filtersToggleRef}
             type="button"
             onClick={() => setMobileFiltersOpen((value) => !value)}
             aria-expanded={mobileFiltersOpen}
@@ -729,7 +749,7 @@ export function PinHubApp({
           )}
         >
           <FilterPanel title="Platform" icon={facetIcon(Cpu)} items={facetItems.platform} active={catalogState.platform[0] ?? all} counts={facetCounts.platform} onChange={(value) => selectFacet("platform", value)} />
-          <details className="surface-panel rounded-xl p-3" open={catalogState.category.length > 0 || undefined}>
+          <details className="surface-panel rounded-xl p-3" open={categoryOpen} onToggle={(event) => setCategoryOpen(event.currentTarget.open)}>
             <summary className="min-h-11 cursor-pointer text-sm font-semibold text-white">Catalog category</summary>
             <p className="mb-2 text-xs leading-5 text-zinc-400">A narrower catalog grouping. Platform above groups boards by hardware type.</p>
             <FilterPanel

@@ -50,12 +50,27 @@ function identityMatch(entry: BoardSearchEntry, tokens: string[], includeChip: b
   });
 }
 
+/** True when every word of a function label ("UART1 TX") is a recorded default token of the pin. */
+function isDefaultSignal(pin: LookupPin, signal: string): boolean {
+  const defaults = new Set((pin.defaultSignals ?? []).map((item) => item.toLowerCase()));
+  return defaults.size > 0 && signal.split(/\s+/).every((word) => defaults.has(word.toLowerCase()));
+}
+
 /** Keep the matching peripheral attached to its recorded human-readable line. */
 export function matchedPinSignals(pin: LookupPin, term: string): string {
   if (term === "gpio") return "Digital GPIO";
   const matches = (value: string) => matchesSignalValue(value, term);
   const signals = (pin.signals ?? []).filter((signal) => /\s/.test(signal) && matches(signal));
-  if (signals.length) return signals.join(" · ");
+  if (signals.length) {
+    // Say which listed route is the recorded default, and list it first: a Pi 4
+    // GPIO14 read "UART0 TX · UART1 TX" under a default badge, though only
+    // UART1 is its primary UART.
+    const marked = signals.map((signal) => ({ signal, isDefault: isDefaultSignal(pin, signal) }));
+    const anyDefault = marked.some((item) => item.isDefault);
+    return [...marked.filter((item) => item.isDefault), ...marked.filter((item) => !item.isDefault)]
+      .map((item) => (anyDefault && item.isDefault && marked.length > 1 ? `${item.signal} (default)` : item.signal))
+      .join(" · ");
+  }
   const aliases = (pin.aliases ?? []).filter(matches);
   if (aliases.length) return aliases.join(" · ");
   if (pin.net && matches(pin.net)) {

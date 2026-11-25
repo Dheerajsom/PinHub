@@ -1,16 +1,12 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { clsx } from "clsx";
 import { Search } from "lucide-react";
 import type { BoardSummary } from "@/lib/board-summary";
-import {
-  createBoardSearchIndex,
-  matchBoardSearchEntry,
-  tokenizeQuery,
-  type BoardSearchEntry,
-} from "@/lib/board-search";
+import { createBoardSearchIndex, type BoardSearchEntry } from "@/lib/board-search";
 import { VendorLogo } from "@/components/VendorLogo";
+import { useBoardCombobox } from "@/components/catalog/useBoardCombobox";
 
 const maxResults = 8;
 const maxQueryLength = 256;
@@ -36,22 +32,13 @@ export function LinkBoardSlot({
   onChange: () => void;
   onRetry: () => void;
 }) {
-  const listId = useId();
-  const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
-  const tokens = useMemo(() => tokenizeQuery(query), [query]);
-  const results = useMemo(() => {
-    if (!tokens.length) return [];
-    return index
-      .flatMap((entry) => {
-        const match = matchBoardSearchEntry(entry, tokens);
-        return match ? [{ board: entry.board, score: match.score }] : [];
-      })
-      .sort((x, y) => y.score - x.score || x.board.name.localeCompare(y.board.name))
-      .slice(0, maxResults)
-      .map((item) => item.board);
-  }, [index, tokens]);
-  const current = results[Math.min(active, results.length - 1)];
+  const { listId, tokens, results, inputProps, optionProps } = useBoardCombobox({
+    index,
+    limit: maxResults,
+    maxQueryLength,
+    selectable: (item) => item.hasPinout,
+    onPick,
+  });
 
   if (board) {
     return (
@@ -98,38 +85,9 @@ export function LinkBoardSlot({
         <div className="relative min-w-0 flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
           <input
-            role="combobox"
+            {...inputProps}
             aria-label={`Search for board ${side}`}
-            aria-expanded={results.length > 0}
-            aria-controls={listId}
-            aria-autocomplete="list"
-            aria-activedescendant={current ? `${listId}-${current.id}` : undefined}
-            autoComplete="off"
-            spellCheck={false}
-            maxLength={maxQueryLength}
-            value={query}
             placeholder={side === "A" ? "First board, e.g. Raspberry Pi 5" : "Second board, e.g. Arduino UNO"}
-            onChange={(event) => {
-              setQuery(event.target.value.slice(0, maxQueryLength));
-              setActive(0);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-                event.preventDefault();
-                if (!results.length) return;
-                const delta = event.key === "ArrowDown" ? 1 : -1;
-                setActive((value) => (Math.min(value, results.length - 1) + delta + results.length) % results.length);
-              } else if (event.key === "Enter") {
-                const target = current?.hasPinout ? current : results.find((item) => item.hasPinout);
-                if (target) {
-                  event.preventDefault();
-                  onPick(target.id);
-                }
-              } else if (event.key === "Escape" && query) {
-                event.preventDefault();
-                setQuery("");
-              }
-            }}
             className="ph-link-input h-11 w-full rounded-md pl-10 pr-3 text-[16px] outline-none transition sm:text-sm"
           />
         </div>
@@ -143,14 +101,7 @@ export function LinkBoardSlot({
         {results.map((item) => (
           <li
             key={item.id}
-            id={`${listId}-${item.id}`}
-            role="option"
-            aria-selected={item === current}
-            aria-disabled={!item.hasPinout}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => {
-              if (item.hasPinout) onPick(item.id);
-            }}
+            {...optionProps(item)}
             className={clsx(
               "ph-plan-option flex min-h-11 items-center gap-3 rounded px-2 py-1.5",
               item.hasPinout ? "cursor-pointer" : "cursor-not-allowed opacity-50",

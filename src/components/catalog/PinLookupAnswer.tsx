@@ -7,21 +7,7 @@ import { isPinLikeQuery, pinQueryTokens, type PinIndexBoard } from "@/lib/pin-ma
 import { lookupPins, maxLookupBoards, matchedPinSignals, pinMatchKind, type PinLookupResult } from "@/lib/pin-lookup";
 import { pinLookupHref } from "@/lib/pinout-state";
 import { roleChipStyle, roleLabels } from "@/components/board-visual/roles";
-
-let cached: Promise<PinIndexBoard[]> | null = null;
-function loadIndex() {
-  // Revalidate once per page session: a previous deployment may have cached
-  // an older index at this stable URL, including older capability metadata.
-  cached ??= fetch("/api/pins", { cache: "no-cache" }).then(async (response) => {
-    if (!response.ok) throw new Error("Pin index unavailable");
-    // Same-origin static deployment data; reject malformed or oversized payloads.
-    const text = await response.text();
-    if (text.length > 2_000_000) throw new Error("Pin index too large");
-    const { parsePinIndex } = await import("@/lib/pin-index-boundary");
-    return parsePinIndex(JSON.parse(text));
-  }).catch((error) => { cached = null; throw error; });
-  return cached;
-}
+import { loadPinIndex } from "@/lib/pin-index-client";
 
 export function PinLookupAnswer({ query, search, collapsed = false }: { query: string; search: readonly BoardSearchEntry[]; collapsed?: boolean }) {
   if (!isPinLikeQuery(query)) return null;
@@ -45,7 +31,7 @@ function LookupContent({ query, search, deferred = false }: { query: string; sea
   useEffect(() => {
     if (!enabled || index) return;
     let live = true;
-    loadIndex().then((data) => { if (live) { setIndex(data); setFailed(false); } })
+    loadPinIndex().then((data) => { if (live) { setIndex(data); setFailed(false); } })
       .catch(() => { if (live) setFailed(true); });
     return () => { live = false; };
   }, [enabled, index, retry]);

@@ -14478,6 +14478,12 @@ const sparkfunProMicroPinout: Pinout = {
   },
 };
 
+// The wiring tool lists both always-on I2C controllers on GPIOAO_2/3. Their
+// names alone do not establish what each one supports, so the record says
+// they differ instead of presenting them as interchangeable aliases.
+const aoI2cControllersNote =
+  "Two different I2C controllers are named on this pad, I2C_AO_M0 and I2C_AO_S0. They are separate blocks, not two names for one bus, and this record does not say which mode each supports; check the overlay and SoC documentation before choosing one.";
+
 const libreAltaHeader: Pinout = {
   connector: "7J1 40-pin GPIO header",
   layout: "dual-row",
@@ -14489,8 +14495,8 @@ const libreAltaHeader: Pinout = {
   pins: {
     left: [
       { position: 1, label: "3V3", role: "power" },
-      { position: 3, label: "GPIOAO_3", role: "i2c", aliases: ["I2C_AO_M0_SDA", "UART_AO_B_RX", "I2C_AO_S0_SDA"] },
-      { position: 5, label: "GPIOAO_2", role: "i2c", aliases: ["I2C_AO_M0_SCL", "UART_AO_B_TX", "I2C_AO_S0_SCL"] },
+      { position: 3, label: "GPIOAO_3", role: "i2c", aliases: ["I2C_AO_M0_SDA", "UART_AO_B_RX", "I2C_AO_S0_SDA"], note: aoI2cControllersNote },
+      { position: 5, label: "GPIOAO_2", role: "i2c", aliases: ["I2C_AO_M0_SCL", "UART_AO_B_TX", "I2C_AO_S0_SCL"], note: aoI2cControllersNote },
       { position: 7, label: "GPIOAO_6", role: "gpio", aliases: ["PWMAO_C"] },
       { position: 9, label: "GND", role: "ground" },
       { position: 11, label: "GPIOAO_7", role: "gpio" },
@@ -14545,8 +14551,8 @@ const libreSolitudeHeader: Pinout = {
   pins: {
     left: [
       { position: 1, label: "3V3", role: "power" },
-      { position: 3, label: "GPIOAO_3", role: "i2c", aliases: ["I2C_AO_M0_SDA", "UART_AO_B_RX", "I2C_AO_S0_SDA"] },
-      { position: 5, label: "GPIOAO_2", role: "i2c", aliases: ["I2C_AO_M0_SCL", "UART_AO_B_TX", "I2C_AO_S0_SCL"] },
+      { position: 3, label: "GPIOAO_3", role: "i2c", aliases: ["I2C_AO_M0_SDA", "UART_AO_B_RX", "I2C_AO_S0_SDA"], note: aoI2cControllersNote },
+      { position: 5, label: "GPIOAO_2", role: "i2c", aliases: ["I2C_AO_M0_SCL", "UART_AO_B_TX", "I2C_AO_S0_SCL"], note: aoI2cControllersNote },
       { position: 7, label: "GPIOAO_6", role: "gpio", aliases: ["PWMAO_C"] },
       { position: 9, label: "GND", role: "ground" },
       { position: 11, label: "GPIOAO_7", role: "gpio" },

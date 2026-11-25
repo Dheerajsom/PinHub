@@ -5,6 +5,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -274,6 +275,52 @@ describe("PinHubApp regressions (2026-09-24 cleanup)", () => {
     fireEvent.click(chip);
     expect(screen.queryByRole("button", { name: `Remove Connector: ${connector} filter` })).toBeNull();
     expect(screen.getByRole("button", { name: "Select Sensor HAT" })).toBeTruthy();
+  });
+
+  it("keeps the category disclosure open when its filter is cleared from inside it", async () => {
+    // The <details> followed `category.length`, so clearing the filter with
+    // its own "All" button collapsed the panel under the reader's focus.
+    setViewport(true);
+    history.replaceState(null, "", "/?category=Microcontroller");
+    renderApp();
+    const summary = screen.getByText("Catalog category", { selector: "summary" });
+    const disclosure = summary.closest("details")!;
+    await waitFor(() => expect(disclosure.open).toBe(true));
+    const allButton = within(disclosure).getAllByRole("button").find((button) => button.textContent?.startsWith("All"))!;
+    allButton.focus();
+    fireEvent.click(allButton);
+    await waitFor(() => expect(within(disclosure).getAllByRole("button")[0].getAttribute("aria-pressed")).toBe("true"));
+    expect(disclosure.open).toBe(true);
+    expect(disclosure.contains(document.activeElement)).toBe(true);
+    // The reader can still close it.
+    fireEvent.click(summary);
+    disclosure.open = false;
+    fireEvent(disclosure, new Event("toggle"));
+    expect(disclosure.open).toBe(false);
+  });
+
+  it("on a phone, keeps the filter panel open when a facet is cleared and returns focus when a choice closes it", async () => {
+    // Clearing the category from inside the phone filter panel closed the
+    // whole panel and dropped focus on <body>.
+    setViewport(false);
+    history.replaceState(null, "", "/?category=Microcontroller");
+    renderApp();
+    const toggle = screen.getByRole("button", { name: /^Filters/ });
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    const disclosure = screen.getByText("Catalog category", { selector: "summary" }).closest("details")!;
+    await waitFor(() => expect(disclosure.open).toBe(true));
+    const options = () => within(disclosure).getAllByRole("button");
+    const allButton = options().find((button) => button.textContent?.startsWith("All"))!;
+    allButton.focus();
+    fireEvent.click(allButton);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(document.activeElement).toBe(allButton);
+    const choice = options().find((button) => !button.textContent?.startsWith("All"))!;
+    choice.focus();
+    fireEvent.click(choice);
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(toggle);
   });
 
   it("opens, and never closes, the selected board's details on Enter", () => {

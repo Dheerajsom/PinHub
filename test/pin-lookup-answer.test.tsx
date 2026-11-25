@@ -14,7 +14,7 @@ afterEach(cleanup);
 it("previews defaults, discloses alternatives, and limits text to the requested function", async () => {
   render(<PinLookupAnswer query="pico sda" search={search} />);
   const matches = await screen.findByRole("region", { name: "Recorded pin matches" });
-  expect(fetch).toHaveBeenCalledWith("/api/pins", { cache: "no-cache" });
+  expect(fetch).toHaveBeenCalledWith("/api/pins", expect.objectContaining({ cache: "no-cache", signal: expect.any(AbortSignal) }));
   const links = within(matches).getAllByRole("link");
   expect(links[0].textContent).toContain("GP4");
   expect(links[0].textContent).toContain("Recorded default");

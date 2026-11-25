@@ -20,7 +20,9 @@ export function createPinIndex(): PinIndexBoard[] {
       ...(pin.aliases?.length ? { aliases: pin.aliases } : {}),
       ...(pin.note ? { note: pin.note } : {}),
       ...(pin.flags?.length ? { flags: pin.flags } : {}),
-      ...(pin.functions?.some((item) => item.default) ? { defaultSignals: [...new Set(pin.functions.filter((item) => item.default).flatMap((item) => [item.peripheral, item.signal]))] } : {}),
+      // The instance is included so a query for the bus a board does not use by
+      // default (UART0 on a Bluetooth Pi) is not badged as the recorded default.
+      ...(pin.functions?.some((item) => item.default) ? { defaultSignals: [...new Set(pin.functions.filter((item) => item.default).flatMap((item) => [item.peripheral, item.instance, item.signal]))] } : {}),
       ...(referenceFunctions(pin, board.pinFunctions).length ? { signals: [...new Set(referenceFunctions(pin, board.pinFunctions).flatMap((item) => [item.peripheral, item.signal, functionLabel(item.peripheral, item.instance, item.signal)]))] } : {}),
       ...(group ? { group } : {}),
       ...(netForPin(pin) ? { net: netForPin(pin)!.label } : {}),

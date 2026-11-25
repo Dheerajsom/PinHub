@@ -366,19 +366,11 @@ body {
   color: #075b6b;
 }
 
-:root[data-theme="light"] [class*="text-cyan-200"] {
-  color: #075b6b;
-}
-
 :root[data-theme="light"] :is(.text-emerald-100, .text-emerald-200) {
   color: #066046;
 }
 
 :root[data-theme="light"] :is(.text-orange-50, .text-orange-100, .text-orange-200) {
-  color: #9a3412;
-}
-
-:root[data-theme="light"] [class*="text-orange-100"] {
   color: #9a3412;
 }
 
@@ -402,62 +394,30 @@ body {
   background-color: rgba(217, 119, 6, 0.24);
 }
 
-:root[data-theme="light"] .hover\:bg-amber-400\/20:hover,
-:root[data-theme="light"] .hover\:bg-amber-300\/20:hover {
-  background-color: rgba(217, 119, 6, 0.24);
-}
-
-:root[data-theme="light"] [class*="border-amber-300/25"] {
-  border-color: rgba(146, 94, 6, 0.4);
-}
-
 :root[data-theme="light"] :is(
-  [class*="border-amber-300/40"], [class*="border-amber-300/50"]
-) {
-  border-color: rgba(146, 94, 6, 0.55);
-}
-
-:root[data-theme="light"] [class*="border-amber-300/60"] {
-  border-color: rgba(146, 94, 6, 0.65);
-}
-
-:root[data-theme="light"] :is(
-  .fill-amber-300, .fill-amber-300\/20, .text-amber-300, .text-amber-300\/80
+  .fill-amber-300, .fill-amber-300\/20, .text-amber-300
 ) {
   color: #d97706;
   fill: #d97706;
 }
 
-/* Alpha-suffixed orange text never matches the plain-class overrides above
-   (the class name is different), so the board page's wiring warnings rendered
-   near-white on cream. Map each variant the theme actually ships. */
-:root[data-theme="light"] :is(
-  .text-orange-50\/70, .text-orange-200\/60
-) {
+/* Mid-tone accent text (300 steps): legible on charcoal, about 1.5:1 on
+   paper. The pin lookup's orange notes were unreadable in light mode. */
+:root[data-theme="light"] .text-orange-300 {
   color: #9a3412;
 }
 
-:root[data-theme="light"] :is(
-  .border-orange-300\/30, .border-orange-300\/40
-) {
-  border-color: rgba(154, 52, 18, 0.35);
+:root[data-theme="light"] .text-emerald-300 {
+  color: #047857;
 }
 
-:root[data-theme="light"] .hover\:border-orange-300\/60:hover {
-  border-color: rgba(154, 52, 18, 0.6);
+:root[data-theme="light"] .text-cyan-300 {
+  color: #0e7490;
 }
 
-:root[data-theme="light"] .hover\:text-orange-50:hover,
-:root[data-theme="light"] .group:hover .group-hover\:text-orange-100 {
-  color: #9a3412;
-}
-
-:root[data-theme="light"] [class*="border-white/"] {
-  border-color: rgba(31, 48, 58, 0.16);
-}
-
-:root[data-theme="light"] [class*="bg-white/"] {
-  background-color: rgba(31, 48, 58, 0.06);
+/* Dimmed amber text needs the deeper ink to stay legible on paper. */
+:root[data-theme="light"] .text-amber-300\/80 {
+  color: #b45309;
 }
 
 :root[data-theme="light"] .brand-title.text-transparent {
@@ -1461,80 +1421,255 @@ button {
   background-color: #e2e8f0;
 }
 
-/* Tinted washes (cyan/emerald/orange at 7–15% alpha) nearly vanish on paper.
-   Light mode densifies them so active filters, match badges, and caution
-   chips keep their meaning instead of looking like bare text. */
-:root[data-theme="light"] [class*="bg-cyan-300/"] {
+/* Alpha-suffixed and state-variant colour utilities, light theme.
+   The light theme overrides colour utilities by class name, and an opacity
+   suffix or a `hover:` prefix makes a different class name. These rules name
+   each class exactly. They used to be `[class*="bg-white/"]`-style substring
+   matches, which also caught `hover:bg-white/...`, so hover fills and borders
+   showed at rest (the catalog star among 15 sites). Unlayered rules beat
+   Tailwind's layered utilities, so each variant needs its own state-gated
+   rule here, or the at-rest override would also win on hover.
+   test/global-css.test.ts fails when a class used in src/ has no rule. */
+
+/* Neutral hairlines and washes: white at low alpha vanishes on paper, so it becomes slate ink. */
+:root[data-theme="light"] .border-white\/5,
+:root[data-theme="light"] .border-white\/8,
+:root[data-theme="light"] .border-white\/\[0\.07\] {
+  border-color: rgba(31, 48, 58, 0.1);
+}
+:root[data-theme="light"] .border-white\/10,
+:root[data-theme="light"] .border-white\/15,
+:root[data-theme="light"] .border-white\/20 {
+  border-color: rgba(31, 48, 58, 0.16);
+}
+:root[data-theme="light"] .bg-white\/\[0\.025\],
+:root[data-theme="light"] .bg-white\/\[0\.03\],
+:root[data-theme="light"] .bg-white\/\[0\.04\] {
+  background-color: rgba(31, 48, 58, 0.04);
+}
+:root[data-theme="light"] .bg-white\/\[0\.05\],
+:root[data-theme="light"] .bg-white\/\[0\.06\],
+:root[data-theme="light"] .bg-white\/10 {
+  background-color: rgba(31, 48, 58, 0.06);
+}
+:root[data-theme="light"] .divide-white\/10 > :not(:last-child) {
+  border-color: rgba(31, 48, 58, 0.16);
+}
+:root[data-theme="light"] .bg-zinc-950\/15 {
+  background-color: rgba(31, 48, 58, 0.1);
+}
+:root[data-theme="light"] .bg-black\/70 {
+  background-color: rgba(15, 23, 30, 0.55);
+}
+
+/* Interaction (cyan). */
+:root[data-theme="light"] .bg-cyan-300\/\[0\.025\],
+:root[data-theme="light"] .bg-cyan-300\/\[0\.05\] {
+  background-color: rgba(8, 145, 178, 0.07);
+}
+:root[data-theme="light"] .bg-cyan-300\/\[0\.07\],
+:root[data-theme="light"] .bg-cyan-300\/10,
+:root[data-theme="light"] .bg-cyan-300\/12,
+:root[data-theme="light"] .bg-cyan-300\/\[0\.12\],
+:root[data-theme="light"] .bg-cyan-300\/15 {
   background-color: rgba(8, 145, 178, 0.14);
 }
-
-:root[data-theme="light"] [class*="bg-emerald-400/"] {
-  background-color: rgba(6, 95, 70, 0.12);
+:root[data-theme="light"] .bg-cyan-300\/20 {
+  background-color: rgba(8, 145, 178, 0.2);
 }
-
-:root[data-theme="light"] [class*="bg-orange-400/"] {
-  background-color: rgba(154, 52, 18, 0.12);
+:root[data-theme="light"] .bg-cyan-300\/70 {
+  background-color: rgba(8, 145, 178, 0.85);
 }
-
-:root[data-theme="light"] :is(
-  [class*="border-cyan-300/40"], [class*="border-cyan-300/50"],
-  [class*="border-cyan-300/60"], [class*="border-cyan-300/70"]
-) {
+:root[data-theme="light"] .border-cyan-300\/25,
+:root[data-theme="light"] .border-cyan-300\/30 {
+  border-color: rgba(8, 145, 178, 0.35);
+}
+:root[data-theme="light"] .border-cyan-300\/40,
+:root[data-theme="light"] .border-cyan-300\/50,
+:root[data-theme="light"] .border-cyan-300\/60,
+:root[data-theme="light"] .border-cyan-300\/65,
+:root[data-theme="light"] .border-cyan-300\/70 {
   border-color: rgba(8, 145, 178, 0.5);
 }
-
-:root[data-theme="light"] :is(
-  [class*="border-emerald-400/40"], [class*="border-orange-300/45"]
-) {
-  border-color: rgba(23, 32, 42, 0.3);
+:root[data-theme="light"] .ring-cyan-300\/35 {
+  --tw-ring-color: rgba(8, 145, 178, 0.45);
 }
-
-/* Hover-to-white predates the light theme, and the exact-class text
-   overrides never matched `hover:`/`group-hover:` variants — so hovering
-   turned labels white-on-white on paper. Substring matching repairs every
-   instance app-wide (catalog, compare, pinout inspector alike). */
-:root[data-theme="light"] :is([class*="hover:text-white"]:hover) {
-  color: #17202a;
+:root[data-theme="light"] .ring-cyan-300\/80 {
+  --tw-ring-color: rgba(8, 145, 178, 0.8);
 }
-
-:root[data-theme="light"] .group:hover :is([class*="group-hover:text-white"]) {
-  color: #17202a;
-}
-
-:root[data-theme="light"] :is([class*="hover:text-cyan-100"]:hover) {
+:root[data-theme="light"] .text-cyan-200\/70,
+:root[data-theme="light"] .text-cyan-200\/80,
+:root[data-theme="light"] .text-cyan-200\/90 {
   color: #075b6b;
 }
-
-:root[data-theme="light"] :is([class*="hover:text-amber-50"]:hover) {
-  color: #854d0e;
-}
-
-:root[data-theme="light"] :is([class*="hover:text-orange-50"]:hover) {
-  color: #9a3412;
-}
-
-/* Alpha-suffixed warm text and pale cool icons never matched the plain-class
-   overrides either (e.g. `text-orange-100/90`, `text-cyan-300/70`), leaving
-   near-white text on cream or invisible icons on paper. `text-orange-50/80`
-   is the /privacy liability disclaimer, which rendered ~1:1 on its cream card. */
-:root[data-theme="light"] :is(
-  [class*="text-orange-50/"], [class*="text-orange-100/"], [class*="text-orange-200/"]
-) {
-  color: #9a3412;
-}
-
-:root[data-theme="light"] :is([class*="text-amber-300/"]) {
-  color: #b45309;
-}
-
-:root[data-theme="light"] :is([class*="text-cyan-300/"]) {
+:root[data-theme="light"] .text-cyan-300\/70,
+:root[data-theme="light"] .text-cyan-300\/80 {
   color: #0e7490;
 }
 
-:root[data-theme="light"] :is(
-  [class*="text-violet-200"], [class*="text-violet-300"]
-) {
-  color: #6d28d9;
+/* Official / present (emerald). */
+:root[data-theme="light"] .bg-emerald-300\/10,
+:root[data-theme="light"] .bg-emerald-400\/10 {
+  background-color: rgba(6, 95, 70, 0.12);
+}
+:root[data-theme="light"] .bg-emerald-300\/60 {
+  background-color: rgba(4, 120, 87, 0.8);
+}
+:root[data-theme="light"] .border-emerald-300\/40,
+:root[data-theme="light"] .border-emerald-400\/35,
+:root[data-theme="light"] .border-emerald-400\/40,
+:root[data-theme="light"] .border-emerald-400\/50 {
+  border-color: rgba(6, 95, 70, 0.35);
+}
+
+/* Hardware caution (orange). */
+:root[data-theme="light"] .bg-orange-400\/10 {
+  background-color: rgba(154, 52, 18, 0.12);
+}
+:root[data-theme="light"] .border-orange-200\/15,
+:root[data-theme="light"] .border-orange-300\/25 {
+  border-color: rgba(154, 52, 18, 0.25);
+}
+:root[data-theme="light"] .border-orange-300\/30 {
+  border-color: rgba(154, 52, 18, 0.35);
+}
+:root[data-theme="light"] .text-orange-50\/80,
+:root[data-theme="light"] .text-orange-100\/70,
+:root[data-theme="light"] .text-orange-100\/80 {
+  color: #9a3412;
+}
+
+/* Favorites (amber). */
+:root[data-theme="light"] .bg-amber-300\/15 {
+  background-color: rgba(217, 119, 6, 0.18);
+}
+:root[data-theme="light"] .bg-amber-400\/20 {
+  background-color: rgba(217, 119, 6, 0.24);
+}
+:root[data-theme="light"] .border-amber-300\/25 {
+  border-color: rgba(146, 94, 6, 0.4);
+}
+:root[data-theme="light"] .border-amber-300\/30 {
+  border-color: rgba(146, 94, 6, 0.45);
+}
+:root[data-theme="light"] .border-amber-300\/40,
+:root[data-theme="light"] .border-amber-300\/50 {
+  border-color: rgba(146, 94, 6, 0.55);
+}
+:root[data-theme="light"] .border-amber-300\/60 {
+  border-color: rgba(146, 94, 6, 0.65);
+}
+
+/* Errors (red). Pale reds read near-white on paper; these darker reds keep AA on the light panels. */
+:root[data-theme="light"] .bg-red-400\/10 {
+  background-color: rgba(185, 28, 28, 0.08);
+}
+:root[data-theme="light"] .border-red-300\/20 {
+  border-color: rgba(185, 28, 28, 0.25);
+}
+:root[data-theme="light"] .border-red-400\/50 {
+  border-color: rgba(185, 28, 28, 0.45);
+}
+:root[data-theme="light"] .text-red-100 {
+  color: #991b1b;
+}
+:root[data-theme="light"] .text-red-300 {
+  color: #b91c1c;
+}
+
+/* Hover variants, gated on :hover (and on a hover-capable pointer, as
+   Tailwind gates them) so they never show at rest. */
+@media (hover: hover) {
+  :root[data-theme="light"] .hover\:bg-white\/5:hover,
+  :root[data-theme="light"] .hover\:bg-white\/\[0\.02\]:hover,
+  :root[data-theme="light"] .hover\:bg-white\/\[0\.04\]:hover,
+  :root[data-theme="light"] .hover\:bg-white\/\[0\.05\]:hover,
+  :root[data-theme="light"] .hover\:bg-white\/\[0\.06\]:hover,
+  :root[data-theme="light"] .hover\:bg-white\/\[0\.08\]:hover {
+    background-color: rgba(31, 48, 58, 0.07);
+  }
+  :root[data-theme="light"] .hover\:border-white\/10:hover {
+    border-color: rgba(31, 48, 58, 0.24);
+  }
+  :root[data-theme="light"] .hover\:border-white\/25:hover {
+    border-color: rgba(31, 48, 58, 0.32);
+  }
+  :root[data-theme="light"] .hover\:bg-cyan-300\/\[0\.07\]:hover,
+  :root[data-theme="light"] .hover\:bg-cyan-300\/10:hover,
+  :root[data-theme="light"] .hover\:bg-cyan-300\/15:hover {
+    background-color: rgba(8, 145, 178, 0.14);
+  }
+  :root[data-theme="light"] .hover\:bg-cyan-300\/20:hover,
+  :root[data-theme="light"] .hover\:bg-cyan-300\/25:hover {
+    background-color: rgba(8, 145, 178, 0.2);
+  }
+  :root[data-theme="light"] .hover\:border-cyan-300\/25:hover,
+  :root[data-theme="light"] .hover\:border-cyan-300\/35:hover {
+    border-color: rgba(8, 145, 178, 0.4);
+  }
+  :root[data-theme="light"] .hover\:border-cyan-300\/40:hover,
+  :root[data-theme="light"] .hover\:border-cyan-300\/50:hover,
+  :root[data-theme="light"] .hover\:border-cyan-300\/60:hover,
+  :root[data-theme="light"] .hover\:border-cyan-300\/80:hover {
+    border-color: rgba(8, 145, 178, 0.6);
+  }
+  :root[data-theme="light"] .hover\:bg-amber-300\/20:hover,
+  :root[data-theme="light"] .hover\:bg-amber-400\/20:hover {
+    background-color: rgba(217, 119, 6, 0.24);
+  }
+  :root[data-theme="light"] .hover\:border-orange-200\/30:hover,
+  :root[data-theme="light"] .hover\:border-orange-300\/40:hover {
+    border-color: rgba(154, 52, 18, 0.5);
+  }
+  :root[data-theme="light"] .hover\:bg-red-400\/10:hover {
+    background-color: rgba(185, 28, 28, 0.08);
+  }
+  :root[data-theme="light"] .hover\:text-white:hover,
+  :root[data-theme="light"] .hover\:text-zinc-200:hover {
+    color: #17202a;
+  }
+  :root[data-theme="light"] .hover\:text-cyan-100:hover,
+  :root[data-theme="light"] .hover\:text-cyan-200:hover {
+    color: #075b6b;
+  }
+  :root[data-theme="light"] .hover\:text-amber-50:hover,
+  :root[data-theme="light"] .hover\:text-amber-200:hover {
+    color: #854d0e;
+  }
+  :root[data-theme="light"] .hover\:text-orange-50:hover {
+    color: #9a3412;
+  }
+  :root[data-theme="light"] .hover\:text-red-200:hover {
+    color: #991b1b;
+  }
+  :root[data-theme="light"] .group:hover .group-hover\:text-white {
+    color: #17202a;
+  }
+  :root[data-theme="light"] .group:hover .group-hover\:text-zinc-300 {
+    color: #44545d;
+  }
+  :root[data-theme="light"] .group:hover .group-hover\:text-cyan-200 {
+    color: #075b6b;
+  }
+  :root[data-theme="light"] .group:hover .group-hover\:text-orange-100 {
+    color: #9a3412;
+  }
+}
+
+/* Focus and disabled variants. */
+:root[data-theme="light"] .focus\:border-cyan-300\/60:focus,
+:root[data-theme="light"] .focus\:border-cyan-300\/70:focus {
+  border-color: rgba(8, 145, 178, 0.7);
+}
+:root[data-theme="light"] .focus\:ring-cyan-300\/30:focus {
+  --tw-ring-color: rgba(8, 145, 178, 0.35);
+}
+:root[data-theme="light"] .focus-visible\:ring-cyan-300\/70:focus-visible,
+:root[data-theme="light"] .focus-visible\:ring-cyan-300\/80:focus-visible {
+  --tw-ring-color: rgba(8, 145, 178, 0.75);
+}
+:root[data-theme="light"] .disabled\:border-white\/10:disabled {
+  border-color: rgba(31, 48, 58, 0.16);
 }
 
 /* Bright-bench depth for the new chrome: soft cool shadows instead of the
@@ -1895,7 +2030,7 @@ button {
    --------------------------------------------------------------------------- */
 .ph-link {
   --link-uart: #bae6fd;
-  --link-i2c: #a5f3fc;
+  --link-i2c: #c7d7fe;
   --link-ground: #a1a1aa;
   --link-caution: #fdba74;
   --link-caution-wash: #1b1410;
@@ -1907,7 +2042,7 @@ button {
 }
 :root[data-theme="light"] .ph-link {
   --link-uart: #0369a1;
-  --link-i2c: #0e7490;
+  --link-i2c: #2f47a3;
   --link-ground: #52525b;
   --link-caution: #c2410c;
   --link-caution-wash: #fff4ea;

@@ -39,7 +39,26 @@ export const finderFilterKeys = Object.keys(finderFilters) as FinderFilterKey[];
 export type FinderQuery = {
   requirements: PlanRequirements;
   filters: Partial<Record<FinderFilterKey, string>>;
+  /**
+   * How many fits to render, in steps of `finderPageSize`. Every fit card is
+   * server-rendered, so rendering all of them made each step of the counters
+   * ship ~300 KB; this keeps a step to one page unless the reader asks.
+   */
+  show?: number;
 };
+
+/** Fits rendered per page; "Show more" adds one page. */
+export const finderPageSize = 24;
+/** The most a `show` can ask for: enough for the whole catalog, still bounded. */
+export const maxFinderShow = finderPageSize * 20;
+
+/** A `show` value as pages of `finderPageSize`, or undefined for the first page. */
+function parseShow(value: string | null): number | undefined {
+  if (!value || !/^\d{1,4}$/.test(value)) return undefined;
+  const pages = Math.ceil(Number(value) / finderPageSize);
+  const show = Math.min(maxFinderShow, pages * finderPageSize);
+  return show > finderPageSize ? show : undefined;
+}
 
 export type FinderFit = {
   board: Board;
@@ -92,7 +111,8 @@ export function parseFinderQuery(input: SearchInput): FinderQuery {
     const value = single(key);
     if (finderFilters[key].some((option) => option.value === value)) filters[key] = value!;
   }
-  return { requirements: parsePlanParam(single(planParam)), filters };
+  const show = parseShow(single("show"));
+  return { requirements: parsePlanParam(single(planParam)), filters, ...(show ? { show } : {}) };
 }
 
 /** Canonical query string (no leading `?`): plan first, then filters in order. */
@@ -104,6 +124,8 @@ export function serializeFinderQuery(query: FinderQuery): string {
     const value = query.filters[key];
     if (finderFilters[key].some((option) => option.value === value)) params.set(key, value!);
   }
+  const show = parseShow(query.show === undefined ? null : String(query.show));
+  if (show) params.set("show", String(show));
   return params.toString();
 }
 

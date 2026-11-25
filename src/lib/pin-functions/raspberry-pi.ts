@@ -79,6 +79,24 @@ const bcm2711Rows: Record<string, string> = {
   GPIO27: "GPIO27#27 | S:SPI6.CS1",
 };
 
+/**
+ * Raspberry Pi's serial documentation (interfaces.adoc, "Primary UART"): the
+ * primary UART, the one on GPIO14 and GPIO15, is UART0 on the Zero, 1, and 2,
+ * and UART1 (the mini UART) on the "Zero W and Zero 2 W" and "Raspberry Pi 3
+ * and 4", where UART0 is the secondary UART wired to Bluetooth. With the mini
+ * UART primary, `enable_uart` defaults to 0.
+ */
+function withMiniUartPrimary(rows: Record<string, string>): Record<string, string> {
+  const swap = (row: string) => row.replace("UART0.TX*", "UART0.TX").replace("UART0.RX*", "UART0.RX")
+    .replace("U:UART1.TX", "U:UART1.TX*").replace("U:UART1.RX", "U:UART1.RX*");
+  return { ...rows, GPIO14: swap(rows.GPIO14), GPIO15: swap(rows.GPIO15) };
+}
+
+const uartNotes = {
+  pl011: " UART0 and UART1 share GPIO14 and GPIO15; UART0 is this model's primary UART there.",
+  mini: " UART0 and UART1 share GPIO14 and GPIO15. On this model UART0 is wired to Bluetooth, so the primary UART on GPIO14 and GPIO15 is UART1, the mini UART, and enable_uart defaults to 0: set enable_uart=1 to use it, or reassign UART0 with an overlay.",
+};
+
 function broadcomData(chip: string, extra: string): PinFunctionData {
   return {
     sources: [
@@ -100,37 +118,38 @@ function broadcomData(chip: string, extra: string): PinFunctionData {
     ],
     mux: {
       model: "fixed",
-      note: `Raspberry Pi: “Almost all of the GPIO pins have alternative functions.” Each GPIO selects one function from its row of the pinctrl table.${extra} UART0 and UART1 share GPIO14 and GPIO15; on models with Bluetooth, UART0 is taken by the radio unless you reassign it.`,
+      note: `Raspberry Pi: “Almost all of the GPIO pins have alternative functions.” Each GPIO selects one function from its row of the pinctrl table.${extra}`,
     },
     flagNotes: {},
     exports: ["c-header", "json"],
   };
 }
 
-const bcm283xData = broadcomData("BCM283x", "");
-const bcm2711Data = broadcomData(
-  "BCM2711",
-  " I2C3 to I2C6, UART3 to UART5, and SPI3 to SPI6 need a dtoverlay.",
-);
+const bcm2711Overlays = " I2C3 to I2C6, UART3 to UART5, and SPI3 to SPI6 need a dtoverlay.";
 
 const families = {
-  bcm283x: { rows: bcm283xRows, data: bcm283xData },
-  bcm2711: { rows: bcm2711Rows, data: bcm2711Data },
+  bcm283x: { rows: bcm283xRows, data: broadcomData("BCM283x", uartNotes.pl011) },
+  "bcm283x-bluetooth": { rows: withMiniUartPrimary(bcm283xRows), data: broadcomData("BCM283x", uartNotes.mini) },
+  "bcm2711-bluetooth": { rows: withMiniUartPrimary(bcm2711Rows), data: broadcomData("BCM2711", `${bcm2711Overlays}${uartNotes.mini}`) },
 };
 
-/** Raspberry Pi models by the pinctrl table their SoC uses. */
+/**
+ * Raspberry Pi models by the pinctrl table their SoC uses, and, for the
+ * wireless models, by the primary-UART row of the serial documentation. The
+ * Pi 400 is a Raspberry Pi 4 (BCM2711 with Bluetooth) and follows its row.
+ */
 export const raspberryPiBoards = {
   "raspberry-pi-1-model-a-plus": "bcm283x",
   "raspberry-pi-1-model-b-plus": "bcm283x",
   "raspberry-pi-2-model-b": "bcm283x",
-  "raspberry-pi-3-model-a-plus": "bcm283x",
-  "raspberry-pi-3-model-b": "bcm283x",
-  "raspberry-pi-3-model-b-plus": "bcm283x",
+  "raspberry-pi-3-model-a-plus": "bcm283x-bluetooth",
+  "raspberry-pi-3-model-b": "bcm283x-bluetooth",
+  "raspberry-pi-3-model-b-plus": "bcm283x-bluetooth",
   "raspberry-pi-zero": "bcm283x",
-  "raspberry-pi-zero-w": "bcm283x",
-  "raspberry-pi-zero-2-w": "bcm283x",
-  "raspberry-pi-4-model-b": "bcm2711",
-  "raspberry-pi-400": "bcm2711",
+  "raspberry-pi-zero-w": "bcm283x-bluetooth",
+  "raspberry-pi-zero-2-w": "bcm283x-bluetooth",
+  "raspberry-pi-4-model-b": "bcm2711-bluetooth",
+  "raspberry-pi-400": "bcm2711-bluetooth",
   "raspberry-pi-500": "rp1",
   "raspberry-pi-500-plus": "rp1",
 } as const;

@@ -69,4 +69,11 @@ export type Board = {
   warnings: Warning[];
   sources: Source[];
   headers: Header[];
+  /**
+   * Where each pin of the shared lookup index sits in this board's own
+   * diagram, keyed by the index label. Needed when the diagram numbers its
+   * headers separately and the index numbers the board as a whole (the UNO);
+   * boards whose diagram uses the index numbering leave it out.
+   */
+  lookupLocations?: Record<string, { header: string; physical: number }>;
 };

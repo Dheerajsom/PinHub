@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { inertOutside } from "@/components/board-visual/inert-outside";
 import { Expand, ExternalLink, X } from "lucide-react";
 import type { Board, PinRole } from "@/lib/boards";
 import { buildBoardGeometry, type BoardGeometry, type PinAnchor } from "@/lib/board-visual-geometry";
@@ -241,13 +242,13 @@ export function ExpandedInspector({
   useEffect(() => {
     closeRef.current?.focus();
     const previousOverflow = document.body.style.overflow;
-    const appRoot = document.querySelector("main");
-    const wasInert = appRoot instanceof HTMLElement ? appRoot.inert : false;
     document.body.style.overflow = "hidden";
-    if (appRoot instanceof HTMLElement) appRoot.inert = true;
+    // Everything but the dialog's own portal: the header and footer sit
+    // outside <main>, which was all this used to make inert.
+    const restore = dialogRef.current ? inertOutside(dialogRef.current) : () => {};
     return () => {
       document.body.style.overflow = previousOverflow;
-      if (appRoot instanceof HTMLElement) appRoot.inert = wasInert;
+      restore();
     };
   }, []);
 

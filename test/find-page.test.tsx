@@ -17,6 +17,26 @@ afterEach(() => {
 const lastUrl = () => router.replace.mock.calls.at(-1)?.[0];
 
 describe("finder controls", () => {
+  it("starts a changed request from the first page of fits", () => {
+    render(<FindControls query={parseFinderQuery("plan=i2c1&show=48")}><p>results</p></FindControls>);
+    fireEvent.click(screen.getByRole("button", { name: "Add one SPI" }));
+    expect(lastUrl()).toBe("/find?plan=i2c1.spi1");
+  });
+
+  it("keeps focus in the form after an example or Start over, whose buttons then disappear", () => {
+    const { unmount } = render(<FindControls query={parseFinderQuery("")}><p>results</p></FindControls>);
+    const example = screen.getByRole("button", { name: "SPI display + I2C sensor" });
+    example.focus();
+    fireEvent.click(example);
+    expect(document.activeElement).toBe(screen.getByRole("heading", { name: "What does your project need?" }));
+    unmount();
+    render(<FindControls query={parseFinderQuery("plan=i2c1")}><p>results</p></FindControls>);
+    const reset = screen.getByRole("button", { name: "Start over" });
+    reset.focus();
+    fireEvent.click(reset);
+    expect(document.activeElement).toBe(screen.getByRole("heading", { name: "What does your project need?" }));
+  });
+
   it("writes each change to the URL the server plans from", () => {
     render(<FindControls query={parseFinderQuery("")}><p>results</p></FindControls>);
     fireEvent.click(screen.getByRole("button", { name: "Add one I2C" }));
@@ -66,12 +86,37 @@ describe("finder results", () => {
     if (first.board.warnings.length) expect(card.textContent).toContain(`${first.board.warnings.length} wiring caution`);
   });
 
-  it("folds fits past the first screenful into a disclosure", () => {
+  it("renders one page of fits and asks the server for the next, instead of rendering every fit hidden", () => {
+    // Every fold used to be server-rendered inside a closed <details>: about
+    // 320 KB of markup on each counter step for a one-bus query.
     const query = parseFinderQuery("plan=i2c1");
     const result = findBoards(boards, query);
     expect(result.fits.length).toBeGreaterThan(finderVisibleFits);
-    render(<FindResults query={query} result={result} />);
-    expect(screen.getByText(`Show ${result.fits.length - finderVisibleFits} more boards that fit`)).toBeTruthy();
+    const { container } = render(<FindResults query={query} result={result} />);
+    expect(container.querySelectorAll("[data-fit-index]")).toHaveLength(finderVisibleFits);
+    expect(container.querySelector("details:not([open]) [data-fit-index]")).toBeNull();
+    const more = screen.getByRole("link", { name: `Show ${finderVisibleFits} more of ${result.fits.length - finderVisibleFits} boards that fit` });
+    expect(more.getAttribute("href")).toBe(`/find?plan=i2c1&show=${finderVisibleFits * 2}`);
+    expect(container.innerHTML.length).toBeLessThan(100_000);
+  });
+
+  it("shows the next page when the URL asks for it, and no link once all fit", () => {
+    const query = parseFinderQuery(`plan=i2c1&show=${finderVisibleFits * 2}`);
+    const result = findBoards(boards, query);
+    const { container, unmount } = render(<FindResults query={query} result={result} />);
+    expect(container.querySelectorAll("[data-fit-index]")).toHaveLength(Math.min(result.fits.length, finderVisibleFits * 2));
+    unmount();
+    const all = parseFinderQuery("plan=i2c1&show=9999");
+    render(<FindResults query={all} result={findBoards(boards, all)} />);
+    expect(screen.queryByRole("link", { name: /^Show \d+ more/ })).toBeNull();
+  });
+
+  it("bounds and normalises the show parameter", () => {
+    expect(parseFinderQuery("plan=i2c1&show=30").show).toBe(finderVisibleFits * 2);
+    expect(parseFinderQuery("plan=i2c1&show=24").show).toBeUndefined();
+    expect(parseFinderQuery("plan=i2c1&show=-5").show).toBeUndefined();
+    expect(parseFinderQuery("plan=i2c1&show=99999").show).toBeUndefined();
+    expect(parseFinderQuery("plan=i2c1&show=9999").show).toBe(finderVisibleFits * 20);
   });
 
   it("warns on a fit that needs pins with recorded cautions", () => {

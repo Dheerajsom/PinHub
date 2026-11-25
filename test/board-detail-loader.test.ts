@@ -34,12 +34,12 @@ describe("createBoardDetailLoader", () => {
     try {
       const fetched = board("stalled");
       const fetchBoard = vi.fn((_input: string | URL | Request, init?: RequestInit) =>
-        Promise.resolve({
-          ok: true,
-          json: () => new Promise((_resolve, reject) => {
-            init?.signal?.addEventListener("abort", () => reject(new Error("aborted")), { once: true });
-          }),
-        } as Response),
+        Promise.resolve(new Response(new ReadableStream<Uint8Array>({
+          // A body that never sends a byte until the request is aborted.
+          start(controller) {
+            init?.signal?.addEventListener("abort", () => controller.error(new Error("aborted")), { once: true });
+          },
+        }))),
       );
       const loader = createBoardDetailLoader([], fetchBoard);
       const failure = expect(loader.load(fetched.id)).rejects.toThrow("aborted");

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { get, put } from "@vercel/blob";
 import { boardPrices } from "@/lib/board-prices";
 import { getLivePrices, readStoredPrices, resetLivePriceCache, writeStoredPrices } from "@/lib/server/price-store";
-import { maxPriceSnapshotBytes, mergePriceObservations, parsePriceSnapshot, readPriceSnapshot } from "@/lib/price-snapshot";
+import { maxPriceSnapshotBytes, mergePriceObservations, mergePriceSnapshot, parsePriceSnapshot, readPriceSnapshot } from "@/lib/price-snapshot";
 import { DELETE, GET as getPrices, OPTIONS, PATCH, POST, PUT } from "@/app/api/prices/route";
 
 const GET = (search = "") => getPrices(new Request(`https://pinhub.test/api/prices${search}`));
@@ -54,6 +54,26 @@ describe("shared price boundaries", () => {
     expect(result.source).toBe("shared");
     expect(result.snapshot.prices[0]).toEqual(boardPrices[0]);
     expect(result.snapshot.prices[1]).toMatchObject({ checkedAt: time });
+  });
+
+  it("serves a merged snapshot the browser accepts when a deploy re-checked a curated listing later", async () => {
+    // The stored snapshot predates the newest curated check, so that curated
+    // listing keeps its later `checkedAt`. The merged snapshot used to keep the
+    // stored `generatedAt`, and the client rejected it as carrying an
+    // observation from after its own generation time.
+    const older = new Date(latestCheck - 6 * 60 * 60 * 1000).toISOString();
+    const early = { schemaVersion: 1 as const, generatedAt: older, prices: boardPrices.map((price) => ({ ...price, checkedAt: older })) };
+    vi.mocked(get).mockResolvedValue({ ...stored(), stream: new Response(JSON.stringify(early)).body! } as Awaited<ReturnType<typeof get>>);
+    const result = await getLivePrices();
+    expect(result.source).toBe("shared");
+    expect(Date.parse(result.snapshot.generatedAt)).toBe(latestCheck);
+    expect(() => parsePriceSnapshot(JSON.parse(JSON.stringify(result.snapshot)))).not.toThrow();
+  });
+
+  it("never moves a merged snapshot's generatedAt backwards", () => {
+    const merged = mergePriceSnapshot(boardPrices, snapshot());
+    expect(merged.generatedAt).toBe(time);
+    expect(merged.prices).toEqual(mergePriceObservations(boardPrices, snapshot().prices));
   });
 
   it("conditionally replaces exactly the version read, rejecting a cached or concurrent version", async () => {

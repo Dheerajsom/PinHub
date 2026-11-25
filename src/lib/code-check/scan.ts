@@ -40,7 +40,16 @@ export type BusPeripheral = "I2C" | "SPI" | "UART";
 
 /** What the code does with a pin, in the code's own terms. */
 export type Usage =
-  | { kind: "output" | "input" | "gpio" | "adc" | "dac" | "pwm" | "touch"; label: string }
+  | {
+      kind: "output" | "input" | "gpio" | "adc" | "dac" | "pwm" | "touch";
+      label: string;
+      /**
+       * A data line the board itself pulls low as part of the protocol (1-Wire
+       * reset and write slots, the DHT start signal), so it needs an output
+       * driver even though the code never says OUTPUT.
+       */
+      hostDriven?: boolean;
+    }
   | {
       kind: "bus";
       peripheral: BusPeripheral;
@@ -1060,8 +1069,8 @@ const usage = {
   servo: { kind: "pwm", label: "Servo" },
   touch: { kind: "touch", label: "Touch" },
   pixel: { kind: "output", label: "LED strip data" },
-  oneWire: { kind: "gpio", label: "1-Wire bus" },
-  sensorData: { kind: "gpio", label: "Sensor data line" },
+  oneWire: { kind: "gpio", label: "1-Wire bus", hostDriven: true },
+  sensorData: { kind: "gpio", label: "Sensor data line", hostDriven: true },
 } satisfies Record<string, Usage>;
 
 function bus(peripheral: BusPeripheral, signal: string, soft = false, busId?: number): Usage {
@@ -1261,6 +1270,145 @@ function espIdfRules(call: Call): Pick[] {
     default:
       return [];
   }
+}
+
+/**
+ * A field value as the scanner reads it: the masked text (comments and
+ * strings blanked, so a commented-out `| (1ULL << 34)` names no pin and a
+ * comment saying "not GPIO_MODE_OUTPUT" sets no mode) at its offset in the source.
+ */
+type IdfField = { text: string; start: number };
+type IdfEvent =
+  | { at: number; kind: "open" | "close" }
+  | { at: number; kind: "declare"; name: string; fields: Map<string, IdfField> }
+  | { at: number; kind: "assign"; name: string; field: string; value: IdfField }
+  | { at: number; kind: "apply"; name: string };
+
+/** A value runs to the next `,` `;` or `}` and may span lines (`(1ULL << 4) |\n (1ULL << 34)`). */
+function fieldValue(masked: string, start: number, length: number): IdfField {
+  return { text: masked.slice(start, start + length).replace(/\s+$/, ""), start };
+}
+
+/** The designated `.field = value` entries of the initializer between `open` and `close`. */
+function initializerFields(masked: string, open: number, close: number): Map<string, IdfField> {
+  const fields = new Map<string, IdfField>();
+  // Designated fields only: `.mode` right after `{` or `,`, never `other.mode`.
+  for (const found of masked.slice(open + 1, close).matchAll(/(?:^|,)\s*\.([a-z_]+)[ \t]*=[ \t]*([^,;}]+)/g)) {
+    const start = open + 1 + (found.index ?? 0) + found[0].length - found[2].length;
+    fields.set(found[1], fieldValue(masked, start, found[2].length));
+  }
+  return fields;
+}
+
+function matchingBrace(masked: string, open: number): number {
+  let depth = 0;
+  for (let index = open; index < masked.length && index - open < 8192; index += 1) {
+    if (masked[index] === "{") depth += 1;
+    else if (masked[index] === "}" && --depth === 0) return index;
+  }
+  return -1;
+}
+
+/**
+ * Each pin_bit_mask with the mode it is configured with. The (masked) source
+ * is replayed in order, with C block scope: a `gpio_config_t name = {...}`
+ * declaration starts a struct visible until its block closes (shadowing any
+ * outer `name`), field assignments (`name.mode = ...`, `name->pin_bit_mask =
+ * ...`) update the struct in scope, and each `gpio_config(&name)` applies the
+ * mask and mode that struct holds at that call. That covers a mode in the
+ * initializer with the mask assigned later, a struct reused for another pin,
+ * the same name in two functions, and a nested block's own struct. A mask no
+ * call applies (a fragment) is read with its struct's final mode, and a
+ * compound literal with its own initializer's mode.
+ */
+function gpioConfigUses(masked: string): Array<{ mask: IdfField; mode: string | undefined }> {
+  const events: IdfEvent[] = [];
+  const claimed = new Set<number>();
+  for (const found of masked.matchAll(/[{}]/g)) {
+    events.push({ at: found.index ?? 0, kind: found[0] === "{" ? "open" : "close" });
+  }
+  for (const found of masked.matchAll(/\bgpio_config_t\s+([A-Za-z_]\w*)\s*(=\s*\{)?/g)) {
+    const open = found[2] ? (found.index ?? 0) + found[0].length - 1 : -1;
+    const close = open >= 0 ? matchingBrace(masked, open) : -1;
+    const fields = close > open && open >= 0 ? initializerFields(masked, open, close) : new Map<string, IdfField>();
+    events.push({ at: found.index ?? 0, kind: "declare", name: found[1], fields });
+  }
+  for (const found of masked.matchAll(/\b([A-Za-z_]\w*)[ \t]*(?:\.|->)[ \t]*(mode|pin_bit_mask)[ \t]*=[ \t]*([^;}]+)/g)) {
+    const start = (found.index ?? 0) + found[0].length - found[3].length;
+    events.push({ at: found.index ?? 0, kind: "assign", name: found[1], field: found[2], value: fieldValue(masked, start, found[3].length) });
+  }
+  for (const found of masked.matchAll(/\bgpio_config\s*\(\s*&?\s*([A-Za-z_]\w*)\s*\)/g)) {
+    events.push({ at: found.index ?? 0, kind: "apply", name: found[1] });
+  }
+  // A declaration sorts before the `{` of its own initializer at a later offset.
+  events.sort((a, b) => a.at - b.at);
+
+  const uses: Array<{ mask: IdfField; mode: string | undefined }> = [];
+  /** A struct whose mask no call applied: read it with the mode it ended with. */
+  const settle = (fields: Map<string, IdfField> | undefined) => {
+    const mask = fields?.get("pin_bit_mask");
+    if (mask && !claimed.has(mask.start)) {
+      claimed.add(mask.start);
+      uses.push({ mask, mode: fields!.get("mode")?.text });
+    }
+  };
+  /** Each name's visible structs, innermost last, with the block depth that declared them. */
+  const scopes = new Map<string, Array<{ depth: number; fields: Map<string, IdfField> }>>();
+  const visible = (name: string) => scopes.get(name)?.at(-1);
+  let depth = 0;
+  for (const event of events) {
+    if (event.kind === "open") depth += 1;
+    else if (event.kind === "close") {
+      depth = Math.max(0, depth - 1);
+      for (const stack of scopes.values()) {
+        while (stack.length && stack.at(-1)!.depth > depth) settle(stack.pop()!.fields);
+      }
+    } else if (event.kind === "declare") {
+      const stack = scopes.get(event.name) ?? [];
+      // Redeclared in the same block (two functions at file scope are each a block).
+      if (stack.at(-1)?.depth === depth) settle(stack.pop()!.fields);
+      stack.push({ depth, fields: new Map(event.fields) });
+      scopes.set(event.name, stack);
+    } else if (event.kind === "assign") {
+      let binding = visible(event.name);
+      if (!binding) {
+        // A struct declared out of view (a parameter, a global in another file).
+        binding = { depth: 0, fields: new Map() };
+        scopes.set(event.name, [binding]);
+      }
+      if (event.field === "pin_bit_mask") settle(binding.fields);
+      binding.fields.set(event.field, event.value);
+    } else if (event.kind === "apply") {
+      const fields = visible(event.name)?.fields;
+      const mask = fields?.get("pin_bit_mask");
+      if (!mask) continue;
+      claimed.add(mask.start);
+      uses.push({ mask, mode: fields!.get("mode")?.text });
+    }
+  }
+  for (const stack of scopes.values()) for (const binding of stack) settle(binding.fields);
+
+  // Masks in an initializer that is not a named declaration (a compound
+  // literal passed straight in): read them with their own initializer's mode.
+  for (const found of masked.matchAll(/[{,]\s*\.pin_bit_mask[ \t]*=[ \t]*([^,;}]+)/g)) {
+    const start = (found.index ?? 0) + found[0].length - found[1].length;
+    if (claimed.has(start)) continue;
+    let mode: string | undefined;
+    let level = 0;
+    for (let index = found.index ?? 0; index >= 0 && (found.index ?? 0) - index < 4096; index -= 1) {
+      if (masked[index] === "}") level += 1;
+      else if (masked[index] === "{") {
+        if (level === 0) {
+          const close = matchingBrace(masked, index);
+          if (close > (found.index ?? 0)) mode = initializerFields(masked, index, close).get("mode")?.text;
+          break;
+        }
+        level -= 1;
+      }
+    }
+    uses.push({ mask: fieldValue(masked, start, found[1].length), mode });
+  }
+  return uses;
 }
 
 const idfFields: Record<string, Usage> = {
@@ -1598,11 +1746,13 @@ export function scanCode(input: string, chosen?: Dialect | null): ScanResult {
       const text = source.slice(start, start + match[2].length).trimEnd();
       record({ arg: { text, start, end: start + text.length }, usage: use });
     }
-    for (const match of masked.matchAll(/\.pin_bit_mask[ \t]*=[ \t]*([^;}\r\n]+)/g)) {
-      const base = (match.index ?? 0) + match[0].length - match[1].length;
-      for (const bit of match[1].matchAll(/(?:1ULL\s*<<\s*|BIT64\s*\(\s*)([A-Za-z_0-9]+)/g)) {
-        const start = base + (bit.index ?? 0) + bit[0].length - bit[1].length;
-        record({ arg: { text: bit[1], start, end: start + bit[1].length }, usage: usage.gpio });
+    // The bits of a gpio_config_t's pin_bit_mask name pins; the struct's
+    // `.mode` at the gpio_config() call that applies it says how they are used.
+    for (const { mask, mode } of gpioConfigUses(masked)) {
+      const use = modeUsage(mode);
+      for (const bit of mask.text.matchAll(/(?:1ULL\s*<<\s*|BIT64\s*\(\s*)([A-Za-z_0-9]+)/g)) {
+        const start = mask.start + (bit.index ?? 0) + bit[0].length - bit[1].length;
+        record({ arg: { text: bit[1], start, end: start + bit[1].length }, usage: use });
       }
     }
   }
