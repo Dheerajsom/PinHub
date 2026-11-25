@@ -154,10 +154,14 @@ function Landmark({ kind, w, h, count: specifiedCount, paint }: PartProps) {
         <rect x={w * .1} y={h * .58} width={w * .8} height={h * .35} rx=".7" fill="#151e24" />
         {[.24, .41, .58, .75].map(at => <rect key={at} x={w * at} y={h * .69} width={w * .04} height={h * .13} fill="#c3b798" />)}
       </>;
+    case "silk":
+      return null;
     case "button":
+    case "button-blue":
       return <>
         {rect(metal)}
-        <circle cx={w / 2} cy={h / 2} r={Math.min(w, h) * .35} fill="#343d40" stroke="#778285" strokeWidth=".9" />
+        <circle cx={w / 2} cy={h / 2} r={Math.min(w, h) * .35} fill={kind === "button-blue" ? "#2f6db5" : "#343d40"}
+          stroke={kind === "button-blue" ? "#9cc1e6" : "#778285"} strokeWidth=".9" />
         <path d={`M1 ${h * .17}h${w * .13}m${w * .69} ${h * .65}h${w * .12}`} stroke="#616c6f" />
       </>;
     case "crystal":
@@ -456,13 +460,9 @@ export const ProductDrawing = memo(function ProductDrawing({
             <rect width={w} height={h} rx={radius} fill={paint("mask")} stroke="#899790" strokeWidth="1.2" />
           </>
         )}
-        {id.startsWith("stm32-nucleo-") && model.aspect < 1 && (
-          <g stroke="#85989a" fill="#475c61">
-            <path d={`M0 ${h * 0.28}h${w}`} strokeDasharray="5 4" fill="none" />
-            <text x={w * 0.12} y={h * 0.24} fontSize="11" stroke="none" fontFamily="monospace">
-              ST-LINK
-            </text>
-          </g>
+        {model.snapOff !== undefined && (
+          // Perforation between a breakable debugger section and the target.
+          <path data-snap-off="" d={`M0 ${h * model.snapOff / 100}h${w}`} stroke="#85989a" strokeDasharray="5 4" fill="none" />
         )}
         {model.outline !== "case" && <PackageDetails model={model} height={h} paint={paint} />}
         {id === "orange-pi-5" && (
@@ -481,6 +481,16 @@ export const ProductDrawing = memo(function ProductDrawing({
           const port = portPlacement(kind, w * x / 100, h * y / 100, pw, ph, h);
           const markWidth = textRotation ? ph : pw;
           const markHeight = textRotation ? pw : ph;
+          if (kind === "silk") {
+            return mark ? (
+              <text key={i} data-landmark={kind} x={(w * x) / 100 + pw / 2} y={(h * y) / 100 + ph / 2}
+                transform={textRotation ? `rotate(${textRotation} ${(w * x) / 100 + pw / 2} ${(h * y) / 100 + ph / 2})` : undefined}
+                textAnchor="middle" dominantBaseline="middle" fontFamily="monospace" fill="#475c61"
+                fontSize={Math.min(markWidth * 1.6 / mark.length, markHeight * .8)}>
+                {mark}
+              </text>
+            ) : null;
+          }
           const modelLine = kind === "shield" && id.startsWith("seeed-xiao-")
             ? `XIAO ${id.slice("seeed-xiao-".length).replace("-sense", "").toUpperCase()}`
             : kind === "shield" && mark === "ESPRESSIF" ? id.split("-").slice(0, 2).join("-").replace(/-devkit.*/i, "").toUpperCase() : undefined;

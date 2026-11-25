@@ -5,6 +5,7 @@ import { Scan, ZoomIn, ZoomOut } from "lucide-react";
 import type { Board } from "@/lib/boards";
 import { buildBoardGeometry, wholeBoardFrame, type BoardGeometry } from "@/lib/board-visual-geometry";
 import { BoardStage } from "./BoardStage";
+import { ConnectorDiagramCanvas } from "./ConnectorDiagramCanvas";
 import { ProductPortrait } from "./ProductPortrait";
 import { touchDrawingWidth } from "./touch-sizing";
 import { usePinViewport } from "./use-pin-viewport";
@@ -41,10 +42,21 @@ export function BoardDrawingViewport({ board, geometry, enlargeLabels = false, .
   }, [sheet, touch, zoom]);
 
   const pannable = touch && overflows;
+  if (!registered) {
+    // No verified positions on the illustration: show the product, then the
+    // connector diagram on its own pan-and-zoom canvas.
+    return (
+      <div className="min-w-0">
+        <ProductPortrait id={board.id} name={board.name} />
+        <ConnectorDiagramCanvas key={board.id} sheet={sheet} sheetLabel={board.name}
+          title={`${board.name} connector diagram — ${board.pinout?.connector}`} {...pins} />
+      </div>
+    );
+  }
   return (
     <div className="board-drawing min-w-0">
       <div className="board-view-toolbar">
-        <span>{touch ? (registered ? "Pin detail" : "Connector diagram") : "Whole board"}</span>
+        <span>{touch ? "Pin detail" : "Whole board"}</span>
         <div className="flex flex-wrap gap-x-2">
           {enlargeLabels && touch && (
             <button type="button" aria-pressed={zoom === "labels"} onClick={() => setZoom(zoom === "labels" ? "touch" : "labels")}>
@@ -57,12 +69,6 @@ export function BoardDrawingViewport({ board, geometry, enlargeLabels = false, .
           </button>
         </div>
       </div>
-      {!registered && !touch && (
-        <>
-          <ProductPortrait id={board.id} name={board.name} />
-          <p className="mt-3 mb-1 text-xs text-zinc-400">Connector diagram</p>
-        </>
-      )}
       <div
         ref={viewport}
         className="bv-stage-wrap board-view-scroll"
@@ -78,8 +84,8 @@ export function BoardDrawingViewport({ board, geometry, enlargeLabels = false, .
               : { maxWidth: `min(100%, 720px, calc(60svh * ${frame.w / frame.h}))` }),
           }}
         >
-          <BoardStage geometry={sheet} connectorOnly={!registered} compact={compact} sheetLabel={board.name}
-            title={`${board.name} ${registered ? "physical board" : "connector diagram"} — ${board.pinout?.connector}`}
+          <BoardStage geometry={sheet} compact={compact} sheetLabel={board.name}
+            title={`${board.name} physical board — ${board.pinout?.connector}`}
             showAllLabels={!compact} {...pins} />
         </div>
       </div>

@@ -37,8 +37,62 @@ for (const name of ["Orange Pi 5", "Arduino UNO Rev3", "Adafruit Feather RP2040"
     const selected = map.locator('.bv-pad[aria-pressed="true"]');
     await expect(selected).toHaveAttribute("data-pin-key", key!);
     await expectTappableInsideMap(selected);
-    await map.getByRole("button", { name: "Fit whole board" }).tap();
+    // Connector diagrams zoom inside their own canvas and fit back to the diagram.
+    const fit = map.getByRole("button", { name: /^Fit (whole board|diagram)$/ });
+    await fit.tap();
+    await expect(frame).toHaveAttribute("data-board-view", "fit");
     await map.getByRole("button", { name: "Zoom to touch size" }).tap();
     await expectTappableInsideMap(selected);
   });
 }
+
+test("a connector diagram zooms with the buttons and pans with a finger", async ({ page }) => {
+  await page.goto("/boards/stm32-nucleo-h753zi");
+  const canvas = page.getByRole("group", { name: "Connector diagram, zoomable" });
+  await expect(canvas).toHaveAttribute("data-board-view", "fit");
+  const viewBox = () => canvas.locator("svg").getAttribute("viewBox").then(v => v!.split(" ").map(Number));
+  const fitBox = await viewBox();
+  await page.getByRole("button", { name: "Zoom in" }).tap();
+  await page.getByRole("button", { name: "Zoom in" }).tap();
+  await expect(canvas).toHaveAttribute("data-board-view", "zoomed");
+  const zoomed = await viewBox();
+  expect(zoomed[2]).toBeLessThan(fitBox[2]);
+  // Once zoomed, the canvas takes the gesture instead of the page.
+  expect(await canvas.evaluate(node => getComputedStyle(node).touchAction)).toBe("none");
+  const box = (await canvas.boundingBox())!;
+  const scroll = await page.evaluate(() => window.scrollY);
+  await canvas.dispatchEvent("pointerdown", { pointerId: 7, pointerType: "touch", isPrimary: true, clientX: box.x + 200, clientY: box.y + 200, button: 0 });
+  await canvas.dispatchEvent("pointermove", { pointerId: 7, pointerType: "touch", isPrimary: true, clientX: box.x + 120, clientY: box.y + 120, button: 0 });
+  await canvas.dispatchEvent("pointerup", { pointerId: 7, pointerType: "touch", isPrimary: true, clientX: box.x + 120, clientY: box.y + 120, button: 0 });
+  const panned = await viewBox();
+  expect(panned[0]).toBeGreaterThan(zoomed[0]);
+  expect(panned[1]).toBeGreaterThan(zoomed[1]);
+  expect(await page.evaluate(() => window.scrollY)).toBe(scroll);
+  await page.getByRole("button", { name: "Fit diagram" }).tap();
+  expect(await viewBox()).toEqual(fitBox);
+});
+
+test("a finger swiped across the whole connector diagram scrolls the page", async ({ page }) => {
+  await page.goto("/boards/stm32-nucleo-h753zi");
+  const canvas = page.getByRole("group", { name: "Connector diagram, zoomable" });
+  await expect(canvas).toHaveAttribute("data-board-view", "fit");
+  await canvas.evaluate(node => node.scrollIntoView({ block: "center", behavior: "instant" }));
+  for (const name of ["Zoom out", "Zoom in"]) {
+    const control = (await page.getByRole("button", { name, exact: true }).boundingBox())!;
+    expect(control.width).toBeGreaterThanOrEqual(44);
+    expect(control.height).toBeGreaterThanOrEqual(44);
+  }
+  const box = (await canvas.boundingBox())!;
+  const x = box.x + box.width / 2;
+  const before = await page.evaluate(() => window.scrollY);
+  // A real touch sequence, so the browser's own pan and scroll chaining decide.
+  const cdp = await page.context().newCDPSession(page);
+  const touch = (type: "touchStart" | "touchMove" | "touchEnd", y: number) => cdp.send("Input.dispatchTouchEvent", {
+    type, touchPoints: type === "touchEnd" ? [] : [{ x, y }],
+  });
+  await touch("touchStart", box.y + box.height * 0.8);
+  for (let step = 1; step <= 10; step++) await touch("touchMove", box.y + box.height * (0.8 - step * 0.05));
+  await touch("touchEnd", 0);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before + 50);
+  await expect(canvas).toHaveAttribute("data-board-view", "fit");
+});

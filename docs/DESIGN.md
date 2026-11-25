@@ -178,6 +178,17 @@ Two presentations of one dataset, behind a persisted segmented control:
   enlarged drawing scrolls inside its own viewport. **Fit whole board**
   restores the overview and preserves the selection. The pin picker and
   Raspberry Pi connector list also support selection from the overview.
+- **Connector diagrams pan and zoom.** A board whose pins are drawn on a
+  separate connector diagram keeps its product illustration above, and the
+  diagram sits on its own canvas (`ConnectorDiagramCanvas`). The mouse wheel
+  zooms about the pointer; a drag with the left, middle or right button pans,
+  as in a PCB editor. A drag never selects a pad; a click still does. At the
+  whole-diagram view, zooming out with the wheel scrolls the page instead,
+  and a finger scrolls the page. Once zoomed in, one finger pans and two
+  fingers pinch. **−**, **+**, **Zoom to touch size** and **Fit diagram**
+  cover the same moves, and the focused canvas takes `+`, `−`, `0` and the
+  arrow keys. A pad picked from the list or focused by keyboard is brought
+  into view.
 - **November 24 fit and zoom review.** The Chrome review checked every illustration
   at 390 × 844. After zooming, all 7,075 interactive pin targets across 190
   boards measured at least 44 CSS pixels in both dimensions. Eighty journeys
@@ -193,6 +204,14 @@ Two presentations of one dataset, behind a persisted segmented control:
   separate selectable connector diagram follows the product illustration.
   Six boards awaiting pin maps show the product and its reference links.
   `renderCoverage` checks these counts. [Orange Pi 5 user manual, §§1.5 and 3.16](https://orangepi.vn/wp-content/uploads/2023/03/OrangePi_5_RK3588S_User-Manual_v0.7.pdf).
+- **STM32 boards follow ST's drawings.** The NUCLEO-H753ZI (MB1364) is
+  measured from the UM2407 mechanical drawing: two-row Zio sockets at their
+  own heights (CN7 above CN8), 2 × 35 morpho headers, and along the bottom
+  edge the blue USER switch, user USB, RJ45 jack and black RESET switch. Its
+  Zio connector diagram uses the same measured row heights
+  (`firstRowMm` in `board-visuals.ts`). Nucleo-64 boards share the UM1724
+  header frame, with per-board ST-LINK sections. A dashed perforation is
+  drawn only where the ST-LINK section breaks off.
 - **Hardware landmarks.** Each non-Pi model has an explicit entry in
   `src/lib/board-portraits.ts`. Shared footprints use the same drawing when
   their visible landmarks coincide. Port shells, radio cans, screens, buttons

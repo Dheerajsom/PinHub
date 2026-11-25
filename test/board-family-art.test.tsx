@@ -227,7 +227,7 @@ describe("embedded product pin map", () => {
     }
   });
 
-  it("shows the whole product before the grouped signal diagram", () => {
+  it("shows the whole product above a zoomable grouped signal diagram", () => {
     const board = byId("beaglebone-black");
     const { container } = render(<BoardPinoutVisualization board={board} />);
     const portrait = screen.getByRole("img", { name: `Simplified illustration of ${board.name}` });
@@ -235,10 +235,11 @@ describe("embedded product pin map", () => {
     expect(portrait.compareDocumentPosition(frame) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(frame.dataset.boardView).toBe("fit");
     fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
-    expect(frame.dataset.boardView).toBe("touch");
-    expect(screen.queryByRole("img", { name: `Simplified illustration of ${board.name}` })).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Fit whole board" }));
+    expect(frame.dataset.boardView).toBe("zoomed");
+    // The product stays in view: the diagram zooms inside its own canvas.
     expect(screen.getByRole("img", { name: `Simplified illustration of ${board.name}` })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Fit diagram" }));
+    expect(frame.dataset.boardView).toBe("fit");
   });
 
   it("registers the Orange Pi 5's 26 contacts on its illustrated component side", () => {

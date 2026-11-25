@@ -126,3 +126,155 @@ payload optimisation, not a defect.
 - Product photos were compared for three Adafruit boards only. Other
   corrections rest on the boards' published specifications, such as USB-C
   and header counts.
+
+## Follow-up: STM32 illustrations and connector-diagram zoom
+
+A user with a NUCLEO-H753ZI on the bench reported that the Dynamic view did not
+match the board. The RJ45 jack covered the end of a header. The switches were
+drawn near the top, but the blue USER switch sits left of the RJ45 and the
+black RESET switch to its right. The Zio connector diagram was unreadable
+until zoomed.
+
+### Sources
+
+- NUCLEO-H753ZI: UM2407 Rev 4 (local copy). Figure 4 is the top layout and
+  Figure 6 the mechanical drawing (70 × 133.34 mm). Header rows, holes, ports
+  and switches were measured from the Figure 6 raster: 70 mm = 1,098 px, about
+  0.06 mm per pixel.
+- Nucleo-64 MB1136: the UM1724 top-layout figure, as reproduced in the Zephyr
+  board docs (`nucleo_f103rb_connectors.jpg`).
+- NUCLEO-C031C6 (MB1717), NUCLEO-H503RB (MB1814), NUCLEO-F303K8 pinout and
+  STM32F4DISCOVERY: the top-view product photos in the Zephyr board docs.
+- NUCLEO-G431RB and NUCLEO-G474RE (MB1367): perspective product photos only.
+
+### Findings
+
+1. **NUCLEO-H753ZI drawn wrong.**
+   - Zio CN7–CN10 were single rows of about a dozen holes. They are two-row
+     sockets (2 × 10, 2 × 8, 2 × 15 and 2 × 17).
+   - The morpho headers were 2 × 19; they are 2 × 35.
+   - The RJ45 covered the bottom of the right-hand header.
+   - The switches were at the top. They belong on the bottom edge, in the
+     order USER (blue), user USB, RJ45, RESET (black).
+   - The ST-LINK USB was centred; it sits right of centre.
+   - A snap-off line was drawn, but the MB1364 STLINK-V3E section is not
+     breakable.
+2. **Zio diagram rows aligned at the top.** On the board CN7 starts 9.1 mm
+   above CN8, and CN9 and CN10 end level.
+3. **Nucleo-64 boards.**
+   - Each inner Arduino side was one strip. They are CN6 (8) + CN8 (6) on the
+     left and CN5 (10) + CN9 (8) on the right.
+   - The mounting holes, SWD header and CN2 jumpers were missing.
+   - The switches had no colour.
+   - "New" boards had an unexplained JST socket.
+   - The H503RB's USB-C connectors were drawn as micro-USB.
+4. **Nucleo-32.** The RESET switch is at the far end, not mid-board.
+5. **STM32F4DISCOVERY.** The switches sat mid-board. They belong below the
+   MCU. The audio jack was missing.
+6. **Other boards with parts drawn over others.** A catalog-wide scan found
+   these collisions:
+   - HDMI over a header: RockPro64, ODROID-M1.
+   - Ethernet over P9: BeagleBone AI-64. Its P8/P9 were also drawn 78 % of
+     the board long; 2 × 23 at 2.54 mm is 57 %.
+   - USB-B over the ICSP header: UNO, Mega.
+   - Barrel jack over a mounting hole: every UNO- and Mega-size shield board.
+   - Ethernet over USB-C: Orange Pi 5 Plus.
+   - RESET over J1: MSP430 LaunchPad.
+   - BOOT switch against the STEMMA QT socket: QT Py ESP32 boards.
+   - USB over a Pmod: Nexys A7.
+   - Small overlaps on Khadas VIM4, Orange Pi 3B, Orange Pi Zero 2W,
+     BeagleBone Green, T-Display-S3, ESP32 Thing and XIAO nRF54.
+
+### Changes
+
+- **`board-portraits.ts`**
+  - Added a measured MB1364 layout for the NUCLEO-H753ZI.
+  - Added a shared Nucleo-64 header frame (UM1724), with per-board ST-LINK
+    sections for MB1136, MB1367, MB1717 and MB1814.
+  - Moved G071RB and G0B1RE to the MB1136 layout, which their photos show.
+  - Redrew the Nucleo-32 and STM32F4DISCOVERY layouts.
+  - New part kinds: `button-blue` and `silk`. A `snapOff` field marks a
+    breakable ST-LINK section, for MB1136 and MB1717 only.
+  - Shield boards: edge ports are scaled for Mega-size boards, and the
+    left-hand holes are placed at the UNO's 14.0 mm and 15.2 mm.
+  - Moved the colliding parts in finding 6 by the smallest step that clears
+    them.
+- **`board-visuals.ts` and `board-visual-geometry.ts`.** `firstRowMm` places
+  each Zio header of the Nucleo-144 diagram at its measured row height.
+- **`ConnectorDiagramCanvas.tsx` and `diagram-view.ts`.** Every board drawn as
+  a separate connector diagram (99 boards) now gets a pan-and-zoom canvas
+  under the product illustration. The illustration no longer disappears when
+  the diagram is zoomed. The canvas behaves as follows:
+  - The wheel zooms about the pointer.
+  - A left, middle or right drag pans, with no context menu. A drag never
+    selects a pad.
+  - Touch pans and pinches once zoomed. At the whole-diagram view, a finger
+    or a wheel-out scrolls the page.
+  - Buttons (−, +, Zoom to touch size, Fit diagram) and the keys `+`, `−`,
+    `0` and the arrows do the same.
+  - A pad picked from the list or focused by keyboard is brought into view.
+
+### Tests
+
+- `test/stm32-portraits.test.ts`:
+  - Every STM32 board is covered, with no overlapping parts.
+  - The MB1364 bottom-edge order, Zio and morpho row counts, Zio heights,
+    the Nucleo-64 header frame, the switch colours, the snap-off line only
+    on breakable boards, and the F4 Discovery switches.
+- `test/portrait-overlaps.test.ts`: on every illustration, no port is drawn
+  over a header, hole, switch or package, and no header over a hole or
+  switch. This is 177 cases; the XIAO ESP32S3 Sense camera board is exempt
+  because it is stacked.
+- Against the previous drawings, 37 cases in these two files fail.
+- `test/connector-diagram-canvas.test.tsx`:
+  - Wheel zoom about the pointer, and the wheel at fit left to the page.
+  - Right-drag pan and the suppressed context menu.
+  - Drag versus click on a pad.
+  - The keyboard, and revealing a pin picked from the list.
+  - The view math.
+- `e2e/connector-diagram-zoom.spec.ts`: in Chrome, the wheel, a right-button
+  drag and a pad click. `e2e/dynamic-pin-size.spec.ts` gained a touch
+  button-zoom and one-finger pan case, and accepts **Fit diagram** for
+  connector boards.
+
+### Verification
+
+- `npm run lint`, `npm run typecheck`, `npm test` (99 files, 2,527 tests) and
+  `npm run build`: pass.
+- `npm --prefix cli run generate:boards` and `check:boards`: pass, with no
+  content change.
+- `CI=1 npx playwright test --retries=0`: 176/176 in two consecutive full runs.
+- Mobile gate (mobile-mojo, Chrome with touch emulation and CDP touch input),
+  at 360 × 800, 390 × 844, 412 × 915 and 844 × 390 in both themes, on the
+  board page and the catalog panel:
+  - The first pass found two defects:
+    - At the whole-diagram view, a one-finger swipe on the canvas did not
+      scroll the page. `overscroll-behavior: contain` stopped scroll chaining.
+    - The − and + buttons were 26 px wide.
+  - Both were fixed. A real CDP swipe case was added to
+    `e2e/dynamic-pin-size.spec.ts`; it fails with the old CSS.
+  - The recheck passed:
+    - The page scrolls by about 146 px per swipe at fit, in every cell.
+    - Once zoomed, a swipe pans the diagram, pinch works in both directions,
+      and the page stays still.
+    - The zoom buttons measure 44 × 44. Pad hit areas are at least 45.3 px
+      after **Zoom to touch size**.
+    - There were no console errors.
+    - The six nudged and new illustrations were opened and show no overlaps.
+
+### Known limits
+
+- The MB1367 (G431RB, G474RE) ST-LINK section is placed from perspective
+  photos. Only the arrangement is claimed: USB at the top, blue switch left
+  of black.
+- Blue Pill and Black Pill were checked only for overlaps; no layout source
+  was available.
+- Nucleo-64 mounting holes follow MB1136 on every variant.
+- Two-finger pinch at the whole-diagram view is left to the browser. Zoom in
+  with **+** first.
+- In one of 42 emulated runs, a **Zoom to touch size** tap made while the
+  page was still momentum-scrolling did not zoom. Browsers normally spend such
+  a tap stopping the fling, and 26 repeat attempts all zoomed. This was not
+  checked on a real device.
+- Not covered by the mobile gate: real devices, iOS Safari, 320 px width and
+  text zoom.

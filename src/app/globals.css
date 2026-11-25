@@ -60,6 +60,14 @@
 .board-view-scroll { overflow: hidden; border-radius: 6px; }
 .board-view-scroll[data-zoomed] { overflow: auto; max-height: min(55svh, 440px); scrollbar-color: #526b71 #10191e; }
 .board-view-frame { width: 100%; margin-inline: auto; touch-action: manipulation; }
+/* Connector diagram canvas: wheel zoom and drag pan. At the whole-diagram
+   view a finger still scrolls the page; once zoomed in, gestures pan it. */
+.diagram-canvas { width: 100%; max-height: min(70svh, 640px); cursor: grab; user-select: none; touch-action: pan-x pan-y; }
+/* Containment only once zoomed: at fit a swipe must chain to the page. */
+.diagram-canvas[data-board-view="zoomed"] { touch-action: none; overscroll-behavior: contain; }
+.diagram-canvas[data-dragging] { cursor: grabbing; }
+.diagram-canvas .bv-pad { cursor: pointer; }
+.board-view-toolbar button:disabled { opacity: .4; cursor: default; text-decoration: none; }
 .pi-pin-list { border-top: 1px solid var(--pi-rule); }
 .pi-connector-heading { display: grid; gap: 9px; padding: 14px 14px 10px; color: var(--pi-muted); font-size: 12px; line-height: 1.5; background: var(--pi-well); }
 .pi-connector-orientation { font-size: 11px; }

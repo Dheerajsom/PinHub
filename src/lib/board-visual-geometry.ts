@@ -587,7 +587,14 @@ function buildZioQuad(board: Board, visual: BoardVisual): Omit<BoardGeometry, "k
     ZIO_STACK_GAP +
     Math.max(rowsOf(lower) - 1, 0) * ZIO_ROW_PITCH;
 
-  const connSpan = Math.max(edgeSpan(1, 2), edgeSpan(0, 3));
+  // Measured row heights, when the board records them, place each header
+  // where it sits; otherwise the upper headers align and the lower ones follow.
+  const measured = visual.firstRowMm?.length === groups.length ? visual.firstRowMm : undefined;
+  const measuredTop = measured ? Math.min(...measured) : 0;
+  const measuredY = (gi: number) => ((measured?.[gi] ?? 0) - measuredTop) * ZIO_ROW_PITCH / 2.54;
+  const connSpan = measured
+    ? Math.max(...groups.map((_, gi) => measuredY(gi) + Math.max(rowsOf(gi) - 1, 0) * ZIO_ROW_PITCH))
+    : Math.max(edgeSpan(1, 2), edgeSpan(0, 3));
   const topPad = 54; // debugger delimiter down to the first pin row
   const bottomPad = 84;
   const bodyH = ZIO_DEBUG_H + topPad + connSpan + bottomPad;
@@ -616,7 +623,9 @@ function buildZioQuad(board: Board, visual: BoardVisual): Omit<BoardGeometry, "k
     const slot = ZIO_SLOTS[gi % ZIO_SLOTS.length];
     const rows = rowsOf(gi);
     const upperIndex = slot.side === "left" ? 1 : 0;
-    const firstY = slot.lower
+    const firstY = measured
+      ? connTop + measuredY(gi)
+      : slot.lower
       ? connTop +
         Math.max(rowsOf(upperIndex) - 1, 0) * ZIO_ROW_PITCH +
         ZIO_STACK_GAP

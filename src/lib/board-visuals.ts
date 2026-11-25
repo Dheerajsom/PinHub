@@ -66,6 +66,12 @@ export type BoardVisual = {
   revisionNote?: string;
   /** Optional PCB accent; defaults to a per-vendor color. */
   accent?: string;
+  /**
+   * zio-quad: the first pin row of each connector group, in millimetres from
+   * the board's top edge, in group order. Places the stacked headers at their
+   * measured heights instead of aligning their tops.
+   */
+  firstRowMm?: readonly number[];
 };
 
 type Preset = Omit<BoardVisual, "revisionNote" | "accent">;
@@ -203,6 +209,9 @@ const PRESETS = {
     ports: ["usb-micro", "usb-micro", "ethernet"],
     orientation:
       "ST-LINK at top, component side up — Zio CN8/CN9 down the left edge, CN7/CN10 down the right",
+    // CN7, CN8, CN9, CN10, measured from the UM2407 mechanical drawing
+    // (Figure 6): CN7 starts 9.1 mm above CN8, and CN9 and CN10 end level.
+    firstRowMm: [32.9, 42.04, 64.9, 59.8],
   },
   nucleo: {
     template: "nucleo-64",
