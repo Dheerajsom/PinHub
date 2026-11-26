@@ -1017,6 +1017,119 @@ function buildPlanSheet(board: Board, visual: BoardVisual): Omit<BoardGeometry, 
   };
 }
 
+// The connector chart for headers that the board drawing lays along a long
+// edge (shield headers, edge fingers). Those drawings can only fit a row of
+// pads by turning every label on its side, so the chart turns the rows instead:
+// each connector becomes a column of pads with its signal names read left to
+// right, titled with the connector's name. A connector longer than
+// COLUMN_ROWS wraps into further columns, in reading order, so a 54-pin Mega
+// header is three short columns rather than one sheet five times taller than
+// it is wide. Anchor keys match the board drawing (`g0:n`, `g1:n`, `e:n`).
+const COLUMN_ROWS = 18;
+const COLUMN_TITLE = 14;
+const COLUMN_TITLE_CHAR_W = COLUMN_TITLE * 0.76; // mono advance plus 0.16em tracking
+const COLUMN_LABEL_GAP = 14;
+const COLUMN_GUTTER = 40;
+
+function buildColumnSheet(board: Board, visual: BoardVisual): Omit<BoardGeometry, "kind"> | null {
+  const groups = board.pinout?.groups ?? [];
+  // The same connectors, and the same keys, as the board drawing's builder.
+  const connectors = visual.headerKind === "shield-split"
+    ? groups.slice(0, 2).map((group, gi) => ({
+        label: group.label,
+        entries: group.pins.map((pin, i) => ({ pin, key: `g${gi}:${i}` })),
+      }))
+    : (() => {
+        let index = 0;
+        return groups.map((group) => ({
+          label: group.label,
+          entries: group.pins.map((pin) => ({ pin, key: `e:${index++}` })),
+        }));
+      })();
+  if (!connectors.some((connector) => connector.entries.length)) return null;
+
+  const pitch = EDGE_PITCH;
+  const margin = 26;
+  const titleBand = COLUMN_TITLE + 22;
+  const top = margin + titleBand + PAD_R;
+  const anchors: PinAnchor[] = [];
+  const texts: SilkText[] = [];
+  let x = margin;
+  let tallest = 1;
+
+  for (const connector of connectors) {
+    const count = connector.entries.length;
+    if (!count) continue;
+    const columns = Math.ceil(count / COLUMN_ROWS);
+    const rows = Math.ceil(count / columns);
+    tallest = Math.max(tallest, rows);
+    const blockStart = x;
+    let columnX = x;
+    for (let c = 0; c < columns; c += 1) {
+      const chunk = connector.entries.slice(c * rows, (c + 1) * rows);
+      const cx = columnX + PAD_R;
+      chunk.forEach(({ pin, key }, r) => {
+        const cy = top + r * pitch;
+        anchors.push({
+          key,
+          pin,
+          group: connector.label,
+          cx,
+          cy,
+          side: "right",
+          labelX: cx + PAD_R + COLUMN_LABEL_GAP,
+          labelY: cy,
+          labelAnchor: "start",
+          rotateLabel: false,
+        });
+      });
+      const labelW = longestLabel(chunk.map((entry) => entry.pin)) * LABEL_CHAR_W;
+      columnX += PAD_R * 2 + COLUMN_LABEL_GAP + labelW + COLUMN_GUTTER;
+    }
+    // The block is as wide as its columns or its title, whichever is wider, so
+    // a long connector name never runs into the next connector's.
+    const titleW = connector.label.length * COLUMN_TITLE_CHAR_W;
+    const blockW = Math.max(columnX - blockStart, titleW + COLUMN_GUTTER);
+    texts.push({ x: blockStart + titleW / 2, y: margin + COLUMN_TITLE, text: connector.label, size: COLUMN_TITLE });
+    x = blockStart + blockW;
+  }
+
+  const vbw = x - COLUMN_GUTTER + margin;
+  const vbh = top + (tallest - 1) * pitch + PAD_R + margin;
+  const body: Rect = { x: margin / 2, y: margin / 2, w: vbw - margin, h: vbh - margin, rx: 12 };
+  return {
+    vbw,
+    vbh,
+    body,
+    accent: accentForBoard(board.id, board.vendor),
+    headerZones: [],
+    ports: [],
+    holes: [],
+    anchors,
+    padR: PAD_R,
+    pitch,
+    silk: { texts, lines: [] },
+    arrangement: connectors.map((connector) => `${connector.entries.length}`).join(" + "),
+    notToScale: true,
+    orientation: "Connector chart: each connector's pins in the catalog's order, not a drawing of the board.",
+    plain: true,
+  };
+}
+
+/**
+ * The drawing a zoomable pin view should read its labels from, or null when
+ * the board's own drawing already reads level and can simply be enlarged.
+ * Every label on the returned sheet runs left to right: a board drawing whose
+ * rows run along an edge (40-pin headers, shield headers, edge fingers) only
+ * fits its labels sideways, and nobody should have to tilt their head to read
+ * a pin name. Anchor keys match `geometry`, so selection carries across.
+ */
+export function readableDiagramFor(board: Board, geometry: BoardGeometry): BoardGeometry | null {
+  const registered = Boolean(geometry.artworkId || geometry.portraitId);
+  if (registered && !geometry.anchors.some((anchor) => anchor.rotateLabel)) return null;
+  return buildBoardGeometry(board, { sheet: true }) ?? geometry;
+}
+
 /**
  * Build the full geometry for a board, or null if it has no pinout.
  * `sheet: true` builds the planner's drawing instead of the board's: a
@@ -1033,6 +1146,10 @@ export function buildBoardGeometry(
   if (options.sheet) {
     const sheet = buildPlanSheet(board, visual);
     if (sheet) return { kind: "edge-dual", ...sheet };
+    const columns = visual.headerKind === "shield-split" || visual.headerKind === "edge-connector"
+      ? buildColumnSheet(board, visual)
+      : null;
+    if (columns) return { kind: "edge-dual", ...columns, ...(visual.headerKind === "shield-split" ? { orderNote: SHIELD_ORDER_NOTE } : {}) };
     return { kind: visual.headerKind, ...builders[visual.headerKind](board, visual), plain: true };
   }
   const portrait = boardPortrait(board.id);

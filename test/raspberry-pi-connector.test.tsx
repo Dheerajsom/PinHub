@@ -68,8 +68,8 @@ it("selecting a pad on the board marks the same pin in the list, picker and read
   expect(pad.getAttribute("aria-pressed")).toBe("false");
 });
 
-it("zooms the board to a 44px touch size and back", () => {
-  const board = boards.find((board) => board.id === "raspberry-pi-4-model-b")!;
+it("zooms a level-labelled board to a 44px touch size and back", () => {
+  const board = boards.find((board) => board.id === "raspberry-pi-pico")!;
   const { container } = render(<RaspberryPiPinout board={board} />);
   const frame = container.querySelector<HTMLElement>(".board-view-frame")!;
   expect(frame.getAttribute("data-board-view")).toBe("fit");
@@ -83,6 +83,20 @@ it("zooms the board to a 44px touch size and back", () => {
   expect(frame.style.minWidth).toBe("");
   fireEvent.click(screen.getByRole("button", { name: "Zoom to touch size" }));
   expect(frame.getAttribute("data-board-view")).toBe("touch");
+});
+
+it("zooms a 40-pin header in a level connector diagram, never sideways labels", () => {
+  const board = boards.find((board) => board.id === "raspberry-pi-4-model-b")!;
+  const { container } = render(<RaspberryPiPinout board={board} />);
+  // The picture stays, whole and clickable; the diagram carries the labels.
+  expect(container.querySelector('[data-pi-artwork="raspberry-pi-4-model-b"]')).toBeTruthy();
+  const diagram = screen.getByRole("group", { name: "Connector diagram, zoomable" });
+  expect(diagram.querySelectorAll(".bv-label").length).toBe(40);
+  expect(container.querySelector('.bv-label[transform*="rotate"]')).toBeNull();
+  // Selecting a pad on the diagram selects it on the picture too.
+  fireEvent.click(within(diagram).getByRole("button", { name: /^Pin 8,/ }));
+  const picture = container.querySelector<HTMLElement>(".board-view-frame")!;
+  expect(within(picture).getByRole("button", { name: /^Pin 8,/ }).getAttribute("aria-pressed")).toBe("true");
 });
 
 it("supports a far-end picker selection, keyboard movement and clearing", () => {

@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { boards } from "@/lib/boards";
 import { boardPortrait, type Part } from "@/lib/board-portraits";
 import { boardVisuals } from "@/lib/board-visuals";
-import { buildBoardGeometry, SHIELD_ORDER_NOTE, type BoardGeometry } from "@/lib/board-visual-geometry";
+import { buildBoardGeometry, readableDiagramFor, SHIELD_ORDER_NOTE, type BoardGeometry } from "@/lib/board-visual-geometry";
 import { familyArtFor, freeField, layoutFamilyArt, overlaps } from "@/lib/board-family-art";
 import { renderCoverage, renderTier } from "@/lib/board-render-coverage";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
@@ -109,7 +109,10 @@ describe("render coverage inventory", () => {
       : <PinoutDiagram board={board} />);
     expect(markup).toContain(`data-${geometry?.artworkId ? "pi" : "product"}-artwork="${board.id}"`);
     if (!geometry?.artworkId) expect(markup.match(/data-landmark=/g)?.length).toBeGreaterThanOrEqual(2);
-    expect(markup.match(/data-pin-key=/g)?.length ?? 0).toBe(geometry?.anchors.length ?? 0);
+    // A picture-mapped board whose labels only fit sideways draws its pads on
+    // the picture and again on the level connector diagram.
+    const copies = geometry && (geometry.artworkId || geometry.portraitId) && readableDiagramFor(board, geometry) ? 2 : 1;
+    expect(markup.match(/data-pin-key=/g)?.length ?? 0).toBe((geometry?.anchors.length ?? 0) * copies);
     if (geometry) expect(markup).toContain('data-board-view="fit"');
   });
 

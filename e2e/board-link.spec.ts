@@ -81,18 +81,21 @@ test.describe("board link on a phone", () => {
     expect(pad!.width).toBeGreaterThanOrEqual(16);
     expect(await mega.evaluate((node) => node.scrollWidth > node.clientWidth)).toBe(true);
     await expect(page.getByText("Scroll sideways for the rest of the connector.").first()).toBeVisible();
-    // It opens scrolled to the linked pins rather than at the board's left end:
-    // every linked pad's centre is on screen without a sideways hunt. (Their
-    // span is a little wider than a 360 px phone at 44 px touch size, so the
-    // outermost rings may be clipped by a few pixels.)
-    await expect.poll(() => mega.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
+    // The Mega's headers are drawn as level columns, one titled column group
+    // per connector. Its UART pair (D14/D15) and its GND sit in different
+    // connectors, wider apart than a 360 px phone, so the sheet opens on as
+    // many linked pads as fit — the UART pair — and says the rest is sideways.
+    await expect(page.getByText(/linked pins span more than the screen/)).toBeVisible();
     const megaBox = (await mega.boundingBox())!;
+    let onScreen = 0;
     for (const ring of await mega.locator(".bv-planned-ring").all()) {
       const box = (await ring.boundingBox())!;
       const centre = box.x + box.width / 2;
-      expect(centre).toBeGreaterThan(megaBox.x);
-      expect(centre).toBeLessThan(megaBox.x + megaBox.width);
+      if (centre > megaBox.x && centre < megaBox.x + megaBox.width) onScreen += 1;
     }
+    expect(onScreen).toBeGreaterThanOrEqual(2);
+    // No label on the sheet is turned on its side.
+    expect(await mega.locator('.bv-label[transform*="rotate"]').count()).toBe(0);
     await page.getByRole("button", { name: /^Wire 3/ }).tap();
     await expect.poll(() => mega.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
     const after = await page.evaluate(

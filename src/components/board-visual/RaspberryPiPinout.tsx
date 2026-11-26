@@ -5,7 +5,7 @@ import { Expand, ExternalLink, Search, ShieldAlert } from "lucide-react";
 import type { Board, Pin, PinRole } from "@/lib/boards";
 import { buildBoardGeometry } from "@/lib/board-visual-geometry";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
-import { BoardDrawingViewport } from "./BoardDrawingViewport";
+import { BoardDrawingViewport, ReadableConnectorDiagram } from "./BoardDrawingViewport";
 import { connectorCells, connectorKeyTarget } from "@/components/board-visual/connector-cells";
 import { ExpandedInspector } from "@/components/board-visual/BoardPinoutVisualization";
 import { PinRoleLegend } from "@/components/board-visual/PinRoleLegend";
@@ -98,7 +98,7 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
           <p className="pi-board-orientation">{geometry.orientation}</p>
           <BoardDrawingViewport
             board={board} geometry={geometry} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole}
-            netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey}
+            netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey} diagramElsewhere
           />
         </div>
 
@@ -110,6 +110,16 @@ export function RaspberryPiPinout({ board }: { board: Board }) {
             {sourceInfo ? <a className="pi-source" href={sourceInfo.url} target="_blank" rel="noopener noreferrer">Verify in {sourceInfo.provenance === "official" ? "official" : "linked"} docs <ExternalLink size={12} aria-hidden="true" /></a> : null}
           </div>
         </aside>
+      </div>
+
+      {/* A 40-pin header's labels only fit sideways on the board, so the
+          zoomable view is a level connector chart, below the board and its
+          readout so the readout stays beside the pin you picked. */}
+      <div className="pi-canvas pi-diagram">
+        <ReadableConnectorDiagram
+          board={board} geometry={geometry} selectedKey={selectedKey} activeKey={liveKey} activeRole={activeRole}
+          netKeys={probe.keys} onSelect={select} onActiveKey={setHoverKey}
+        />
       </div>
 
       <section className="pi-pin-list" aria-label="Pin list">
