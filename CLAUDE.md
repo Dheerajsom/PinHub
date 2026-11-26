@@ -27,6 +27,16 @@ files cannot drift apart. Everything below adds to them; nothing overrides them.
 - Code reaches `main` only through a pull request merge that the user asked
   for (see "Shipping a branch to `main`" below).
 
+## Council review only on explicit request (strict)
+
+- **Never invoke the council review skill (`council-review`, at project or
+  user level) unless the user's current prompt explicitly asks for it** (for
+  example, "use the council skill" or "do a council review"). Do not run it
+  automatically, as a pre-commit step, or because a change seems large, even
+  if the skill's own description says to use it before committing.
+- Without that request, follow the change workflow below; it is complete on
+  its own and never waits on a council pass.
+
 ## Change workflow
 
 Follow these steps, in order, for any refactor, bug fix, security fix, or UI/UX
