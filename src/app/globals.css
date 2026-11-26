@@ -58,7 +58,12 @@
 /* The pin viewport pans independently of the catalog panel. */
 .pi-board-orientation { padding: 10px 14px 0; font-size: 11px; line-height: 1.5; color: #aebfbc; }
 .board-view-scroll { overflow: hidden; border-radius: 6px; }
-.board-view-scroll[data-zoomed] { overflow: auto; max-height: min(55svh, 440px); scrollbar-color: #526b71 #10191e; }
+/* Zoomed, the drawing keeps its full height and pans only sideways, so a
+   vertical swipe on it scrolls the page instead of trapping the reader inside
+   a second vertical scroller. Sideways overscroll is contained so a pan that
+   runs past either edge stays with the drawing. */
+.board-view-scroll[data-zoomed] { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-color: #526b71 #10191e; }
+.board-view-scroll[data-zoomed] .bv-pad { scroll-margin-block: 72px; }
 .board-view-frame { width: 100%; margin-inline: auto; touch-action: manipulation; }
 /* Connector diagram canvas: wheel zoom and drag pan. At the whole-diagram
    view a finger still scrolls the page; once zoomed in, gestures pan it. */

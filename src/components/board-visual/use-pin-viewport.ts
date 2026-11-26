@@ -1,6 +1,14 @@
 import { useLayoutEffect, useRef, type RefObject } from "react";
 
-/** Pan only the drawing. Preserve a user's position when the pad already fits. */
+/**
+ * Pan only the drawing. Preserve a user's position when the pad already fits.
+ *
+ * The zoomed drawing pans sideways inside its own viewport and keeps its full
+ * height, so the page carries the vertical position. Only the act of zooming
+ * in brings the pad into the page's view as well; a later selection (from the
+ * pin table, say) pans the drawing alone and never moves the page under the
+ * reader.
+ */
 export function usePinViewport(
   viewport: RefObject<HTMLDivElement | null>,
   boardId: string,
@@ -8,8 +16,11 @@ export function usePinViewport(
   enabled: boolean,
 ) {
   const lastPad = useRef<Element | null>(null);
+  const wasEnabled = useRef(enabled);
   useLayoutEffect(() => {
     const region = viewport.current;
+    const justZoomed = enabled && !wasEnabled.current;
+    wasEnabled.current = enabled;
     if (!region || !enabled) return;
     const previous = region.contains(lastPad.current) ? lastPad.current : null;
     const pad = region.querySelector('.bv-pad[aria-pressed="true"]') ?? previous ?? region.querySelector(".bv-pad");
@@ -31,6 +42,10 @@ export function usePinViewport(
     };
 
     reveal();
+    if (justZoomed && typeof pad.scrollIntoView === "function") {
+      // The drawing just grew to touch size and may now run past the screen.
+      pad.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
+    }
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(reveal);
     observer.observe(region);

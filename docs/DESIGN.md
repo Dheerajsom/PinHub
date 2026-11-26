@@ -175,7 +175,9 @@ Two presentations of one dataset, behind a persisted segmented control:
 - **Dynamic maps.** The catalog panel, inspector and full board page open with
   the complete board fitted to the available space. **Zoom to touch size**
   reveals the selected pin, or the first pin when none is selected. The
-  enlarged drawing scrolls inside its own viewport. **Fit whole board**
+  enlarged drawing keeps its full height and pans sideways inside its own
+  viewport, so a vertical swipe on it always scrolls the page; there is never
+  a second vertical scroller to get trapped in. **Fit whole board**
   restores the overview and preserves the selection. The pin picker and
   Raspberry Pi connector list also support selection from the overview.
 - **Connector diagrams pan and zoom.** A board whose pins are drawn on a
