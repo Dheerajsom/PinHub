@@ -112,15 +112,20 @@ user-facing feature, update the route table in `README.md` in the same commit.
    `check:boards` yourself before pushing so it never gets that far. Look at the changed pages in the browser
    in both themes.
 7. **Mobile gate (mandatory for any UI or UX change).** Before committing and
-   pushing, spawn the `mobile-mojo` subagent. Its skill is not loaded
-   automatically: tell it to read `~/.codex/skills/mobile-mojo/SKILL.md`
-   first. Have it test the final build at 360 × 800, 390 × 844, and 412 × 915,
-   plus 844 × 390 landscape for pin maps and other dense views. It must
-   exercise every affected journey and check overflow, touch targets, focus,
-   navigation, and console errors from real screenshots. Fix what it
-   confirms, then have it recheck those flows. A blocked check is not a pass:
-   report the blocker and get an explicit waiver from the user before
-   publishing.
+   pushing, spawn the `mobile-mojo` subagent. It preloads the user-level
+   `mobile-mojo` skill (`~/.claude/skills/mobile-mojo/`), which holds the
+   method, the report format, and the baseline sweep script
+   (`scripts/mobile-sweep.mjs`), so the brief only needs: the URL of the
+   running production build, the changed routes and journeys, the base
+   branch, and whether it may edit code (default: audit only). PinHub's theme
+   key for the sweep is `--storage "pinhub.theme={theme}"`. Have it test at
+   360 × 800, 390 × 844, and 412 × 915, plus 844 × 390 landscape for pin maps
+   and other dense views, in both themes. It must exercise every affected
+   journey and check overflow, touch targets, focus, navigation, and console
+   errors from real screenshots, and label pre-existing defects separately
+   from new ones. Fix what it confirms, then have it recheck those flows. A
+   blocked check is not a pass: report the blocker and get an explicit waiver
+   from the user before publishing.
 8. **Record.** Audits and cleanups get a dated write-up in `docs/`
    (`code-audit-YYYY-MM-DD.md`): findings, changes, verification evidence, and
    known limits, including anything flagged but not fixed.
