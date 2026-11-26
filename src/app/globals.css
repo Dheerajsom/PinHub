@@ -68,6 +68,9 @@
 .diagram-canvas[data-dragging] { cursor: grabbing; }
 .diagram-canvas .bv-pad { cursor: pointer; }
 .board-view-toolbar button:disabled { opacity: .4; cursor: default; text-decoration: none; }
+.pi-diagram { padding-bottom: 12px; border-top: 1px solid var(--pi-rule); }
+/* The Pico's own drawing reads level and zooms in place: no diagram. */
+.pi-diagram:empty { display: none; }
 .pi-pin-list { border-top: 1px solid var(--pi-rule); }
 .pi-connector-heading { display: grid; gap: 9px; padding: 14px 14px 10px; color: var(--pi-muted); font-size: 12px; line-height: 1.5; background: var(--pi-well); }
 .pi-connector-orientation { font-size: 11px; }

@@ -123,7 +123,9 @@ export function BoardArtwork({
             fontWeight={700}
             letterSpacing="0.16em"
             fill={SILK}
-            fillOpacity={0.28}
+            // On a connector chart these name the connectors, so they must
+            // read at a glance, not sit back like silkscreen on a drawing.
+            fillOpacity={0.62}
           >
             {entry.text}
           </text>

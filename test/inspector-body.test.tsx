@@ -8,12 +8,15 @@ import { InspectorBody } from "@/components/board-visual/InspectorBody";
 import { PinDetails } from "@/components/board-visual/PinDetails";
 
 // A drawing only exists for a board with both a source-backed pinout and a
-// curated visual, so the sheet is tested against a real catalog entry.
-const board = (() => {
-  const found = boards.find((item) => item.id === "raspberry-pi-5");
-  if (!found) throw new Error("raspberry-pi-5 missing from the catalog");
+// curated visual, so the sheet is tested against a real catalog entry. The
+// Pico's illustration carries level labels, so it zooms in place; a 40-pin
+// header board hands zooming to a level connector diagram instead.
+const byId = (id: string) => {
+  const found = boards.find((item) => item.id === id);
+  if (!found) throw new Error(`${id} missing from the catalog`);
   return found;
-})();
+};
+const board = byId("raspberry-pi-pico");
 
 // jsdom reports every box as zero-sized, so the sheet is told it overflows —
 // which is the state the phone layout is built for.
@@ -42,12 +45,12 @@ beforeAll(() => {
 
 afterEach(cleanup);
 
-function renderSheet() {
-  const geometry = buildBoardGeometry(board);
+function renderSheet(subject = board) {
+  const geometry = buildBoardGeometry(subject);
   if (!geometry) throw new Error("fixture board has no geometry");
   return render(
     <InspectorBody
-      board={board}
+      board={subject}
       geometry={geometry}
       selectedKey={null}
       activeKey={null}
@@ -68,6 +71,19 @@ describe("InspectorBody sheet", () => {
     );
 
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("keeps SVG definition IDs unique when a board draws its picture and its diagram", () => {
+    const { container } = renderSheet(byId("raspberry-pi-5"));
+    const ids = [...container.querySelectorAll("[id]")].map((element) => element.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("gives a 40-pin header board a level connector diagram instead of sideways labels", () => {
+    const { container } = renderSheet(byId("raspberry-pi-5"));
+    expect(screen.getByRole("group", { name: "Connector diagram, zoomable" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Zoom labels" })).toBeNull();
+    expect(container.querySelector('.bv-label[transform*="rotate"]')).toBeNull();
   });
 
   it("explains the horizontal scroll and describes it to the drawing", () => {

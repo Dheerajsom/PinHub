@@ -22,19 +22,21 @@ for (const name of ["Orange Pi 5", "Arduino UNO Rev3", "Adafruit Feather RP2040"
     await page.getByRole("button", { name: `Show ${name} details`, exact: true }).tap();
     await page.getByRole("tab", { name: "Dynamic" }).tap();
     const map = page.getByRole("tabpanel", { name: "Dynamic" });
-    const frame = map.locator("[data-board-view]");
+    // A board whose drawing only fits its labels sideways shows the picture
+    // and then a level connector diagram; the zoomable view is the last one.
+    const frame = map.locator("[data-board-view]").last();
     await expect(frame).toHaveAttribute("data-board-view", "fit");
-    const viewport = map.locator(".board-view-scroll");
+    const viewport = map.locator(".board-view-scroll").last();
     expect(await viewport.evaluate(el => el.scrollWidth <= el.clientWidth + 1 && el.scrollHeight <= el.clientHeight + 1)).toBe(true);
     await map.getByRole("button", { name: "Zoom to touch size" }).tap();
-    const pads = map.locator(".bv-pad");
+    const pads = viewport.locator(".bv-pad");
     await expectTappableInsideMap(pads.first());
     await pads.first().tap();
     await expect(pads.first()).toHaveAttribute("aria-pressed", "true");
     const picker = map.getByRole("combobox").first();
     const key = await picker.locator("option").last().getAttribute("value");
     await picker.selectOption(key!);
-    const selected = map.locator('.bv-pad[aria-pressed="true"]');
+    const selected = viewport.locator('.bv-pad[aria-pressed="true"]');
     await expect(selected).toHaveAttribute("data-pin-key", key!);
     await expectTappableInsideMap(selected);
     // Connector diagrams zoom inside their own canvas and fit back to the diagram.

@@ -105,17 +105,41 @@ for (const viewport of viewports) {
         await expect(physical.getByRole("button", { name: /^Pin 1,/ })).toHaveAttribute("aria-pressed", "true");
         const frame = interactive.locator(".board-view-frame");
         await expect(frame).toHaveAttribute("data-board-view", "fit");
-        await interactive.getByRole("button", { name: "Zoom to touch size", exact: true }).tap();
-        await expect(frame).toHaveAttribute("data-board-view", "touch");
-        const hit = await physical.locator('.bv-pad > circle[fill="transparent"]').first().boundingBox();
-        expect(Math.min(hit!.width, hit!.height)).toBeGreaterThanOrEqual(44);
-        const pad40 = physical.getByRole("button", { name: /^Pin 40,/ });
-        await pad40.scrollIntoViewIfNeeded();
-        await pad40.tap();
-        await expect(connector.getByRole("button", { name: /^Pin 40,/ })).toHaveAttribute("aria-pressed", "true");
-        await fitsViewport(page);
-        await interactive.getByRole("button", { name: "Fit whole board", exact: true }).tap();
-        await expect(frame).toHaveAttribute("data-board-view", "fit");
+        const diagram = interactive.getByRole("group", { name: "Connector diagram, zoomable" });
+        if (await diagram.count()) {
+          // A 40-pin header's labels only fit sideways on the board, so it
+          // zooms on the level connector diagram below the board and readout.
+          await expect(diagram).toHaveAttribute("data-board-view", "fit");
+          await interactive.getByRole("button", { name: "Zoom to touch size", exact: true }).tap();
+          await expect(diagram).toHaveAttribute("data-board-view", "zoomed");
+          expect(await diagram.locator('.bv-label[transform*="rotate"]').count()).toBe(0);
+          const hit = await diagram.locator('.bv-pad[aria-pressed="true"] > circle[fill="transparent"]').boundingBox();
+          expect(Math.min(hit!.width, hit!.height)).toBeGreaterThanOrEqual(44);
+          // A list selection pans the zoomed diagram to it; a tap there selects.
+          await connector.getByRole("button", { name: /^Pin 40,/ }).tap();
+          await diagram.evaluate((node) => node.scrollIntoView({ block: "center", behavior: "instant" }));
+          const pad38 = diagram.getByRole("button", { name: /^Pin 38,/ });
+          await pad38.tap();
+          await expect(connector.getByRole("button", { name: /^Pin 38,/ })).toHaveAttribute("aria-pressed", "true");
+          await expect(physical.getByRole("button", { name: /^Pin 38,/ })).toHaveAttribute("aria-pressed", "true");
+          await fitsViewport(page);
+          await interactive.getByRole("button", { name: "Fit diagram", exact: true }).tap();
+          await expect(diagram).toHaveAttribute("data-board-view", "fit");
+        } else {
+          // The Pico's own drawing reads level, so the picture zooms in place.
+          await interactive.getByRole("button", { name: "Zoom to touch size", exact: true }).tap();
+          await expect(frame).toHaveAttribute("data-board-view", "touch");
+          expect(await physical.locator('.bv-label[transform*="rotate"]').count()).toBe(0);
+          const hit = await physical.locator('.bv-pad > circle[fill="transparent"]').first().boundingBox();
+          expect(Math.min(hit!.width, hit!.height)).toBeGreaterThanOrEqual(44);
+          const pad40 = physical.getByRole("button", { name: /^Pin 40,/ });
+          await pad40.scrollIntoViewIfNeeded();
+          await pad40.tap();
+          await expect(connector.getByRole("button", { name: /^Pin 40,/ })).toHaveAttribute("aria-pressed", "true");
+          await fitsViewport(page);
+          await interactive.getByRole("button", { name: "Fit whole board", exact: true }).tap();
+          await expect(frame).toHaveAttribute("data-board-view", "fit");
+        }
         expect((await frame.boundingBox())!.width).toBeLessThanOrEqual(viewport.width);
         await interactive.getByText("Highlight pin roles", { exact: true }).tap();
         await interactive.getByRole("button", { name: /^Power —/ }).tap();
@@ -202,7 +226,9 @@ for (const viewport of [...viewports, { width: 1280, height: 800 }]) {
     const physical = map.getByRole("group", { name: /^Raspberry Pi 5 physical board/ });
     await expect(physical).toBeVisible();
     await expect(physical.getByRole("button", { name: /^Pin 40,/ })).toHaveAttribute("aria-pressed", "true");
-    expect((await map.locator(".board-view-scroll").boundingBox())!.width).toBeLessThanOrEqual(bounds!.width);
+    for (const view of await map.locator(".board-view-scroll").all()) {
+      expect((await view.boundingBox())!.width).toBeLessThanOrEqual(bounds!.width);
+    }
     expect(await map.locator(".board-view-frame").evaluate((element) => element.closest("details, [inert], [aria-hidden='true']"))).toBeNull();
     await connector.scrollIntoViewIfNeeded();
     await page.screenshot({ path: testInfo.outputPath("labelled-connector.png"), scale: "css", animations: "disabled" });
@@ -247,7 +273,8 @@ test("catalog inline Pi pinout and full inspector share the artwork", async ({ p
   await fitsViewport(page);
   await page.getByRole("link", { name: "Open the Raspberry Pi 5 full pinout", exact: true }).click();
   await expect(page).toHaveURL(/\/boards\/raspberry-pi-5#pins$/);
-  await expect(page.getByRole("button", { name: /^Pin 1,/ })).toBeVisible();
+  await expect(page.getByRole("group", { name: /physical board/ }).getByRole("button", { name: /^Pin 1,/ })).toBeVisible();
+  await expect(page.getByRole("group", { name: /connector diagram/ }).getByRole("button", { name: /^Pin 1,/ })).toBeVisible();
   await expect(page.locator(".bv-stage-wrap").getByText("BCM2712", { exact: true })).toBeVisible();
   await fitsViewport(page);
   await page.screenshot({ path: testInfo.outputPath("full-inspector.png"), scale: "css", animations: "disabled" });

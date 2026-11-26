@@ -134,7 +134,11 @@ function BoardWorkbenchView({
             type="button"
             className="mt-2 min-h-11 rounded-md border border-white/15 px-3 text-sm text-cyan-200 hover:border-cyan-300/60"
             onClick={() => {
-              const pad = inspectorRef.current?.querySelector<SVGGElement>(`[data-pin-key="${selectedAnchor.key}"]`);
+              // A board with a level connector diagram draws the pad twice: on
+              // the picture and on the diagram. The diagram is the one to read.
+              const selector = `[data-pin-key="${selectedAnchor.key}"]`;
+              const pad = inspectorRef.current?.querySelector<SVGGElement>(`.diagram-canvas ${selector}`)
+                ?? inspectorRef.current?.querySelector<SVGGElement>(selector);
               pad?.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
               pad?.focus({ preventScroll: true });
             }}

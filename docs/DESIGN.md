@@ -189,6 +189,15 @@ Two presentations of one dataset, behind a persisted segmented control:
   cover the same moves, and the focused canvas takes `+`, `−`, `0` and the
   arrow keys. A pad picked from the list or focused by keyboard is brought
   into view.
+- **Every zoomable label reads left to right.** Nothing a reader zooms into
+  turns its text on its side. A board drawing that can only fit its labels
+  sideways (a 2×N header along the top edge, shield headers along the long
+  edges, edge fingers) hands zooming to a level connector chart
+  (`readableDiagramFor`): 40-pin headers become the familiar odd/even pin
+  chart, and shield headers and edge fingers become one titled column per
+  connector, wrapped at 18 pins so a Mega's 54-pin header is three short
+  columns. Raspberry Pi and Orange Pi boards keep their clickable picture
+  above the chart. `test/readable-pin-diagram.test.ts` checks every board.
 - **November 24 fit and zoom review.** The Chrome review checked every illustration
   at 390 × 844. After zooming, all 7,075 interactive pin targets across 190
   boards measured at least 44 CSS pixels in both dimensions. Eighty journeys
