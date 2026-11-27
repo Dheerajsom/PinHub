@@ -50,3 +50,31 @@ test("a pad scrolled under a resting pointer leaves the readout alone", async ({
   await page.mouse.move(x, y, { steps: 4 });
   await expect(readout).toContainText("GPIO16");
 });
+
+test.describe("touch", () => {
+  test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+
+  // A finger used to preview the pad it pressed, before lifting. When that
+  // pin's readout was a different height, the diagram slid under the finger,
+  // the release landed off the pad, and the tap selected nothing.
+  test("a held tap on a connector-diagram pad selects it", async ({ page }) => {
+    const name = "Raspberry Pi Zero 2 W";
+    await page.goto(`/?${new URLSearchParams({ q: name })}`);
+    await page.getByRole("button", { name: `Show ${name} details`, exact: true }).click();
+    const interactive = page.getByRole("region", { name: `${name} dynamic pinout`, exact: true });
+    const connector = interactive.getByRole("group", { name: "Select a physical pin from the connector" });
+    const diagram = interactive.getByRole("group", { name: "Connector diagram, zoomable" });
+    const cdp = await page.context().newCDPSession(page);
+    for (const [from, to] of [[13, 2], [2, 13], [40, 38], [11, 1]]) {
+      await connector.getByRole("button", { name: new RegExp(`^Pin ${from},`) }).tap();
+      const pad = diagram.getByRole("button", { name: new RegExp(`^Pin ${to},`) });
+      await pad.evaluate((node) => node.scrollIntoView({ block: "center", behavior: "instant" }));
+      const box = (await pad.boundingBox())!;
+      const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+      await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [point] });
+      await page.waitForTimeout(150);
+      await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+      await expect(pad).toHaveAttribute("aria-pressed", "true");
+    }
+  });
+});

@@ -1,7 +1,7 @@
 "use client";
 
 import { MappedProductArtwork } from "@/components/board-visual/ProductPortrait";
-import { useId, useRef, useState, type PointerEvent } from "react";
+import { useId, useRef, useState, type FocusEvent, type PointerEvent } from "react";
 import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
 import { wholeBoardFrame, type BoardGeometry, type PinAnchor, type Rect } from "@/lib/board-visual-geometry";
@@ -253,21 +253,24 @@ export function BoardStage({
             tabIndex={index === focusIndex ? 0 : -1}
             uid={uid}
             realistic={Boolean(geometry.artworkId || (geometry.portraitId && geometry.kind === "header2x"))}
-            onFocus={() => {
+            onFocus={(event) => {
               setFocusIndex(index);
-              onActiveKey(anchor.key);
+              // Keyboard focus previews the pad; a press also focuses it, and
+              // previewing then would move the drawing under the finger.
+              if (event.currentTarget.matches(":focus-visible")) onActiveKey(anchor.key);
             }}
             onBlur={() => onActiveKey(selectedKey)}
-            // A mouse or pen previews a pad when it moves over it, not on
-            // enter: the browser also sends enter when the layout slides a pad
-            // under a resting pointer, and that preview resized the readout,
-            // slid the pad back out, and shook the page every frame. Layout
-            // shifts never send pointermove. Touch has no hover to wait for.
-            onPointerEnter={(event) => {
-              if (event.pointerType === "touch") onActiveKey(anchor.key);
-            }}
-            onPointerMove={() => {
-              if (activeKey !== anchor.key) onActiveKey(anchor.key);
+            // Previewing a pad shows its pin in the readout, which can change
+            // the readout height and so move the drawing. Only a mouse or pen
+            // that moves over a pad previews it:
+            // - not on enter, which the browser also sends when the layout
+            //   slides a pad under a resting pointer (that looped, shaking the
+            //   page every frame); layout shifts never send pointermove;
+            // - never for touch, where the shift slid the pad out from under
+            //   the finger before release and the tap selected nothing. A tap
+            //   selects, and the readout shows the selection.
+            onPointerMove={(event) => {
+              if (event.pointerType !== "touch" && activeKey !== anchor.key) onActiveKey(anchor.key);
             }}
             onPointerLeave={() => onActiveKey(selectedKey)}
             onToggle={() =>
@@ -302,7 +305,6 @@ function Pad({
   realistic,
   onFocus,
   onBlur,
-  onPointerEnter,
   onPointerMove,
   onPointerLeave,
   onToggle,
@@ -322,10 +324,9 @@ function Pad({
   tabIndex: number;
   uid: string;
   realistic?: boolean;
-  onFocus: () => void;
+  onFocus: (event: FocusEvent<SVGGElement>) => void;
   onBlur: () => void;
-  onPointerEnter: (event: PointerEvent<SVGGElement>) => void;
-  onPointerMove: () => void;
+  onPointerMove: (event: PointerEvent<SVGGElement>) => void;
   onPointerLeave: () => void;
   onToggle: () => void;
 }) {
@@ -350,7 +351,6 @@ function Pad({
       style={{ opacity }}
       onFocus={onFocus}
       onBlur={onBlur}
-      onPointerEnter={onPointerEnter}
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       onClick={onToggle}
