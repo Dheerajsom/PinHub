@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { SourceRange } from "@/lib/code-check/scan";
 import { statusGlyph } from "@/components/check/status";
+import { prefersReducedMotion } from "@/lib/motion";
 
 export type EditorMark = {
   start: number;
@@ -275,7 +276,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, Props>(function CodeEdito
           left = Math.max(0, x - area.clientWidth / 3);
         }
       }
-      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      const reduce = prefersReducedMotion();
       area.scrollTo({ top, left, behavior: reduce ? "auto" : "smooth" });
       if (reduce) sync();
     },

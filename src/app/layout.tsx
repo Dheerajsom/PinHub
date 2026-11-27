@@ -109,7 +109,7 @@ export default function RootLayout({
     >
       <body>
         <Script id="pinhub-theme" strategy="beforeInteractive">
-          {`try{var t=localStorage.getItem("pinhub.theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t}catch(e){}`}
+          {`try{var t=localStorage.getItem("pinhub.theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;if(localStorage.getItem("pinhub.motion")==="reduce")document.documentElement.dataset.motion="reduce"}catch(e){}`}
         </Script>
         {children}
         <Footer />

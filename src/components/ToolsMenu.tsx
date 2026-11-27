@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { ChevronDown, Wrench } from "lucide-react";
 import { siteTools } from "@/components/site-sections";
+import { usePopoverPlacement } from "@/components/usePopoverPlacement";
 
 /**
  * The Tools entry in the section nav: one button that opens a short list of
@@ -21,29 +22,9 @@ export function ToolsMenu({ current }: { current: string }) {
   const panelId = `${useId()}-tools`;
   const currentTool = siteTools.find((tool) => tool.href === current);
 
-  // Where the list sits, in px from the button's left edge. It prefers to
-  // line up with the button's right edge, but the nav is not always the
-  // row's last item (the catalog puts search after it), so it is clamped to
-  // stay 16 px inside the viewport on any screen.
-  const [placement, setPlacement] = useState<{ left: number; width: number; maxHeight: number } | null>(null);
-  useLayoutEffect(() => {
-    if (!open) return;
-    const place = () => {
-      const rect = rootRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const gutter = 16;
-      const width = Math.min(320, window.innerWidth - gutter * 2);
-      const preferred = rect.right - width;
-      const left = Math.min(Math.max(preferred, gutter), window.innerWidth - gutter - width);
-      // A phone in landscape is ~390 px tall and the catalog's command bar is
-      // sticky, so the list scrolls inside itself rather than run off screen.
-      const maxHeight = Math.max(176, window.innerHeight - rect.bottom - 8 - gutter);
-      setPlacement({ left: left - rect.left, width, maxHeight });
-    };
-    place();
-    window.addEventListener("resize", place);
-    return () => window.removeEventListener("resize", place);
-  }, [open]);
+  // Lines up with the button's right edge when it can; the nav is not always
+  // the row's last item (the catalog puts search after it).
+  const placement = usePopoverPlacement(rootRef, open, 320);
 
   useEffect(() => {
     if (!open) return;

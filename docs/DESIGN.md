@@ -757,3 +757,35 @@ it, because buses compete for the same pins; the pin planner can.
   never by a product, and disappear once anything is asked for. Focus then
   moves to the form's heading, as it does after "Start over".
 
+
+## 23. Settings (2026-11-27)
+
+A gear button beside the theme toggle, in both headers, opens a settings
+disclosure built like the Tools menu (button + panel; Escape, a click
+outside, or tabbing out closes it; the panel is clamped 16 px inside the
+viewport by the shared `usePopoverPlacement` hook). Every choice applies at
+once; there is no Save step.
+
+- **Theme: System / Light / Dark.** The one-tap toggle always sets an
+  explicit theme, which used to leave no way back to the operating-system
+  setting. "System" removes `pinhub.theme`; while it is chosen, a change in
+  the OS setting repaints the page live. The toggle and the panel read one
+  store (`src/lib/theme.ts`).
+- **Motion: Match system / Reduce.** "Reduce" stores `pinhub.motion` and sets
+  `data-motion="reduce"` on the root before first paint (layout script). One
+  CSS rule then zeroes every transition, animation, and smooth scroll, and
+  every JS-initiated scroll goes through `prefersReducedMotion()` /
+  `scrollBehavior()` in `src/lib/motion.ts`. There is no "force motion on":
+  a system request for less motion is always honored.
+- **Pin maps open in: Static / Dynamic.** The same `pinhub.pinoutTab` value
+  the board's tab control writes; both read `src/lib/pinout-tab.ts`.
+- **Saved in this browser.** Favorite and library counts, "Clear" for
+  favorites, and "Clear everything PinHub saved", each asking once with a
+  Cancel. Clearing everything removes exactly the keys the privacy page lists
+  (`storedItems`) and sends one null-key `storage` event so every open store
+  re-reads without a reload. A refused removal is reported, never claimed.
+- **Look.** Each setting is a native radio group drawn as a segmented
+  control (`.ph-settings-segment`/`.ph-settings-option`); the checked option
+  takes the pin map tabs' cyan selection fill. Destructive buttons stay
+  neutral: no colour here means "danger", since orange is reserved for
+  hardware caution. Every colour has a light-theme rule.

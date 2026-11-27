@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SettingsMenu } from "@/components/SettingsMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { repoUrl } from "@/lib/site";
 
@@ -47,6 +48,7 @@ export function CatalogHeader({
             <Readout label="Sources" value={sourceCount} />
           </dl>
           <ThemeToggle />
+          <SettingsMenu />
           <GitHubButton />
         </div>
       </div>

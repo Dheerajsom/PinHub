@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useSyncExternalStore } from "react";
+import { useId } from "react";
 import { clsx } from "clsx";
 import { CircuitBoard, Rows3 } from "lucide-react";
 import type { Board } from "@/lib/boards";
@@ -9,72 +9,17 @@ import { BoardPinoutVisualization } from "@/components/board-visual/BoardPinoutV
 import { RaspberryPiPinout } from "@/components/board-visual/RaspberryPiPinout";
 import { raspberryPiModel } from "@/lib/raspberry-pi-models";
 import { PrintPinReference } from "@/components/board-visual/PrintPinReference";
-
-type PinoutTab = "static" | "dynamic";
-const storageKey = "pinhub.pinoutTab";
-const defaultTab: PinoutTab = "dynamic";
-const tabOrder: readonly PinoutTab[] = ["static", "dynamic"];
-
-// The chosen tab is persisted in localStorage and exposed to React through a
-// tiny external store (same approach as favorites), which keeps SSR/hydration
-// consistent — the server snapshot is always the default.
-const listeners = new Set<() => void>();
-let tabSnapshot: PinoutTab | null = null;
-
-function onStorageEvent(event: StorageEvent) {
-  if (event.key !== null && event.key !== storageKey) return;
-  tabSnapshot = null;
-  for (const listener of listeners) listener();
-}
-
-function getTabSnapshot(): PinoutTab {
-  if (tabSnapshot === null) {
-    try {
-      const saved = window.localStorage.getItem(storageKey);
-      tabSnapshot = saved === "static" || saved === "dynamic" ? saved : defaultTab;
-    } catch {
-      tabSnapshot = defaultTab;
-    }
-  }
-  return tabSnapshot;
-}
-
-function getServerTabSnapshot(): PinoutTab {
-  return defaultTab;
-}
-
-function subscribeTab(listener: () => void): () => void {
-  if (listeners.size === 0) window.addEventListener("storage", onStorageEvent);
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-    if (listeners.size === 0) window.removeEventListener("storage", onStorageEvent);
-  };
-}
-
-function setTabPreference(next: PinoutTab) {
-  tabSnapshot = next;
-  try {
-    window.localStorage.setItem(storageKey, next);
-  } catch {
-    // best-effort
-  }
-  for (const listener of listeners) listener();
-}
+import { pinoutTabOrder as tabOrder, setPinoutTab, usePinoutTab, type PinoutTab } from "@/lib/pinout-tab";
 
 // Wraps the two pinout presentations behind a small segmented control. "Static"
 // is the dense, scannable list map; "Dynamic" is the interactive board diagram.
 export function PinoutTabs({ board }: { board: Board }) {
   const isRaspberryPi = Boolean(raspberryPiModel(board.id));
   const instanceId = useId();
-  const tab = useSyncExternalStore(
-    subscribeTab,
-    getTabSnapshot,
-    getServerTabSnapshot,
-  );
+  const tab = usePinoutTab();
 
   function selectTab(next: PinoutTab) {
-    setTabPreference(next);
+    setPinoutTab(next);
   }
 
   function handleTabListKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {

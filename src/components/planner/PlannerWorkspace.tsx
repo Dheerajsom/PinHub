@@ -34,6 +34,7 @@ import { PlannerExports } from "@/components/planner/PlannerExports";
 import { PlannerPinEditor } from "@/components/planner/PlannerPinEditor";
 import { PlannerPinsTable, type PlannerRow } from "@/components/planner/PlannerPinsTable";
 import { peripheralRole } from "@/components/planner/peripherals";
+import { prefersReducedMotion } from "@/lib/motion";
 
 /**
  * Preferred drawing height. The minimum touch scale takes precedence so
@@ -49,9 +50,7 @@ function today(): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-function prefersReducedMotion(): boolean {
-  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-}
+
 
 /**
  * The planner for one board. Pins are claimed by hand on the drawing; on a

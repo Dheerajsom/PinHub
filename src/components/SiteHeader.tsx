@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { clsx } from "clsx";
 import { SectionNav } from "@/components/SectionNav";
+import { SettingsMenu } from "@/components/SettingsMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 type SiteHeaderProps = {
@@ -59,6 +60,7 @@ export function SiteHeader({ current = "", width = "default", actions }: SiteHea
         <div className="ml-auto flex shrink-0 items-center gap-2">
           {actions}
           <ThemeToggle />
+          <SettingsMenu />
         </div>
       </div>
     </header>

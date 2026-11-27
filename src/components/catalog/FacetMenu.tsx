@@ -11,6 +11,7 @@ import {
 } from "react";
 import { clsx } from "clsx";
 import { Check, ChevronDown, Search } from "lucide-react";
+import { scrollBehavior } from "@/lib/motion";
 
 /**
  * The list opens downward in the flow, which on a phone can leave it under the
@@ -21,11 +22,7 @@ import { Check, ChevronDown, Search } from "lucide-react";
  * phones). Instant when the reader prefers reduced motion.
  */
 function revealPanel(panel: HTMLElement) {
-  const behavior: ScrollBehavior = window.matchMedia?.(
-    "(prefers-reduced-motion: reduce)",
-  ).matches
-    ? "auto"
-    : "smooth";
+  const behavior = scrollBehavior();
   for (let node = panel.parentElement; node && node !== document.body; node = node.parentElement) {
     const overflow = getComputedStyle(node).overflowY;
     if ((overflow === "auto" || overflow === "scroll") && node.scrollHeight > node.clientHeight) {
