@@ -62,6 +62,7 @@ import {
   type CatalogSort,
   type CatalogState,
 } from "@/lib/catalog-state";
+import { scrollBehavior } from "@/lib/motion";
 
 const all = "All";
 const catalogSorts: CatalogSort[] = [
@@ -177,13 +178,6 @@ type PinHubAppProps = {
   sourceCount: number;
 };
 
-// JS-initiated scrolling honors the user's reduced-motion preference (the CSS
-// `scroll-behavior` media query does not override an explicit JS behavior).
-function scrollBehavior(): ScrollBehavior {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ? "auto"
-    : "smooth";
-}
 
 export function PinHubApp({
   catalog,

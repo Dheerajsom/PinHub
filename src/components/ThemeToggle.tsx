@@ -1,30 +1,17 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
-import { applyTheme, themeStorageKey, type Theme } from "@/lib/theme";
+import { getShownTheme, setThemeChoice, useShownTheme } from "@/lib/theme";
 
-function currentTheme(): Theme {
-  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
-}
-
+/**
+ * The one-tap theme switch in the header. It always sets an explicit theme;
+ * the settings panel is where the reader goes back to following the system.
+ */
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("dark");
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setTheme(currentTheme()));
-    return () => cancelAnimationFrame(frame);
-  }, []);
+  const theme = useShownTheme();
 
   function toggleTheme() {
-    const next = currentTheme() === "dark" ? "light" : "dark";
-    applyTheme(next);
-    try {
-      localStorage.setItem(themeStorageKey, next);
-    } catch {
-      // Theme switching remains usable in private/restricted storage modes.
-    }
-    setTheme(next);
+    setThemeChoice(getShownTheme() === "dark" ? "light" : "dark");
   }
 
   const nextLabel = theme === "dark" ? "Use light theme" : "Use dark theme";

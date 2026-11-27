@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect } from "react";
 import { applyStoredTheme } from "@/lib/theme";
+import { applyMotion, getMotionChoice } from "@/lib/motion";
 
 // global-error replaces the root layout, so neither globals.css, the fonts,
 // nor the layout's theme script reach it. It carries its own small sheet,
@@ -115,6 +116,7 @@ export default function GlobalError({
 }) {
   useBrowserLayoutEffect(() => {
     applyStoredTheme();
+    applyMotion(getMotionChoice());
   }, []);
 
   useEffect(() => {

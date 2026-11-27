@@ -109,6 +109,23 @@ export function toggleFavoriteWithOutcome(id: string): FavoriteToggleOutcome {
   return { status: stored ? "stored" : "session", favorited };
 }
 
+/**
+ * Removes every favorite. True when storage accepted the change; false means
+ * the browser refused it and the favorites come back on reload.
+ */
+export function clearFavorites(): boolean {
+  snapshot = emptyFavorites;
+  let stored = true;
+  try {
+    window.localStorage.removeItem(storageKey);
+  } catch {
+    stored = false;
+  }
+  unsavedGeneration = stored ? 0 : ++failedWrites;
+  notifyListeners();
+  return stored;
+}
+
 /** False means the ID is invalid or storage is already at capacity. */
 export function toggleFavorite(id: string): boolean {
   const { status } = toggleFavoriteWithOutcome(id);

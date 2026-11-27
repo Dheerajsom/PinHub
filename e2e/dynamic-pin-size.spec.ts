@@ -71,7 +71,16 @@ test("a connector diagram zooms with the buttons and pans with a finger", async 
   expect(panned[1]).toBeGreaterThan(zoomed[1]);
   expect(await page.evaluate(() => window.scrollY)).toBe(scroll);
   await page.getByRole("button", { name: "Fit diagram" }).tap();
-  expect(await viewBox()).toEqual(fitBox);
+  await expect(canvas).toHaveAttribute("data-board-view", "fit");
+  // Fit shows the whole sheet again, centred as before. The fitted box tracks
+  // the canvas's measured size, which can settle a sub-pixel after the first
+  // read (CI saw 1913.5 vs 1918.8 tall), so compare within 1%, not exactly.
+  const [x, y, w, h] = await viewBox();
+  const [sx, sy, sw, sh] = fitBox;
+  expect(Math.abs(w - sw) / sw).toBeLessThan(0.01);
+  expect(Math.abs(h - sh) / sh).toBeLessThan(0.01);
+  expect(Math.abs(x + w / 2 - (sx + sw / 2)) / sw).toBeLessThan(0.01);
+  expect(Math.abs(y + h / 2 - (sy + sh / 2)) / sh).toBeLessThan(0.01);
 });
 
 test("a finger swiped across the whole connector diagram scrolls the page", async ({ page }) => {

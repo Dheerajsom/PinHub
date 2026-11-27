@@ -8,6 +8,7 @@ import type { BoardLink } from "@/lib/board-link";
 import { BoardStage } from "@/components/board-visual/BoardStage";
 import { padHitRadius } from "@/components/board-visual/touch-sizing";
 import { inView, linkedSheetView, sheetScrollCentre, wireEndKey, type SheetView } from "@/components/link/sheet-view";
+import { prefersReducedMotion } from "@/lib/motion";
 
 const noNet = new Set<string>();
 
@@ -302,7 +303,7 @@ function SheetStage({
     setSpread(fit !== null && fit.shown < linkedX.length);
     const target = anchor ? toPx(anchor.cx) : fit?.centre;
     if (target === undefined) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = prefersReducedMotion();
     element.scrollTo({ left: target - element.clientWidth / 2, behavior: anchor && !reduced ? "smooth" : "auto" });
   }, [geometry, selectedKey, linkedX, area.x, area.w, overflows]);
 

@@ -27,6 +27,7 @@ import { CheckReport } from "@/components/check/CheckReport";
 import { readDraft, writeDraft, type DialectChoice } from "@/components/check/draft";
 import { diffEdit, shiftLines, shiftSpans } from "@/components/check/stale-marks";
 import { headline, plural } from "@/components/check/verdict";
+import { prefersReducedMotion, scrollBehavior } from "@/lib/motion";
 
 const maxHintsPerLine = 2;
 const draftDelayMs = 300;
@@ -247,7 +248,7 @@ export function CheckApp({
     editorRef.current?.revealLine(line);
     const section = editorSectionRef.current;
     if (section && section.getBoundingClientRect().top < 0) {
-      section.scrollIntoView({ block: "start", behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      section.scrollIntoView({ block: "start", behavior: scrollBehavior() });
     }
   }, []);
 
@@ -278,7 +279,7 @@ export function CheckApp({
     const x = (anchor.cx / geometry.vbw) * wrap.scrollWidth;
     const margin = 56;
     if (x - margin >= wrap.scrollLeft && x + margin <= wrap.scrollLeft + wrap.clientWidth) return;
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const reduce = prefersReducedMotion();
     wrap.scrollTo({ left: Math.max(0, x - wrap.clientWidth / 2), behavior: reduce ? "auto" : "smooth" });
   }, [selectedKey, geometry]);
   const liveAnchor = geometry?.anchors.find((anchor) => anchor.key === liveKey) ?? null;
