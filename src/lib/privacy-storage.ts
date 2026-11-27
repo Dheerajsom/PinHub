@@ -17,6 +17,12 @@ export const storedItems = [
     label: "Reduced motion",
     detail: "Present only if you turned motion down in settings.",
   },
+  {
+    key: "pinhub.colorway",
+    storage: "localStorage",
+    label: "Colorway",
+    detail: "Present only if you picked a colorway other than Workbench in settings.",
+  },
   { key: "pinhub.pinoutTab", storage: "localStorage", label: "Pinout view", detail: "Which pinout tab you last used, or chose in settings." },
   {
     key: "pinhub.check.draft",

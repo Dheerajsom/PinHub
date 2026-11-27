@@ -6,9 +6,10 @@ import { SettingsMenu } from "@/components/SettingsMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { getFavoritesSnapshot } from "@/lib/favorites";
 import { clearAllPinhubData } from "@/lib/local-data";
-import { parseMotionChoice, prefersReducedMotion, scrollBehavior } from "@/lib/motion";
-import { getPinoutTab, parsePinoutTab } from "@/lib/pinout-tab";
-import { parseThemeChoice } from "@/lib/theme";
+import { parseMotionChoice, prefersReducedMotion, scrollBehavior, setMotionChoice } from "@/lib/motion";
+import { getPinoutTab, parsePinoutTab, setPinoutTab } from "@/lib/pinout-tab";
+import { parseThemeChoice, setThemeChoice } from "@/lib/theme";
+import { colorwayBootScript, parseColorway, setColorway } from "@/lib/colorway";
 
 let systemLight = false;
 
@@ -35,7 +36,7 @@ function resetStores() {
 
 function openSettings() {
   fireEvent.click(screen.getByRole("button", { name: "Settings" }));
-  return screen.getByRole("region", { name: "Settings" });
+  return screen.getByRole("dialog", { name: "Settings" });
 }
 
 describe("settings menu", () => {
@@ -46,6 +47,14 @@ describe("settings menu", () => {
     sessionStorage.clear();
     document.documentElement.dataset.theme = "dark";
     delete document.documentElement.dataset.motion;
+    delete document.documentElement.dataset.colorway;
+    // Each store caches its snapshot, and a closed dialog has no listener to
+    // reset it, so start every test from the defaults explicitly.
+    setThemeChoice("system");
+    setColorway("workbench");
+    setMotionChoice("system");
+    setPinoutTab("dynamic");
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -128,6 +137,7 @@ describe("settings menu", () => {
     localStorage.setItem("pinhub.theme", "light");
     localStorage.setItem("pinhub.motion", "reduce");
     localStorage.setItem("pinhub.pinoutTab", "static");
+    localStorage.setItem("pinhub.colorway", "blueprint");
     localStorage.setItem("unrelated.key", "kept");
     sessionStorage.setItem("pinhub.check.draft", "{}");
     render(<SettingsMenu />);
@@ -140,7 +150,7 @@ describe("settings menu", () => {
     fireEvent.click(within(panel).getByRole("button", { name: "Clear everything PinHub saved" }));
     fireEvent.click(within(panel).getByRole("button", { name: "Clear favorites, collections, and settings" }));
 
-    for (const key of ["pinhub.favorites", "pinhub.theme", "pinhub.motion", "pinhub.pinoutTab"]) {
+    for (const key of ["pinhub.favorites", "pinhub.theme", "pinhub.motion", "pinhub.pinoutTab", "pinhub.colorway"]) {
       expect(localStorage.getItem(key)).toBeNull();
     }
     expect(sessionStorage.getItem("pinhub.check.draft")).toBeNull();
@@ -149,7 +159,9 @@ describe("settings menu", () => {
     expect(within(panel).getByRole("radio", { name: "System" })).toHaveProperty("checked", true);
     expect(within(panel).getByRole("radio", { name: "Match system" })).toHaveProperty("checked", true);
     expect(within(panel).getByRole("radio", { name: "Dynamic" })).toHaveProperty("checked", true);
+    expect(within(panel).getByRole("radio", { name: /^Workbench/ })).toHaveProperty("checked", true);
     expect(document.documentElement.dataset.motion).toBeUndefined();
+    expect(document.documentElement.dataset.colorway).toBeUndefined();
   });
 
   it("reports keys the browser refused to remove", () => {
@@ -163,11 +175,97 @@ describe("settings menu", () => {
     }
   });
 
+  it("applies a colorway at once, stores it, and the default removes it", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    expect(within(panel).getByRole("radio", { name: /^Workbench/ })).toHaveProperty("checked", true);
+    fireEvent.click(within(panel).getByRole("radio", { name: /^Fab Purple/ }));
+    expect(localStorage.getItem("pinhub.colorway")).toBe("fab-purple");
+    expect(document.documentElement.dataset.colorway).toBe("fab-purple");
+
+    fireEvent.click(within(panel).getByRole("radio", { name: /^Workbench/ }));
+    expect(localStorage.getItem("pinhub.colorway")).toBeNull();
+    expect(document.documentElement.dataset.colorway).toBeUndefined();
+  });
+
+  it("keeps the colorway when the theme switches between light and dark", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    fireEvent.click(within(panel).getByRole("radio", { name: /^Anodized/ }));
+    fireEvent.click(within(panel).getByRole("radio", { name: "Light" }));
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(document.documentElement.dataset.colorway).toBe("anodized");
+  });
+
+  it("traps Tab inside the dialog", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    expect(document.activeElement).toBe(panel);
+    const close = within(panel).getByRole("button", { name: "Close settings" });
+    const privacy = within(panel).getByRole("link", { name: "What PinHub stores and why" });
+    privacy.focus();
+    fireEvent.keyDown(privacy, { key: "Tab" });
+    expect(document.activeElement).toBe(close);
+    fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(privacy);
+  });
+
+  it("closes from the close button", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    fireEvent.click(within(panel).getByRole("button", { name: "Close settings" }));
+    expect(screen.queryByRole("dialog", { name: "Settings" })).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Settings" }));
+  });
+
+  it("applies a colorway at once, stores it, and the default removes it", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    expect(within(panel).getByRole("radio", { name: /^Workbench/ })).toHaveProperty("checked", true);
+    fireEvent.click(within(panel).getByRole("radio", { name: /^Fab Purple/ }));
+    expect(localStorage.getItem("pinhub.colorway")).toBe("fab-purple");
+    expect(document.documentElement.dataset.colorway).toBe("fab-purple");
+
+    fireEvent.click(within(panel).getByRole("radio", { name: /^Workbench/ }));
+    expect(localStorage.getItem("pinhub.colorway")).toBeNull();
+    expect(document.documentElement.dataset.colorway).toBeUndefined();
+  });
+
+  it("keeps the colorway when the theme switches between light and dark", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    fireEvent.click(within(panel).getByRole("radio", { name: /^Anodized/ }));
+    fireEvent.click(within(panel).getByRole("radio", { name: "Light" }));
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(document.documentElement.dataset.colorway).toBe("anodized");
+  });
+
+  it("traps Tab inside the dialog", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    expect(document.activeElement).toBe(panel);
+    const close = within(panel).getByRole("button", { name: "Close settings" });
+    const privacy = within(panel).getByRole("link", { name: "What PinHub stores and why" });
+    privacy.focus();
+    fireEvent.keyDown(privacy, { key: "Tab" });
+    expect(document.activeElement).toBe(close);
+    fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(privacy);
+  });
+
+  it("closes from the close button", () => {
+    render(<SettingsMenu />);
+    const panel = openSettings();
+    fireEvent.click(within(panel).getByRole("button", { name: "Close settings" }));
+    expect(screen.queryByRole("dialog", { name: "Settings" })).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Settings" }));
+  });
+
   it("closes on Escape and returns focus to the trigger", () => {
     render(<SettingsMenu />);
     const panel = openSettings();
     fireEvent.keyDown(within(panel).getByRole("radio", { name: "System" }), { key: "Escape" });
-    expect(screen.queryByRole("region", { name: "Settings" })).toBeNull();
+    expect(screen.queryByRole("dialog", { name: "Settings" })).toBeNull();
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Settings" }));
   });
 });
@@ -180,5 +278,23 @@ describe("preference parsing", () => {
     expect(parseMotionChoice("reduce")).toBe("reduce");
     expect(parsePinoutTab("<script>")).toBe("dynamic");
     expect(parsePinoutTab("static")).toBe("static");
+    expect(parseColorway("neon")).toBe("workbench");
+    expect(parseColorway("__proto__")).toBe("workbench");
+    expect(parseColorway("blueprint")).toBe("blueprint");
+  });
+
+  it("boot script sets only known colorways before paint", () => {
+    const run = (stored: string | null) => {
+      delete document.documentElement.dataset.colorway;
+      if (stored === null) localStorage.removeItem("pinhub.colorway");
+      else localStorage.setItem("pinhub.colorway", stored);
+      new Function(colorwayBootScript)();
+      return document.documentElement.dataset.colorway;
+    };
+    expect(run("silkscreen")).toBe("silkscreen");
+    expect(run("workbench")).toBeUndefined();
+    expect(run("\"><img>")).toBeUndefined();
+    expect(run(null)).toBeUndefined();
+    localStorage.clear();
   });
 });

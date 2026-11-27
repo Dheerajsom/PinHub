@@ -760,13 +760,39 @@ it, because buses compete for the same pins; the pin planner can.
 
 ## 23. Settings (2026-11-27)
 
-A gear button beside the theme toggle, in both headers, opens a settings
-disclosure built like the Tools menu (button + panel; Escape, a click
-outside, or tabbing out closes it; the panel is clamped 16 px inside the
-viewport by the shared `usePopoverPlacement` hook). Every choice applies at
-once; there is no Save step.
+A gear button beside the theme toggle, in both headers, opens the settings
+dialog: a modal (`role="dialog"`, focus moved in and trapped; Escape, the
+scrim, or Close shuts it and focus returns to the gear), portalled to
+`<body>` so no header can clip it, up to 48rem wide and scrolling inside
+itself on a phone. Every choice applies at once, so the page behind the scrim
+previews a colorway; there is no Save step.
 
-- **Theme: System / Light / Dark.** The one-tap toggle always sets an
+- **Colorway.** Five skins for the chrome, each with a dark and a light
+  variant, so Light/Dark/System still applies on top. Stored as
+  `pinhub.colorway` and set as `data-colorway` on the root before first
+  paint (the layout script reads `colorwayBootScript` from
+  `src/lib/colorway-options.ts`, which accepts only known ids). Workbench,
+  the default, sets no attribute, so the stock styles are untouched.
+  - *Workbench*: the original graphite and cyan.
+  - *Fab Purple*: hobby-fab purple solder mask, orchid accent, softer corners.
+  - *Blueprint*: cyanotype blue, chalk-white accent, square corners, a
+    drafting grid behind the panels (whiteprint in light mode).
+  - *Silkscreen*: black mask and white legend. The high-contrast option:
+    pure ground, brighter secondary text, firmer borders, 3 px focus.
+  - *Anodized*: brushed-aluminum backdrop, indigo accent, milled corners.
+
+  A colorway retints through variables only: `--background`, `--panel`,
+  `--well`, `--panel-border`, the Tailwind cyan ramp (the interaction color,
+  wherever a utility uses it), the zinc text ramp, `--radius-*`, and the
+  `--ph-accent-*`/`--ph-ink-*`/`--ph-line-rgb` inks that the light-theme
+  rules now use instead of literal hex. **What never changes:** the meaning
+  colors (orange caution, emerald official, green prices, amber favorites)
+  and the pin map (role hues, the probe, the board stage), so a board reads
+  the same in every skin. Each accent stays clear of those hues, which is why
+  there is no green, orange, or gold colorway. The picker tiles draw a strip
+  of header pads in each colorway's own colors, pin 1 square, for whichever
+  of light or dark is showing.
+- **Light or dark: System / Light / Dark.** The one-tap toggle always sets an
   explicit theme, which used to leave no way back to the operating-system
   setting. "System" removes `pinhub.theme`; while it is chosen, a change in
   the OS setting repaints the page live. The toggle and the panel read one
