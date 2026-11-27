@@ -1,7 +1,7 @@
 "use client";
 
 import { MappedProductArtwork } from "@/components/board-visual/ProductPortrait";
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type PointerEvent } from "react";
 import { clsx } from "clsx";
 import type { PinRole } from "@/lib/boards";
 import { wholeBoardFrame, type BoardGeometry, type PinAnchor, type Rect } from "@/lib/board-visual-geometry";
@@ -258,7 +258,17 @@ export function BoardStage({
               onActiveKey(anchor.key);
             }}
             onBlur={() => onActiveKey(selectedKey)}
-            onPointerEnter={() => onActiveKey(anchor.key)}
+            // A mouse or pen previews a pad when it moves over it, not on
+            // enter: the browser also sends enter when the layout slides a pad
+            // under a resting pointer, and that preview resized the readout,
+            // slid the pad back out, and shook the page every frame. Layout
+            // shifts never send pointermove. Touch has no hover to wait for.
+            onPointerEnter={(event) => {
+              if (event.pointerType === "touch") onActiveKey(anchor.key);
+            }}
+            onPointerMove={() => {
+              if (activeKey !== anchor.key) onActiveKey(anchor.key);
+            }}
             onPointerLeave={() => onActiveKey(selectedKey)}
             onToggle={() =>
               onSelect(anchor.key === selectedKey ? null : anchor.key)
@@ -293,6 +303,7 @@ function Pad({
   onFocus,
   onBlur,
   onPointerEnter,
+  onPointerMove,
   onPointerLeave,
   onToggle,
 }: {
@@ -313,7 +324,8 @@ function Pad({
   realistic?: boolean;
   onFocus: () => void;
   onBlur: () => void;
-  onPointerEnter: () => void;
+  onPointerEnter: (event: PointerEvent<SVGGElement>) => void;
+  onPointerMove: () => void;
   onPointerLeave: () => void;
   onToggle: () => void;
 }) {
@@ -339,6 +351,7 @@ function Pad({
       onFocus={onFocus}
       onBlur={onBlur}
       onPointerEnter={onPointerEnter}
+      onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       onClick={onToggle}
       onKeyDown={(event) => {
